@@ -1,0 +1,35 @@
+{
+  "title": "Dashboard",
+  "welcome": "Bem-vindo de volta, {{name}}",
+  "quickActions": "Ações Rápidas",
+  "newFPAEstimate": "Nova Estimativa APF",
+  "createGQMGoal": "Criar Meta GQM",
+  "newMeasurementPlan": "Novo Plano de Medição",
+  "statistics": "Estatísticas",
+  "totalEstimates": "Total de Estimativas",
+  "activeGoals": "Metas Ativas",
+  "completedPlans": "Planos Concluídos",
+  "yourRole": "Seu Cargo",
+  "currentRole": "Cargo Atual",
+  "role": {
+    "admin": "Acesso completo ao sistema e gerenciamento de usuários",
+    "manager": "Planejamento de medição e supervisão de equipe",
+    "analyst": "Capacidades de análise APF e GQM",
+    "user": "Atividades básicas de medição"
+  },
+  "recentActivity": "Atividade Recente",
+  "activities": {
+    "estimate_created": {
+      "title": "Nova Estimativa APF Criada",
+      "description": "Estimativa criada para o projeto \"{{project}}\""
+    },
+    "goal_updated": {
+      "title": "Meta GQM Atualizada",
+      "description": "Meta de {{goal}} atualizada"
+    },
+    "plan_completed": {
+      "title": "Plano de Medição Concluído",
+      "description": "Plano de medição {{plan}} finalizado"
+    }
+  }
+} 

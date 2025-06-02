@@ -1,0 +1,15 @@
+{
+  "title": "Login",
+  "subtitle": "Sign in to your account",
+  "email": "Email",
+  "password": "Password",
+  "enterYourEmail": "Enter your email",
+  "enterYourPassword": "Enter your password",
+  "signingIn": "Signing in...",
+  "signInButton": "Sign In",
+  "dontHaveAccount": "Don't have an account?",
+  "signUp": "Sign up",
+  "fillAllFields": "Please fill in all fields",
+  "invalidCredentials": "Invalid email or password",
+  "demoCredentials": "Demo credentials: admin@measura.com / password"
+} 

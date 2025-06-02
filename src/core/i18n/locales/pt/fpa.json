@@ -1,0 +1,52 @@
+{
+  "title": "Análise de Pontos de Função",
+  "subtitle": "Crie e gerencie estimativas APF",
+  "createNew": "Criar Nova Estimativa",
+  "projectName": "Nome do Projeto",
+  "description": "Descrição",
+  "enterProjectName": "Digite o nome do projeto",
+  "briefDescription": "Breve descrição",
+  "createEstimate": "Criar Estimativa",
+  "yourEstimates": "Suas Estimativas",
+  "functionPoints": "pontos de função",
+  "edit": "Editar",
+  "quickReference": "Referência Rápida de APF",
+  "functionTypes": "Tipos de Função",
+  "complexityLevels": "Níveis de Complexidade",
+  "totalEstimates": "Total de Estimativas",
+  "completed": "Concluídas",
+  "inProgress": "Em Progresso",
+  "status": {
+    "completed": "concluída",
+    "in_progress": "em progresso",
+    "draft": "rascunho"
+  },
+  "functionTypeLabels": {
+    "EI": "Entrada Externa (EI)",
+    "EO": "Saída Externa (EO)",
+    "EQ": "Consulta Externa (EQ)",
+    "ILF": "Arquivo Lógico Interno (ILF)",
+    "EIF": "Arquivo de Interface Externa (EIF)"
+  },
+  "complexityLabels": {
+    "LOW": "Baixa",
+    "AVERAGE": "Média",
+    "HIGH": "Alta"
+  },
+  "adjustmentFactors": {
+    "data_communications": "Comunicação de Dados",
+    "distributed_processing": "Processamento Distribuído de Dados",
+    "performance": "Performance",
+    "configuration": "Configuração Altamente Utilizada",
+    "transaction_rate": "Taxa de Transação",
+    "online_data_entry": "Entrada de Dados On-Line",
+    "end_user_efficiency": "Eficiência do Usuário Final",
+    "online_update": "Atualização On-Line",
+    "complex_processing": "Processamento Complexo",
+    "reusability": "Reusabilidade",
+    "installation_ease": "Facilidade de Instalação",
+    "operational_ease": "Facilidade Operacional",
+    "multiple_sites": "Múltiplos Locais",
+    "facilitate_change": "Facilitar Mudanças"
+  }
+} 

@@ -1,0 +1,35 @@
+{
+  "title": "Dashboard",
+  "welcome": "Welcome back, {{name}}",
+  "quickActions": "Quick Actions",
+  "newFPAEstimate": "New FPA Estimate",
+  "createGQMGoal": "Create GQM Goal",
+  "newMeasurementPlan": "New Measurement Plan",
+  "statistics": "Statistics",
+  "totalEstimates": "Total Estimates",
+  "activeGoals": "Active Goals",
+  "completedPlans": "Completed Plans",
+  "yourRole": "Your Role",
+  "currentRole": "Current Role",
+  "role": {
+    "admin": "Full system access and user management",
+    "manager": "Measurement planning and team oversight",
+    "analyst": "FPA and GQM analysis capabilities",
+    "user": "Basic measurement activities"
+  },
+  "recentActivity": "Recent Activity",
+  "activities": {
+    "estimate_created": {
+      "title": "New FPA Estimate Created",
+      "description": "Created estimate for \"{{project}}\" project"
+    },
+    "goal_updated": {
+      "title": "GQM Goal Updated",
+      "description": "Updated {{goal}} goal"
+    },
+    "plan_completed": {
+      "title": "Measurement Plan Completed",
+      "description": "Finalized {{plan}} measurement plan"
+    }
+  }
+} 

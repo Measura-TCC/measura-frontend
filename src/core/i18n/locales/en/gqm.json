@@ -1,0 +1,118 @@
+{
+  "title": "Goal-Question-Metric",
+  "subtitle": "Define measurement goals and track metrics",
+  "createNewGoal": "Create New Goal",
+  "goalName": "Goal Name",
+  "purpose": "Purpose",
+  "issue": "Issue",
+  "object": "Object",
+  "viewpoint": "Viewpoint",
+  "context": "Context",
+  "enterGoalName": "Enter goal name",
+  "purposePlaceholder": "Analyze, Evaluate, Improve...",
+  "issuePlaceholder": "productivity, quality, cost...",
+  "objectPlaceholder": "software product, process...",
+  "viewpointPlaceholder": "developer, manager, user...",
+  "contextPlaceholder": "project environment...",
+  "createGoal": "Create Goal",
+  "yourGoals": "Your Goals",
+  "templates": "GQM Templates",
+  "totalGoals": "Total Goals",
+  "active": "Active",
+  "status": {
+    "active": "active",
+    "completed": "completed",
+    "draft": "draft",
+    "paused": "paused"
+  },
+  "gqmTemplates": {
+    "productivity": {
+      "name": "Productivity Measurement",
+      "description": "Measure and improve development team productivity",
+      "purpose": "Analyze",
+      "issue": "productivity",
+      "object": "development process",
+      "viewpoint": "project manager",
+      "context": "software development project"
+    },
+    "quality": {
+      "name": "Quality Assessment",
+      "description": "Monitor and improve software quality",
+      "purpose": "Evaluate",
+      "issue": "quality",
+      "object": "software product",
+      "viewpoint": "quality assurance",
+      "context": "software development lifecycle"
+    },
+    "delivery": {
+      "name": "Delivery Performance",
+      "description": "Track delivery timelines and performance",
+      "purpose": "Monitor",
+      "issue": "delivery performance",
+      "object": "project timeline",
+      "viewpoint": "stakeholder",
+      "context": "project management"
+    },
+    "maintenance": {
+      "name": "Maintenance Efficiency",
+      "description": "Measure maintenance effort and efficiency",
+      "purpose": "Improve",
+      "issue": "maintenance cost",
+      "object": "software system",
+      "viewpoint": "development team",
+      "context": "maintenance phase"
+    }
+  },
+  "commonQuestions": {
+    "productivity": [
+      "How many function points are delivered per developer per month?",
+      "What is the average time to complete a user story?",
+      "How many defects are introduced per function point?",
+      "What is the code review efficiency?"
+    ],
+    "quality": [
+      "What is the defect density in the delivered software?",
+      "How many defects are found in testing vs production?",
+      "What is the code coverage percentage?",
+      "How long does it take to fix a defect?"
+    ],
+    "delivery": [
+      "What percentage of deliveries are on time?",
+      "How accurate are effort estimates?",
+      "What is the velocity trend over sprints?",
+      "How many scope changes occur during development?"
+    ]
+  },
+  "metricTemplates": [
+    {
+      "name": "Function Points per Developer",
+      "unit": "FP/person/month",
+      "description": "Productivity metric measuring function points delivered per developer per month"
+    },
+    {
+      "name": "Defect Density",
+      "unit": "defects/KLOC",
+      "description": "Quality metric measuring defects per thousand lines of code"
+    },
+    {
+      "name": "Code Coverage",
+      "unit": "%",
+      "description": "Quality metric measuring percentage of code covered by tests"
+    },
+    {
+      "name": "Story Cycle Time",
+      "unit": "days",
+      "description": "Delivery metric measuring time from story start to completion"
+    },
+    {
+      "name": "Velocity",
+      "unit": "story points/sprint",
+      "description": "Delivery metric measuring story points completed per sprint"
+    },
+    {
+      "name": "Defect Resolution Time",
+      "unit": "hours",
+      "description": "Quality metric measuring average time to resolve defects"
+    }
+  ]
+} 

@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+:root {
+  --white: #ffffff;
+  --black: #0d1117;
+
+  /* Gray palette */
+  --gray-950: #0d1117;
+  --gray-900: #161b22;
+  --gray-800: #21262d;
+  --gray-700: #30363d;
+  --gray-600: #484f58;
+  --gray-500: #656d76;
+  --gray-400: #848d97;
+  --gray-300: #afb8c1;
+  --gray-200: #d0d7de;
+  --gray-100: #eaeef2;
+  --gray-50: #f6f8fa;
+
+  /* Blue palette */
+  --blue-900: #312e81;
+  --blue-800: #3730a3;
+  --blue-700: #4338ca;
+  --blue-600: #4f46e5;
+  --blue-500: #6366f1;
+  --blue-400: #818cf8;
+  --blue-300: #a5b4fc;
+  --blue-200: #c7d2fe;
+  --blue-100: #e0e7ff;
+  --blue-50:  #eef2ff;
+
+  /* Green palette */
+  --green-900: #033a16;
+  --green-800: #0f5132;
+  --green-700: #116329;
+  --green-600: #1a7f37;
+  --green-500: #26a641;
+  --green-400: #2ea043;
+  --green-300: #56d364;
+  --green-200: #7ee787;
+  --green-100: #acf2bd;
+  --green-50: #dafbe1;
+
+  /* Light theme colors */
+  --bg-primary: var(--white);
+  --bg-secondary: var(--gray-50);
+  --bg-tertiary: var(--gray-100);
+  --bg-accent: var(--blue-50);
+  
+  --color-default: var(--gray-900);
+  --color-secondary: var(--gray-700);
+  --color-tertiary: var(--gray-600);
+  --color-muted: var(--gray-500);
+  --color-button: var(--white);
+  
+  --primary: var(--blue-600);
+  --primary-light: var(--blue-500);
+  --primary-dark: var(--blue-700);
+  --secondary: var(--gray-600);
+  --secondary-light: var(--gray-500);
+  --secondary-dark: var(--gray-700);
+  
+  --accent: var(--green-600);
+  --accent-light: var(--green-500);
+  --accent-dark: var(--green-700);
+  
+  --border-primary: var(--gray-200);
+  --border-secondary: var(--gray-300);
+  --border-accent: var(--blue-300);
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark theme colors */
+:root.dark {
+  --bg-primary: var(--gray-950);
+  --bg-secondary: var(--gray-900);
+  --bg-tertiary: var(--gray-800);
+  --bg-accent: var(--gray-800);
+  
+  --color-default: var(--gray-100);
+  --color-secondary: var(--gray-200);
+  --color-tertiary: var(--gray-300);
+  --color-muted: var(--gray-500);
+  --color-button: var(--gray-100);
+  
+  --primary: var(--blue-500);
+  --primary-light: var(--blue-400);
+  --primary-dark: var(--blue-600);
+  --secondary: var(--gray-400);
+  --secondary-light: var(--gray-300);
+  --secondary-dark: var(--gray-500);
+  
+  --accent: var(--green-400);
+  --accent-light: var(--green-300);
+  --accent-dark: var(--green-500);
+  
+  --border-primary: var(--gray-700);
+  --border-secondary: var(--gray-600);
+  --border-accent: var(--blue-700);
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+@theme {
+  /* Background colors */
+  --color-background: var(--bg-primary);
+  --color-background-secondary: var(--bg-secondary);
+  --color-background-tertiary: var(--bg-tertiary);
+  --color-background-accent: var(--bg-accent);
+
+  /* Text colors */
+  --color-default: var(--color-default);
+  --color-secondary: var(--color-secondary);
+  --color-tertiary: var(--color-tertiary);
+  --color-muted: var(--color-muted);
+  --color-button: var(--color-button);
+
+  /* Theme colors */
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary: var(--secondary);
+  --color-secondary-light: var(--secondary-light);
+  --color-secondary-dark: var(--secondary-dark);
+  
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-accent-dark: var(--accent-dark);
+  
+  /* Border colors */
+  --color-border: var(--border-primary);
+  --color-border-secondary: var(--border-secondary);
+  --color-border-accent: var(--border-accent);
+  
+  /* Shadow tokens */
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+}
+
+/* Component styles */
+.input-base {
+  @apply flex h-9 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-default placeholder:text-muted 
+         focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary 
+         disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200;
+}
+
+.input-error {
+  @apply border-red-500 focus:ring-red-500 focus:border-red-500;
+}
+
+.button-primary {
+  @apply inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white 
+         hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 
+         disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200;
+}
+
+.button-secondary {
+  @apply inline-flex items-center justify-center rounded-md border border-border bg-background px-4 py-2 text-sm font-medium text-default 
+         hover:bg-background-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 
+         disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200;
+}
+
+.card {
+  @apply rounded-lg border border-border bg-background p-6 shadow-sm;
+}
+
+.sidebar-nav-item {
+  @apply flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-secondary 
+         hover:bg-background-secondary hover:text-default transition-all duration-200;
+}
+
+.sidebar-nav-item.active {
+  @apply bg-background-accent text-primary border-l-2 border-primary;
+}
+
+/* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border-secondary);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary);
+} 

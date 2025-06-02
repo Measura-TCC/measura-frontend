@@ -1,0 +1,210 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Cursor AI Rules - Measura Frontend Next.js/React/TypeScript
+
+You are an expert in frontend development for Measura, a modular software measurement web application. Built with Next.js App Router, React, TypeScript, and Tailwind CSS with GitHub-inspired design. Always follow these principles:
+
+## SOLID Principles
+- Never use relative imports beyond one level (prefer absolute imports)
+- Don't comment the code unless absolutely necessary for complex business logic
+- Use TypeScript strictly - no `any` types
+- Don't comment the code
+- Always prioritize to use const name = () => {} instead of function declarations
+### Single Responsibility Principle
+- Each component should have only one specific responsibility
+- Separate UI components from business logic components
+- Keep hooks focused on single concerns
+- Split complex components into smaller, focused ones
+
+### Dependency Inversion Principle
+- Never call APIs directly in components
+- Always create dedicated services/hooks for external dependencies
+- Use custom hooks to abstract complex state management
+- Components should depend on abstractions, not concrete implementations
+
+### Open/Closed Principle
+- Components should be extensible without modification
+- Use composition over inheritance
+- Design reusable components with proper prop interfaces
+- Make components configurable through props
+
+# UTILS
+
+- if you need to create an items array, always create inside a file of a utils and then import to the component that's going to use it.
+
+## Component Architecture
+
+### Measura Architecture Layers
+- **App Router Pages**: Next.js route handlers in `/app` directory
+- **Views**: Feature-specific screen components (`/views/Dashboard`, `/views/FPA`, etc.)
+- **Components**: Reusable UI components organized by domain
+  - `/components/common`: Domain-agnostic components (buttons, modals)
+  - `/components/layout`: Layout-specific (headers, sidebars)
+  - `/components/primitives`: Base building blocks (inputs, cards)
+- **Core Layer**: Application logic and utilities (`/core/hooks`, `/core/utils`, `/core/types`)
+
+### Separation of Concerns
+- **App Router Pages**: Route handling and layout composition only
+- **Views**: Module-specific screen orchestration (Dashboard, FPA, GQM, Plans)
+- **Components**: Pure UI rendering with proper prop interfaces
+- **Custom Hooks**: Business logic (useCreateEstimate, useGoals, useMetrics)
+- **Core Services**: API communication and data transformation
+- **Core Utils**: Utility functions (className merge, theme helpers)
+
+## Configuration & Environment Variables
+
+### Environment Variables
+- NEVER hardcode API URLs, keys, or constants in components
+- Always use Next.js environment variables with proper validation
+- All external configurations must be in `.env.local` files
+- Validate required environment variables at application startup using Next.js config
+
+### API Configuration
+- API base URLs should be environment variables
+- Create centralized API configuration in `/core` directory
+- Enable easy switching between environments (dev, staging, prod)
+- Use Next.js API routes for backend integration when needed
+
+## Performance & Rendering
+
+### Next.js Performance
+- Use Next.js built-in optimizations (Image, Link, dynamic imports)
+- Implement proper code splitting with `dynamic()` for heavy components
+- Use `React.memo` for expensive pure components in views
+- Leverage Next.js caching strategies (revalidate, cache tags)
+- Implement proper `useMemo` and `useCallback` for heavy computations
+
+### State Management
+- Keep state as close to components that need it
+- Use `useState` for local state, React Context for module-wide state
+- Implement proper state updates (immutable patterns)
+- Use Next.js built-in state management patterns
+
+### Async Operations
+- Use `useEffect` properly with correct dependencies
+- Implement loading and error states for all async operations
+- Handle race conditions in async operations
+- Use `AbortController` for cancellable requests
+
+## Error Handling & User Experience
+
+### Error Boundaries
+- Implement error boundaries for critical sections
+- Provide fallback UI for component errors
+- Log errors with proper context for debugging
+- Never let the entire app crash due to component errors
+
+### Loading States
+- Always show loading indicators for async operations
+- Implement skeleton screens for better perceived performance
+- Handle different loading states (initial, refreshing, loading more)
+- Provide meaningful feedback during long operations
+
+### Error States
+- Display user-friendly error messages
+- Implement retry mechanisms for failed operations
+- Validate forms with clear error messages
+- Handle network errors gracefully
+
+## Data Management
+
+### API Integration
+- Create dedicated API service layer
+- Use proper TypeScript interfaces for API responses
+- Implement request/response interceptors
+- Handle authentication and token refresh automatically
+
+### State Validation
+- Use Zod or similar for runtime type validation
+- Validate data at API boundaries
+- Implement proper form validation
+- Sanitize user inputs before processing
+
+### Caching Strategies
+- Use React Query/SWR for server state management
+- Implement proper cache invalidation
+- Cache expensive computations with `useMemo`
+- Use browser storage appropriately (localStorage/sessionStorage)
+
+## Component Patterns
+
+### Measura Module Patterns
+- **FPA Components**: Function Point Analysis with Zod validation (useCreateEstimate, useEstimateHistory)
+- **GQM Components**: Goal-Question-Metric modeling (useGoals, useMetrics)
+- **Plans Components**: Measurement plan creation with wizard flows
+- **Dashboard Components**: Activity feeds and role-based quick actions
+- **Auth Components**: Role-specific onboarding (User, Analyst, Manager, Admin)
+
+### Hook Patterns
+- Create module-specific custom hooks (useCreateEstimate, useGoals, useMetrics)
+- Keep hooks focused on single responsibilities within modules
+- Return consistent interfaces from custom hooks
+- Handle cleanup in `useEffect` hooks properly
+
+### GitHub-Inspired Styling Patterns
+- Use CSS custom properties for theme variables (light/dark modes)
+- Implement design system with consistent color tokens
+- Use Tailwind's utility classes with custom CSS variables
+- Follow GitHub's clean, modern UI patterns
+- Ensure proper contrast ratios for accessibility
+
+## Testing & Quality
+
+### Measura Testing
+- Write tests for module behavior (FPA calculations, GQM tree building)
+- Test user interactions and state changes in measurement workflows
+- Mock external dependencies and API calls properly
+- Use React Testing Library with Next.js testing patterns
+
+### Type Safety
+- Use strict TypeScript configuration
+- Define proper interfaces for measurement data structures
+- Avoid `any` types - use proper type definitions for FPA/GQM data
+- Implement generic types for reusable measurement components
+
+## Accessibility & UX
+
+### Role-Based Access
+- Implement proper role checking (User, Analyst, Manager, Admin)
+- Show/hide UI elements based on user permissions
+- Handle role-specific routing and navigation
+- Provide clear feedback for unauthorized actions
+
+### Measurement-Specific UX
+- Implement proper form validation for FPA inputs
+- Provide clear visual feedback for estimation progress
+- Handle complex data structures (GQM trees, measurement plans)
+- Support internationalization (PT default, EN support)
+
+## Build & Deployment
+
+### Next.js File Organization
+- Use Next.js App Router structure with proper layouts
+- Organize files by feature modules (Dashboard, FPA, GQM, Plans)
+- Keep related files close together within modules
+- Implement proper barrel exports from `/core` directory
+
+### Measura Performance Optimization
+- Implement proper bundle splitting for measurement modules
+- Optimize calculation-heavy components (FPA, GQM)
+- Use Next.js Image optimization for assets
+- Monitor bundle size and measurement processing performance
+- Leverage Next.js built-in caching for measurement data
+
+## Measura-Specific Patterns
+### Data Validation
+- Use Zod for FPA estimate validation
+- Validate GQM tree structures
+- Implement measurement plan schema validation
+- Validate role permissions and user inputs
+
+### Internationalization
+- Use react-i18next with Next.js integration
+- Default to Portuguese (PT) with English (EN) support
+- Keep translation keys organized by module
+- Handle measurement terminology consistently across languages
+
+Always prioritize maintainable, performant, and accessible code specific to software measurement workflows. When in doubt, prefer creating more focused module components over concentrating measurement responsibilities. Enable proper testing through clean component design and separation of measurement concerns.

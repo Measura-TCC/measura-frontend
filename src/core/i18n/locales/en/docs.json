@@ -1,0 +1,41 @@
+{
+  "title": "Documentation",
+  "subtitle": "Learn how to use Measura effectively for software measurement",
+  "gettingStarted": "Getting Started",
+  "welcome": "Welcome to Measura! This comprehensive guide will help you understand and implement software measurement methodologies effectively.",
+  "whatYouLearn": "What you'll learn:",
+  "learnFPA": "• How to create accurate software estimates using FPA",
+  "learnGQM": "• How to define meaningful measurement goals with GQM",
+  "learnPlans": "• How to create and manage measurement plans",
+  "learnBestPractices": "• Best practices for software measurement",
+  "availableDocuments": "Available Documents",
+  "readTime": "min read",
+  "fpa": {
+    "title": "Function Point Analysis (FPA)",
+    "description": "Learn how to perform Function Point Analysis for software estimation"
+  },
+  "gqm": {
+    "title": "Goal-Question-Metric (GQM)",
+    "description": "Master the GQM approach for measurement planning"
+  },
+  "plans": {
+    "title": "Measurement Plans",
+    "description": "Create effective measurement plans for your projects"
+  },
+  "faq": "Frequently Asked Questions",
+  "faqItems": {
+    "whatIsFPA": "What is Function Point Analysis?",
+    "fpaAnswer": "Function Point Analysis is a standardized method for measuring software size based on the functionality delivered to the user, independent of technology and implementation.",
+    "howGQMHelps": "How does GQM help with measurement?",
+    "gqmAnswer": "GQM provides a structured approach to define measurement goals, derive relevant questions, and identify appropriate metrics to answer those questions.",
+    "canUseBoth": "Can I use both FPA and GQM together?",
+    "bothAnswer": "Yes! FPA provides size estimation while GQM helps define what and how to measure. They complement each other in a comprehensive measurement program."
+  },
+  "quickLinks": "Quick Links",
+  "needHelp": "Need Help?",
+  "helpDescription": "Can't find what you're looking for? We're here to help!",
+  "versionInfo": "Version Info",
+  "application": "Application",
+  "documentation": "Documentation",
+  "lastUpdated": "Last updated"
+} 

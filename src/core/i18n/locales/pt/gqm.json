@@ -1,0 +1,118 @@
+{
+  "title": "Goal-Question-Metric",
+  "subtitle": "Definir metas de medição e acompanhar métricas",
+  "createNewGoal": "Criar Nova Meta",
+  "goalName": "Nome da Meta",
+  "purpose": "Propósito",
+  "issue": "Questão",
+  "object": "Objeto",
+  "viewpoint": "Ponto de Vista",
+  "context": "Contexto",
+  "enterGoalName": "Digite o nome da meta",
+  "purposePlaceholder": "Analisar, Avaliar, Melhorar...",
+  "issuePlaceholder": "produtividade, qualidade, custo...",
+  "objectPlaceholder": "produto de software, processo...",
+  "viewpointPlaceholder": "desenvolvedor, gerente, usuário...",
+  "contextPlaceholder": "ambiente do projeto...",
+  "createGoal": "Criar Meta",
+  "yourGoals": "Suas Metas",
+  "templates": "Modelos GQM",
+  "totalGoals": "Total de Metas",
+  "active": "Ativas",
+  "status": {
+    "active": "ativa",
+    "completed": "concluída",
+    "draft": "rascunho",
+    "paused": "pausada"
+  },
+  "gqmTemplates": {
+    "productivity": {
+      "name": "Medição de Produtividade",
+      "description": "Medir e melhorar a produtividade da equipe de desenvolvimento",
+      "purpose": "Analisar",
+      "issue": "produtividade",
+      "object": "processo de desenvolvimento",
+      "viewpoint": "gerente de projeto",
+      "context": "projeto de desenvolvimento de software"
+    },
+    "quality": {
+      "name": "Avaliação de Qualidade",
+      "description": "Monitorar e melhorar a qualidade do software",
+      "purpose": "Avaliar",
+      "issue": "qualidade",
+      "object": "produto de software",
+      "viewpoint": "garantia de qualidade",
+      "context": "ciclo de vida de desenvolvimento de software"
+    },
+    "delivery": {
+      "name": "Performance de Entrega",
+      "description": "Acompanhar cronogramas e performance de entrega",
+      "purpose": "Monitorar",
+      "issue": "performance de entrega",
+      "object": "cronograma do projeto",
+      "viewpoint": "stakeholder",
+      "context": "gerenciamento de projeto"
+    },
+    "maintenance": {
+      "name": "Eficiência de Manutenção",
+      "description": "Medir esforço e eficiência de manutenção",
+      "purpose": "Melhorar",
+      "issue": "custo de manutenção",
+      "object": "sistema de software",
+      "viewpoint": "equipe de desenvolvimento",
+      "context": "fase de manutenção"
+    }
+  },
+  "commonQuestions": {
+    "productivity": [
+      "Quantos pontos de função são entregues por desenvolvedor por mês?",
+      "Qual é o tempo médio para completar uma história do usuário?",
+      "Quantos defeitos são introduzidos por ponto de função?",
+      "Qual é a eficiência da revisão de código?"
+    ],
+    "quality": [
+      "Qual é a densidade de defeitos no software entregue?",
+      "Quantos defeitos são encontrados em testes vs produção?",
+      "Qual é a porcentagem de cobertura de código?",
+      "Quanto tempo leva para corrigir um defeito?"
+    ],
+    "delivery": [
+      "Qual porcentagem de entregas são pontuais?",
+      "Quão precisas são as estimativas de esforço?",
+      "Qual é a tendência de velocidade ao longo dos sprints?",
+      "Quantas mudanças de escopo ocorrem durante o desenvolvimento?"
+    ]
+  },
+  "metricTemplates": [
+    {
+      "name": "Pontos de Função por Desenvolvedor",
+      "unit": "PF/pessoa/mês",
+      "description": "Métrica de produtividade medindo pontos de função entregues por desenvolvedor por mês"
+    },
+    {
+      "name": "Densidade de Defeitos",
+      "unit": "defeitos/KLOC",
+      "description": "Métrica de qualidade medindo defeitos por mil linhas de código"
+    },
+    {
+      "name": "Cobertura de Código",
+      "unit": "%",
+      "description": "Métrica de qualidade medindo porcentagem de código coberto por testes"
+    },
+    {
+      "name": "Tempo de Ciclo da História",
+      "unit": "dias",
+      "description": "Métrica de entrega medindo tempo do início ao fim da história"
+    },
+    {
+      "name": "Velocidade",
+      "unit": "pontos de história/sprint",
+      "description": "Métrica de entrega medindo pontos de história completados por sprint"
+    },
+    {
+      "name": "Tempo de Resolução de Defeitos",
+      "unit": "horas",
+      "description": "Métrica de qualidade medindo tempo médio para resolver defeitos"
+    }
+  ]
+} 

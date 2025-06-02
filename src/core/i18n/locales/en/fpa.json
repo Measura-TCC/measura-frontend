@@ -1,0 +1,52 @@
+{
+  "title": "Function Point Analysis",
+  "subtitle": "Create and manage FPA estimates",
+  "createNew": "Create New Estimate",
+  "projectName": "Project Name",
+  "description": "Description",
+  "enterProjectName": "Enter project name",
+  "briefDescription": "Brief description",
+  "createEstimate": "Create Estimate",
+  "yourEstimates": "Your Estimates",
+  "functionPoints": "function points",
+  "edit": "Edit",
+  "quickReference": "FPA Quick Reference",
+  "functionTypes": "Function Types",
+  "complexityLevels": "Complexity Levels",
+  "totalEstimates": "Total Estimates",
+  "completed": "Completed",
+  "inProgress": "In Progress",
+  "status": {
+    "completed": "completed",
+    "in_progress": "in progress",
+    "draft": "draft"
+  },
+  "functionTypeLabels": {
+    "EI": "External Input (EI)",
+    "EO": "External Output (EO)",
+    "EQ": "External Inquiry (EQ)",
+    "ILF": "Internal Logical File (ILF)",
+    "EIF": "External Interface File (EIF)"
+  },
+  "complexityLabels": {
+    "LOW": "Low",
+    "AVERAGE": "Average",
+    "HIGH": "High"
+  },
+  "adjustmentFactors": {
+    "data_communications": "Data Communications",
+    "distributed_processing": "Distributed Data Processing",
+    "performance": "Performance",
+    "configuration": "Heavily Used Configuration",
+    "transaction_rate": "Transaction Rate",
+    "online_data_entry": "On-Line Data Entry",
+    "end_user_efficiency": "End-User Efficiency",
+    "online_update": "On-Line Update",
+    "complex_processing": "Complex Processing",
+    "reusability": "Reusability",
+    "installation_ease": "Installation Ease",
+    "operational_ease": "Operational Ease",
+    "multiple_sites": "Multiple Sites",
+    "facilitate_change": "Facilitate Change"
+  }
+} 

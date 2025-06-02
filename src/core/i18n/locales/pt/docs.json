@@ -1,0 +1,41 @@
+{
+  "title": "Documentação",
+  "subtitle": "Aprenda a usar o Measura de forma eficaz para medição de software",
+  "gettingStarted": "Começando",
+  "welcome": "Bem-vindo ao Measura! Este guia abrangente o ajudará a entender e implementar metodologias de medição de software de forma eficaz.",
+  "whatYouLearn": "O que você aprenderá:",
+  "learnFPA": "• Como criar estimativas precisas de software usando APF",
+  "learnGQM": "• Como definir metas de medição significativas com GQM",
+  "learnPlans": "• Como criar e gerenciar planos de medição",
+  "learnBestPractices": "• Melhores práticas para medição de software",
+  "availableDocuments": "Documentos Disponíveis",
+  "readTime": "min de leitura",
+  "fpa": {
+    "title": "Análise de Pontos de Função (APF)",
+    "description": "Aprenda a realizar Análise de Pontos de Função para estimativa de software"
+  },
+  "gqm": {
+    "title": "Goal-Question-Metric (GQM)",
+    "description": "Domine a abordagem GQM para planejamento de medição"
+  },
+  "plans": {
+    "title": "Planos de Medição",
+    "description": "Crie planos de medição eficazes para seus projetos"
+  },
+  "faq": "Perguntas Frequentes",
+  "faqItems": {
+    "whatIsFPA": "O que é Análise de Pontos de Função?",
+    "fpaAnswer": "Análise de Pontos de Função é um método padronizado para medir o tamanho do software baseado na funcionalidade entregue ao usuário, independente de tecnologia e implementação.",
+    "howGQMHelps": "Como o GQM ajuda na medição?",
+    "gqmAnswer": "GQM fornece uma abordagem estruturada para definir metas de medição, derivar questões relevantes e identificar métricas apropriadas para responder essas questões.",
+    "canUseBoth": "Posso usar APF e GQM juntos?",
+    "bothAnswer": "Sim! APF fornece estimativa de tamanho enquanto GQM ajuda a definir o que e como medir. Eles se complementam em um programa abrangente de medição."
+  },
+  "quickLinks": "Links Rápidos",
+  "needHelp": "Precisa de Ajuda?",
+  "helpDescription": "Não consegue encontrar o que procura? Estamos aqui para ajudar!",
+  "versionInfo": "Informações da Versão",
+  "application": "Aplicação",
+  "documentation": "Documentação",
+  "lastUpdated": "Última atualização"
+} 

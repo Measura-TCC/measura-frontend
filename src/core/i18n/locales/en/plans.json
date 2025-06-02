@@ -1,0 +1,30 @@
+{
+  "title": "Measurement Plans",
+  "subtitle": "Create and manage measurement plans for your projects",
+  "createNewPlan": "Create New Plan",
+  "planName": "Plan Name",
+  "planDescription": "Description",
+  "type": "Type",
+  "owner": "Owner",
+  "enterPlanName": "Enter plan name",
+  "descriptionPlaceholder": "Brief description of the measurement plan",
+  "enterPlanType": "Enter plan type",
+  "enterPlanOwner": "Enter plan owner",
+  "createPlan": "Create Plan",
+  "yourPlans": "Your Plans",
+  "progress": "Progress",
+  "templates": "Plan Templates",
+  "qualityAssurance": "Quality Assurance Plan",
+  "qualityDescription": "Focus on quality metrics and defect tracking",
+  "productivityAnalysis": "Productivity Analysis Plan",
+  "productivityDescription": "Measure team productivity and efficiency",
+  "projectPerformance": "Project Performance Plan",
+  "performanceDescription": "Track project delivery and timeline metrics",
+  "totalPlans": "Total Plans",
+  "status": {
+    "active": "active",
+    "completed": "completed",
+    "draft": "draft",
+    "scheduled": "scheduled"
+  }
+} 

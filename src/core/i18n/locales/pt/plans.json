@@ -1,0 +1,30 @@
+{
+  "title": "Planos de Medição",
+  "subtitle": "Crie e gerencie planos de medição para seus projetos",
+  "createNewPlan": "Criar Novo Plano",
+  "planName": "Nome do Plano",
+  "planDescription": "Descrição",
+  "type": "Tipo",
+  "owner": "Responsável",
+  "enterPlanName": "Digite o nome do plano",
+  "descriptionPlaceholder": "Breve descrição do plano de medição",
+  "enterPlanType": "Digite o tipo do plano",
+  "enterPlanOwner": "Digite o responsável pelo plano",
+  "createPlan": "Criar Plano",
+  "yourPlans": "Seus Planos",
+  "progress": "Progresso",
+  "templates": "Modelos de Plano",
+  "qualityAssurance": "Plano de Garantia de Qualidade",
+  "qualityDescription": "Foco em métricas de qualidade e rastreamento de defeitos",
+  "productivityAnalysis": "Plano de Análise de Produtividade",
+  "productivityDescription": "Medir produtividade e eficiência da equipe",
+  "projectPerformance": "Plano de Performance do Projeto",
+  "performanceDescription": "Acompanhar entrega do projeto e métricas de cronograma",
+  "totalPlans": "Total de Planos",
+  "status": {
+    "active": "ativo",
+    "completed": "concluído",
+    "draft": "rascunho",
+    "scheduled": "agendado"
+  }
+} 
