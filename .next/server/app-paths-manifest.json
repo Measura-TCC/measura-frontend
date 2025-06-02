@@ -1,10 +1,11 @@
 {
-  "/(app)/dashboard/page": "app/(app)/dashboard/page.js",
-  "/(app)/docs/page": "app/(app)/docs/page.js",
-  "/(app)/fpa/page": "app/(app)/fpa/page.js",
-  "/(app)/gqm/page": "app/(app)/gqm/page.js",
-  "/(app)/plans/page": "app/(app)/plans/page.js",
   "/_not-found/page": "app/_not-found/page.js",
   "/login/page": "app/login/page.js",
-  "/register/page": "app/register/page.js"
+  "/page": "app/page.js",
+  "/register/page": "app/register/page.js",
+  "/(app)/dashboard/page": "app/(app)/dashboard/page.js",
+  "/(app)/gqm/page": "app/(app)/gqm/page.js",
+  "/(app)/docs/page": "app/(app)/docs/page.js",
+  "/(app)/fpa/page": "app/(app)/fpa/page.js",
+  "/(app)/plans/page": "app/(app)/plans/page.js"
 }

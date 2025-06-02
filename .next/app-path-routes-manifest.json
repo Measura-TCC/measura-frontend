@@ -3,9 +3,9 @@
   "/login/page": "/login",
   "/page": "/",
   "/register/page": "/register",
-  "/(app)/docs/page": "/docs",
   "/(app)/dashboard/page": "/dashboard",
   "/(app)/gqm/page": "/gqm",
+  "/(app)/docs/page": "/docs",
   "/(app)/fpa/page": "/fpa",
   "/(app)/plans/page": "/plans"
 }
