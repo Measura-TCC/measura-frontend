@@ -73,7 +73,6 @@ export const HomeView = ({ isAuthenticated, isLoading, onLogin }: HomeViewProps)
                 </span>
               </div>
             </div>
-
             <div className="border-t border-border pt-4">
               <h4 className="font-medium text-default mb-2">{t('keyFeatures')}</h4>
               <ul className="text-sm text-secondary space-y-1">
