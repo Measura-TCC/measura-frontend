@@ -1,4 +1,4 @@
-import { clsx, type ClassValue } from 'clsx';
+import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 /**
@@ -11,12 +11,15 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Format date to a readable string
  */
-export function formatDate(date: Date | string, options?: Intl.DateTimeFormatOptions): string {
+export function formatDate(
+  date: Date | string,
+  options: Intl.DateTimeFormatOptions = {},
+  locale: string = 'pt-BR',
+): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
-  
-  return new Intl.DateTimeFormat('pt-BR', {
+  return new Intl.DateTimeFormat(locale, {
     year: 'numeric',
-    month: 'short',
+    month: 'long',
     day: 'numeric',
     ...options,
   }).format(dateObj);
@@ -61,7 +64,7 @@ export function formatRelativeTime(date: Date | string): string {
  * Generate a random ID
  */
 export function generateId(): string {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+  return Math.random().toString(36).substr(2, 9);
 }
 
 /**
@@ -129,11 +132,103 @@ export function deepClone<T>(obj: T): T {
  */
 export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
-  wait: number
+  wait: number,
 ): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout;
+  let timeout: NodeJS.Timeout | null = null;
+  
   return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
+    if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
   };
+}
+
+export function formatCurrency(
+  value: number,
+  currency: string = 'BRL',
+  locale: string = 'pt-BR',
+): string {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+  }).format(value);
+}
+
+export function formatFileSize(bytes: number): string {
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  if (bytes === 0) return '0 Bytes';
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+export function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
+}
+
+export function throttle<T extends (...args: unknown[]) => unknown>(
+  func: T,
+  limit: number,
+): (...args: Parameters<T>) => void {
+  let inThrottle: boolean;
+  
+  return (...args: Parameters<T>) => {
+    if (!inThrottle) {
+      func(...args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  };
+}
+
+export function deepMerge<T extends Record<string, unknown>>(
+  target: T,
+  ...sources: Partial<T>[]
+): T {
+  if (!sources.length) return target;
+  const source = sources.shift();
+
+  if (isObject(target) && isObject(source)) {
+    for (const key in source) {
+      if (isObject(source[key])) {
+        if (!target[key]) Object.assign(target, { [key]: {} });
+        deepMerge(target[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
+      } else {
+        Object.assign(target, { [key]: source[key] });
+      }
+    }
+  }
+
+  return deepMerge(target, ...sources);
+}
+
+export function isObject(item: unknown): item is Record<string, unknown> {
+  return item !== null && typeof item === 'object' && !Array.isArray(item);
+}
+
+export function omit<T extends Record<string, unknown>, K extends keyof T>(
+  obj: T,
+  keys: K[],
+): Omit<T, K> {
+  const result = { ...obj };
+  keys.forEach((key) => delete result[key]);
+  return result;
+}
+
+export function pick<T extends Record<string, unknown>, K extends keyof T>(
+  obj: T,
+  keys: K[],
+): Pick<T, K> {
+  const result = {} as Pick<T, K>;
+  keys.forEach((key) => {
+    if (key in obj) {
+      result[key] = obj[key];
+    }
+  });
+  return result;
 } 

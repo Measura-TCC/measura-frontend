@@ -1,12 +1,22 @@
-'use client';
+"use client";
 
-import { DashboardView } from '@/presentation/views';
-import { useAuth } from '@/core/hooks/useAuth';
+import { DashboardView } from "@/presentation/views";
+import { useAuth } from "@/core/hooks/auth/useAuth";
 
 const DashboardPage = () => {
   const { user } = useAuth();
 
-  return <DashboardView user={user || { name: 'Guest', role: 'user' }} />;
+  const dashboardUser = user
+    ? {
+        name: user.username,
+        role: user.role,
+      }
+    : {
+        name: "Guest",
+        role: "user",
+      };
+
+  return <DashboardView user={dashboardUser} />;
 };
 
-export default DashboardPage; 
+export default DashboardPage;
