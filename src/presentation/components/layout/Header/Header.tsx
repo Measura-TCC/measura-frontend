@@ -1,5 +1,6 @@
 import { useTheme } from '@/core/hooks/useTheme';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/core/hooks/auth';
 import { Button } from '@/presentation/components/primitives';
 import { LanguageSwitcher } from '@/presentation/components/common/LanguageSwitcher/LanguageSwitcher';
 import { UserIcon, SunIcon, MoonIcon, LogoutIcon } from '@/presentation/assets/icons';
@@ -8,12 +9,17 @@ import measuraLogo from '@/presentation/assets/images/measura-logo.png';
 import measura from '@/presentation/assets/icons/measura.png';
 
 export const Header = () => {
-  const { t } = useTranslation('common');
-  const user = { name: 'John Doe' };
-  const logout = () => {
-    console.log('Logout');
-  };
   const { theme, setTheme } = useTheme();
+  const { t } = useTranslation();
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -71,14 +77,14 @@ export const Header = () => {
               <div className="flex items-center space-x-2">
                 <UserIcon className="w-5 h-5 text-muted" />
                 <span className="text-sm font-medium text-default">
-                  {user?.name || t('user')}
+                  {user?.username || t('user')}
                 </span>
               </div>
 
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={logout}
+                onClick={handleLogout}
                 className="w-9 h-9 p-0"
                 title={t('logout')}
               >

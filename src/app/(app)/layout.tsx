@@ -4,29 +4,21 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Header, Sidebar } from '@/presentation/components/layout';
-import { useAuth } from '@/core/hooks/useAuth';
+import { useAuth } from '@/core/hooks/auth/useAuth';
 
 interface AppLayoutProps {
   children: React.ReactNode;
 }
 
 const AppLayout = ({ children }: AppLayoutProps) => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const router = useRouter(); 
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!isAuthenticated) {
       router.push('/');
     }
-  }, [isAuthenticated, isLoading, router]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse text-muted">Loading...</div>
-      </div>
-    );
-  }
+  }, [isAuthenticated, router]);
 
   if (!isAuthenticated) {
     return null;
