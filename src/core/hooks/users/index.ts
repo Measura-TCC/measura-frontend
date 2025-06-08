@@ -1,8 +1,7 @@
-// Export user management hooks
-export { 
+export {
   useUser,
   useUsers,
   useUserProfile,
   useUserById,
   useUserByEmail,
-} from './useUser'; 
+} from "./useUser";

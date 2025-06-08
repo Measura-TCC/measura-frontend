@@ -57,6 +57,10 @@ export const useUser = () => {
   };
 
   return {
+    useUsers,
+    useUserProfile,
+    useUserById,
+    useUserByEmail,
     createUser,
     updateUser,
     deleteUser,
