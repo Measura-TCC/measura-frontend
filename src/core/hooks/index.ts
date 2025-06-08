@@ -1,15 +1,13 @@
 // Export common hooks
-export type { ApiError, ApiResponse } from './common/types';
-export { useErrorHandler } from './common/useErrorHandler';
+export type { ApiError, ApiResponse } from "./common/types";
+export { useErrorHandler } from "./common/useErrorHandler";
 
-// Export authentication hooks
-export { useAuth, useAuthStore } from './auth';
+export { useAuth, useAuthStore } from "@/core/hooks/auth/useAuth";
 
-// Export user management hooks
-export { 
+export {
   useUser,
   useUsers,
   useUserProfile,
   useUserById,
   useUserByEmail,
-} from './users'; 
+} from "./users";

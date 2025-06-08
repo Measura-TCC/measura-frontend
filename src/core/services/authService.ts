@@ -53,7 +53,7 @@ const handleApiCall = async <T>(
       console.error("API Error:", apiError);
     }
 
-    throw error; // Re-throw the original error to maintain axios error structure
+    throw error;
   }
 };
 
