@@ -4,9 +4,12 @@
   "createNewPlan": "Criar Novo Plano",
   "planName": "Nome do Plano",
   "planDescription": "Descrição",
+  "description": "Descrição",
   "type": "Tipo",
   "owner": "Responsável",
   "enterPlanName": "Digite o nome do plano",
+  "enterOwnerName": "Digite o nome do responsável",
+  "enterDescription": "Digite a descrição",
   "descriptionPlaceholder": "Breve descrição do plano de medição",
   "enterPlanType": "Digite o tipo do plano",
   "enterPlanOwner": "Digite o responsável pelo plano",
@@ -14,6 +17,7 @@
   "yourPlans": "Seus Planos",
   "progress": "Progresso",
   "templates": "Modelos de Plano",
+  "statistics": "Estatísticas",
   "qualityAssurance": "Plano de Garantia de Qualidade",
   "qualityDescription": "Foco em métricas de qualidade e rastreamento de defeitos",
   "productivityAnalysis": "Plano de Análise de Produtividade",
@@ -27,4 +31,4 @@
     "draft": "rascunho",
     "scheduled": "agendado"
   }
-} 
+}

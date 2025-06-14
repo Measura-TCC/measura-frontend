@@ -1,0 +1,24 @@
+{
+  "title": "Minha Conta",
+  "subtitle": "Gerencie suas informações pessoais e configurações de conta",
+  "profile": {
+    "title": "Informações do Perfil"
+  },
+  "form": {
+    "usernameLabel": "Nome de Usuário",
+    "emailLabel": "Email",
+    "roleLabel": "Cargo Atual",
+    "roleHelp": "O cargo é definido pelo administrador da organização",
+    "updateButton": "Atualizar Perfil",
+    "updating": "Atualizando...",
+    "updateSuccess": "Perfil atualizado com sucesso!",
+    "updateError": "Erro ao atualizar perfil. Tente novamente."
+  },
+  "statistics": {
+    "title": "Estatísticas da Conta",
+    "memberSince": "Membro desde",
+    "currentRole": "Cargo Atual",
+    "accountStatus": "Status da Conta",
+    "active": "Ativa"
+  }
+}

@@ -1,26 +1,31 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle } from '@/presentation/components/primitives';
-import { LoginForm } from './components/LoginForm/LoginForm';
-import measuraLogo from '@/presentation/assets/images/measura-logo.png';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/presentation/components/primitives";
+import { LoginForm } from "./components/LoginForm/LoginForm";
+import measuraLogo from "@/presentation/assets/images/measura-logo.png";
 
 export const LoginView = () => {
-  const { t } = useTranslation('login');
+  const { t } = useTranslation("login");
   const router = useRouter();
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleLoginSuccess = () => {
-    setError('');
-    router.push('/dashboard');
+    setError("");
+    router.push("/overview");
   };
 
   const handleLoginError = (error: string) => {
-    console.error('Login error:', error);
+    console.error("Login error:", error);
     setError(error);
   };
 
@@ -31,12 +36,12 @@ export const LoginView = () => {
           <Link href="/" className="inline-block">
             <Image src={measuraLogo} alt="Measura" width={125} height={125} />
           </Link>
-          <p className="text-muted text-lg">{t('subtitle')}</p>
+          <p className="text-muted text-lg">{t("subtitle")}</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>{t('title')}</CardTitle>
+            <CardTitle>{t("title")}</CardTitle>
           </CardHeader>
           <CardContent>
             {error && (
@@ -45,28 +50,31 @@ export const LoginView = () => {
               </div>
             )}
 
-            <LoginForm 
+            <LoginForm
               onSuccess={handleLoginSuccess}
               onError={handleLoginError}
             />
 
             <div className="mt-6 text-center">
               <p className="text-sm text-secondary">
-                {t('dontHaveAccount')}{' '}
-                <Link href="/register" className="font-medium text-primary hover:text-primary-dark">
-                  {t('signUp')}
+                {t("dontHaveAccount")}{" "}
+                <Link
+                  href="/register"
+                  className="font-medium text-primary hover:text-primary-dark"
+                >
+                  {t("signUp")}
                 </Link>
               </p>
             </div>
           </CardContent>
         </Card>
 
-        <div className="text-center">
+        {/* <div className="text-center">
           <p className="text-xs text-muted">
             {t('demoCredentials')}
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
-}; 
+};

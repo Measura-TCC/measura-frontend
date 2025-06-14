@@ -2,7 +2,6 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-
 :root {
   --white: #ffffff;
   --black: #0d1117;
@@ -30,7 +29,7 @@
   --blue-300: #a5b4fc;
   --blue-200: #c7d2fe;
   --blue-100: #e0e7ff;
-  --blue-50:  #eef2ff;
+  --blue-50: #eef2ff;
 
   /* Green palette */
   --green-900: #033a16;
@@ -49,28 +48,28 @@
   --bg-secondary: var(--gray-50);
   --bg-tertiary: var(--gray-100);
   --bg-accent: var(--blue-50);
-  
+
   --color-default: var(--gray-900);
   --color-secondary: var(--gray-700);
   --color-tertiary: var(--gray-600);
   --color-muted: var(--gray-500);
   --color-button: var(--white);
-  
+
   --primary: var(--blue-600);
   --primary-light: var(--blue-500);
   --primary-dark: var(--blue-700);
   --secondary: var(--gray-600);
   --secondary-light: var(--gray-500);
   --secondary-dark: var(--gray-700);
-  
+
   --accent: var(--green-600);
   --accent-light: var(--green-500);
   --accent-dark: var(--green-700);
-  
+
   --border-primary: var(--gray-200);
   --border-secondary: var(--gray-300);
   --border-accent: var(--blue-300);
-  
+
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -82,28 +81,28 @@
   --bg-secondary: var(--gray-900);
   --bg-tertiary: var(--gray-800);
   --bg-accent: var(--gray-800);
-  
+
   --color-default: var(--gray-100);
   --color-secondary: var(--gray-200);
   --color-tertiary: var(--gray-300);
   --color-muted: var(--gray-500);
   --color-button: var(--gray-100);
-  
+
   --primary: var(--blue-500);
   --primary-light: var(--blue-400);
   --primary-dark: var(--blue-600);
   --secondary: var(--gray-400);
   --secondary-light: var(--gray-300);
   --secondary-dark: var(--gray-500);
-  
+
   --accent: var(--green-400);
   --accent-light: var(--green-300);
   --accent-dark: var(--green-500);
-  
+
   --border-primary: var(--gray-700);
   --border-secondary: var(--gray-600);
   --border-accent: var(--blue-700);
-  
+
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
@@ -130,16 +129,16 @@
   --color-secondary: var(--secondary);
   --color-secondary-light: var(--secondary-light);
   --color-secondary-dark: var(--secondary-dark);
-  
+
   --color-accent: var(--accent);
   --color-accent-light: var(--accent-light);
   --color-accent-dark: var(--accent-dark);
-  
+
   /* Border colors */
   --color-border: var(--border-primary);
   --color-border-secondary: var(--border-secondary);
   --color-border-accent: var(--border-accent);
-  
+
   /* Shadow tokens */
   --shadow-sm: var(--shadow-sm);
   --shadow-md: var(--shadow-md);
@@ -199,4 +198,25 @@
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: var(--secondary);
-} 
+}
+
+/* Global input padding - 8px for all input elements */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="time"],
+input[type="range"],
+input[type="color"],
+input[type="file"],
+textarea,
+select {
+  padding: 8px !important;
+}

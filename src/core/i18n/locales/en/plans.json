@@ -4,9 +4,12 @@
   "createNewPlan": "Create New Plan",
   "planName": "Plan Name",
   "planDescription": "Description",
+  "description": "Description",
   "type": "Type",
   "owner": "Owner",
   "enterPlanName": "Enter plan name",
+  "enterOwnerName": "Enter owner name",
+  "enterDescription": "Enter description",
   "descriptionPlaceholder": "Brief description of the measurement plan",
   "enterPlanType": "Enter plan type",
   "enterPlanOwner": "Enter plan owner",
@@ -14,6 +17,7 @@
   "yourPlans": "Your Plans",
   "progress": "Progress",
   "templates": "Plan Templates",
+  "statistics": "Statistics",
   "qualityAssurance": "Quality Assurance Plan",
   "qualityDescription": "Focus on quality metrics and defect tracking",
   "productivityAnalysis": "Productivity Analysis Plan",
@@ -27,4 +31,4 @@
     "draft": "draft",
     "scheduled": "scheduled"
   }
-} 
+}

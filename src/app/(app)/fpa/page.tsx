@@ -1,9 +1,7 @@
-'use client';
+"use client";
 
-import { FPAView } from '@/presentation/views';
+import { FPAWorkflow } from "../../../components/fpa/FPAWorkflow";
 
-const FPAPage = () => {
-  return <FPAView />;
-};
-
-export default FPAPage; 
+export default function FPAPage() {
+  return <FPAWorkflow />;
+}

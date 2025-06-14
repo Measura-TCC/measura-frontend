@@ -1,13 +1,26 @@
-// Export API client
-export { measuraApi } from './measuraApi';
+export { measuraApi } from "./measuraApi";
 
-// Export SWR configuration and provider
-export { swrConfig, SWRProvider } from './swr';
+export { swrConfig, SWRProvider } from "./swr";
 
-// Export authentication service
-export * from './authService';
-export type { AuthResponse, MessageResponse } from './authService';
+export { authService } from "./authService";
+export type { AuthResponse } from "./authService";
 
-// Export user service
-export * from './userService';
-export type { UserProfile, CreateUserData, UpdateUserData } from './userService'; 
+export { userService } from "./userService";
+export type {
+  UserProfile,
+  CreateUserData,
+  UpdateUserData,
+} from "./userService";
+
+export {
+  estimateService,
+  transformToEstimateOverview,
+} from "./estimateService";
+export type {
+  EstimateResponse,
+  CalculationResponse,
+  EstimateOverview,
+} from "./estimateService";
+
+export { fpaComponentService } from "./fpaComponentService";
+export type { ComponentResponse } from "./fpaComponentService";

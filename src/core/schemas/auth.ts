@@ -1,5 +1,12 @@
 import { z } from "zod";
 
+export enum UserRole {
+  USER = "user",
+  ADMIN = "admin",
+  PROJECT_MANAGER = "project-manager",
+  MEASUREMENT_ANALYST = "measurement-analyst",
+}
+
 const passwordSchema = z
   .string()
   .min(8, "A senha deve ter pelo menos 8 caracteres")
@@ -15,6 +22,7 @@ export const registerSchema = z
       .min(3, "Nome de usuário deve ter pelo menos 3 caracteres"),
     email: z.string().email("Email inválido"),
     password: passwordSchema,
+    role: z.enum([UserRole.PROJECT_MANAGER, UserRole.MEASUREMENT_ANALYST]),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -23,7 +31,7 @@ export const registerSchema = z
   });
 
 export const loginSchema = z.object({
-  email: z.string().email("Email inválido"),
+  usernameOrEmail: z.string().min(1, "Username or email is required"),
   password: z.string().min(1, "Senha é obrigatória"),
 });
 

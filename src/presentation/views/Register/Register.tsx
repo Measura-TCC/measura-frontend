@@ -1,26 +1,31 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle } from '@/presentation/components/primitives';
-import { RegisterForm } from './components/RegisterForm/RegisterForm';
-import measuraLogo from '@/presentation/assets/images/measura-logo.png';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/presentation/components/primitives";
+import { RegisterForm } from "./components/RegisterForm/RegisterForm";
+import measuraLogo from "@/presentation/assets/images/measura-logo.png";
 
 export const RegisterView = () => {
-  const { t } = useTranslation('register');
+  const { t } = useTranslation("register");
   const router = useRouter();
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleRegisterSuccess = () => {
-    setError('');
-    router.push('/dashboard');
+    setError("");
+    router.push("/overview");
   };
 
   const handleRegisterError = (error: string) => {
-    console.error('Registration error:', error);
+    console.error("Registration error:", error);
     setError(error);
   };
 
@@ -31,12 +36,12 @@ export const RegisterView = () => {
           <Link href="/" className="inline-block">
             <Image src={measuraLogo} alt="Measura" width={125} height={125} />
           </Link>
-          <p className="text-muted text-lg">{t('subtitle')}</p>
+          <p className="text-muted text-lg">{t("subtitle")}</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>{t('title')}</CardTitle>
+            <CardTitle>{t("title")}</CardTitle>
           </CardHeader>
           <CardContent>
             {error && (
@@ -45,16 +50,19 @@ export const RegisterView = () => {
               </div>
             )}
 
-            <RegisterForm 
+            <RegisterForm
               onSuccess={handleRegisterSuccess}
               onError={handleRegisterError}
             />
 
             <div className="mt-6 text-center">
               <p className="text-sm text-secondary">
-                {t('alreadyHaveAccount')}{' '}
-                <Link href="/login" className="font-medium text-primary hover:text-primary-dark">
-                  {t('signIn')}
+                {t("alreadyHaveAccount")}{" "}
+                <Link
+                  href="/login"
+                  className="font-medium text-primary hover:text-primary-dark"
+                >
+                  {t("signIn")}
                 </Link>
               </p>
             </div>
@@ -62,11 +70,9 @@ export const RegisterView = () => {
         </Card>
 
         <div className="text-center">
-          <p className="text-xs text-muted">
-            {t('termsAgreement')}
-          </p>
+          <p className="text-xs text-muted">{t("termsAgreement")}</p>
         </div>
       </div>
     </div>
   );
-}; 
+};
