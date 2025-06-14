@@ -48,6 +48,8 @@ export default function AccountPage() {
     setSuccess(null);
 
     try {
+      // Simulate API call with the form data
+      console.log("Updating profile with:", data);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setSuccess(t("form.updateSuccess"));
     } catch (err) {
