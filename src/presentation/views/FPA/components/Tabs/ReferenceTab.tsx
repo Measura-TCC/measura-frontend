@@ -6,10 +6,11 @@ import {
   CardTitle,
 } from "@/presentation/components/primitives";
 import { ChartIcon } from "@/presentation/assets/icons";
+import { FunctionTypeInfo, ComplexityInfo } from "@/core/types/fpa";
 
 interface ReferenceTabProps {
-  functionTypes: any[];
-  complexityLevels: any[];
+  functionTypes: FunctionTypeInfo[];
+  complexityLevels: ComplexityInfo[];
 }
 
 export const ReferenceTab: React.FC<ReferenceTabProps> = ({

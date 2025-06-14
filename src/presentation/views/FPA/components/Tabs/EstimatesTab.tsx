@@ -6,7 +6,7 @@ import {
   CardTitle,
   Button,
 } from "@/presentation/components/primitives";
-import { PlusIcon, ChartIcon } from "@/presentation/assets/icons";
+import { ChartIcon } from "@/presentation/assets/icons";
 import { Estimate, EstimateStatus } from "@/core/types/fpa";
 
 interface EstimatesTabProps {

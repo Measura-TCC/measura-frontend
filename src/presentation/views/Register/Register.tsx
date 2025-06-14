@@ -1,58 +1,69 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
-import Image from "next/image";
+import { useRegister } from "@/core/hooks/register";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/presentation/components/primitives";
-import { RegisterForm } from "./components/RegisterForm/RegisterForm";
-import measuraLogo from "@/presentation/assets/images/measura-logo.png";
+import { RegisterPageHeader, RegisterForm, ErrorAlert } from "./components";
 
-export const RegisterView = () => {
+export const RegisterView: React.FC = () => {
   const { t } = useTranslation("register");
-  const router = useRouter();
-  const [error, setError] = useState("");
 
-  const handleRegisterSuccess = () => {
-    setError("");
-    router.push("/overview");
-  };
+  const {
+    registrationState,
+    roleOptions,
 
-  const handleRegisterError = (error: string) => {
-    console.error("Registration error:", error);
-    setError(error);
-  };
+    isRegistering,
+    canRegister,
+
+    registerForm,
+    formErrors,
+
+    register,
+    clearError,
+  } = useRegister();
+
+  if (isRegistering && registrationState.status === "loading") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary flex items-center justify-center p-4">
+        <div className="max-w-md w-full space-y-8">
+          <div className="animate-pulse space-y-4">
+            <div className="h-32 w-32 bg-gray-200 rounded mx-auto"></div>
+            <div className="h-6 bg-gray-200 rounded w-3/4 mx-auto"></div>
+            <div className="h-64 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background-secondary flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <Link href="/" className="inline-block">
-            <Image src={measuraLogo} alt="Measura" width={125} height={125} />
-          </Link>
-          <p className="text-muted text-lg">{t("subtitle")}</p>
-        </div>
+        <RegisterPageHeader />
 
         <Card>
           <CardHeader>
             <CardTitle>{t("title")}</CardTitle>
           </CardHeader>
           <CardContent>
-            {error && (
-              <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md mb-4">
-                {error}
-              </div>
-            )}
+            <ErrorAlert
+              error={registrationState.error}
+              onDismiss={clearError}
+            />
 
             <RegisterForm
-              onSuccess={handleRegisterSuccess}
-              onError={handleRegisterError}
+              registerForm={registerForm}
+              formErrors={formErrors}
+              roleOptions={roleOptions}
+              isRegistering={isRegistering}
+              canRegister={canRegister}
+              onSubmit={register}
             />
 
             <div className="mt-6 text-center">
