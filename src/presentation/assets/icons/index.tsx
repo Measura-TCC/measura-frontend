@@ -12,3 +12,6 @@ export { SearchIcon } from "./SearchIcon";
 export { BellIcon } from "./BellIcon";
 export { LogoutIcon } from "./LogoutIcon";
 export { BuildingIcon } from "./BuildingIcon";
+export { ArrowRightIcon } from "./ArrowRightIcon";
+export { HamburgerIcon } from "./HamburgerIcon";
+export { CloseIcon } from "./CloseIcon";

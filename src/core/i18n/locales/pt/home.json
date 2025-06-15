@@ -1,0 +1,41 @@
+{
+  "hero": {
+    "title": "Medição Descomplicada? É Com o Measura!",
+    "getStarted": "Começar",
+    "imageAlt": "Interface da Plataforma Measura"
+  },
+  "navigation": {
+    "home": "Início",
+    "features": "Recursos",
+    "benefits": "Benefícios",
+    "team": "Time",
+    "explore": "Explorar"
+  },
+  "team": {
+    "title": "Conheça o Time",
+    "description": "Educadores, engenheiros e pesquisadores comprometidos com a melhoria das práticas de medição de software.",
+    "joinCommunity": "Junte-se à Nossa Comunidade",
+    "communityDescription": "Contribua com o projeto open source e ajude a melhorar as práticas de medição de software na comunidade acadêmica.",
+    "viewOnGithub": "Ver no GitHub",
+    "projectFooter": "Projeto acadêmico open source • Desenvolvido com ❤️ para a comunidade"
+  },
+  "cta": {
+    "title": "Veja como funciona na prática com dados de demonstração",
+    "subtitle": "Experimente a plataforma em poucos cliques, sem cadastro obrigatório.",
+    "tryDemo": "Testar Demo Agora",
+    "accessPlatform": "Acessar Plataforma",
+    "or": "ou",
+    "features": {
+      "instantAccess": "Acesso instantâneo",
+      "secureData": "Dados seguros",
+      "quickSetup": "Configuração rápida"
+    },
+    "newsletter": {
+      "title": "Inscreva-se no Measura Updates",
+      "description": "Fique por dentro das novidades, atualizações e melhores práticas em medição de software.",
+      "emailPlaceholder": "seu@email.com",
+      "subscribe": "Inscreva-se",
+      "terms": "Ao se inscrever, você concorda com nossos Termos de Serviço e a Política de Privacidade."
+    }
+  }
+}

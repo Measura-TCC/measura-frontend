@@ -147,9 +147,14 @@ export const useFPACalculations = (
 
     const complexityCounts = components.reduce(
       (acc, comp) => {
-        const complexity = comp.complexity.toLowerCase() as keyof typeof acc;
-        acc[complexity].count++;
-        acc[complexity].points += comp.functionPoints;
+        const complexity = comp.complexity.toLowerCase() as
+          | "low"
+          | "medium"
+          | "high";
+        if (complexity in acc) {
+          acc[complexity].count++;
+          acc[complexity].points += comp.functionPoints;
+        }
         return acc;
       },
       {

@@ -27,5 +27,90 @@
   "feature4": "• Role-based access control",
   "feature5": "• Dark/Light theme support",
   "footerText": "Measura - Software Estimation & Measurement, Evolved",
-  "techStack": "Built with Next.js, React, TypeScript & Tailwind CSS"
+  "techStack": "Built with Next.js, React, TypeScript & Tailwind CSS",
+
+  "heroSubtitle": "Academic Research on Software Estimation & Measurement",
+  "heroDescription": "An educational platform developed as part of academic research to demonstrate software estimation methodologies using Function Point Analysis (FPA) and comprehensive measurement planning through Goal-Question-Metric (GQM) approach.",
+  "getStartedFree": "Explore Platform",
+  "learnMore": "Learn More",
+  "academicProject": "Academic Research Project",
+  "openSource": "Open Source",
+
+  "featuresTitle": "Research Features for Software Engineering Education",
+  "featuresDescription": "Essential methodologies and tools for learning software estimation and measurement techniques.",
+
+  "features": {
+    "fpaEstimation": {
+      "title": "Function Point Analysis",
+      "description": "Educational implementation of IFPUG standard FPA methodology for learning software size estimation techniques and project planning fundamentals."
+    },
+    "measurementPlans": {
+      "title": "GQM Measurement Plans",
+      "description": "Academic exploration of Goal-Question-Metric methodology for creating comprehensive measurement plans and understanding software metrics."
+    },
+    "projectTracking": {
+      "title": "Estimation Tracking",
+      "description": "Research tools for monitoring estimation accuracy, comparing methodologies, and generating academic reports for analysis."
+    },
+    "organizationManagement": {
+      "title": "Team Management",
+      "description": "Educational simulation of organizational structures with role-based access for understanding software development team dynamics."
+    },
+    "automation": {
+      "title": "Calculation Automation",
+      "description": "Automated calculation processes to demonstrate computational approaches to software metrics and estimation accuracy."
+    },
+    "collaboration": {
+      "title": "Academic Collaboration",
+      "description": "Collaborative features designed for educational environments, enabling group work and peer learning in software engineering."
+    }
+  },
+
+  "whyChooseMeasura": "Why This Academic Platform?",
+  "benefitsDescription": "Educational benefits of using systematic approaches to software estimation and measurement in academic research.",
+
+  "stats": {
+    "accuracy": "Theoretical Accuracy",
+    "timeSaved": "Learning Efficiency",
+    "projects": "Study Cases",
+    "teams": "Research Groups"
+  },
+
+  "benefits": {
+    "accurateEstimation": {
+      "title": "Educational Precision",
+      "description": "Learn industry-standard FPA methodology through hands-on practice and understand the importance of accurate project estimation."
+    },
+    "timeEfficiency": {
+      "title": "Research Efficiency",
+      "description": "Focus on learning core concepts by automating complex calculations and dedicating time to understanding methodologies."
+    },
+    "dataInsights": {
+      "title": "Academic Analysis",
+      "description": "Develop analytical skills through comprehensive data visualization and measurement analysis for research purposes."
+    },
+    "teamCollaboration": {
+      "title": "Collaborative Learning",
+      "description": "Enhance academic collaboration with shared measurement plans and group estimation exercises for better understanding."
+    }
+  },
+
+  "readyToGetStarted": "Ready to Explore Software Estimation Research?",
+  "ctaDescription": "Discover academic approaches to software estimation and measurement through this educational platform developed for research purposes.",
+  "tryDemoNow": "Try Demo Now",
+  "createAccount": "Access Platform",
+  "or": "or",
+  "setupInMinutes": "Quick setup",
+  "signingIn": "Signing In...",
+  "dismiss": "Dismiss",
+
+  "footerDescription": "Academic platform for software estimation and measurement research. Developed as part of undergraduate thesis (TCC) for educational purposes.",
+  "builtWith": "Built with",
+  "product": "Platform",
+  "company": "Academic",
+  "about": "About",
+  "privacy": "Privacy Policy",
+  "terms": "Terms of Service",
+  "allRightsReserved": "All rights reserved",
+  "madeWithLove": "Made with"
 }

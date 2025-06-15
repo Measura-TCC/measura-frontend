@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useProjectActions } from "@/core/hooks/projects/useProjects";
 import type { Project } from "@/core/schemas/projects";
@@ -16,8 +16,8 @@ export const ProjectStatusSelector: React.FC<ProjectStatusSelectorProps> = ({
 }) => {
   const { t } = useTranslation("projects");
   const { updateProject } = useProjectActions();
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const STATUS_OPTIONS = [
     {
