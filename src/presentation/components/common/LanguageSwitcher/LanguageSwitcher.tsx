@@ -3,8 +3,12 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/core/utils";
-import { Dropdown, DropdownItem } from "@/presentation/components/primitives/Dropdown/Dropdown";
+import {
+  Dropdown,
+  DropdownItem,
+} from "@/presentation/components/primitives/Dropdown/Dropdown";
 import { languages } from "@/presentation/components/common/LanguageSwitcher/utils/languageData";
+import { GlobeIcon } from "@/presentation/assets/icons";
 
 export function LanguageSwitcher() {
   const { i18n } = useTranslation();
@@ -45,18 +49,7 @@ export function LanguageSwitcher() {
         >
           <span>{currentLanguage?.flag}</span>
           <span>{currentLanguage?.code.toUpperCase()}</span>
-          <svg
-            className="h-4 w-4 text-tertiary"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <GlobeIcon className="h-4 w-4 text-tertiary" />
         </button>
       }
       items={dropdownItems}
@@ -65,4 +58,3 @@ export function LanguageSwitcher() {
     />
   );
 }
- 

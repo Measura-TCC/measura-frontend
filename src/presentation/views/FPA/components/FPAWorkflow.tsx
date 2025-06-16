@@ -2,23 +2,24 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useProjects } from "@/core/hooks/projects/useProjects";
+import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
 import { EstimatesDashboard } from "./EstimatesDashboard";
-import { CreateEstimateForm } from "./Forms/CreateEstimateForm";
 import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
 import { CreateOrganizationForm } from "../../Organizations/components/CreateOrganizationForm";
+import { CreateEstimateForm } from "./Forms/CreateEstimateForm";
 import { CreateGSCForm } from "./Forms/CreateGSCForm";
 import { CreateALIForm } from "./Forms/CreateALIForm";
 import { CreateEIForm } from "./Forms/CreateEIForm";
 import { CreateEOForm } from "./Forms/CreateEOForm";
 import { CreateEQForm } from "./Forms/CreateEQForm";
 import { CreateAIEForm } from "./Forms/CreateAIEForm";
+import type { EstimateResponse } from "@/core/services/fpa/estimates";
+import { OfficeIcon } from "@/presentation/assets/icons";
 import {
   useEstimateActions,
   useEstimate,
 } from "@/core/hooks/fpa/estimates/useEstimate";
-import { useProjects } from "@/core/hooks/projects/useProjects";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
-import type { EstimateResponse } from "@/core/services/fpa/estimates";
 import {
   useWorkflowState,
   type ComponentType,
@@ -76,19 +77,7 @@ export const FPAWorkflow = () => {
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-center py-12">
           <div className="text-amber-500 mb-4">
-            <svg
-              className="w-12 h-12 mx-auto"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-              />
-            </svg>
+            <OfficeIcon className="w-12 h-12 mx-auto" />
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             {t("workflow.organizationRequiredTitle")}

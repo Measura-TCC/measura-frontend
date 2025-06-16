@@ -13,6 +13,7 @@ import {
 import { UserRole } from "@/core/types";
 import { Button } from "@/presentation/components/primitives";
 import { useAuth } from "@/core/hooks/auth/useAuth";
+import { MenuIcon, XIcon } from "@/presentation/assets/icons";
 
 export const Sidebar = () => {
   const pathname = usePathname();
@@ -61,28 +62,11 @@ export const Sidebar = () => {
         onClick={toggleMobileMenu}
         aria-label="Toggle menu"
       >
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          {isMobileMenuOpen ? (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          ) : (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          )}
-        </svg>
+        {isMobileMenuOpen ? (
+          <XIcon className="w-5 h-5" />
+        ) : (
+          <MenuIcon className="w-5 h-5" />
+        )}
       </Button>
 
       {isMobileMenuOpen && (
