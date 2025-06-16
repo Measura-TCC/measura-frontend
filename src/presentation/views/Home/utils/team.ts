@@ -1,3 +1,7 @@
+import joao from "@/presentation/assets/images/joao.png";
+import jose from "@/presentation/assets/images/jose.png";
+import lohine from "@/presentation/assets/images/lohine.png";
+
 export interface TeamMember {
   id: string;
   name: string;
@@ -15,33 +19,34 @@ export const teamMembers: TeamMember[] = [
   {
     id: "joao-victor",
     name: "João Victor Ferreira",
-    role: "Desenvolvedor Full-Stack",
-    shortBio:
-      "Apaixonado por engenharia de software e metodologias de medição.",
-    avatar: "/api/placeholder/80/80",
+    role: "Software Engineer",
+    shortBio: "Software Engineer at Illuvium",
+    avatar: joao.src,
     links: {
-      github: "https://github.com/joaovictorferreira",
-      linkedin: "https://linkedin.com/in/joaovictorferreira",
+      github: "https://github.com/joaovictor-ferreira",
+      linkedin: "https://www.linkedin.com/in/joao-victor-eth/",
     },
   },
   {
-    id: "orientador",
-    name: "Prof. Dr. Orientador",
-    role: "Orientador de Pesquisa",
-    shortBio: "Especialista em engenharia de software e métricas de qualidade.",
-    avatar: "/api/placeholder/80/80",
+    id: "lohine",
+    name: "Lohine Mussi",
+    role: "Researcher",
+    shortBio: "Software Engineer at Renault",
+    avatar: lohine.src,
     links: {
-      lattes: "http://lattes.cnpq.br/example",
+      linkedin: "https://www.linkedin.com/in/lohine-mussi/",
+      github: "https://github.com/lohine",
     },
   },
   {
-    id: "colaborador",
-    name: "Colaborador Acadêmico",
-    role: "Pesquisador",
-    shortBio: "Focado em análise de pontos de função e metodologias GQM.",
-    avatar: "/api/placeholder/80/80",
+    id: "jose-mussy",
+    name: "José Mussy",
+    role: "Researcher",
+    shortBio: "Software Engineer at [Company]",
+    avatar: jose.src,
     links: {
-      linkedin: "https://linkedin.com/in/colaborador",
+      linkedin: "https://www.linkedin.com/in/josemussy/",
+      github: "https://github.com/Josemussy",
     },
   },
 ];

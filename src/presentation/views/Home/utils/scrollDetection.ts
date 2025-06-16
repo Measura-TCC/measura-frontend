@@ -3,7 +3,6 @@ export const getActiveSection = (): string => {
   const headerOffset = 150;
   const adjustedScrollPosition = scrollPosition + headerOffset;
 
-  // Get all sections
   const sections = [
     { id: "team", element: document.getElementById("team") },
     { id: "benefits", element: document.getElementById("benefits") },
@@ -11,7 +10,6 @@ export const getActiveSection = (): string => {
     { id: "home", element: document.getElementById("home") },
   ];
 
-  // Find the active section (check from bottom to top)
   for (const section of sections) {
     if (section.element) {
       const sectionTop =
@@ -22,5 +20,5 @@ export const getActiveSection = (): string => {
     }
   }
 
-  return "home"; // Default fallback
+  return "home";
 };

@@ -27,14 +27,14 @@ export const HeroSection: React.FC = () => {
           {t("heroSubtitle")}
         </p>
         <div className="flex gap-2 justify-center mb-6">
-          <Button size="lg" className="px-8 py-3 flex items-center gap-2 group">
+          <Button size="lg" className="px-8 py-2 flex items-center gap-2 group">
             {t("hero.getStarted", { ns: "home" })}
             <ArrowRightIcon className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
           </Button>
           <Button
             variant="secondary"
             size="lg"
-            className="px-8 py-3 flex items-center border-2 gap-2 group border-violet-500 text-violet-600 hover:bg-violet-50"
+            className="px-8 py-2 flex items-center border-2 gap-2 group border-violet-500 text-violet-600 hover:bg-violet-50"
           >
             {t("hero.getStarted", { ns: "home" })}
             <ArrowRightIcon className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -42,7 +42,7 @@ export const HeroSection: React.FC = () => {
         </div>
 
         <div className="relative mb-16">
-          <div className="relative bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md rounded-3xl border border-white/30 p-6 shadow-2xl max-w-4xl mx-auto z-10">
+          <div className="relative bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md rounded-3xl border border-white/30 p-3 md:p-6 shadow-2xl max-w-4xl mx-auto z-10">
             <div className="absolute top-4 left-4 flex gap-2">
               <div className="w-3 h-3 bg-red-400 rounded-full"></div>
               <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>

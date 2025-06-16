@@ -74,7 +74,7 @@ export const FooterSection: React.FC = () => {
               </Link>
               <span className="mx-1">•</span>
               <Link
-                href="https://linkedin.com/in/lohinemussi"
+                href="https://www.linkedin.com/in/lohine-mussi/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/90 hover:text-white transition-colors duration-300 mr-2"
@@ -83,12 +83,12 @@ export const FooterSection: React.FC = () => {
               </Link>
               <span className="mx-1">•</span>
               <Link
-                href="https://linkedin.com/in/josealcides"
+                href="https://www.linkedin.com/in/josemussy/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-white/90 hover:text-white transition-colors duration-300"
               >
-                Jose Alcides
+                José Mussy
               </Link>
             </div>
           </div>
