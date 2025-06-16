@@ -7,6 +7,7 @@ import { HamburgerIcon, CloseIcon } from "@/presentation/assets/icons";
 import { navItems } from "../utils/nav";
 import { getActiveSection } from "../utils/scrollDetection";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 interface HeaderSectionProps {
   isLoading: boolean;
@@ -68,7 +69,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
           <div className="flex items-center space-x-4">
             <nav className="hidden md:flex items-center space-x-8 mr-10">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.id}
                   href={item.href}
                   onClick={(e) => {
@@ -82,7 +83,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
                   }`}
                 >
                   {t(`navigation.${item.id}`, { ns: "home" })}
-                </a>
+                </Link>
               ))}
             </nav>
             <div className="hidden md:block">
@@ -130,7 +131,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
           <div className="md:hidden mt-4 py-4 border-t border-border animate-slide-down">
             <nav className="flex flex-col space-y-4">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.id}
                   href={item.href}
                   onClick={(e) => {
@@ -144,7 +145,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
                   }`}
                 >
                   {t(`navigation.${item.id}`, { ns: "home" })}
-                </a>
+                </Link>
               ))}
               <div className="pt-4 border-t border-border">
                 <LanguageSwitcher />

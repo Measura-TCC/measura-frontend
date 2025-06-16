@@ -1,26 +1,28 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
-import {
-  createProjectSchemaWithTranslation,
-  type CreateProjectRequest,
-} from "@/core/schemas/projects";
 import { useProjectActions } from "@/core/hooks/projects/useProjects";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
-import { useState } from "react";
+import {
+  CreateProjectRequest,
+  createProjectSchema,
+} from "@/core/schemas/projects";
+import { InfoIcon } from "@/presentation/assets/icons";
 
 interface CreateProjectFormProps {
   onSuccess?: (project: unknown) => void;
 }
 
 export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
-  const { t } = useTranslation("projects");
+  const { t } = useTranslation(["projects", "common"]);
+  const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { createProject } = useProjectActions();
 
   const {
     register,
@@ -28,10 +30,8 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
     formState: { errors },
     reset,
   } = useForm<CreateProjectRequest>({
-    resolver: zodResolver(createProjectSchemaWithTranslation(t)),
+    resolver: zodResolver(createProjectSchema),
   });
-
-  const { createProject } = useProjectActions();
 
   const onSubmit = async (data: CreateProjectRequest) => {
     if (!userOrganization) {
@@ -40,7 +40,7 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
     }
 
     setIsSubmitting(true);
-    setError(null);
+    setError("");
 
     try {
       const teamMembersArray = data.teamMembers
@@ -109,17 +109,7 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
       <div className="mb-4 bg-blue-50 border border-blue-200 rounded-md p-4">
         <div className="flex">
           <div className="flex-shrink-0">
-            <svg
-              className="h-5 w-5 text-blue-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <InfoIcon className="h-5 w-5 text-blue-400" />
           </div>
           <div className="ml-3">
             <p className="text-sm text-blue-700">
