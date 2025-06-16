@@ -35,7 +35,7 @@ export const EstimatesTab: React.FC<EstimatesTabProps> = ({
       <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
           <div key={i} className="animate-pulse">
-            <div className="h-20 bg-gray-200 rounded-lg"></div>
+            <div className="h-20 bg-background-secondary rounded-lg"></div>
           </div>
         ))}
       </div>

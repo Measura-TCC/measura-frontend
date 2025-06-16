@@ -70,11 +70,11 @@ export const ComponentList = ({
 
   if (isLoading) {
     return (
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold mb-4">{title}</h3>
+      <div className="bg-background border border-border rounded-lg p-6">
+        <h3 className="text-lg font-semibold mb-4 text-default">{title}</h3>
         <div className="animate-pulse space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-20 bg-gray-200 rounded"></div>
+            <div key={i} className="h-20 bg-background-secondary rounded"></div>
           ))}
         </div>
       </div>

@@ -17,8 +17,8 @@ export const FPAPageHeader: React.FC<FPAPageHeaderProps> = ({
   if (isLoadingOrganization) {
     return (
       <div className="space-y-2">
-        <div className="animate-pulse h-8 bg-gray-200 rounded w-1/3"></div>
-        <div className="animate-pulse h-4 bg-gray-200 rounded w-1/2"></div>
+        <div className="animate-pulse h-8 bg-background-secondary rounded w-1/3"></div>
+        <div className="animate-pulse h-4 bg-background-secondary rounded w-1/2"></div>
       </div>
     );
   }

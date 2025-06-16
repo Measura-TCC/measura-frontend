@@ -8,9 +8,30 @@ import { useState } from "react";
 
 interface CreateGSCFormProps {
   onSuccess?: (gsc: number[]) => void;
+  initialValues?: {
+    dataProcessing?: number;
+    performanceRequirements?: number;
+    heavilyUsedConfiguration?: number;
+    transactionRate?: number;
+    onlineDataEntry?: number;
+    endUserEfficiency?: number;
+    onlineUpdate?: number;
+    complexProcessing?: number;
+    reusability?: number;
+    installationEase?: number;
+    operationalEase?: number;
+    multipleSites?: number;
+    facilitateChange?: number;
+    distributedFunctions?: number;
+    productivityFactor?: number;
+    notes?: string;
+  };
 }
 
-export const CreateGSCForm = ({ onSuccess }: CreateGSCFormProps) => {
+export const CreateGSCForm = ({
+  onSuccess,
+  initialValues,
+}: CreateGSCFormProps) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,20 +44,22 @@ export const CreateGSCForm = ({ onSuccess }: CreateGSCFormProps) => {
   } = useForm<CreateGSCData>({
     resolver: zodResolver(createGSCSchema),
     defaultValues: {
-      dataProcessing: 0,
-      performanceRequirements: 0,
-      heavilyUsedConfiguration: 0,
-      transactionRate: 0,
-      onlineDataEntry: 0,
-      endUserEfficiency: 0,
-      onlineUpdate: 0,
-      complexProcessing: 0,
-      reusability: 0,
-      installationEase: 0,
-      operationalEase: 0,
-      multipleSites: 0,
-      facilitateChange: 0,
-      distributedFunctions: 0,
+      dataProcessing: initialValues?.dataProcessing || 0,
+      performanceRequirements: initialValues?.performanceRequirements || 0,
+      heavilyUsedConfiguration: initialValues?.heavilyUsedConfiguration || 0,
+      transactionRate: initialValues?.transactionRate || 0,
+      onlineDataEntry: initialValues?.onlineDataEntry || 0,
+      endUserEfficiency: initialValues?.endUserEfficiency || 0,
+      onlineUpdate: initialValues?.onlineUpdate || 0,
+      complexProcessing: initialValues?.complexProcessing || 0,
+      reusability: initialValues?.reusability || 0,
+      installationEase: initialValues?.installationEase || 0,
+      operationalEase: initialValues?.operationalEase || 0,
+      multipleSites: initialValues?.multipleSites || 0,
+      facilitateChange: initialValues?.facilitateChange || 0,
+      distributedFunctions: initialValues?.distributedFunctions || 0,
+      productivityFactor: initialValues?.productivityFactor || 1,
+      notes: initialValues?.notes || "",
     },
   });
 

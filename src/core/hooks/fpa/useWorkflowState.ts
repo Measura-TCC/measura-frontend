@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
 
-export type Step = 1 | 2 | 3 | 4 | 5;
+export type Step = 1 | 2 | 3 | 4 | 5 | 6;
 export type ComponentType = "ALI" | "EI" | "EO" | "EQ" | "AIE";
 
 export interface WorkflowState {
@@ -154,6 +154,7 @@ export const useWorkflowState = () => {
       if (step === 3) return state.createdEstimate !== null;
       if (step === 4) return state.createdEstimate !== null;
       if (step === 5) return state.createdEstimate !== null;
+      if (step === 6) return state.createdEstimate !== null;
       return false;
     },
     [state.selectedProjectId, state.createdEstimate]

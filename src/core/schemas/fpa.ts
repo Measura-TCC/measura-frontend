@@ -22,6 +22,10 @@ export const createEstimateSchema = z.object({
     .string()
     .min(10, "Counting scope must be at least 10 characters")
     .max(2000),
+  averageDailyWorkingHours: z.number().min(1).max(24).optional(),
+  teamSize: z.number().int().min(1).max(100).optional(),
+  hourlyRateBRL: z.number().min(0.01).max(10000).optional(),
+  productivityFactor: z.number().min(1).max(50).optional(),
   internalLogicalFiles: z.array(z.string()).optional(),
   externalInterfaceFiles: z.array(z.string()).optional(),
   externalInputs: z.array(z.string()).optional(),

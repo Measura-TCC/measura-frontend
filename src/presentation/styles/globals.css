@@ -494,6 +494,17 @@ html {
   border-left: 2px solid var(--primary);
 }
 
+.sidebar-nav-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: var(--color-muted);
+}
+
+.sidebar-nav-item.disabled:hover {
+  background-color: transparent;
+  color: var(--color-muted);
+}
+
 /* Custom scrollbar styles */
 ::-webkit-scrollbar {
   width: 8px;

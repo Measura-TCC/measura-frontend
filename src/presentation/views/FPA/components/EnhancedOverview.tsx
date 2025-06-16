@@ -183,24 +183,26 @@ export const EnhancedOverview = ({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold mb-4">Component Distribution</h2>
+        <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+          <h2 className="text-lg font-semibold mb-4 text-default">
+            Component Distribution
+          </h2>
           <div className="space-y-3">
             {Object.entries(calculations.componentBreakdown).map(
               ([type, data]) =>
                 type !== "total" && (
                   <div key={type} className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 rounded-full bg-indigo-500"></div>
-                      <span className="text-sm font-medium text-gray-700">
+                      <div className="w-3 h-3 rounded-full bg-primary"></div>
+                      <span className="text-sm font-medium text-default">
                         {type.toUpperCase()}
                       </span>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm font-semibold text-gray-900">
+                      <div className="text-sm font-semibold text-default">
                         {data.count} components
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-muted">
                         {data.points} FP{" "}
                         {"percentage" in data &&
                           `(${data.percentage.toFixed(1)}%)`}
@@ -209,8 +211,8 @@ export const EnhancedOverview = ({
                   </div>
                 )
             )}
-            <div className="pt-3 border-t border-gray-200">
-              <div className="flex justify-between font-semibold text-gray-900">
+            <div className="pt-3 border-t border-border">
+              <div className="flex justify-between font-semibold text-default">
                 <span>Total</span>
                 <span>
                   {calculations.componentBreakdown.total.count} components
@@ -220,8 +222,10 @@ export const EnhancedOverview = ({
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold mb-4">Complexity Analysis</h2>
+        <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+          <h2 className="text-lg font-semibold mb-4 text-default">
+            Complexity Analysis
+          </h2>
           <div className="space-y-3">
             {Object.entries(calculations.complexityBreakdown).map(
               ([complexity, data]) => (
@@ -239,15 +243,15 @@ export const EnhancedOverview = ({
                           : "bg-green-500"
                       }`}
                     ></div>
-                    <span className="text-sm font-medium text-gray-700 capitalize">
+                    <span className="text-sm font-medium text-default capitalize">
                       {complexity} Complexity
                     </span>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-semibold text-gray-900">
+                    <div className="text-sm font-semibold text-default">
                       {data.count} components
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-muted">
                       {data.points} FP{" "}
                       {"percentage" in data &&
                         `(${data.percentage.toFixed(1)}%)`}
@@ -261,36 +265,38 @@ export const EnhancedOverview = ({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold mb-4">Project Configuration</h2>
+        <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+          <h2 className="text-lg font-semibold mb-4 text-default">
+            Project Configuration
+          </h2>
           <dl className="space-y-3">
             <div className="flex justify-between">
-              <dt className="text-sm text-gray-600">Team Size</dt>
-              <dd className="text-sm font-medium text-gray-900">
+              <dt className="text-sm text-secondary">Team Size</dt>
+              <dd className="text-sm font-medium text-default">
                 {estimate.teamSize} people
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-gray-600">Daily Hours</dt>
-              <dd className="text-sm font-medium text-gray-900">
+              <dt className="text-sm text-secondary">Daily Hours</dt>
+              <dd className="text-sm font-medium text-default">
                 {estimate.averageDailyWorkingHours}h
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-gray-600">Hourly Rate</dt>
-              <dd className="text-sm font-medium text-gray-900">
+              <dt className="text-sm text-secondary">Hourly Rate</dt>
+              <dd className="text-sm font-medium text-default">
                 {formatCurrency(estimate.hourlyRateBRL)}
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-gray-600">Productivity</dt>
-              <dd className="text-sm font-medium text-gray-900">
+              <dt className="text-sm text-secondary">Productivity</dt>
+              <dd className="text-sm font-medium text-default">
                 {estimate.productivityFactor}h/FP
               </dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-sm text-gray-600">Daily Capacity</dt>
-              <dd className="text-sm font-medium text-gray-900">
+              <dt className="text-sm text-secondary">Daily Capacity</dt>
+              <dd className="text-sm font-medium text-default">
                 {(
                   estimate.teamSize * estimate.averageDailyWorkingHours
                 ).toFixed(0)}
@@ -300,9 +306,11 @@ export const EnhancedOverview = ({
           </dl>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-background rounded-lg shadow-sm border border-border p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Productivity Metrics</h2>
+            <h2 className="text-lg font-semibold text-default">
+              Productivity Metrics
+            </h2>
             <span
               className={`px-2 py-1 text-xs font-medium rounded ${getProductivityColor(
                 calculations.productivityMetrics.industryComparison
@@ -318,12 +326,12 @@ export const EnhancedOverview = ({
           </div>
           <div className="space-y-3">
             <div className="text-center">
-              <div className="text-2xl font-bold text-indigo-600">
+              <div className="text-2xl font-bold text-primary">
                 {calculations.productivityMetrics.hoursPerFunctionPoint.toFixed(
                   1
                 )}
               </div>
-              <div className="text-xs text-gray-600">
+              <div className="text-xs text-secondary">
                 Hours per Function Point
               </div>
             </div>
@@ -334,7 +342,7 @@ export const EnhancedOverview = ({
                     1
                   )}
                 </div>
-                <div className="text-xs text-gray-600">FP/Day</div>
+                <div className="text-xs text-secondary">FP/Day</div>
               </div>
               <div>
                 <div className="text-lg font-semibold text-purple-600">
@@ -343,28 +351,28 @@ export const EnhancedOverview = ({
                   ).toFixed(0)}
                   %
                 </div>
-                <div className="text-xs text-gray-600">Efficiency</div>
+                <div className="text-xs text-secondary">Efficiency</div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold mb-4">Project Phases</h2>
+        <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+          <h2 className="text-lg font-semibold mb-4 text-default">
+            Project Phases
+          </h2>
           <div className="space-y-3">
             {Object.entries(calculations.phaseBreakdown).map(
               ([phase, data]) => (
                 <div key={phase} className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 capitalize">
+                  <span className="text-sm text-secondary capitalize">
                     {phase}
                   </span>
                   <div className="text-right">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-default">
                       {data.hours.toFixed(0)}h
                     </div>
-                    <div className="text-xs text-gray-500">
-                      {data.percentage}%
-                    </div>
+                    <div className="text-xs text-muted">{data.percentage}%</div>
                   </div>
                 </div>
               )
@@ -373,8 +381,8 @@ export const EnhancedOverview = ({
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold mb-6">
+      <div className="bg-background rounded-lg shadow-sm border border-border p-6">
+        <h2 className="text-lg font-semibold mb-6 text-default">
           Risk Analysis & Recommendations
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

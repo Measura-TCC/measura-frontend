@@ -89,6 +89,24 @@ export const Sidebar = () => {
               {filteredNavigation.map((item) => {
                 const isActive = isActiveNavigation(pathname, item.href);
                 const Icon = item.icon;
+                const isDisabled = item.disabled;
+
+                if (isDisabled) {
+                  return (
+                    <div
+                      key={item.name}
+                      className={cn("sidebar-nav-item", "disabled")}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span>{item.name}</span>
+                      {item.badge && (
+                        <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-gray-400 text-xs text-white">
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
+                  );
+                }
 
                 return (
                   <Link

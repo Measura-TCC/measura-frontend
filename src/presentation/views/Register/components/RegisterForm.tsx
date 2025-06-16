@@ -1,6 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { UseFormReturn } from "react-hook-form";
+import { useState } from "react";
 import { Button, Input } from "@/presentation/components/primitives";
+import { EyeIcon, EyeOffIcon } from "@/presentation/assets/icons";
 import { RegisterFormData, RoleOption } from "@/core/types/register";
 
 interface RegisterFormProps {
@@ -22,6 +24,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 }) => {
   const { t } = useTranslation("register");
   const { register, handleSubmit } = registerForm;
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleFormSubmit = async (data: RegisterFormData) => {
     try {
@@ -73,13 +77,28 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         <label htmlFor="password" className="text-sm font-medium text-default">
           {t("password")}
         </label>
-        <Input
-          {...register("password")}
-          id="password"
-          type="password"
-          placeholder={t("createPassword")}
-          disabled={isRegistering}
-        />
+        <div className="relative">
+          <Input
+            {...register("password")}
+            id="password"
+            type={showPassword ? "text" : "password"}
+            placeholder={t("createPassword")}
+            disabled={isRegistering}
+            className="pr-10"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 hover:cursor-pointer"
+            disabled={isRegistering}
+          >
+            {showPassword ? (
+              <EyeOffIcon className="w-5 h-5" />
+            ) : (
+              <EyeIcon className="w-5 h-5" />
+            )}
+          </button>
+        </div>
         {formErrors.password && (
           <span className="text-sm text-red-600">
             {formErrors.password.message}
@@ -94,13 +113,28 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         >
           {t("confirmPassword")}
         </label>
-        <Input
-          {...register("confirmPassword")}
-          id="confirmPassword"
-          type="password"
-          placeholder={t("confirmPassword")}
-          disabled={isRegistering}
-        />
+        <div className="relative">
+          <Input
+            {...register("confirmPassword")}
+            id="confirmPassword"
+            type={showConfirmPassword ? "text" : "password"}
+            placeholder={t("confirmPassword")}
+            disabled={isRegistering}
+            className="pr-10"
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 hover:cursor-pointer"
+            disabled={isRegistering}
+          >
+            {showConfirmPassword ? (
+              <EyeOffIcon className="w-5 h-5" />
+            ) : (
+              <EyeIcon className="w-5 h-5" />
+            )}
+          </button>
+        </div>
         {formErrors.confirmPassword && (
           <span className="text-sm text-red-600">
             {formErrors.confirmPassword.message}

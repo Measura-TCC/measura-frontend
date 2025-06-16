@@ -110,10 +110,13 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
     return (
       <div className="max-w-7xl mx-auto p-6">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded-md w-64 mb-6"></div>
+          <div className="h-8 bg-background-secondary rounded-md w-64 mb-6"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-64 bg-gray-200 rounded-lg"></div>
+              <div
+                key={i}
+                className="h-64 bg-background-secondary rounded-lg"
+              ></div>
             ))}
           </div>
         </div>
@@ -128,10 +131,10 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
           <div className="text-red-500 mb-4">
             <ExclamationIcon className="w-12 h-12 mx-auto" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-default mb-2">
             {t("estimatesDashboard.errorTitle")}
           </h3>
-          <p className="text-gray-600">
+          <p className="text-secondary">
             {t("estimatesDashboard.errorMessage")}
           </p>
         </div>
@@ -146,15 +149,15 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
           <div className="text-amber-500 mb-4">
             <OfficeIcon className="w-12 h-12 mx-auto" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-default mb-2">
             {t("organizationRequired")}
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-secondary mb-4">
             {t("organizationRequiredDescription")}
           </p>
           <button
             onClick={() => router.push("/organization")}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
           >
             {t("createOrganization")}
           </button>
@@ -167,12 +170,12 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
-          <p className="text-gray-600 mt-1">{t("subtitle")}</p>
+          <h1 className="text-2xl font-bold text-default">{t("title")}</h1>
+          <p className="text-secondary mt-1">{t("subtitle")}</p>
         </div>
         <button
           onClick={handleCreateEstimate}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors flex items-center space-x-2"
+          className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors flex items-center space-x-2"
         >
           <PlusIcon className="w-5 h-5" />
           <span>{t("createNew")}</span>
@@ -180,34 +183,36 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
-          <p className="text-sm text-gray-600">{t("totalEstimates")}</p>
-          <p className="text-2xl font-bold text-gray-900">{statistics.total}</p>
+        <div className="bg-background p-4 rounded-lg border border-border">
+          <p className="text-sm text-secondary">{t("totalEstimates")}</p>
+          <p className="text-2xl font-bold text-default">{statistics.total}</p>
         </div>
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
-          <p className="text-sm text-gray-600">
+        <div className="bg-background p-4 rounded-lg border border-border">
+          <p className="text-sm text-secondary">
             {t("estimatesDashboard.draft")}
           </p>
-          <p className="text-2xl font-bold text-gray-600">{statistics.draft}</p>
+          <p className="text-2xl font-bold text-secondary">
+            {statistics.draft}
+          </p>
         </div>
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
-          <p className="text-sm text-gray-600">
+        <div className="bg-background p-4 rounded-lg border border-border">
+          <p className="text-sm text-secondary">
             {t("estimatesDashboard.inProgress")}
           </p>
           <p className="text-2xl font-bold text-blue-600">
             {statistics.inProgress}
           </p>
         </div>
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
-          <p className="text-sm text-gray-600">
+        <div className="bg-background p-4 rounded-lg border border-border">
+          <p className="text-sm text-secondary">
             {t("estimatesDashboard.finalized")}
           </p>
           <p className="text-2xl font-bold text-green-600">
             {statistics.finalized}
           </p>
         </div>
-        <div className="bg-white p-4 rounded-lg border border-gray-200">
-          <p className="text-sm text-gray-600">
+        <div className="bg-background p-4 rounded-lg border border-border">
+          <p className="text-sm text-secondary">
             {t("estimatesDashboard.archived")}
           </p>
           <p className="text-2xl font-bold text-red-600">
@@ -216,10 +221,10 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
+      <div className="bg-background p-4 rounded-lg border border-border mb-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-default mb-1">
               {t("estimatesDashboard.search")}
             </label>
             <input
@@ -227,18 +232,18 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t("estimatesDashboard.searchPlaceholder")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-default mb-1">
               {t("estimatesDashboard.status")}
             </label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
             >
               <option value="ALL">{t("estimatesDashboard.allStatuses")}</option>
               <option value="DRAFT">{t("estimatesDashboard.draft")}</option>
@@ -255,7 +260,7 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-default mb-1">
               {t("estimatesDashboard.sortBy")}
             </label>
             <select
@@ -265,7 +270,7 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
                   e.target.value as "name" | "created" | "updated" | "points"
                 )
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
             >
               <option value="updated">
                 {t("estimatesDashboard.lastUpdated")}
@@ -281,13 +286,13 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-default mb-1">
               {t("estimatesDashboard.order")}
             </label>
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
             >
               <option value="desc">{t("estimatesDashboard.descending")}</option>
               <option value="asc">{t("estimatesDashboard.ascending")}</option>
@@ -298,27 +303,19 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
 
       {filteredAndSortedEstimates.length === 0 ? (
         <div className="text-center py-12">
-          <div className="text-gray-400 mb-4">
+          <div className="text-muted mb-4">
             <ClipboardIcon className="w-12 h-12 mx-auto" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-default mb-2">
             {searchQuery || statusFilter !== "ALL"
               ? t("estimatesDashboard.noEstimatesFound")
-              : t("noEstimatesYet")}
+              : t("estimatesDashboard.noEstimates")}
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-secondary mb-4">
             {searchQuery || statusFilter !== "ALL"
-              ? t("estimatesDashboard.adjustFilters")
-              : t("noEstimatesDescription")}
+              ? t("estimatesDashboard.noEstimatesFoundDescription")
+              : t("estimatesDashboard.noEstimatesDescription")}
           </p>
-          {!searchQuery && statusFilter === "ALL" && (
-            <button
-              onClick={handleCreateEstimate}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-            >
-              {t("createFirstEstimate")}
-            </button>
-          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

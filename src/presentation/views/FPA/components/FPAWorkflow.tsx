@@ -9,6 +9,7 @@ import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
 import { CreateOrganizationForm } from "../../Organizations/components/CreateOrganizationForm";
 import { CreateEstimateForm } from "./Forms/CreateEstimateForm";
 import { CreateGSCForm } from "./Forms/CreateGSCForm";
+import { CreateProjectConfigurationForm } from "./Forms/CreateProjectConfigurationForm";
 import { CreateALIForm } from "./Forms/CreateALIForm";
 import { CreateEIForm } from "./Forms/CreateEIForm";
 import { CreateEOForm } from "./Forms/CreateEOForm";
@@ -20,6 +21,7 @@ import {
   useEstimateActions,
   useEstimate,
 } from "@/core/hooks/fpa/estimates/useEstimate";
+import { estimateService } from "@/core/services/estimateService";
 import {
   useWorkflowState,
   type ComponentType,
@@ -64,8 +66,8 @@ export const FPAWorkflow = () => {
       <div className="max-w-4xl mx-auto p-6">
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">{t("workflow.loading")}</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-secondary">{t("workflow.loading")}</p>
           </div>
         </div>
       </div>
@@ -79,10 +81,10 @@ export const FPAWorkflow = () => {
           <div className="text-amber-500 mb-4">
             <OfficeIcon className="w-12 h-12 mx-auto" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-default mb-2">
             {t("workflow.organizationRequiredTitle")}
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-secondary mb-4">
             {t("workflow.organizationRequiredText")}
           </p>
           <CreateOrganizationForm />
@@ -102,8 +104,30 @@ export const FPAWorkflow = () => {
     setCurrentStep(3);
   };
 
-  const handleGSCCompleted = () => {
-    setCurrentStep(5);
+  const handleGSCCompleted = async (generalSystemCharacteristics: number[]) => {
+    if (!state.createdEstimate) return;
+
+    try {
+      await estimateService.updateEstimate({
+        id: state.createdEstimate._id,
+        data: { generalSystemCharacteristics },
+      });
+      mutateEstimate();
+      setCurrentStep(5);
+    } catch (error) {
+      console.error("Failed to save GSC data:", error);
+    }
+  };
+
+  const handleProjectConfigCompleted = (/* data: {
+    averageDailyWorkingHours: number;
+    teamSize: number;
+    hourlyRateBRL: number;
+    productivityFactor?: number;
+  } */) => {
+    // Project configuration data has been saved to the backend
+    // We can now proceed to the next step
+    setCurrentStep(6);
   };
 
   const handleCalculateFP = async () => {
@@ -153,6 +177,7 @@ export const FPAWorkflow = () => {
             { number: 3, name: t("workflow.step3Title").replace("3. ", "") },
             { number: 4, name: t("workflow.step4Title").replace("4. ", "") },
             { number: 5, name: t("workflow.step5Title").replace("5. ", "") },
+            { number: 6, name: t("workflow.step6Title").replace("6. ", "") },
           ].map((step, index) => (
             <div
               key={step.number}
@@ -163,11 +188,11 @@ export const FPAWorkflow = () => {
                   onClick={() => handleStepClick(step.number as Step)}
                   className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all ${
                     state.currentStep >= step.number
-                      ? "bg-indigo-600 border-indigo-600 text-white"
-                      : "border-gray-300 text-gray-500"
+                      ? "bg-primary border-primary text-white"
+                      : "border-border text-muted"
                   } ${
                     state.currentStep === step.number
-                      ? "ring-4 ring-indigo-100"
+                      ? "ring-4 ring-primary/20"
                       : ""
                   } ${
                     canNavigateToStep(step.number as Step)
@@ -177,12 +202,12 @@ export const FPAWorkflow = () => {
                 >
                   {step.number}
                 </div>
-                {index < 4 && (
+                {index < 5 && (
                   <div
                     className={`flex-1 h-0.5 mx-2 ${
                       state.currentStep > step.number
-                        ? "bg-indigo-600"
-                        : "bg-gray-300"
+                        ? "bg-primary"
+                        : "bg-border"
                     }`}
                   />
                 )}
@@ -191,8 +216,8 @@ export const FPAWorkflow = () => {
                 <p
                   className={`text-xs font-medium ${
                     state.currentStep === step.number
-                      ? "text-indigo-600"
-                      : "text-gray-500"
+                      ? "text-primary"
+                      : "text-muted"
                   }`}
                 >
                   {step.name}
@@ -203,24 +228,24 @@ export const FPAWorkflow = () => {
         </div>
 
         {state.currentStep === 1 && (
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold mb-4">
+          <div className="bg-background rounded-lg border border-border p-6">
+            <h2 className="text-xl font-semibold mb-4 text-default">
               {t("workflow.step1Title")}
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-secondary mb-6">
               {t("workflow.step1Description")}
             </p>
 
             {isLoadingProjects ? (
               <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">{t("workflow.loading")}</p>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-secondary">{t("workflow.loading")}</p>
               </div>
             ) : (
               <div className="space-y-6">
                 {projects && projects.length > 0 && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-default mb-2">
                       {t("workflow.selectExistingProject")}
                     </label>
                     <select
@@ -228,7 +253,7 @@ export const FPAWorkflow = () => {
                       onChange={(e) =>
                         setSelectedProjectId(e.target.value || null)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
                     >
                       <option value="">{t("workflow.chooseProject")}</option>
                       {projects.map((project) => (
@@ -240,7 +265,7 @@ export const FPAWorkflow = () => {
                     {state.selectedProjectId && (
                       <button
                         onClick={handleProjectSelected}
-                        className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                        className="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
                       >
                         {t("workflow.nextCreateEstimate")}
                       </button>
@@ -249,8 +274,8 @@ export const FPAWorkflow = () => {
                 )}
 
                 {!state.selectedProjectId && (
-                  <div className="border-t pt-6">
-                    <h3 className="text-lg font-medium mb-4">
+                  <div className="border-t border-border pt-6">
+                    <h3 className="text-lg font-medium mb-4 text-default">
                       {t("workflow.createNewProject")}
                     </h3>
                     <CreateProjectForm onSuccess={handleProjectCreated} />
@@ -262,11 +287,11 @@ export const FPAWorkflow = () => {
         )}
 
         {state.currentStep === 2 && state.selectedProjectId && (
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold mb-4">
+          <div className="bg-background rounded-lg border border-border p-6">
+            <h2 className="text-xl font-semibold mb-4 text-default">
               {t("workflow.step2Title")}
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-secondary mb-6">
               {t("workflow.step2Description")}
             </p>
             <CreateEstimateForm
@@ -277,58 +302,68 @@ export const FPAWorkflow = () => {
         )}
 
         {state.currentStep === 3 && state.createdEstimate && (
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold mb-4">
+          <div className="bg-background rounded-lg border border-border p-6">
+            <h2 className="text-xl font-semibold mb-4 text-default">
               {t("workflow.step3Title")}
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-secondary mb-6">
               {t("workflow.step3Description")}
             </p>
 
             {currentEstimateData && (
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <h3 className="text-lg font-medium mb-3">
+              <div className="mb-6 p-4 bg-background-secondary rounded-lg">
+                <h3 className="text-lg font-medium mb-3 text-default">
                   {t("workflow.addedComponents")}
                 </h3>
                 <div className="grid grid-cols-5 gap-4 text-center">
                   <div>
-                    <div className="text-2xl font-bold text-indigo-600">
+                    <div className="text-2xl font-bold text-primary">
                       {(currentEstimateData as EstimateWithArrays)
                         .internalLogicalFiles?.length || 0}
                     </div>
-                    <div className="text-sm text-gray-600">ALI/ILF</div>
+                    <div className="text-sm text-secondary">
+                      {t("workflow.components.aliLabel")}
+                    </div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-indigo-600">
+                    <div className="text-2xl font-bold text-primary">
                       {(currentEstimateData as EstimateWithArrays)
                         .externalInterfaceFiles?.length || 0}
                     </div>
-                    <div className="text-sm text-gray-600">AIE/EIF</div>
+                    <div className="text-sm text-secondary">
+                      {t("workflow.components.aieLabel")}
+                    </div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-indigo-600">
+                    <div className="text-2xl font-bold text-primary">
                       {(currentEstimateData as EstimateWithArrays)
                         .externalInputs?.length || 0}
                     </div>
-                    <div className="text-sm text-gray-600">EI</div>
+                    <div className="text-sm text-secondary">
+                      {t("workflow.components.eiLabel")}
+                    </div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-indigo-600">
+                    <div className="text-2xl font-bold text-primary">
                       {(currentEstimateData as EstimateWithArrays)
                         .externalOutputs?.length || 0}
                     </div>
-                    <div className="text-sm text-gray-600">EO</div>
+                    <div className="text-sm text-secondary">
+                      {t("workflow.components.eoLabel")}
+                    </div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-indigo-600">
+                    <div className="text-2xl font-bold text-primary">
                       {(currentEstimateData as EstimateWithArrays)
                         .externalQueries?.length || 0}
                     </div>
-                    <div className="text-sm text-gray-600">EQ</div>
+                    <div className="text-sm text-secondary">
+                      {t("workflow.components.eqLabel")}
+                    </div>
                   </div>
                 </div>
                 {currentEstimateData && (
-                  <div className="mt-3 text-center text-sm text-gray-600">
+                  <div className="mt-3 text-center text-sm text-secondary">
                     {t("workflow.totalComponents", {
                       count:
                         ((currentEstimateData as EstimateWithArrays)
@@ -379,10 +414,10 @@ export const FPAWorkflow = () => {
                   <button
                     key={type}
                     onClick={() => setSelectedComponentType(type)}
-                    className="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 hover:shadow-sm transition-all text-left"
+                    className="p-4 border border-border rounded-lg hover:border-primary/30 hover:shadow-sm transition-all text-left"
                   >
-                    <h3 className="font-medium text-gray-900 mb-2">{label}</h3>
-                    <p className="text-sm text-gray-600">{desc}</p>
+                    <h3 className="font-medium text-default mb-2">{label}</h3>
+                    <p className="text-sm text-secondary">{desc}</p>
                   </button>
                 ))}
               </div>
@@ -391,7 +426,7 @@ export const FPAWorkflow = () => {
                 <div className="mb-4">
                   <button
                     onClick={() => setSelectedComponentType(null)}
-                    className="px-4 py-2 text-indigo-600 border border-indigo-600 rounded-md hover:bg-indigo-50 transition-colors"
+                    className="px-4 py-2 text-primary border border-primary rounded-md hover:bg-primary/5 transition-colors"
                   >
                     {t("workflow.backToComponentTypes")}
                   </button>
@@ -429,10 +464,10 @@ export const FPAWorkflow = () => {
               </div>
             )}
 
-            <div className="mt-6 pt-6 border-t">
+            <div className="mt-6 pt-6 border-t border-border">
               <button
                 onClick={() => setCurrentStep(4)}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
               >
                 {t("workflow.nextGSC")}
               </button>
@@ -441,11 +476,11 @@ export const FPAWorkflow = () => {
         )}
 
         {state.currentStep === 4 && state.createdEstimate && (
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold mb-4">
+          <div className="bg-background rounded-lg border border-border p-6">
+            <h2 className="text-xl font-semibold mb-4 text-default">
               {t("workflow.step4Title")}
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-secondary mb-6">
               {t("workflow.step4Description")}
             </p>
             <CreateGSCForm onSuccess={handleGSCCompleted} />
@@ -453,19 +488,34 @@ export const FPAWorkflow = () => {
         )}
 
         {state.currentStep === 5 && state.createdEstimate && (
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold mb-4">
+          <div className="bg-background rounded-lg border border-border p-6">
+            <h2 className="text-xl font-semibold mb-4 text-default">
               {t("workflow.step5Title")}
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-secondary mb-6">
               {t("workflow.step5Description")}
+            </p>
+            <CreateProjectConfigurationForm
+              estimateId={state.createdEstimate._id}
+              onSuccess={handleProjectConfigCompleted}
+            />
+          </div>
+        )}
+
+        {state.currentStep === 6 && state.createdEstimate && (
+          <div className="bg-background rounded-lg border border-border p-6">
+            <h2 className="text-xl font-semibold mb-4 text-default">
+              {t("workflow.step6Title")}
+            </h2>
+            <p className="text-secondary mb-6">
+              {t("workflow.step6Description")}
             </p>
 
             {!state.isCalculationComplete ? (
               <div className="text-center py-8">
                 <button
                   onClick={handleCalculateFP}
-                  className="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors text-lg font-medium"
+                  className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors text-lg font-medium"
                 >
                   {t("workflow.calculateFP")}
                 </button>
@@ -487,22 +537,22 @@ export const FPAWorkflow = () => {
                     />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-default mb-2">
                   {t("workflow.completionTitle")}
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-secondary mb-6">
                   {t("workflow.completionDescription")}
                 </p>
                 <div className="space-x-4">
                   <button
                     onClick={handleCancel}
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                    className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
                   >
                     {t("workflow.createNewEstimate")}
                   </button>
                   <button
                     onClick={() => setActiveTab("created")}
-                    className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+                    className="px-4 py-2 bg-secondary text-white rounded-md hover:bg-secondary-dark transition-colors"
                   >
                     {t("workflow.viewAllEstimates")}
                   </button>
@@ -518,18 +568,18 @@ export const FPAWorkflow = () => {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
-        <p className="text-gray-600 mt-1">{t("subtitle")}</p>
+        <h1 className="text-2xl font-bold text-default">{t("title")}</h1>
+        <p className="text-secondary mt-1">{t("subtitle")}</p>
       </div>
 
-      <div className="border-b border-gray-200 mb-6">
+      <div className="border-b border-border mb-6">
         <nav className="-mb-px flex space-x-8">
           <button
             onClick={() => setActiveTab("new")}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === "new"
-                ? "border-indigo-500 text-indigo-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted hover:text-secondary hover:border-border"
             }`}
           >
             {t("tabs.newEstimate")}
@@ -538,8 +588,8 @@ export const FPAWorkflow = () => {
             onClick={() => setActiveTab("created")}
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === "created"
-                ? "border-indigo-500 text-indigo-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted hover:text-secondary hover:border-border"
             }`}
           >
             {t("tabs.createdEstimates")}

@@ -13,6 +13,7 @@ export interface NavigationItem {
   icon: React.ComponentType<{ className?: string }>;
   requiredRoles?: UserRole[];
   badge?: number;
+  disabled?: boolean;
 }
 
 export const getNavigationItems = (
@@ -52,6 +53,7 @@ export const getNavigationItems = (
     href: "/plans",
     icon: DocumentIcon,
     requiredRoles: [UserRole.ANALYST, UserRole.MANAGER, UserRole.ADMIN],
+    disabled: true,
   },
   {
     name: t("nav.account"),
@@ -106,6 +108,7 @@ export const getFilteredNavigation = (
         href: "/plans",
         icon: DocumentIcon,
         requiredRoles: [UserRole.ANALYST, UserRole.MANAGER, UserRole.ADMIN],
+        disabled: true,
       },
       {
         name: "Account",
