@@ -1,0 +1,24 @@
+{
+  "title": "My Account",
+  "subtitle": "Manage your personal information and account settings",
+  "profile": {
+    "title": "Profile Information"
+  },
+  "form": {
+    "usernameLabel": "Username",
+    "emailLabel": "Email",
+    "roleLabel": "Current Role",
+    "roleHelp": "Role is set by the organization administrator",
+    "updateButton": "Update Profile",
+    "updating": "Updating...",
+    "updateSuccess": "Profile updated successfully!",
+    "updateError": "Error updating profile. Please try again."
+  },
+  "statistics": {
+    "title": "Account Statistics",
+    "memberSince": "Member since",
+    "currentRole": "Current Role",
+    "accountStatus": "Account Status",
+    "active": "Active"
+  }
+}

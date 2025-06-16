@@ -22,16 +22,18 @@ export const Sidebar = () => {
 
   const translateKey = (key: string): string => {
     switch (key) {
-      case "nav.dashboard":
-        return t("nav:dashboard");
+      case "nav.overview":
+        return t("nav:overview");
+      case "nav.account":
+        return t("nav:account");
+      case "nav.organization":
+        return t("nav:organization");
+      case "nav.projects":
+        return t("nav:projects");
       case "nav.fpa":
         return t("nav:fpa");
-      case "nav.gqm":
-        return t("nav:gqm");
       case "nav.plans":
         return t("nav:plans");
-      case "nav.docs":
-        return t("nav:docs");
       default:
         return key;
     }

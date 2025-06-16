@@ -1,0 +1,41 @@
+{
+  "hero": {
+    "title": "Simplified Measurement? It's With Measura!",
+    "getStarted": "Get Started",
+    "imageAlt": "Measura Platform Interface"
+  },
+  "navigation": {
+    "home": "Home",
+    "features": "Features",
+    "benefits": "Benefits",
+    "team": "Team",
+    "explore": "Explore"
+  },
+  "team": {
+    "title": "Meet the Team",
+    "description": "Educators, engineers and researchers committed to improving software measurement practices.",
+    "joinCommunity": "Join Our Community",
+    "communityDescription": "Contribute to the open source project and help improve software measurement practices in the academic community.",
+    "viewOnGithub": "View on GitHub",
+    "projectFooter": "Open source academic project • Developed with ❤️ for the community"
+  },
+  "cta": {
+    "title": "See how it works in practice with demo data",
+    "subtitle": "Try the platform in just a few clicks, no registration required.",
+    "tryDemo": "Try Demo Now",
+    "accessPlatform": "Access Platform",
+    "or": "or",
+    "features": {
+      "instantAccess": "Instant access",
+      "secureData": "Secure data",
+      "quickSetup": "Quick setup"
+    },
+    "newsletter": {
+      "title": "Subscribe to Measura Updates",
+      "description": "Stay up to date with news, updates and best practices in software measurement.",
+      "emailPlaceholder": "your@email.com",
+      "subscribe": "Subscribe",
+      "terms": "By subscribing, you agree to our Terms of Service and Privacy Policy."
+    }
+  }
+}

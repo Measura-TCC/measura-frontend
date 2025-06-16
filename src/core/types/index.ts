@@ -35,7 +35,6 @@ export interface AuthState {
   isLoading: boolean;
 }
 
-// FPA Types
 export enum FunctionType {
   EI = "External Input",
   EO = "External Output",
@@ -74,7 +73,6 @@ export interface FPAEstimate {
   version: number;
 }
 
-// GQM Types
 export interface Metric {
   id: string;
   name: string;
@@ -124,21 +122,20 @@ export interface MeasurementPlan {
   updatedAt: Date;
 }
 
-// Project Types
 export interface Project {
-  id: string;
+  _id: string;
   name: string;
-  description?: string;
-  status: "planning" | "active" | "completed" | "on-hold" | "cancelled";
-  startDate: Date;
-  endDate?: Date;
+  description: string;
+  status: "PLANNING" | "IN_PROGRESS" | "COMPLETED" | "ARCHIVED";
+  startDate?: string;
+  endDate?: string;
+  organizationId: string;
   teamMembers: string[];
   createdBy: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
-// Navigation Types
 export interface NavItem {
   name: string;
   href: string;
@@ -147,7 +144,6 @@ export interface NavItem {
   requiredRole?: UserRole[];
 }
 
-// Form Types
 export interface FormError {
   field: string;
   message: string;
@@ -160,10 +156,8 @@ export interface ApiResponse<T = unknown> {
   errors?: FormError[];
 }
 
-// Theme Types
 export type Theme = "light" | "dark" | "system";
 
-// Activity Feed Types
 export interface Activity {
   id: string;
   type: "estimate_created" | "goal_updated" | "plan_completed" | "user_joined";

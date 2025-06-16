@@ -1,5 +1,5 @@
 {
-  "title": "Dashboard",
+  "title": "Visão Geral",
   "welcome": "Bem-vindo de volta, {{name}}",
   "quickActions": "Ações Rápidas",
   "newFPAEstimate": "Nova Estimativa APF",
@@ -32,4 +32,4 @@
       "description": "Plano de medição {{plan}} finalizado"
     }
   }
-} 
+}

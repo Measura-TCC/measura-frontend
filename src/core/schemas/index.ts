@@ -1,11 +1,10 @@
-// Export authentication schemas and types
 export {
   registerSchema,
   loginSchema,
   passwordResetRequestSchema,
   passwordResetSchema,
   firebaseLoginSchema,
-} from './auth';
+} from "./auth";
 
 export type {
   RegisterFormData,
@@ -13,4 +12,4 @@ export type {
   PasswordResetRequestData,
   PasswordResetData,
   FirebaseLoginData,
-} from './auth'; 
+} from "./auth";

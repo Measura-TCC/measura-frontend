@@ -1,7 +1,8 @@
 {
-  "dashboard": "Dashboard",
+  "overview": "Visão Geral",
+  "account": "Minha Conta",
+  "organization": "Organização",
+  "projects": "Projetos",
   "fpa": "APF",
-  "gqm": "GQM",
-  "plans": "Planos",
-  "docs": "Documentação"
-} 
+  "plans": "Planos"
+}
