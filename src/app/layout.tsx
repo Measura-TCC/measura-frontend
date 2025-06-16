@@ -1,37 +1,49 @@
-'use client';
+"use client";
 
-import '@/presentation/styles/globals.css';
-import { I18nProvider } from '@/core/i18n/I18nProvider';
-import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
-
-
+import "@/presentation/styles/globals.css";
+import "react-toastify/dist/ReactToastify.css";
+import { I18nProvider } from "@/core/i18n/I18nProvider";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
+import { ToastContainer } from "react-toastify";
 
 interface RootLayoutProps {
   children: React.ReactNode;
 }
 
 const LayoutContent = ({ children }: RootLayoutProps) => {
-  const { t, i18n } = useTranslation('layout');
+  const { t, i18n } = useTranslation("layout");
 
   useEffect(() => {
-    document.title = t('title');
-    
+    document.title = t("title");
+
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', t('description'));
+      metaDescription.setAttribute("content", t("description"));
     } else {
-      const meta = document.createElement('meta');
-      meta.name = 'description';
-      meta.content = t('description');
+      const meta = document.createElement("meta");
+      meta.name = "description";
+      meta.content = t("description");
       document.head.appendChild(meta);
     }
   }, [t, i18n.language]);
 
   return (
     <html lang={i18n.language} suppressHydrationWarning>
-      <body className="min-h-screen bg-background text-default antialiased">      
-          {children}
+      <body className="min-h-screen bg-background text-default antialiased">
+        {children}
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </body>
     </html>
   );
@@ -45,4 +57,4 @@ const RootLayout = ({ children }: RootLayoutProps) => {
   );
 };
 
-export default RootLayout; 
+export default RootLayout;

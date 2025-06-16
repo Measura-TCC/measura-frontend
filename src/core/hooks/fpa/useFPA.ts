@@ -76,64 +76,37 @@ export const useFPA = (): UseFPAReturn => {
     data: estimates,
     error: estimatesError,
     isLoading: isLoadingEstimates,
-  } = useSWR(
-    userOrganization
-      ? `/api/estimates?organizationId=${userOrganization.name}`
-      : null,
-    async () => {
-      const mockEstimates: Estimate[] = [
-        {
-          id: "1",
-          name: "E-commerce Platform",
-          description: "Online retail platform with payment integration",
-          totalPoints: 245,
-          createdAt: new Date("2024-01-15"),
-          status: "completed",
-          organizationId: userOrganization?.name,
-        },
-        {
-          id: "2",
-          name: "CRM System",
-          description: "Customer relationship management system",
-          totalPoints: 189,
-          createdAt: new Date("2024-01-10"),
-          status: "in_progress",
-          organizationId: userOrganization?.name,
-        },
-        {
-          id: "3",
-          name: "Inventory Management",
-          description: "Real-time inventory tracking system",
-          totalPoints: 156,
-          createdAt: new Date("2024-01-08"),
-          status: "completed",
-          organizationId: userOrganization?.name,
-        },
-        {
-          id: "4",
-          name: "Mobile Banking App",
-          description: "Mobile banking application with biometric auth",
-          totalPoints: 298,
-          createdAt: new Date("2024-01-05"),
-          status: "draft",
-          organizationId: userOrganization?.name,
-        },
-      ];
-      return mockEstimates;
-    },
-    {
-      revalidateOnFocus: false,
-    }
-  );
+  } = useSWR(userOrganization ? "/api/estimates" : null, async () => {
+    const mockEstimates: Estimate[] = [
+      {
+        id: "1",
+        name: "E-commerce Platform",
+        description: "Online retail platform with payment integration",
+        totalPoints: 245,
+        createdAt: new Date("2024-01-15"),
+        status: "completed",
+      },
+      {
+        id: "2",
+        name: "CRM System",
+        description: "Customer relationship management system",
+        totalPoints: 189,
+        createdAt: new Date("2024-01-10"),
+        status: "in_progress",
+      },
+      {
+        id: "3",
+        name: "Inventory Management",
+        description: "Real-time inventory tracking system",
+        totalPoints: 156,
+        createdAt: new Date("2024-01-08"),
+        status: "completed",
+      },
+    ];
 
-  const functionTypes = getFunctionTypes(t);
-  const complexityLevels = getComplexityLevels(t);
-
-  const canCreateEstimate = Boolean(
-    userOrganization && !isLoadingUserOrganization
-  );
-  const canEditEstimate = Boolean(userOrganization);
-  const hasOrganization = Boolean(userOrganization);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return mockEstimates;
+  });
 
   const statistics: FPAStatistics = {
     totalEstimates: estimates?.length || 0,
@@ -144,19 +117,32 @@ export const useFPA = (): UseFPAReturn => {
     draftEstimates: estimates?.filter((e) => e.status === "draft").length || 0,
     totalFunctionPoints:
       estimates?.reduce((sum, e) => sum + e.totalPoints, 0) || 0,
-    averagePoints: estimates?.length
-      ? Math.round(
-          (estimates.reduce((sum, e) => sum + e.totalPoints, 0) || 0) /
-            estimates.length
-        )
-      : 0,
+    averagePoints:
+      estimates && estimates.length > 0
+        ? Math.round(
+            estimates.reduce((sum, e) => sum + e.totalPoints, 0) /
+              estimates.length
+          )
+        : 0,
   };
 
-  const formatDate = (date: Date | string) => {
-    return new Date(date).toLocaleDateString();
+  const functionTypes = getFunctionTypes(t);
+  const complexityLevels = getComplexityLevels(t);
+
+  const canCreateEstimate = !!userOrganization && !isLoadingUserOrganization;
+  const canEditEstimate = !!userOrganization && !isLoadingUserOrganization;
+  const hasOrganization = !!userOrganization;
+
+  const formatDate = (date: Date | string): string => {
+    const dateObj = typeof date === "string" ? new Date(date) : date;
+    return dateObj.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   };
 
-  const getStatusColor = (status: EstimateStatus) => {
+  const getStatusColor = (status: EstimateStatus): string => {
     switch (status) {
       case "completed":
         return "bg-green-100 text-green-800";
@@ -169,16 +155,9 @@ export const useFPA = (): UseFPAReturn => {
     }
   };
 
-  const resetForm = () => {
-    estimateForm.reset({
-      name: "",
-      description: "",
-    });
-  };
-
   const refreshData = async () => {
     if (userOrganization) {
-      await mutate(`/api/estimates?organizationId=${userOrganization.name}`);
+      await mutate("/api/estimates");
     }
   };
 
@@ -198,13 +177,12 @@ export const useFPA = (): UseFPAReturn => {
         totalPoints: 0,
         createdAt: new Date(),
         status: "draft",
-        organizationId: userOrganization.name,
       };
 
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       await mutate(
-        `/api/estimates?organizationId=${userOrganization.name}`,
+        "/api/estimates",
         (current: Estimate[] | undefined) =>
           current ? [newEstimate, ...current] : [newEstimate],
         false
@@ -229,7 +207,7 @@ export const useFPA = (): UseFPAReturn => {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       await mutate(
-        `/api/estimates?organizationId=${userOrganization.name}`,
+        "/api/estimates",
         (current: Estimate[] | undefined) =>
           current?.map((estimate) =>
             estimate.id === data.id
@@ -254,7 +232,7 @@ export const useFPA = (): UseFPAReturn => {
       await new Promise((resolve) => setTimeout(resolve, 300));
 
       await mutate(
-        `/api/estimates?organizationId=${userOrganization.name}`,
+        "/api/estimates",
         (current: Estimate[] | undefined) =>
           current?.filter((estimate) => estimate.id !== id),
         false
@@ -285,7 +263,7 @@ export const useFPA = (): UseFPAReturn => {
       await new Promise((resolve) => setTimeout(resolve, 300));
 
       await mutate(
-        `/api/estimates?organizationId=${userOrganization.name}`,
+        "/api/estimates",
         (current: Estimate[] | undefined) =>
           current ? [duplicatedEstimate, ...current] : [duplicatedEstimate],
         false
@@ -295,6 +273,10 @@ export const useFPA = (): UseFPAReturn => {
         error instanceof Error ? error.message : t("errors.duplicateFailed")
       );
     }
+  };
+
+  const resetForm = () => {
+    estimateForm.reset();
   };
 
   useEffect(() => {
@@ -308,25 +290,19 @@ export const useFPA = (): UseFPAReturn => {
     statistics,
     functionTypes,
     complexityLevels,
-
     isLoadingEstimates,
     isCreatingEstimate,
     isUpdatingEstimate,
-
     estimatesError,
-
     canCreateEstimate,
     canEditEstimate,
     hasOrganization,
-
     estimateForm,
     formErrors,
-
     createEstimate,
     updateEstimate,
     deleteEstimate,
     duplicateEstimate,
-
     formatDate,
     getStatusColor,
     refreshData,

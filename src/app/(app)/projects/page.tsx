@@ -23,9 +23,7 @@ export default function ProjectsPage() {
   const { t, i18n } = useTranslation("projects");
   const [showCreateForm, setShowCreateForm] = useState(false);
   const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
-  const { projects, isLoadingProjects } = useProjects(
-    userOrganization ? { organizationId: userOrganization._id } : undefined
-  );
+  const { projects, isLoadingProjects } = useProjects();
 
   useEffect(() => {}, [
     userOrganization,

@@ -112,5 +112,16 @@
   "privacy": "Privacy Policy",
   "terms": "Terms of Service",
   "allRightsReserved": "All rights reserved",
-  "madeWithLove": "Made with"
+  "madeWithLove": "Made with",
+
+  "errors": {
+    "emailAlreadyExists": "This email is already registered. Please use a different email.",
+    "usernameAlreadyExists": "This username is already taken. Please choose a different one.",
+    "organizationAlreadyExists": "An organization with this name already exists.",
+    "conflict": "There was a conflict with your request. Please try again.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "forbidden": "Access denied. You don't have permission to access this resource.",
+    "organizationAccessDenied": "You must belong to an organization to access this resource.",
+    "badRequest": "Invalid request. Please check your input and try again."
+  }
 }
