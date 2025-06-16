@@ -53,12 +53,16 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
     ftr: number = 0,
     det: number = 0
   ): "LOW" | "MEDIUM" | "HIGH" => {
-    if (ftr <= 1 && det <= 4) return "LOW";
-    if (ftr <= 1 && det <= 15) return "LOW";
-    if (ftr <= 3 && det <= 4) return "LOW";
-    if (ftr <= 1 && det >= 16) return "MEDIUM";
-    if (ftr <= 3 && det <= 15) return "MEDIUM";
-    if (ftr >= 4 && det <= 4) return "MEDIUM";
+    if (ftr <= 1) {
+      if (det <= 15) return "LOW";
+      return "MEDIUM";
+    }
+    if (ftr <= 3) {
+      if (det <= 4) return "LOW";
+      if (det <= 15) return "MEDIUM";
+      return "HIGH";
+    }
+    if (det <= 4) return "MEDIUM";
     return "HIGH";
   };
 
@@ -76,12 +80,20 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
   };
 
   const inputComplexity =
-    useSpecialCalculation && inputFtr && inputDet
+    useSpecialCalculation &&
+    inputFtr !== null &&
+    inputFtr !== undefined &&
+    inputDet !== null &&
+    inputDet !== undefined
       ? calculateComplexity(inputFtr, inputDet)
       : null;
 
   const outputComplexity =
-    useSpecialCalculation && outputFtr && outputDet
+    useSpecialCalculation &&
+    outputFtr !== null &&
+    outputFtr !== undefined &&
+    outputDet !== null &&
+    outputDet !== undefined
       ? calculateComplexity(outputFtr, outputDet)
       : null;
 

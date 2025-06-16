@@ -27,6 +27,10 @@ export const CreateALIForm = ({
     reset,
   } = useForm<CreateALIData>({
     resolver: zodResolver(createALISchema),
+    defaultValues: {
+      recordElementTypes: 1,
+      dataElementTypes: 1,
+    },
   });
 
   const { createALIComponent } = useFpaComponents();

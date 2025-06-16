@@ -3,8 +3,8 @@
 import {
   useFPACalculations,
   ComponentDetail,
-  ProjectConfig,
 } from "@/core/hooks/fpa/calculations/useFPACalculations";
+import { useTranslation } from "react-i18next";
 
 interface EstimateOverview {
   _id: string;
@@ -30,7 +30,9 @@ export const EnhancedOverview = ({
   estimate,
   components,
 }: EnhancedOverviewProps) => {
-  const projectConfig: ProjectConfig = {
+  const { t } = useTranslation("fpa");
+
+  const projectConfig = {
     averageDailyWorkingHours: estimate.averageDailyWorkingHours,
     teamSize: estimate.teamSize,
     hourlyRateBRL: estimate.hourlyRateBRL,
@@ -38,7 +40,7 @@ export const EnhancedOverview = ({
     generalSystemCharacteristics: estimate.generalSystemCharacteristics,
   };
 
-  const calculations = useFPACalculations(components, projectConfig);
+  const calculations = useFPACalculations(components, projectConfig, t);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {

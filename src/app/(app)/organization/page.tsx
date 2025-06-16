@@ -11,7 +11,7 @@ import {
 } from "@/presentation/components/primitives";
 import { BuildingIcon, PlusIcon } from "@/presentation/assets/icons";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
-import { CreateOrganizationForm } from "../../../components/organizations/CreateOrganizationForm";
+import { CreateOrganizationForm } from "@/presentation/views/Organizations/components/CreateOrganizationForm";
 
 export default function OrganizationPage() {
   const { t } = useTranslation("organization");

@@ -31,7 +31,9 @@ export const useAuthStore = create<AuthStore>()(
       setAuth: (authData) => {
         try {
           localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, authData.accessToken);
-        } catch (error) {}
+        } catch (error) {
+          console.debug("Failed to save access token to localStorage:", error);
+        }
 
         set({
           user: authData.user,
@@ -44,7 +46,12 @@ export const useAuthStore = create<AuthStore>()(
       logout: () => {
         try {
           localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
-        } catch (error) {}
+        } catch (error) {
+          console.debug(
+            "Failed to remove access token from localStorage:",
+            error
+          );
+        }
 
         set({
           user: null,
@@ -112,6 +119,7 @@ export const useAuth = () => {
     try {
       await authService.logout();
     } catch (error) {
+      console.debug("Logout service call failed:", error);
     } finally {
       clearAuth();
     }

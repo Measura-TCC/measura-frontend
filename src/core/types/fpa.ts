@@ -56,7 +56,7 @@ export interface UpdateEstimateRequest {
 
 export interface EstimateFormData {
   name: string;
-  description: string;
+  description?: string;
 }
 
 export interface FPAStatistics {

@@ -60,7 +60,11 @@ export const useWorkflowState = () => {
         const parsedState = JSON.parse(savedState);
         setState({ ...DEFAULT_STATE, ...parsedState });
       }
-    } catch (error) {}
+    } catch (e) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[useWorkflowState] Failed to restore state", e);
+      }
+    }
   }, []);
 
   const saveState = useCallback((newState: Partial<WorkflowState>) => {
@@ -68,7 +72,9 @@ export const useWorkflowState = () => {
       const updatedState = { ...prevState, ...newState };
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedState));
-      } catch (error) {}
+      } catch {
+        // Ignore error
+      }
       return updatedState;
     });
   }, []);
@@ -136,7 +142,9 @@ export const useWorkflowState = () => {
     setState(DEFAULT_STATE);
     try {
       localStorage.removeItem(STORAGE_KEY);
-    } catch (error) {}
+    } catch {
+      // Ignore error
+    }
   }, []);
 
   const canNavigateToStep = useCallback(

@@ -1,4 +1,4 @@
-import { EstimateDetailManager } from "../../../../../components/fpa/EstimateDetailManager";
+import { EstimateDetailManager } from "@/presentation/views/FPA/components/EstimateDetailManager";
 
 export default async function EstimateDetailPage({
   params,

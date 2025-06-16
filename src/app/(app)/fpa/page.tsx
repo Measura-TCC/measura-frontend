@@ -1,6 +1,6 @@
 "use client";
 
-import { FPAWorkflow } from "../../../components/fpa/FPAWorkflow";
+import { FPAWorkflow } from "@/presentation/views/FPA/components/FPAWorkflow";
 
 export default function FPAPage() {
   return <FPAWorkflow />;

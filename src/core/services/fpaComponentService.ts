@@ -12,7 +12,7 @@ export interface ComponentResponse {
   name: string;
   description: string;
   primaryIntent: string;
-  complexity: "LOW" | "AVERAGE" | "HIGH";
+  complexity: "LOW" | "MEDIUM" | "HIGH";
   functionPoints: number;
   recordElementTypes?: number;
   dataElementTypes?: number;

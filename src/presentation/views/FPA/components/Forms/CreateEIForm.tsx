@@ -7,9 +7,23 @@ import { createEISchema, type CreateEIData } from "@/core/schemas/fpa";
 import { useFpaComponents } from "@/core/hooks/fpa/components/useFpaComponents";
 import { useState } from "react";
 
+interface EIResponse {
+  _id: string;
+  name: string;
+  description?: string;
+  primaryIntent: string;
+  fileTypesReferenced: number;
+  dataElementTypes: number;
+  notes?: string;
+  complexity: "LOW" | "MEDIUM" | "HIGH";
+  functionPoints: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface CreateEIFormProps {
   estimateId: string;
-  onSuccess?: (ei: unknown) => void;
+  onSuccess?: (ei: EIResponse) => void;
 }
 
 export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
@@ -35,7 +49,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
     try {
       const result = await createEIComponent({ estimateId, data });
       reset();
-      onSuccess?.(result);
+      onSuccess?.(result as unknown as EIResponse);
     } catch (err) {
       setError(
         err instanceof Error

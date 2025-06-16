@@ -12,6 +12,7 @@ export interface NavigationItem {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   requiredRoles?: UserRole[];
+  badge?: number;
 }
 
 export const getNavigationItems = (

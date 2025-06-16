@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
@@ -39,7 +39,7 @@ export type UseFPAReturn = {
   hasOrganization: boolean;
 
   estimateForm: ReturnType<typeof useForm<EstimateFormData>>;
-  formErrors: Record<string, any>;
+  formErrors: FieldErrors<EstimateFormData>;
 
   createEstimate: (data: EstimateFormData) => Promise<void>;
   updateEstimate: (data: UpdateEstimateRequest) => Promise<void>;

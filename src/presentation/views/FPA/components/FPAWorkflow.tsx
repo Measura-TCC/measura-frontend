@@ -3,15 +3,15 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EstimatesDashboard } from "./EstimatesDashboard";
-import { CreateEstimateForm } from "./CreateEstimateForm";
-import { CreateProjectForm } from "../projects/CreateProjectForm";
-import { CreateOrganizationForm } from "../organizations/CreateOrganizationForm";
-import { CreateGSCForm } from "./CreateGSCForm";
-import { CreateALIForm } from "./CreateALIForm";
-import { CreateEIForm } from "./CreateEIForm";
-import { CreateEOForm } from "./CreateEOForm";
-import { CreateEQForm } from "./CreateEQForm";
-import { CreateAIEForm } from "./CreateAIEForm";
+import { CreateEstimateForm } from "./Forms/CreateEstimateForm";
+import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
+import { CreateOrganizationForm } from "../../Organizations/components/CreateOrganizationForm";
+import { CreateGSCForm } from "./Forms/CreateGSCForm";
+import { CreateALIForm } from "./Forms/CreateALIForm";
+import { CreateEIForm } from "./Forms/CreateEIForm";
+import { CreateEOForm } from "./Forms/CreateEOForm";
+import { CreateEQForm } from "./Forms/CreateEQForm";
+import { CreateAIEForm } from "./Forms/CreateAIEForm";
 import {
   useEstimateActions,
   useEstimate,
@@ -123,7 +123,9 @@ export const FPAWorkflow = () => {
     try {
       await calculateFunctionPoints({ estimateId: state.createdEstimate._id });
       setCalculationComplete(true);
-    } catch (error) {}
+    } catch {
+      // Error handling can be added here if needed
+    }
   };
 
   const handleComponentAdded = () => {

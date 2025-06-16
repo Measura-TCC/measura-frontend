@@ -16,8 +16,8 @@ import {
 } from "@/presentation/assets/icons";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
 import { useProjects } from "@/core/hooks/projects/useProjects";
-import { CreateProjectForm } from "../../../components/projects/CreateProjectForm";
-import { ProjectStatusSelector } from "../../../components/projects/ProjectStatusSelector";
+import { CreateProjectForm } from "@/presentation/views/Projects/components/CreateProjectForm";
+import { ProjectStatusSelector } from "@/presentation/views/Projects/components/ProjectStatusSelector";
 
 export default function ProjectsPage() {
   const { t, i18n } = useTranslation("projects");

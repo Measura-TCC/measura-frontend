@@ -81,7 +81,6 @@ export const Header = () => {
             </Button> */}
 
             <div className="flex items-center space-x-2 border-l border-border pl-4">
-              {/* Organization Info */}
               {userOrganization && (
                 <div className="hidden md:flex items-center space-x-2 bg-gray-50 dark:bg-gray-800 px-3 py-1 rounded-md">
                   <BuildingIcon className="w-4 h-4 text-muted" />
@@ -97,7 +96,6 @@ export const Header = () => {
                     {user?.username || t("user")}
                   </span>
                 </div>
-                {/* Show organization on mobile */}
                 {userOrganization && (
                   <span className="md:hidden text-xs text-muted">
                     {userOrganization.name}

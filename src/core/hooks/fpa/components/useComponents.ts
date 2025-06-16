@@ -5,7 +5,7 @@ export interface ComponentResponse {
   _id: string;
   name: string;
   description?: string;
-  complexity?: "LOW" | "AVERAGE" | "HIGH";
+  complexity?: "LOW" | "MEDIUM" | "HIGH";
   functionPoints?: number;
   primaryIntent?: string;
   recordElementTypes?: number;

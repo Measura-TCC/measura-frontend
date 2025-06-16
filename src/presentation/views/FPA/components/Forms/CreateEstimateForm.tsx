@@ -5,15 +5,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
-import {
-  createEstimate,
-  CreateEstimateData,
-  EstimateResponse,
-} from "@/core/services/fpa/estimates";
+import { EstimateResponse } from "@/core/services/fpa/estimates";
+import { useEstimateActions } from "@/core/hooks/fpa/estimates/useEstimate";
+import { type CreateEstimateData } from "@/core/schemas/fpa";
 
 const estimateSchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name too long"),
-  description: z.string().max(500, "Description too long").optional(),
+  description: z
+    .string()
+    .min(10, "Description must be at least 10 characters")
+    .max(500, "Description too long"),
   applicationBoundary: z.string().min(1, "Application boundary is required"),
   countingScope: z.string().min(1, "Counting scope is required"),
   countType: z.enum([
@@ -52,6 +53,7 @@ export const CreateEstimateForm = ({
 }: CreateEstimateFormProps) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
@@ -61,12 +63,15 @@ export const CreateEstimateForm = ({
   } = useForm<EstimateFormData>({
     resolver: zodResolver(estimateSchema),
     defaultValues: {
+      description: "Default project description for FPA estimation",
       countType: "DEVELOPMENT_PROJECT",
       averageDailyWorkingHours: 8,
       teamSize: 4,
       hourlyRateBRL: 150,
     },
   });
+
+  const { createEstimate } = useEstimateActions();
 
   const teamSize = watch("teamSize");
   const averageDailyWorkingHours = watch("averageDailyWorkingHours");
@@ -76,15 +81,17 @@ export const CreateEstimateForm = ({
   const onSubmit = async (data: EstimateFormData) => {
     try {
       setIsSubmitting(true);
+      setError(null);
       const createData: CreateEstimateData = {
         ...data,
         projectId,
-        productivityFactor: 10,
       };
       const estimate = await createEstimate(createData);
-      onSuccess(estimate);
-    } catch (error) {
-      console.error("Failed to create estimate:", error);
+      onSuccess(estimate as unknown as EstimateResponse);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : t("estimateForm.failedToCreate")
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -92,6 +99,12 @@ export const CreateEstimateForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {error && (
+        <div className="rounded-md bg-red-50 p-4">
+          <p className="text-sm text-red-700">{error}</p>
+        </div>
+      )}
+
       <fieldset className="border border-gray-200 rounded-lg p-6">
         <legend className="text-lg font-semibold px-2 text-gray-900">
           {t("estimateForm.estimateInformation")}

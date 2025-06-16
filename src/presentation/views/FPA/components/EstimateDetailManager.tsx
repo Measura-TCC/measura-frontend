@@ -17,12 +17,12 @@ import {
   ComponentDetail,
   ProjectConfig,
 } from "@/core/hooks/fpa/calculations/useFPACalculations";
-import { CreateALIForm } from "./CreateALIForm";
-import { CreateEIForm } from "./CreateEIForm";
-import { CreateEOForm } from "./CreateEOForm";
-import { CreateEQForm } from "./CreateEQForm";
-import { CreateAIEForm } from "./CreateAIEForm";
-import { CreateGSCForm } from "./CreateGSCForm";
+import { CreateALIForm } from "./Forms/CreateALIForm";
+import { CreateEIForm } from "./Forms/CreateEIForm";
+import { CreateEOForm } from "./Forms/CreateEOForm";
+import { CreateEQForm } from "./Forms/CreateEQForm";
+import { CreateAIEForm } from "./Forms/CreateAIEForm";
+import { CreateGSCForm } from "./Forms/CreateGSCForm";
 import { ComponentList } from "./ComponentList";
 import { ExportDropdown } from "./ExportDropdown";
 import { estimateService } from "@/core/services/estimateService";

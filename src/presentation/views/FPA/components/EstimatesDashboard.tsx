@@ -61,8 +61,8 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
           bValue = new Date(b.updatedAt);
           break;
         case "points":
-          aValue = a.adjustedFunctionPoints || a.unadjustedFunctionPoints;
-          bValue = b.adjustedFunctionPoints || b.unadjustedFunctionPoints;
+          aValue = a.adjustedFunctionPoints ?? a.unadjustedFunctionPoints ?? 0;
+          bValue = b.adjustedFunctionPoints ?? b.unadjustedFunctionPoints ?? 0;
           break;
         default:
           return 0;

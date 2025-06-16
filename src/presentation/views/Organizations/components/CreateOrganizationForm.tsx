@@ -3,15 +3,25 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
+import { useState, useRef, useEffect } from "react";
 import {
   createOrganizationSchema,
   type CreateOrganizationData,
 } from "@/core/schemas/organizations";
 import { useOrganizationActions } from "@/core/hooks/organizations/useOrganizations";
-import { useState } from "react";
+
+interface Organization {
+  _id: string;
+  name: string;
+  description?: string;
+  website?: string;
+  industry?: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 interface CreateOrganizationFormProps {
-  onSuccess?: (organization: unknown) => void;
+  onSuccess?: (organization: Organization) => void;
 }
 
 export const CreateOrganizationForm = ({
@@ -20,6 +30,13 @@ export const CreateOrganizationForm = ({
   const { t } = useTranslation("organization");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const {
     register,
@@ -39,11 +56,15 @@ export const CreateOrganizationForm = ({
     try {
       const result = await createOrganization(data);
       reset();
-      onSuccess?.(result);
+      onSuccess?.(result as Organization);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("form.failedToCreate"));
+      if (isMountedRef.current) {
+        setError(err instanceof Error ? err.message : t("form.failedToCreate"));
+      }
     } finally {
-      setIsSubmitting(false);
+      if (isMountedRef.current) {
+        setIsSubmitting(false);
+      }
     }
   };
 

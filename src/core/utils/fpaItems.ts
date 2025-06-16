@@ -1,61 +1,118 @@
-import { FunctionType, ComplexityLevel } from "@/core/types";
+import { FunctionType, ComplexityLevel } from "@/core/types/fpa";
 
 export const getFunctionTypes = (t: (key: string) => string) => [
-  { value: FunctionType.EI, label: t("functionTypeLabels.EI") },
-  { value: FunctionType.EO, label: t("functionTypeLabels.EO") },
-  { value: FunctionType.EQ, label: t("functionTypeLabels.EQ") },
-  { value: FunctionType.ILF, label: t("functionTypeLabels.ILF") },
-  { value: FunctionType.EIF, label: t("functionTypeLabels.EIF") },
+  {
+    value: "EI" as FunctionType,
+    label: t("functionTypeLabels.EI"),
+    description: t("functionTypeDescriptions.EI") || "External Input",
+    points: {
+      simple: 3,
+      average: 4,
+      complex: 6,
+    },
+  },
+  {
+    value: "EO" as FunctionType,
+    label: t("functionTypeLabels.EO"),
+    description: t("functionTypeDescriptions.EO") || "External Output",
+    points: {
+      simple: 4,
+      average: 5,
+      complex: 7,
+    },
+  },
+  {
+    value: "EQ" as FunctionType,
+    label: t("functionTypeLabels.EQ"),
+    description: t("functionTypeDescriptions.EQ") || "External Query",
+    points: {
+      simple: 3,
+      average: 4,
+      complex: 6,
+    },
+  },
+  {
+    value: "ILF" as FunctionType,
+    label: t("functionTypeLabels.ILF"),
+    description: t("functionTypeDescriptions.ILF") || "Internal Logical File",
+    points: {
+      simple: 7,
+      average: 10,
+      complex: 15,
+    },
+  },
+  {
+    value: "EIF" as FunctionType,
+    label: t("functionTypeLabels.EIF"),
+    description: t("functionTypeDescriptions.EIF") || "External Interface File",
+    points: {
+      simple: 5,
+      average: 7,
+      complex: 10,
+    },
+  },
 ];
 
 export const getComplexityLevels = (t: (key: string) => string) => [
-  { value: ComplexityLevel.LOW, label: t("complexityLabels.LOW") },
-  { value: ComplexityLevel.AVERAGE, label: t("complexityLabels.AVERAGE") },
-  { value: ComplexityLevel.HIGH, label: t("complexityLabels.HIGH") },
+  {
+    value: "simple" as ComplexityLevel,
+    label: t("complexityLabels.LOW"),
+    description: t("complexityDescriptions.LOW") || "Low complexity",
+  },
+  {
+    value: "average" as ComplexityLevel,
+    label: t("complexityLabels.AVERAGE"),
+    description: t("complexityDescriptions.AVERAGE") || "Average complexity",
+  },
+  {
+    value: "complex" as ComplexityLevel,
+    label: t("complexityLabels.HIGH"),
+    description: t("complexityDescriptions.HIGH") || "High complexity",
+  },
 ];
 
 export const functionTypes = [
-  { value: FunctionType.EI, label: "External Input (EI)" },
-  { value: FunctionType.EO, label: "External Output (EO)" },
-  { value: FunctionType.EQ, label: "External Inquiry (EQ)" },
-  { value: FunctionType.ILF, label: "Internal Logical File (ILF)" },
-  { value: FunctionType.EIF, label: "External Interface File (EIF)" },
+  { value: "EI" as FunctionType, label: "External Input (EI)" },
+  { value: "EO" as FunctionType, label: "External Output (EO)" },
+  { value: "EQ" as FunctionType, label: "External Inquiry (EQ)" },
+  { value: "ILF" as FunctionType, label: "Internal Logical File (ILF)" },
+  { value: "EIF" as FunctionType, label: "External Interface File (EIF)" },
 ];
 
 export const complexityLevels = [
-  { value: ComplexityLevel.LOW, label: "Baixa", multiplier: 1 },
-  { value: ComplexityLevel.AVERAGE, label: "Média", multiplier: 2 },
-  { value: ComplexityLevel.HIGH, label: "Alta", multiplier: 3 },
+  { value: "simple" as ComplexityLevel, label: "Baixa", multiplier: 1 },
+  { value: "average" as ComplexityLevel, label: "Média", multiplier: 2 },
+  { value: "complex" as ComplexityLevel, label: "Alta", multiplier: 3 },
 ] as const;
 
 export const fpaPointsMatrix: Record<
   FunctionType,
   Record<ComplexityLevel, number>
 > = {
-  [FunctionType.EI]: {
-    [ComplexityLevel.LOW]: 3,
-    [ComplexityLevel.AVERAGE]: 4,
-    [ComplexityLevel.HIGH]: 6,
+  EI: {
+    simple: 3,
+    average: 4,
+    complex: 6,
   },
-  [FunctionType.EO]: {
-    [ComplexityLevel.LOW]: 4,
-    [ComplexityLevel.AVERAGE]: 5,
-    [ComplexityLevel.HIGH]: 7,
+  EO: {
+    simple: 4,
+    average: 5,
+    complex: 7,
   },
-  [FunctionType.EQ]: {
-    [ComplexityLevel.LOW]: 3,
-    [ComplexityLevel.AVERAGE]: 4,
-    [ComplexityLevel.HIGH]: 6,
+  EQ: {
+    simple: 3,
+    average: 4,
+    complex: 6,
   },
-  [FunctionType.ILF]: {
-    [ComplexityLevel.LOW]: 7,
-    [ComplexityLevel.AVERAGE]: 10,
-    [ComplexityLevel.HIGH]: 15,
+  ILF: {
+    simple: 7,
+    average: 10,
+    complex: 15,
   },
-  [FunctionType.EIF]: {
-    [ComplexityLevel.LOW]: 5,
-    [ComplexityLevel.AVERAGE]: 7,
-    [ComplexityLevel.HIGH]: 10,
+  EIF: {
+    simple: 5,
+    average: 7,
+    complex: 10,
   },
 };
 
@@ -221,31 +278,31 @@ export const FUNCTION_TYPES = functionTypes;
 export const ADJUSTMENT_FACTORS = adjustmentFactors;
 
 export const EXTERNAL_INPUTS = [
-  { complexity: ComplexityLevel.LOW, label: "Simples", count: 0 },
-  { complexity: ComplexityLevel.AVERAGE, label: "Médio", count: 0 },
-  { complexity: ComplexityLevel.HIGH, label: "Complexo", count: 0 },
+  { complexity: "simple" as ComplexityLevel, label: "Simples", count: 0 },
+  { complexity: "average" as ComplexityLevel, label: "Médio", count: 0 },
+  { complexity: "complex" as ComplexityLevel, label: "Complexo", count: 0 },
 ];
 
 export const EXTERNAL_OUTPUTS = [
-  { complexity: ComplexityLevel.LOW, label: "Simples", count: 0 },
-  { complexity: ComplexityLevel.AVERAGE, label: "Médio", count: 0 },
-  { complexity: ComplexityLevel.HIGH, label: "Complexo", count: 0 },
+  { complexity: "simple" as ComplexityLevel, label: "Simples", count: 0 },
+  { complexity: "average" as ComplexityLevel, label: "Médio", count: 0 },
+  { complexity: "complex" as ComplexityLevel, label: "Complexo", count: 0 },
 ];
 
 export const EXTERNAL_INQUIRIES = [
-  { complexity: ComplexityLevel.LOW, label: "Simples", count: 0 },
-  { complexity: ComplexityLevel.AVERAGE, label: "Médio", count: 0 },
-  { complexity: ComplexityLevel.HIGH, label: "Complexo", count: 0 },
+  { complexity: "simple" as ComplexityLevel, label: "Simples", count: 0 },
+  { complexity: "average" as ComplexityLevel, label: "Médio", count: 0 },
+  { complexity: "complex" as ComplexityLevel, label: "Complexo", count: 0 },
 ];
 
 export const INTERNAL_LOGICAL_FILES = [
-  { complexity: ComplexityLevel.LOW, label: "Simples", count: 0 },
-  { complexity: ComplexityLevel.AVERAGE, label: "Médio", count: 0 },
-  { complexity: ComplexityLevel.HIGH, label: "Complexo", count: 0 },
+  { complexity: "simple" as ComplexityLevel, label: "Simples", count: 0 },
+  { complexity: "average" as ComplexityLevel, label: "Médio", count: 0 },
+  { complexity: "complex" as ComplexityLevel, label: "Complexo", count: 0 },
 ];
 
 export const EXTERNAL_INTERFACE_FILES = [
-  { complexity: ComplexityLevel.LOW, label: "Simples", count: 0 },
-  { complexity: ComplexityLevel.AVERAGE, label: "Médio", count: 0 },
-  { complexity: ComplexityLevel.HIGH, label: "Complexo", count: 0 },
+  { complexity: "simple" as ComplexityLevel, label: "Simples", count: 0 },
+  { complexity: "average" as ComplexityLevel, label: "Médio", count: 0 },
+  { complexity: "complex" as ComplexityLevel, label: "Complexo", count: 0 },
 ];
