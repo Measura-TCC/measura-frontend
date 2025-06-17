@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { EstimateResponse } from "@/core/services/fpa/estimates";
 import { useEstimateActions } from "@/core/hooks/fpa/estimates/useEstimate";
 import { type CreateEstimateData } from "@/core/schemas/fpa";
+import { Button } from "@/presentation/components/primitives";
 
 const estimateSchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name too long"),
@@ -62,6 +63,11 @@ export const CreateEstimateForm = ({
         projectId,
       };
       const estimate = await createEstimate(createData);
+
+      if (estimate && estimate._id) {
+        window.open(`/fpa/estimates/${estimate._id}`, "_blank");
+      }
+
       onSuccess(estimate as unknown as EstimateResponse);
     } catch (err) {
       setError(
@@ -124,46 +130,44 @@ export const CreateEstimateForm = ({
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="applicationBoundary"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                {t("estimateForm.applicationBoundary")} *
-              </label>
-              <input
-                {...register("applicationBoundary")}
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder={t("estimateForm.applicationBoundaryPlaceholder")}
-              />
-              {errors.applicationBoundary && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.applicationBoundary.message}
-                </p>
-              )}
-            </div>
+          <div>
+            <label
+              htmlFor="applicationBoundary"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              {t("estimateForm.applicationBoundary")} *
+            </label>
+            <input
+              {...register("applicationBoundary")}
+              type="text"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder={t("estimateForm.applicationBoundaryPlaceholder")}
+            />
+            {errors.applicationBoundary && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.applicationBoundary.message}
+              </p>
+            )}
+          </div>
 
-            <div>
-              <label
-                htmlFor="countingScope"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                {t("estimateForm.countingScope")} *
-              </label>
-              <input
-                {...register("countingScope")}
-                type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder={t("estimateForm.countingScopePlaceholder")}
-              />
-              {errors.countingScope && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.countingScope.message}
-                </p>
-              )}
-            </div>
+          <div>
+            <label
+              htmlFor="countingScope"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              {t("estimateForm.countingScope")} *
+            </label>
+            <textarea
+              {...register("countingScope")}
+              rows={4}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder={t("estimateForm.countingScopePlaceholder")}
+            />
+            {errors.countingScope && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.countingScope.message}
+              </p>
+            )}
           </div>
 
           <div>
@@ -197,15 +201,16 @@ export const CreateEstimateForm = ({
       </fieldset>
 
       <div className="flex justify-end space-x-3">
-        <button
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          variant="primary"
+          size="lg"
         >
           {isSubmitting
             ? t("estimateForm.creating")
             : t("estimateForm.createEstimate")}
-        </button>
+        </Button>
       </div>
     </form>
   );

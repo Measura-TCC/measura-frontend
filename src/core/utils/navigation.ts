@@ -40,7 +40,7 @@ export const getNavigationItems = (
     name: t("nav.projects"),
     href: "/projects",
     icon: DocumentIcon,
-    requiredRoles: [UserRole.ANALYST, UserRole.MANAGER, UserRole.ADMIN],
+    requiredRoles: [UserRole.MANAGER, UserRole.ADMIN],
   },
   {
     name: t("nav.fpa"),
@@ -95,7 +95,7 @@ export const getFilteredNavigation = (
         name: "Projects",
         href: "/projects",
         icon: DocumentIcon,
-        requiredRoles: [UserRole.ANALYST, UserRole.MANAGER, UserRole.ADMIN],
+        requiredRoles: [UserRole.MANAGER, UserRole.ADMIN],
       },
       {
         name: "FPA",
@@ -142,9 +142,12 @@ export const getNavigationByHref = (
 };
 
 export const isActiveNavigation = (pathname: string, href: string): boolean => {
-  if (href === "/overview") {
-    return pathname === "/overview";
+  const normalizedPathname = pathname.replace(/\/$/, "") || "/";
+  const normalizedHref = href.replace(/\/$/, "") || "/";
+
+  if (normalizedHref === "/overview") {
+    return normalizedPathname === "/overview";
   }
 
-  return pathname.startsWith(href);
+  return normalizedPathname.startsWith(normalizedHref);
 };

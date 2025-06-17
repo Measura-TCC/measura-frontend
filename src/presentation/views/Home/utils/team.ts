@@ -42,7 +42,7 @@ export const teamMembers: TeamMember[] = [
     id: "jose-mussy",
     name: "José Mussy",
     role: "Researcher",
-    shortBio: "Software Engineer at [Company]",
+    shortBio: "Software Engineer at Alta Rail",
     avatar: jose.src,
     links: {
       linkedin: "https://www.linkedin.com/in/josemussy/",

@@ -188,7 +188,7 @@ export const EstimateDetailManager = ({
           <div className="flex items-center space-x-4">
             <button
               onClick={() => router.push("/fpa")}
-              className="p-2 text-muted hover:text-secondary transition-colors"
+              className="p-2 text-muted hover:text-secondary transition-colors hover:cursor-pointer"
             >
               <svg
                 className="w-6 h-6"
@@ -240,7 +240,7 @@ export const EstimateDetailManager = ({
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as Tab)}
-              className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+              className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors hover:cursor-pointer ${
                 activeTab === tab.id
                   ? "border-primary text-primary"
                   : "border-transparent text-muted hover:text-secondary hover:border-border"

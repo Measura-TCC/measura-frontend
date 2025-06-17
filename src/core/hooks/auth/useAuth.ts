@@ -115,14 +115,12 @@ export const useAuth = () => {
     return response;
   };
 
-  const logout = async () => {
-    try {
-      await authService.logout();
-    } catch (error) {
+  const logout = () => {
+    clearAuth();
+
+    authService.logout().catch((error) => {
       console.debug("Logout service call failed:", error);
-    } finally {
-      clearAuth();
-    }
+    });
   };
 
   const requestPasswordReset = async (data: PasswordResetRequestData) => {

@@ -15,7 +15,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      console.log("❌ User not authenticated, redirecting to login");
+      console.log("User not authenticated, redirecting to login");
     }
   }, [isAuthenticated, user, accessToken]);
 

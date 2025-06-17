@@ -38,7 +38,10 @@ export const HomeView = ({
       />
 
       <div className="animate-fade-in">
-        <HeroSection />
+        <HeroSection
+          isAuthenticated={isAuthenticated}
+          onGetStarted={handleGetStarted}
+        />
       </div>
 
       <div className="animate-slide-up animation-delay-200">

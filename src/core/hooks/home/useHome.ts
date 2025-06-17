@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 interface HomeState {
@@ -15,7 +14,6 @@ interface HomeProps {
 
 export const useHome = ({ isAuthenticated, isLoading, onLogin }: HomeProps) => {
   const { t } = useTranslation("common");
-  const router = useRouter();
 
   const [state, setState] = useState<HomeState>({
     isLoading: false,
@@ -40,11 +38,11 @@ export const useHome = ({ isAuthenticated, isLoading, onLogin }: HomeProps) => {
 
   const handleGetStarted = useCallback(() => {
     if (isAuthenticated) {
-      router.push("/overview");
+      window.open("/overview", "_blank");
     } else {
-      router.push("/login");
+      window.open("/login", "_blank");
     }
-  }, [router, isAuthenticated]);
+  }, [isAuthenticated]);
 
   const handleLearnMore = useCallback(() => {
     const featuresSection = document.getElementById("features");

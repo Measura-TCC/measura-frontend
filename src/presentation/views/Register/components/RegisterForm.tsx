@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button, Input } from "@/presentation/components/primitives";
 import { EyeIcon, EyeOffIcon } from "@/presentation/assets/icons";
 import { RegisterFormData, RoleOption } from "@/core/types/register";
+import { PasswordRequirements } from "./PasswordRequirements";
+import { EmailValidation } from "./EmailValidation";
 
 interface RegisterFormProps {
   registerForm: UseFormReturn<RegisterFormData>;
@@ -23,9 +25,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   onSubmit,
 }) => {
   const { t } = useTranslation("register");
-  const { register, handleSubmit } = registerForm;
+  const { register, handleSubmit, watch } = registerForm;
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showEmailValidation, setShowEmailValidation] = useState(false);
+
+  // Watch fields for real-time validation feedback
+  const password = watch("password") || "";
+  const username = watch("username") || "";
+  const email = watch("email") || "";
+  const confirmPassword = watch("confirmPassword") || "";
 
   const handleFormSubmit = async (data: RegisterFormData) => {
     try {
@@ -48,7 +57,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           placeholder={t("enterFullName")}
           disabled={isRegistering}
         />
-        {formErrors.username && (
+        {formErrors.username && username.length > 0 && (
           <span className="text-sm text-red-600">
             {formErrors.username.message}
           </span>
@@ -65,8 +74,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           type="email"
           placeholder={t("enterEmail")}
           disabled={isRegistering}
+          onBlur={() => setShowEmailValidation(true)}
         />
-        {formErrors.email && (
+        {/* Show email validation on blur */}
+        <EmailValidation
+          email={email}
+          show={showEmailValidation}
+          className="mt-2"
+        />
+
+        {formErrors.email && email.length > 0 && (
           <span className="text-sm text-red-600">
             {formErrors.email.message}
           </span>
@@ -101,7 +118,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             )}
           </Button>
         </div>
-        {formErrors.password && (
+        {/* Show password requirements proactively */}
+        <PasswordRequirements password={password} className="mt-2" />
+
+        {/* Only show error if there's an error AND user has started typing */}
+        {formErrors.password && password.length > 0 && (
           <span className="text-sm text-red-600">
             {formErrors.password.message}
           </span>
@@ -139,7 +160,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             )}
           </Button>
         </div>
-        {formErrors.confirmPassword && (
+        {formErrors.confirmPassword && confirmPassword.length > 0 && (
           <span className="text-sm text-red-600">
             {formErrors.confirmPassword.message}
           </span>
