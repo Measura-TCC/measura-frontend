@@ -22,9 +22,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       onGetStarted();
     } else {
       if (isAuthenticated) {
-        window.open("/overview", "_blank");
+        window.location.href = "/overview";
       } else {
-        window.open("/login", "_blank");
+        window.location.href = "/login";
       }
     }
   };

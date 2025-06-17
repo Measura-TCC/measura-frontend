@@ -94,7 +94,8 @@ export const useAuth = () => {
     updatedAt: new Date().toISOString(),
   };
 
-  const user = store.user || mockUser;
+  // Only use mockUser if actually authenticated, don't fall back to mock
+  const user = store.isAuthenticated ? store.user || mockUser : null;
   const isAuthenticated = store.isAuthenticated;
 
   const login = async (loginData: LoginFormData) => {
@@ -123,7 +124,7 @@ export const useAuth = () => {
     });
 
     if (typeof window !== "undefined") {
-      window.location.href = "/";
+      window.location.href = "/login";
     }
   };
 
