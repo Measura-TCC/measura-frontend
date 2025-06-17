@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useFPA } from "@/core/hooks/fpa/useFPA";
-import type { FPATab } from "./components/FPATabs";
-import { FPATabs, FPAPageHeader, OrganizationAlert } from "./components";
-import { OverviewTab, EstimatesTab, ReferenceTab } from "./components/Tabs";
+import type { FPATab } from "./common/FPATabs";
+import { FPATabs, FPAPageHeader, OrganizationAlert } from "./common";
+import { OverviewTab, EstimatesTab, ReferenceTab } from "./common/Tabs";
 import { Estimate } from "@/core/types/fpa";
 
 export const FPAView: React.FC = () => {

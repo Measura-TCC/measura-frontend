@@ -7,6 +7,7 @@ import {
   Dropdown,
   DropdownItem,
 } from "@/presentation/components/primitives/Dropdown/Dropdown";
+import { Button } from "@/presentation/components/primitives/Button/Button";
 import { languages } from "@/presentation/components/common/LanguageSwitcher/utils/languageData";
 import { GlobeIcon } from "@/presentation/assets/icons";
 
@@ -39,7 +40,9 @@ export function LanguageSwitcher() {
   return (
     <Dropdown
       trigger={
-        <button
+        <Button
+          variant="secondary"
+          size="sm"
           className={cn(
             "inline-flex items-center justify-center space-x-2 rounded-md px-3 py-1.5 text-sm font-medium",
             "border border-border bg-background text-secondary hover:bg-background-secondary hover:text-default",
@@ -50,7 +53,7 @@ export function LanguageSwitcher() {
           <span>{currentLanguage?.flag}</span>
           <span>{currentLanguage?.code.toUpperCase()}</span>
           <GlobeIcon className="h-4 w-4 text-tertiary" />
-        </button>
+        </Button>
       }
       items={dropdownItems}
       align="right"

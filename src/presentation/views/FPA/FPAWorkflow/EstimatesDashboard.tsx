@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
-import { EstimateOverviewCard } from "./EstimateOverviewCard";
+import { EstimateOverviewCard } from "../common/EstimateOverviewCard";
 import { useEstimatesOverviews } from "@/core/hooks/fpa/estimates/useEstimate";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
 import {

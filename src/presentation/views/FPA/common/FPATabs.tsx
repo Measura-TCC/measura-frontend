@@ -1,3 +1,5 @@
+"use client";
+
 import { useTranslation } from "react-i18next";
 
 export type FPATab = "overview" | "estimates" | "reference";

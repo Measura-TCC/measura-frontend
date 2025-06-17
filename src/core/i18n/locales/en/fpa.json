@@ -22,13 +22,41 @@
   "noEstimatesYet": "No Estimates Yet",
   "noEstimatesDescription": "Create your first FPA estimate to start measuring function points and tracking project complexity.",
   "createFirstEstimate": "Create Your First Estimate",
-  "totalComponents": "components",
+  "totalComponents": "Total Components",
   "detailTabs": {
     "overview": "Overview",
     "components": "Components",
+    "costs": "Costs",
     "gsc": "GSC",
     "calculations": "Calculations",
     "analysis": "Analysis"
+  },
+  "errors": {
+    "loadingTitle": "Error Loading Estimate",
+    "loadingMessage": "Failed to load estimate. Please try again later."
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "backToComponentTypes": "Back to Component Types"
+  },
+  "messages": {
+    "noOverviewData": "No overview data available yet. Please add components and calculate function points."
+  },
+  "costs": {
+    "analysis": "Cost Analysis",
+    "totalCost": "Total Cost",
+    "costPerFunctionPoint": "Cost per Function Point",
+    "costPerPerson": "Cost per Person",
+    "hourlyRate": "Hourly Rate",
+    "forFunctionPoints": "For {{points}} function points",
+    "averageCostPerFP": "Average cost per FP",
+    "forTeamMembers": "For {{count}} team members",
+    "perHourPerPerson": "Per hour per person",
+    "effortBreakdown": "Effort Breakdown",
+    "totalEffort": "Total Effort",
+    "duration": "Duration",
+    "hoursPerPerson": "Hours per Person",
+    "hours": "h"
   },
   "components": {
     "title": "Add Components",
@@ -37,11 +65,16 @@
     "addEOComponents": "Add EO Components",
     "addEQComponents": "Add EQ Components",
     "addAIEComponents": "Add AIE Components",
-    "applicationLogicalInternalFiles": "Application Logical Internal files",
-    "externalInputs": "External Inputs",
-    "externalOutputs": "External Outputs",
-    "externalQueries": "External Queries",
-    "applicationInterfaceExternalFiles": "Application Interface External files",
+    "aliDescription": "Application Logical Internal files",
+    "eiDescription": "External Inputs",
+    "eoDescription": "External Outputs",
+    "eqDescription": "External Queries",
+    "aieDescription": "Application Interface External files",
+    "aliTitle": "Internal Logical Files (ALI)",
+    "aieTitle": "External Interface Files (AIE)",
+    "eiTitle": "External Inputs (EI)",
+    "eoTitle": "External Outputs (EO)",
+    "eqTitle": "External Queries (EQ)",
     "internalLogicalFiles": "Internal Logical Files (ILF)",
     "externalInterfaceFiles": "External Interface Files (EIF)",
     "externalInputsEI": "External Inputs (EI)",
@@ -58,13 +91,23 @@
   },
   "calculations": {
     "title": "Calculation Details",
+    "functionPointCalculations": "Function Point Calculations",
     "componentBreakdown": "Component Breakdown",
+    "componentSummary": "Component Summary",
     "totalDegreeOfInfluence": "Total Degree of Influence",
     "valueAdjustmentFactor": "Value Adjustment Factor",
+    "vaf": "VAF",
+    "fp": "FP",
     "unadjustedFunctionPoints": "Unadjusted Function Points",
     "adjustedFunctionPoints": "Adjusted Function Points",
     "productivityFactor": "Productivity Factor",
-    "totalComponents": "Total Components"
+    "totalComponents": "Total Components",
+    "internalLogicalFiles": "Internal Logical Files (ALI)",
+    "externalInterfaceFiles": "External Interface Files (AIE)",
+    "externalInputs": "External Inputs (EI)",
+    "externalOutputs": "External Outputs (EO)",
+    "externalQueries": "External Queries (EQ)",
+    "components": "components"
   },
   "analysis": {
     "title": "Risk Analysis",
@@ -137,31 +180,64 @@
     "totalEffort": "Total Effort",
     "totalCost": "Total Cost",
     "projectRisk": "Project Risk",
-    "adjustedFunctionPoints": "Adjusted Function Points",
-    "estimatedEffort": "Estimated Effort",
-    "calculated": "Calculated",
-    "totalComponents": "components",
-    "createdAt": "Created",
-    "finalized": "finalized",
-    "archived": "archived",
-    "projectConfiguration": "Project Configuration",
-    "componentSummary": "Component Summary",
-    "productivityMetrics": "Productivity Metrics",
     "teamSize": "Team Size",
     "people": "people",
     "dailyHours": "Daily Hours",
     "hourlyRate": "Hourly Rate",
     "productivity": "Productivity",
-    "hoursPerFP": "Hours/FP",
+    "hoursPerFP": "h/FP",
+    "totalComponents": "Total Components",
+    "valueAdjustmentFactor": "VAF",
+    "perFunctionPoint": "/FP",
     "fpPerDay": "FP/Day",
     "teamEfficiency": "Team Efficiency",
-    "days": "days",
-    "months": "months",
+    "high": "High",
+    "low": "Low",
+    "average": "Average",
+    "complexity": "Complexity",
     "performance": "Performance",
-    "average": "AVERAGE",
-    "low": "LOW",
-    "high": "HIGH",
-    "highPerformance": "HIGH Performance"
+    "months": "months",
+    "days": "days",
+    "projectConfiguration": "Project Configuration",
+    "componentSummary": "Component Summary",
+    "productivityMetrics": "Productivity Metrics",
+    "adjustedFunctionPoints": "Adjusted Function Points",
+    "estimatedEffort": "Estimated Effort",
+    "createdAt": "Created At",
+    "project": "Project",
+    "projectInfo": "Project Information",
+    "projectCreated": "Project Created"
+  },
+  "charts": {
+    "functionPointDistribution": "Function Point Distribution",
+    "complexityDistribution": "Complexity Distribution",
+    "costAnalysis": "Cost Analysis",
+    "costBreakdown": "Cost Breakdown",
+    "phaseDistribution": "Phase Distribution",
+    "gscRadarChart": "GSC Radar Chart",
+    "tooltips": {
+      "components": "Components",
+      "count": "Count",
+      "hours": "Hours",
+      "rating": "Rating"
+    },
+    "labels": {
+      "complexity": {
+        "Low": "Low",
+        "Average": "Average",
+        "High": "High"
+      },
+      "productivityMetrics": {
+        "Hours per Function Point": "Hours per Function Point",
+        "Function Points per Day": "Function Points per Day",
+        "Function Points per Person-Month": "Function Points per Person-Month"
+      },
+      "status": {
+        "HIGH": "HIGH",
+        "LOW": "LOW",
+        "MEDIUM": "MEDIUM"
+      }
+    }
   },
   "workflow": {
     "title": "FPA Workflow",
@@ -191,14 +267,11 @@
     "step6Title": "6. Calculate Function Points",
     "step6Description": "Calculate the total function points for your estimate with automatic complexity calculation",
     "calculateFP": "Calculate FP",
-    "completionTitle": "🎉 FPA Estimate Complete!",
+    "completionTitle": "FPA Estimate Complete!",
     "completionDescription": "Your Function Point Analysis estimate has been calculated successfully with automatic complexity calculation. You can continue adding more components or view the detailed results.",
     "createNewEstimate": "Create New Estimate",
     "viewAllEstimates": "View All Estimates",
     "failedToCalculate": "Failed to calculate function points",
-    "adjustedFunctionPoints": "Adjusted Function Points",
-    "estimatedEffort": "Estimated Effort",
-    "calculated": "Calculated",
     "components": {
       "title": "Components",
       "addALI": "Add ALI Components",
@@ -379,6 +452,11 @@
     "in_progress": "in progress",
     "draft": "draft"
   },
+  "countTypes": {
+    "DEVELOPMENT_PROJECT": "Development Project",
+    "ENHANCEMENT_PROJECT": "Enhancement Project",
+    "APPLICATION_BASELINE": "Application Baseline"
+  },
   "functionTypeLabels": {
     "EI": "External Input (EI)",
     "EO": "External Output (EO)",
@@ -439,7 +517,10 @@
     "dailyCapacity": "Daily Capacity",
     "people": "people",
     "createEstimate": "Create Estimate",
-    "creating": "Creating..."
+    "creating": "Creating...",
+    "saving": "Saving...",
+    "saveConfiguration": "Save Configuration",
+    "saveGSC": "Save GSC"
   },
   "estimatesDashboard": {
     "errorTitle": "Error Loading Estimates",

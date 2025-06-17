@@ -7,16 +7,17 @@ import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations
 import { EstimatesDashboard } from "./EstimatesDashboard";
 import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
 import { CreateOrganizationForm } from "../../Organizations/components/CreateOrganizationForm";
-import { CreateEstimateForm } from "./Forms/CreateEstimateForm";
-import { CreateGSCForm } from "./Forms/CreateGSCForm";
-import { CreateProjectConfigurationForm } from "./Forms/CreateProjectConfigurationForm";
-import { CreateALIForm } from "./Forms/CreateALIForm";
-import { CreateEIForm } from "./Forms/CreateEIForm";
-import { CreateEOForm } from "./Forms/CreateEOForm";
-import { CreateEQForm } from "./Forms/CreateEQForm";
-import { CreateAIEForm } from "./Forms/CreateAIEForm";
+import { CreateEstimateForm } from "./components/CreateEstimateForm";
+import { CreateGSCForm } from "./components/CreateGSCForm";
+import { CreateProjectConfigurationForm } from "./components/CreateProjectConfigurationForm";
+import { CreateALIForm } from "./components/CreateALIForm";
+import { CreateEIForm } from "./components/CreateEIForm";
+import { CreateEOForm } from "./components/CreateEOForm";
+import { CreateEQForm } from "./components/CreateEQForm";
+import { CreateAIEForm } from "./components/CreateAIEForm";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
 import { OfficeIcon } from "@/presentation/assets/icons";
+import { Button } from "@/presentation/components/primitives/Button/Button";
 import {
   useEstimateActions,
   useEstimate,
@@ -263,12 +264,14 @@ export const FPAWorkflow = () => {
                       ))}
                     </select>
                     {state.selectedProjectId && (
-                      <button
+                      <Button
                         onClick={handleProjectSelected}
+                        variant="primary"
+                        size="md"
                         className="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
                       >
                         {t("workflow.nextCreateEstimate")}
-                      </button>
+                      </Button>
                     )}
                   </div>
                 )}
@@ -411,25 +414,29 @@ export const FPAWorkflow = () => {
                     desc: t("workflow.components.aieDescription"),
                   },
                 ].map(({ type, label, desc }) => (
-                  <button
+                  <Button
                     key={type}
                     onClick={() => setSelectedComponentType(type)}
+                    variant="ghost"
+                    size="md"
                     className="p-4 border border-border rounded-lg hover:border-primary/30 hover:shadow-sm transition-all text-left"
                   >
                     <h3 className="font-medium text-default mb-2">{label}</h3>
                     <p className="text-sm text-secondary">{desc}</p>
-                  </button>
+                  </Button>
                 ))}
               </div>
             ) : (
               <div>
                 <div className="mb-4">
-                  <button
+                  <Button
                     onClick={() => setSelectedComponentType(null)}
+                    variant="secondary"
+                    size="md"
                     className="px-4 py-2 text-primary border border-primary rounded-md hover:bg-primary/5 transition-colors"
                   >
                     {t("workflow.backToComponentTypes")}
-                  </button>
+                  </Button>
                 </div>
                 {state.selectedComponentType === "ALI" && (
                   <CreateALIForm
@@ -465,12 +472,14 @@ export const FPAWorkflow = () => {
             )}
 
             <div className="mt-6 pt-6 border-t border-border">
-              <button
+              <Button
                 onClick={() => setCurrentStep(4)}
+                variant="primary"
+                size="md"
                 className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
               >
                 {t("workflow.nextGSC")}
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -513,12 +522,14 @@ export const FPAWorkflow = () => {
 
             {!state.isCalculationComplete ? (
               <div className="text-center py-8">
-                <button
+                <Button
                   onClick={handleCalculateFP}
+                  variant="primary"
+                  size="lg"
                   className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors text-lg font-medium"
                 >
                   {t("workflow.calculateFP")}
-                </button>
+                </Button>
               </div>
             ) : (
               <div className="text-center py-8">
@@ -544,18 +555,22 @@ export const FPAWorkflow = () => {
                   {t("workflow.completionDescription")}
                 </p>
                 <div className="space-x-4">
-                  <button
+                  <Button
                     onClick={handleCancel}
+                    variant="primary"
+                    size="md"
                     className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
                   >
                     {t("workflow.createNewEstimate")}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => setActiveTab("created")}
+                    variant="secondary"
+                    size="md"
                     className="px-4 py-2 bg-secondary text-white rounded-md hover:bg-secondary-dark transition-colors"
                   >
                     {t("workflow.viewAllEstimates")}
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
@@ -574,8 +589,10 @@ export const FPAWorkflow = () => {
 
       <div className="border-b border-border mb-6">
         <nav className="-mb-px flex space-x-8">
-          <button
+          <Button
             onClick={() => setActiveTab("new")}
+            variant="ghost"
+            size="sm"
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === "new"
                 ? "border-primary text-primary"
@@ -583,9 +600,11 @@ export const FPAWorkflow = () => {
             }`}
           >
             {t("tabs.newEstimate")}
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setActiveTab("created")}
+            variant="ghost"
+            size="sm"
             className={`py-2 px-1 border-b-2 font-medium text-sm ${
               activeTab === "created"
                 ? "border-primary text-primary"
@@ -593,7 +612,7 @@ export const FPAWorkflow = () => {
             }`}
           >
             {t("tabs.createdEstimates")}
-          </button>
+          </Button>
         </nav>
       </div>
 

@@ -87,9 +87,11 @@ export const LoginCard: React.FC<LoginCardProps> = ({
                   disabled={isLoading}
                   className="pr-10"
                 />
-                <button
+                <Button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  variant="ghost"
+                  size="sm"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 hover:cursor-pointer"
                   disabled={isLoading}
                 >
@@ -98,7 +100,7 @@ export const LoginCard: React.FC<LoginCardProps> = ({
                   ) : (
                     <EyeIcon className="w-5 h-5" />
                   )}
-                </button>
+                </Button>
               </div>
               {formErrors.password && (
                 <span className="text-sm text-red-600">

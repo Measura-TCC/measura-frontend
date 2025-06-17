@@ -26,9 +26,37 @@
   "detailTabs": {
     "overview": "Visão Geral",
     "components": "Componentes",
+    "costs": "Custos",
     "gsc": "CGS",
     "calculations": "Cálculos",
     "analysis": "Análise"
+  },
+  "errors": {
+    "loadingTitle": "Erro ao Carregar Estimativa",
+    "loadingMessage": "Falha ao carregar estimativa. Tente novamente mais tarde."
+  },
+  "actions": {
+    "cancel": "Cancelar",
+    "backToComponentTypes": "Voltar aos Tipos de Componentes"
+  },
+  "messages": {
+    "noOverviewData": "Nenhum dado de visão geral disponível ainda. Adicione componentes e calcule pontos de função."
+  },
+  "costs": {
+    "analysis": "Análise de Custos",
+    "totalCost": "Custo Total",
+    "costPerFunctionPoint": "Custo por Ponto de Função",
+    "costPerPerson": "Custo por Pessoa",
+    "hourlyRate": "Taxa Horária",
+    "forFunctionPoints": "Para {{points}} pontos de função",
+    "averageCostPerFP": "Custo médio por PF",
+    "forTeamMembers": "Para {{count}} membros da equipe",
+    "perHourPerPerson": "Por hora por pessoa",
+    "effortBreakdown": "Divisão do Esforço",
+    "totalEffort": "Esforço Total",
+    "duration": "Duração",
+    "hoursPerPerson": "Horas por Pessoa",
+    "hours": "h"
   },
   "components": {
     "title": "Adicionar Componentes",
@@ -37,11 +65,16 @@
     "addEOComponents": "Adicionar Componentes SE",
     "addEQComponents": "Adicionar Componentes CE",
     "addAIEComponents": "Adicionar Componentes AIE",
-    "applicationLogicalInternalFiles": "Arquivos Lógicos Internos da aplicação",
-    "externalInputs": "Entradas Externas",
-    "externalOutputs": "Saídas Externas",
-    "externalQueries": "Consultas Externas",
-    "applicationInterfaceExternalFiles": "Arquivos de Interface Externa da aplicação",
+    "aliDescription": "Arquivos Lógicos Internos da aplicação",
+    "eiDescription": "Entradas Externas",
+    "eoDescription": "Saídas Externas",
+    "eqDescription": "Consultas Externas",
+    "aieDescription": "Arquivos de Interface Externa da aplicação",
+    "aliTitle": "Arquivos Lógicos Internos (ALI)",
+    "aieTitle": "Arquivos de Interface Externa (AIE)",
+    "eiTitle": "Entradas Externas (EE)",
+    "eoTitle": "Saídas Externas (SE)",
+    "eqTitle": "Consultas Externas (CE)",
     "internalLogicalFiles": "Arquivos Lógicos Internos (ALI)",
     "externalInterfaceFiles": "Arquivos de Interface Externa (AIE)",
     "externalInputsEI": "Entradas Externas (EE)",
@@ -58,13 +91,23 @@
   },
   "calculations": {
     "title": "Detalhes dos Cálculos",
+    "functionPointCalculations": "Cálculos de Pontos de Função",
     "componentBreakdown": "Divisão dos Componentes",
+    "componentSummary": "Resumo dos Componentes",
     "totalDegreeOfInfluence": "Grau Total de Influência",
-    "valueAdjustmentFactor": "Fator de Ajuste de Valor",
+    "valueAdjustmentFactor": "Fator de Ajuste",
+    "vaf": "FA",
+    "fp": "PF",
     "unadjustedFunctionPoints": "Pontos de Função Não Ajustados",
     "adjustedFunctionPoints": "Pontos de Função Ajustados",
     "productivityFactor": "Fator de Produtividade",
-    "totalComponents": "Total de Componentes"
+    "totalComponents": "Total de Componentes",
+    "internalLogicalFiles": "Arquivos Lógicos Internos (ALI)",
+    "externalInterfaceFiles": "Arquivos de Interface Externa (AIE)",
+    "externalInputs": "Entradas Externas (EE)",
+    "externalOutputs": "Saídas Externas (SE)",
+    "externalQueries": "Consultas Externas (CE)",
+    "components": "componentes"
   },
   "analysis": {
     "title": "Análise de Risco",
@@ -140,28 +183,65 @@
     "adjustedFunctionPoints": "Pontos de Função Ajustados",
     "estimatedEffort": "Esforço Estimado",
     "calculated": "Calculado",
-    "totalComponents": "componentes",
+    "totalComponents": "Total de Componentes",
     "createdAt": "Criado",
     "finalized": "finalizado",
     "archived": "arquivado",
     "projectConfiguration": "Configuração do Projeto",
     "componentSummary": "Resumo dos Componentes",
     "productivityMetrics": "Métricas de Produtividade",
+    "valueAdjustmentFactor": "FA",
     "teamSize": "Tamanho da Equipe",
     "people": "pessoas",
     "dailyHours": "Horas Diárias",
-    "hourlyRate": "Valor da Hora De Trabalho (R$)",
+    "hourlyRate": "Taxa Horária",
     "productivity": "Produtividade",
-    "hoursPerFP": "Horas/PF",
+    "hoursPerFP": "h/PF",
+    "perFunctionPoint": "/PF",
     "fpPerDay": "PF/Dia",
     "teamEfficiency": "Eficiência da Equipe",
     "days": "dias",
     "months": "meses",
-    "performance": "Performance",
-    "average": "MÉDIA",
-    "low": "BAIXA",
-    "high": "ALTA",
-    "highPerformance": "ALTA Performance"
+    "performance": "Desempenho",
+    "average": "Média",
+    "complexity": "Complexidade",
+    "low": "Baixo",
+    "high": "Alto",
+    "highPerformance": "ALTA Performance",
+    "project": "Projeto",
+    "projectInfo": "Informações do Projeto",
+    "projectCreated": "Projeto Criado"
+  },
+  "charts": {
+    "functionPointDistribution": "Distribuição de Pontos de Função",
+    "complexityDistribution": "Distribuição da Complexidade",
+    "costAnalysis": "Análise de Custos",
+    "costBreakdown": "Divisão dos Custos",
+    "phaseDistribution": "Distribuição das Fases",
+    "gscRadarChart": "Gráfico Radar CGS",
+    "tooltips": {
+      "components": "Componentes",
+      "count": "Contagem",
+      "hours": "Horas",
+      "rating": "Avaliação"
+    },
+    "labels": {
+      "complexity": {
+        "Low": "Baixa",
+        "Average": "Média",
+        "High": "Alta"
+      },
+      "productivityMetrics": {
+        "Hours per Function Point": "Horas por Ponto de Função",
+        "Function Points per Day": "Pontos de Função por Dia",
+        "Function Points per Person-Month": "Pontos de Função por Pessoa/Mês"
+      },
+      "status": {
+        "HIGH": "ALTO",
+        "LOW": "BAIXO",
+        "MEDIUM": "MÉDIO"
+      }
+    }
   },
   "workflow": {
     "title": "Fluxo de Trabalho APF",
@@ -191,7 +271,7 @@
     "step6Title": "6. Calcular Pontos de Função",
     "step6Description": "Calcule o total de pontos de função para sua estimativa com cálculo automático de complexidade",
     "calculateFP": "Calcular PF",
-    "completionTitle": "🎉 Estimativa APF Concluída!",
+    "completionTitle": "Estimativa APF Concluída!",
     "completionDescription": "Sua estimativa de Análise de Pontos de Função foi calculada com sucesso com cálculo automático de complexidade. Você pode continuar adicionando mais componentes ou visualizar os resultados detalhados.",
     "createNewEstimate": "Criar Nova Estimativa",
     "viewAllEstimates": "Ver Todas as Estimativas",
@@ -274,7 +354,7 @@
     "editGSC": "Editar CGS",
     "cancel": "Cancelar",
     "totalDegreeOfInfluence": "Grau Total de Influência",
-    "valueAdjustmentFactor": "Fator de Ajuste de Valor",
+    "valueAdjustmentFactor": "Fator de Ajuste",
     "influenceLevel": "Nível de Influência",
     "outOf70": "de 70",
     "increasesComplexity": "Aumenta complexidade",
@@ -379,6 +459,11 @@
     "in_progress": "em progresso",
     "draft": "rascunho"
   },
+  "countTypes": {
+    "DEVELOPMENT_PROJECT": "Projeto de Desenvolvimento",
+    "ENHANCEMENT_PROJECT": "Projeto de Melhoria",
+    "APPLICATION_BASELINE": "Linha de Base da Aplicação"
+  },
   "functionTypeLabels": {
     "EI": "Entrada Externa (EI)",
     "EO": "Saída Externa (EO)",
@@ -439,7 +524,10 @@
     "dailyCapacity": "Capacidade Diária",
     "people": "pessoas",
     "createEstimate": "Criar Estimativa",
-    "creating": "Criando..."
+    "creating": "Criando...",
+    "saving": "Salvando...",
+    "saveConfiguration": "Salvar Configuração",
+    "saveGSC": "Salvar CGS"
   },
   "estimatesDashboard": {
     "errorTitle": "Erro ao Carregar Estimativas",

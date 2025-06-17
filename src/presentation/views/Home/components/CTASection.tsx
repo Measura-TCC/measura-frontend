@@ -46,12 +46,14 @@ export const CTASection: React.FC<CTASectionProps> = ({
             {error && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg animate-slide-up">
                 <p className="text-red-600 text-sm">{error}</p>
-                <button
+                <Button
                   onClick={onClearError}
+                  variant="ghost"
+                  size="sm"
                   className="text-red-600 hover:text-red-800 text-sm underline mt-1"
                 >
                   {t("dismiss")}
-                </button>
+                </Button>
               </div>
             )}
 

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { estimateService } from "@/core/services/estimateService";
+import { Button } from "@/presentation/components/primitives/Button/Button";
 
 const projectConfigSchema = z.object({
   averageDailyWorkingHours: z
@@ -234,15 +235,11 @@ export const CreateProjectConfigurationForm = ({
       </fieldset>
 
       <div className="flex justify-end space-x-3">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
+        <Button type="submit" disabled={isSubmitting} variant="primary">
           {isSubmitting
             ? t("estimateForm.saving")
             : t("estimateForm.saveConfiguration")}
-        </button>
+        </Button>
       </div>
     </form>
   );

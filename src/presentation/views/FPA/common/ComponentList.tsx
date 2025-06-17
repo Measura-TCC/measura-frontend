@@ -139,7 +139,7 @@ export const ComponentList = ({
                     )}
                     {component.functionPoints !== undefined && (
                       <span className="text-sm font-semibold text-indigo-600">
-                        {component.functionPoints} FP
+                        {component.functionPoints} {t("calculations.fp")}
                       </span>
                     )}
                   </div>

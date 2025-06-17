@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { createGSCSchema, type CreateGSCData } from "@/core/schemas/fpa";
 import { useState } from "react";
+import { Button } from "@/presentation/components/primitives/Button/Button";
 
 interface CreateGSCFormProps {
   onSuccess?: (gsc: number[]) => void;
@@ -209,13 +210,9 @@ export const CreateGSCForm = ({
       )}
 
       <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? "Saving..." : "Save GSC"}
-        </button>
+        <Button type="submit" disabled={isSubmitting} variant="primary">
+          {isSubmitting ? t("estimateForm.saving") : t("estimateForm.saveGSC")}
+        </Button>
       </div>
     </form>
   );

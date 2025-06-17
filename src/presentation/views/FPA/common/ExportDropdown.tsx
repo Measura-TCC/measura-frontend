@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useReports, ReportOptions } from "@/core/hooks/fpa/reports/useReports";
 import { DownloadIcon, ChevronDownIcon } from "@/presentation/assets/icons";
+import { Button } from "@/presentation/components/primitives/Button/Button";
 
 interface ExportDropdownProps {
   estimateId: string;
@@ -55,9 +56,11 @@ export const ExportDropdown = ({
 
   return (
     <div className="relative">
-      <button
+      <Button
         onClick={() => setIsOpen(!isOpen)}
         disabled={isLoading}
+        variant="primary"
+        size="md"
         className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {isLoading ? (
@@ -72,7 +75,7 @@ export const ExportDropdown = ({
             <ChevronDownIcon className="w-4 h-4 ml-2" />
           </>
         )}
-      </button>
+      </Button>
 
       {isOpen && (
         <>
@@ -91,24 +94,30 @@ export const ExportDropdown = ({
                   {t("exportDropdown.detailedReport")}
                 </div>
                 <div className="flex space-x-1 px-3">
-                  <button
+                  <Button
                     onClick={() => handleExport("detailed", "pdf")}
+                    variant="ghost"
+                    size="sm"
                     className="flex-1 px-2 py-1 text-xs bg-red-50 text-red-700 rounded hover:bg-red-100 transition-colors"
                   >
                     {t("exportDropdown.pdf")}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => handleExport("detailed", "excel")}
+                    variant="ghost"
+                    size="sm"
                     className="flex-1 px-2 py-1 text-xs bg-green-50 text-green-700 rounded hover:bg-green-100 transition-colors"
                   >
                     {t("exportDropdown.excel")}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => handleExport("detailed", "word")}
+                    variant="ghost"
+                    size="sm"
                     className="flex-1 px-2 py-1 text-xs bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors"
                   >
                     {t("exportDropdown.word")}
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -117,24 +126,30 @@ export const ExportDropdown = ({
                   {t("exportDropdown.summaryReport")}
                 </div>
                 <div className="flex space-x-1 px-3">
-                  <button
+                  <Button
                     onClick={() => handleExport("summary", "pdf")}
+                    variant="ghost"
+                    size="sm"
                     className="flex-1 px-2 py-1 text-xs bg-red-50 text-red-700 rounded hover:bg-red-100 transition-colors"
                   >
                     {t("exportDropdown.pdf")}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => handleExport("summary", "excel")}
+                    variant="ghost"
+                    size="sm"
                     className="flex-1 px-2 py-1 text-xs bg-green-50 text-green-700 rounded hover:bg-green-100 transition-colors"
                   >
                     {t("exportDropdown.excel")}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => handleExport("summary", "word")}
+                    variant="ghost"
+                    size="sm"
                     className="flex-1 px-2 py-1 text-xs bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors"
                   >
                     {t("exportDropdown.word")}
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -149,24 +164,30 @@ export const ExportDropdown = ({
                   {t("exportDropdown.completeExport")}
                 </div>
                 <div className="flex space-x-1 px-3">
-                  <button
+                  <Button
                     onClick={() => handleExport("export", "pdf")}
+                    variant="ghost"
+                    size="sm"
                     className="flex-1 px-2 py-1 text-xs bg-red-50 text-red-700 rounded hover:bg-red-100 transition-colors"
                   >
                     {t("exportDropdown.pdf")}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => handleExport("export", "excel")}
+                    variant="ghost"
+                    size="sm"
                     className="flex-1 px-2 py-1 text-xs bg-green-50 text-green-700 rounded hover:bg-green-100 transition-colors"
                   >
                     {t("exportDropdown.excel")}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => handleExport("export", "word")}
+                    variant="ghost"
+                    size="sm"
                     className="flex-1 px-2 py-1 text-xs bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors"
                   >
                     {t("exportDropdown.word")}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>

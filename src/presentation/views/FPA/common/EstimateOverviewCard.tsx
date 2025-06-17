@@ -138,7 +138,7 @@ export const EstimateOverviewCard = ({
           {estimate.valueAdjustmentFactor &&
             estimate.valueAdjustmentFactor !== 1 && (
               <div className="text-right">
-                <p className="text-sm text-gray-600">VAF</p>
+                <p className="text-sm text-gray-600">{t("calculations.vaf")}</p>
                 <p className="text-lg font-semibold text-blue-600">
                   {estimate.valueAdjustmentFactor?.toFixed(2)}
                 </p>
@@ -151,7 +151,7 @@ export const EstimateOverviewCard = ({
               {t("workflow.estimatedEffort", "Estimated Effort")}
             </p>
             <p className="text-sm font-medium text-indigo-700">
-              {estimate.estimatedEffortHours} hours
+              {estimate.estimatedEffortHours} {t("costs.hours")}
             </p>
           </div>
         )}
