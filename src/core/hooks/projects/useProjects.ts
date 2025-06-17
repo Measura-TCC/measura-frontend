@@ -11,17 +11,13 @@ interface CreateProjectApiRequest {
   teamMembers?: string[];
 }
 
-export const useProjects = (params?: { organizationId?: string }) => {
-  const key = params?.organizationId
-    ? `/projects?organizationId=${params.organizationId}`
-    : "/projects";
-
+export const useProjects = () => {
   const {
     data: projects,
     error,
     isLoading: isLoadingProjects,
     mutate: mutateProjects,
-  } = useSWR(key, () => projectService.getAll(params));
+  } = useSWR("/projects", () => projectService.getAll());
 
   return {
     projects,

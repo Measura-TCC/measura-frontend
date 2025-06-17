@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
 
-export type Step = 1 | 2 | 3 | 4 | 5;
+export type Step = 1 | 2 | 3 | 4 | 5 | 6;
 export type ComponentType = "ALI" | "EI" | "EO" | "EQ" | "AIE";
 
 export interface WorkflowState {
@@ -23,9 +23,9 @@ export interface WorkflowState {
     averageDailyWorkingHours?: number;
     teamSize?: number;
     hourlyRateBRL?: number;
+    productivityFactor?: number;
   };
   step4Data: {
-    productivityFactor?: number;
     generalSystemCharacteristics?: number[];
     notes?: string;
   };
@@ -42,10 +42,9 @@ const DEFAULT_STATE: WorkflowState = {
     averageDailyWorkingHours: 8,
     teamSize: 4,
     hourlyRateBRL: 150,
-  },
-  step4Data: {
     productivityFactor: 10,
   },
+  step4Data: {},
 };
 
 const STORAGE_KEY = "fpa-workflow-state";
@@ -79,11 +78,42 @@ export const useWorkflowState = () => {
     });
   }, []);
 
+  const canNavigateToStep = useCallback(
+    (step: Step) => {
+      if (step === 1) return true;
+
+      if (step === 2) {
+        return state.selectedProjectId !== null;
+      }
+
+      if (step === 3) {
+        return state.createdEstimate !== null && state.currentStep >= 2;
+      }
+
+      if (step === 4) {
+        return state.createdEstimate !== null && state.currentStep >= 3;
+      }
+
+      if (step === 5) {
+        return state.createdEstimate !== null && state.currentStep >= 4;
+      }
+
+      if (step === 6) {
+        return state.createdEstimate !== null && state.currentStep >= 5;
+      }
+
+      return false;
+    },
+    [state.selectedProjectId, state.createdEstimate, state.currentStep]
+  );
+
   const setCurrentStep = useCallback(
     (step: Step) => {
-      saveState({ currentStep: step });
+      if (canNavigateToStep(step)) {
+        saveState({ currentStep: step });
+      }
     },
-    [saveState]
+    [saveState, canNavigateToStep]
   );
 
   const setSelectedProjectId = useCallback(
@@ -146,18 +176,6 @@ export const useWorkflowState = () => {
       // Ignore error
     }
   }, []);
-
-  const canNavigateToStep = useCallback(
-    (step: Step) => {
-      if (step === 1) return true;
-      if (step === 2) return state.selectedProjectId !== null;
-      if (step === 3) return state.createdEstimate !== null;
-      if (step === 4) return state.createdEstimate !== null;
-      if (step === 5) return state.createdEstimate !== null;
-      return false;
-    },
-    [state.selectedProjectId, state.createdEstimate]
-  );
 
   return {
     state,

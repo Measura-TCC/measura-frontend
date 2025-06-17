@@ -14,13 +14,15 @@ import { UserRole } from "@/core/types";
 import { Button } from "@/presentation/components/primitives";
 import { useAuth } from "@/core/hooks/auth/useAuth";
 import { MenuIcon, XIcon } from "@/presentation/assets/icons";
+import { useDecodeRole } from "@/core/hooks/common/useDecodeRole";
+import { LanguageSwitcher } from "@/presentation/components/common/LanguageSwitcher/LanguageSwitcher";
 
 export const Sidebar = () => {
   const pathname = usePathname();
   const { user } = useAuth();
   const { t } = useTranslation(["nav", "dashboard", "common"]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
+  const decodedRole = useDecodeRole(user?.role as UserRole);
   const translateKey = (key: string): string => {
     switch (key) {
       case "nav.overview":
@@ -89,6 +91,24 @@ export const Sidebar = () => {
               {filteredNavigation.map((item) => {
                 const isActive = isActiveNavigation(pathname, item.href);
                 const Icon = item.icon;
+                const isDisabled = item.disabled;
+
+                if (isDisabled) {
+                  return (
+                    <div
+                      key={item.name}
+                      className={cn("sidebar-nav-item", "disabled")}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span>{item.name}</span>
+                      {item.badge && (
+                        <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-gray-400 text-xs text-white">
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
+                  );
+                }
 
                 return (
                   <Link
@@ -111,9 +131,12 @@ export const Sidebar = () => {
           </nav>
 
           <div className="p-4 border-t border-border">
+            <div className="lg:hidden mb-4">
+              <LanguageSwitcher />
+            </div>
             <div className="text-xs text-muted">
               <p>
-                {t("dashboard:currentRole")}: {user?.role || "Guest"}
+                {t("dashboard:currentRole")}: {decodedRole || "Guest"}
               </p>
               <p>
                 {t("common:user")}: {user?.username || "Anonymous"}

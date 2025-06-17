@@ -102,8 +102,10 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
               </span>
             </Button>
 
-            <button
+            <Button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              variant="ghost"
+              size="sm"
               className="md:hidden p-2 text-secondary hover:text-primary transition-all duration-300"
               aria-label="Toggle mobile menu"
             >
@@ -123,7 +125,7 @@ export const HeaderSection: React.FC<HeaderSectionProps> = ({
                   }`}
                 />
               </div>
-            </button>
+            </Button>
           </div>
         </div>
 

@@ -6,7 +6,7 @@
   "password": "Senha",
   "confirmPassword": "Confirmar Senha",
   "role": "Função",
-  "projectManager": "Gerente de Projeto",
+  "projectManager": "Gerente de Projetos",
   "projectManagerDescription": "Gerenciar projetos e equipes",
   "metricsAnalyst": "Analista de Medição",
   "metricsAnalystDescription": "Analisar e medir métricas de software",
@@ -22,5 +22,32 @@
   "passwordsDoNotMatch": "As senhas não coincidem",
   "passwordTooShort": "A senha deve ter pelo menos 8 caracteres",
   "registrationFailed": "Falha no registro. Tente novamente.",
-  "termsAgreement": "Ao se cadastrar, você concorda com nossos termos de serviço e política de privacidade"
+  "termsAgreement": "Ao se cadastrar, você concorda com nossos termos de serviço e política de privacidade",
+  "passwordRequirements": {
+    "title": "A senha deve conter:",
+    "minLength": "Pelo menos 8 caracteres",
+    "uppercase": "Pelo menos uma letra maiúscula (A-Z)",
+    "lowercase": "Pelo menos uma letra minúscula (a-z)",
+    "number": "Pelo menos um número (0-9)",
+    "special": "Pelo menos um caractere especial (@$!%*?&)"
+  },
+  "emailValidation": {
+    "valid": "Formato de email válido",
+    "invalid": "Digite um endereço de email válido (ex: usuario@exemplo.com)"
+  },
+  "passwordMatch": {
+    "match": "Senhas coincidem",
+    "noMatch": "Senhas não coincidem"
+  },
+  "validation": {
+    "usernameMinLength": "Nome de usuário deve ter pelo menos 3 caracteres",
+    "emailInvalid": "Endereço de email inválido",
+    "passwordMinLength": "A senha deve ter pelo menos 8 caracteres",
+    "passwordUppercase": "A senha deve conter pelo menos uma letra maiúscula",
+    "passwordLowercase": "A senha deve conter pelo menos uma letra minúscula",
+    "passwordNumber": "A senha deve conter pelo menos um número",
+    "passwordSpecial": "A senha deve conter pelo menos um caractere especial",
+    "passwordsDontMatch": "As senhas não coincidem",
+    "confirmPasswordRequired": "Por favor, confirme sua senha"
+  }
 }

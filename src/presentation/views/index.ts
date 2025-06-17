@@ -1,3 +1,4 @@
+export { AccountView } from "./Account";
 export { HomeView } from "./Home/Home";
 export { OverviewView } from "./Overview/Overview";
 export { LoginView } from "./Login/Login";

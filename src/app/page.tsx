@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { HomeView } from '@/presentation/views';
-import { useAuth } from '@/core/hooks/auth/useAuth';
+import { useRouter } from "next/navigation";
+import { HomeView } from "@/presentation/views";
+import { useAuth } from "@/core/hooks/auth/useAuth";
 
 const Home = () => {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
 
   return (
-    <HomeView 
+    <HomeView
       isAuthenticated={isAuthenticated}
       isLoading={false}
-      onLogin={() => router.push('/login')}
+      onLogin={() => router.push("/login")}
     />
   );
 };
 
-export default Home; 
+export default Home;

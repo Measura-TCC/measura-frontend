@@ -14,7 +14,6 @@ export interface Plan {
   progress: number;
   goalsCount: number;
   metricsCount: number;
-  organizationId?: string;
   gqmPhase?: GQMPhase;
 }
 
@@ -30,7 +29,6 @@ export interface CreatePlanRequest {
   description: string;
   type: PlanType;
   owner: string;
-  organizationId: string;
 }
 
 export interface UpdatePlanRequest {

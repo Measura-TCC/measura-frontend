@@ -1,7 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { UseFormReturn } from "react-hook-form";
+import { useState } from "react";
 import { Button, Input } from "@/presentation/components/primitives";
+import { EyeIcon, EyeOffIcon } from "@/presentation/assets/icons";
 import { RegisterFormData, RoleOption } from "@/core/types/register";
+import { PasswordRequirements } from "./PasswordRequirements";
+import { EmailValidation } from "./EmailValidation";
+import { PasswordMatch } from "./PasswordMatch";
 
 interface RegisterFormProps {
   registerForm: UseFormReturn<RegisterFormData>;
@@ -21,7 +26,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   onSubmit,
 }) => {
   const { t } = useTranslation("register");
-  const { register, handleSubmit } = registerForm;
+  const { register, handleSubmit, watch } = registerForm;
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showEmailValidation, setShowEmailValidation] = useState(false);
+  const [showPasswordMatch, setShowPasswordMatch] = useState(false);
+
+  const password = watch("password") || "";
+  const username = watch("username") || "";
+  const email = watch("email") || "";
+  const confirmPassword = watch("confirmPassword") || "";
 
   const handleFormSubmit = async (data: RegisterFormData) => {
     try {
@@ -44,7 +58,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           placeholder={t("enterFullName")}
           disabled={isRegistering}
         />
-        {formErrors.username && (
+        {formErrors.username && username.length > 0 && (
           <span className="text-sm text-red-600">
             {formErrors.username.message}
           </span>
@@ -61,8 +75,16 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           type="email"
           placeholder={t("enterEmail")}
           disabled={isRegistering}
+          onBlur={() => setShowEmailValidation(true)}
         />
-        {formErrors.email && (
+
+        <EmailValidation
+          email={email}
+          show={showEmailValidation}
+          className="mt-2"
+        />
+
+        {formErrors.email && email.length > 0 && (
           <span className="text-sm text-red-600">
             {formErrors.email.message}
           </span>
@@ -73,14 +95,33 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         <label htmlFor="password" className="text-sm font-medium text-default">
           {t("password")}
         </label>
-        <Input
-          {...register("password")}
-          id="password"
-          type="password"
-          placeholder={t("createPassword")}
-          disabled={isRegistering}
-        />
-        {formErrors.password && (
+        <div className="relative">
+          <Input
+            {...register("password")}
+            id="password"
+            type={showPassword ? "text" : "password"}
+            placeholder={t("createPassword")}
+            disabled={isRegistering}
+            className="pr-10"
+          />
+          <Button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            variant="ghost"
+            size="sm"
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 hover:cursor-pointer"
+            disabled={isRegistering}
+          >
+            {showPassword ? (
+              <EyeOffIcon className="w-5 h-5" />
+            ) : (
+              <EyeIcon className="w-5 h-5" />
+            )}
+          </Button>
+        </div>
+        <PasswordRequirements password={password} className="mt-2" />
+
+        {formErrors.password && password.length > 0 && (
           <span className="text-sm text-red-600">
             {formErrors.password.message}
           </span>
@@ -94,14 +135,40 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         >
           {t("confirmPassword")}
         </label>
-        <Input
-          {...register("confirmPassword")}
-          id="confirmPassword"
-          type="password"
-          placeholder={t("confirmPassword")}
-          disabled={isRegistering}
+        <div className="relative">
+          <Input
+            {...register("confirmPassword")}
+            id="confirmPassword"
+            type={showConfirmPassword ? "text" : "password"}
+            placeholder={t("confirmPassword")}
+            disabled={isRegistering}
+            className="pr-10"
+            onBlur={() => setShowPasswordMatch(true)}
+          />
+          <Button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            variant="ghost"
+            size="sm"
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 hover:cursor-pointer"
+            disabled={isRegistering}
+          >
+            {showConfirmPassword ? (
+              <EyeOffIcon className="w-5 h-5" />
+            ) : (
+              <EyeIcon className="w-5 h-5" />
+            )}
+          </Button>
+        </div>
+
+        <PasswordMatch
+          password={password}
+          confirmPassword={confirmPassword}
+          show={showPasswordMatch}
+          className="mt-2"
         />
-        {formErrors.confirmPassword && (
+
+        {formErrors.confirmPassword && confirmPassword.length > 0 && (
           <span className="text-sm text-red-600">
             {formErrors.confirmPassword.message}
           </span>

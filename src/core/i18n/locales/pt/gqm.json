@@ -32,7 +32,7 @@
       "purpose": "Analisar",
       "issue": "produtividade",
       "object": "processo de desenvolvimento",
-      "viewpoint": "gerente de projeto",
+      "viewpoint": "gerente de projetos",
       "context": "projeto de desenvolvimento de software"
     },
     "quality": {
@@ -115,4 +115,4 @@
       "description": "Métrica de qualidade medindo tempo médio para resolver defeitos"
     }
   ]
-} 
+}

@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { PlanTab } from "@/core/types/plans";
+import { Button } from "@/presentation/components/primitives/Button/Button";
 
 interface PlansTabsProps {
   activeTab: PlanTab;
@@ -41,10 +42,12 @@ export const PlansTabs: React.FC<PlansTabsProps> = ({
     <div className="border-b border-gray-200 dark:border-dark-border mb-6">
       <nav className="-mb-px flex space-x-8">
         {tabConfig.map(({ id, label, disabled }) => (
-          <button
+          <Button
             key={id}
             onClick={() => !disabled && onTabChange(id)}
             disabled={disabled}
+            variant="ghost"
+            size="sm"
             className={`${
               activeTab === id
                 ? "border-theme-dark text-theme-dark dark:border-theme-medium dark:text-theme-medium"
@@ -54,7 +57,7 @@ export const PlansTabs: React.FC<PlansTabsProps> = ({
             } whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm`}
           >
             {label}
-          </button>
+          </Button>
         ))}
       </nav>
     </div>

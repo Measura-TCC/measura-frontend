@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useFPA } from "@/core/hooks/fpa/useFPA";
-import type { FPATab } from "./components/FPATabs";
-import { FPATabs, FPAPageHeader, OrganizationAlert } from "./components";
-import { OverviewTab, EstimatesTab, ReferenceTab } from "./components/Tabs";
+import type { FPATab } from "./common/FPATabs";
+import { FPATabs, FPAPageHeader, OrganizationAlert } from "./common";
+import { OverviewTab, EstimatesTab, ReferenceTab } from "./common/Tabs";
 import { Estimate } from "@/core/types/fpa";
 
 export const FPAView: React.FC = () => {
@@ -31,7 +32,15 @@ export const FPAView: React.FC = () => {
     getStatusColor,
   } = useFPA();
 
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<FPATab>("overview");
+
+  useEffect(() => {
+    const tabParam = searchParams.get("tab") as FPATab;
+    if (tabParam && ["overview", "estimates", "reference"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   const handleTabChange = (tab: FPATab) => {
     setActiveTab(tab);
@@ -79,10 +88,10 @@ export const FPAView: React.FC = () => {
     return (
       <div className="space-y-6">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-2"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          <div className="h-8 bg-background-secondary rounded w-1/4 mb-2"></div>
+          <div className="h-4 bg-background-secondary rounded w-1/2"></div>
         </div>
-        <div className="animate-pulse bg-gray-200 h-64 rounded-lg"></div>
+        <div className="animate-pulse bg-background-secondary h-64 rounded-lg"></div>
       </div>
     );
   }

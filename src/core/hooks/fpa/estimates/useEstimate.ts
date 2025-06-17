@@ -65,6 +65,7 @@ export const useEstimateActions = () => {
       const result = await estimateService.updateEstimate(params);
       await mutate("/estimates");
       await mutate(`/estimates/${params.id}`);
+      await mutate(`/estimates/${params.id}/overview`);
       if (params.data.projectId) {
         await mutate(`/estimates?projectId=${params.data.projectId}`);
       }
@@ -81,6 +82,9 @@ export const useEstimateActions = () => {
       await mutate(`/estimates/${params.id}`, undefined, {
         revalidate: false,
       });
+      await mutate(`/estimates/${params.id}/overview`, undefined, {
+        revalidate: false,
+      });
       return { success: true };
     } catch (error) {
       throw error;
@@ -92,6 +96,7 @@ export const useEstimateActions = () => {
       const result = await estimateService.createNewVersion(params);
       await mutate("/estimates");
       await mutate(`/estimates/${params.id}`);
+      await mutate(`/estimates/${params.id}/overview`);
       return result;
     } catch (error) {
       throw error;
@@ -102,6 +107,7 @@ export const useEstimateActions = () => {
     try {
       const result = await estimateService.calculateFunctionPoints(params);
       await mutate(`/estimates/${params.estimateId}`);
+      await mutate(`/estimates/${params.estimateId}/overview`);
       return result;
     } catch (error) {
       throw error;
@@ -112,6 +118,7 @@ export const useEstimateActions = () => {
     try {
       const result = await estimateService.recalculate(params);
       await mutate(`/estimates/${params.id}`);
+      await mutate(`/estimates/${params.id}/overview`);
       return result;
     } catch (error) {
       throw error;

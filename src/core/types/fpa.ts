@@ -8,7 +8,6 @@ export interface Estimate {
   createdAt: Date;
   updatedAt?: Date;
   status: EstimateStatus;
-  organizationId?: string;
 }
 
 export interface FunctionPointItem {
@@ -44,7 +43,6 @@ export interface ComplexityInfo {
 export interface CreateEstimateRequest {
   name: string;
   description?: string;
-  organizationId: string;
 }
 
 export interface UpdateEstimateRequest {

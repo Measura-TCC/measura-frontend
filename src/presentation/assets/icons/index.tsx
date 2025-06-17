@@ -35,3 +35,5 @@ export { XIcon } from "./XIcon";
 export { GithubIcon } from "./GithubIcon";
 export { LinkedinIcon } from "./LinkedinIcon";
 export { InfoIcon } from "./InfoIcon";
+export { EyeIcon } from "./EyeIcon";
+export { EyeOffIcon } from "./EyeOffIcon";

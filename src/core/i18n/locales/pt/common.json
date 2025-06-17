@@ -16,87 +16,87 @@
   "themeToggle": "Alternar tema",
   "notifications": "Notificações",
   "welcome": "Bem-vindo ao Measura",
-  "appSubtitle": "Estimativa & Medição de Software",
-  "appDescription": "Uma aplicação web modular para medição e estimativa de software usando metodologias de Análise de Pontos de Função (APF) e Goal-Question-Metric (GQM).",
+  "appSubtitle": "Estimativa e Medição de Software",
+  "appDescription": "Uma aplicação web modular para medição e estimativa de software, utilizando as metodologias APF e GQM, com foco em atender aos resultados esperados do processo de medição até o nível F do MR-MPS.BR",
   "quickDemoLogin": "Login de Demonstração Rápido",
   "demoDescription": "Clique acima para explorar a aplicação com dados de demonstração",
   "keyFeatures": "Principais Recursos:",
-  "feature1": "• Análise de Pontos de Função (APF)",
+  "feature1": "• Estimativa por Análise de Pontos de Função (APF)",
   "feature2": "• Modelagem Goal-Question-Metric (GQM)",
   "feature3": "• Criação de planos de medição",
   "feature4": "• Controle de acesso baseado em papéis",
   "feature5": "• Suporte a tema escuro/claro",
-  "footerText": "Measura - Estimativa & Medição de Software, Evoluído",
+  "footerText": "Measura - Estimativa e Medição de Software, Evoluído",
   "techStack": "Construído com Next.js, React, TypeScript & Tailwind CSS",
 
-  "heroSubtitle": "Estime, meça e acompanhe projetos de software com facilidade e eficiência.",
-  "heroDescription": "Uma plataforma educacional desenvolvida como parte de pesquisa acadêmica para demonstrar metodologias de estimativa de software usando Análise de Pontos de Função (APF) e planejamento abrangente de medição através da abordagem Goal-Question-Metric (GQM).",
+  "heroSubtitle": "Estime, meça e acompanhe projetos de software com facilidade e eficiência",
+  "heroDescription": "Plataforma para empresas de TI que simplifica e aprimora a estimativa de software (APF) e o planejamento de medição (GQM), otimizando a coleta e análise de métricas em todo o processo de medição de projetos",
   "getStartedFree": "Explorar Plataforma",
   "learnMore": "Saiba Mais",
   "academicProject": "Projeto de Pesquisa Acadêmica",
   "openSource": "Código Aberto",
 
-  "featuresTitle": "Recursos de Pesquisa para Educação em Engenharia de Software",
-  "featuresDescription": "Metodologias e ferramentas essenciais para aprender técnicas de estimativa e medição de software.",
+  "featuresTitle": "Processo de Medição do Software",
+  "featuresDescription": "Metodologias e ferramentas essenciais para decisões mais assertivas, entendimento claro e controle eficaz",
 
   "features": {
     "fpaEstimation": {
       "title": "Análise de Pontos de Função",
-      "description": "Implementação educacional da metodologia APF padrão IFPUG para aprender técnicas de estimativa de tamanho de software e fundamentos de planejamento de projetos."
+      "description": "Implementação da metodologia APF padrão IFPUG para estimativa precisa do tamanho de software e planejamento eficaz de projetos em empresas de TI"
     },
     "measurementPlans": {
       "title": "Planos de Medição GQM",
-      "description": "Exploração acadêmica da metodologia Goal-Question-Metric para criar planos de medição abrangentes e compreender métricas de software."
+      "description": "Aplica a metodologia Goal-Question-Metric (GQM) para desenvolver planos de medição abrangentes e aprimorar a análise de métricas de software em empresas de TI"
     },
     "projectTracking": {
-      "title": "Acompanhamento de Estimativas",
-      "description": "Ferramentas de pesquisa para monitorar precisão de estimativas, comparar metodologias e gerar relatórios acadêmicos para análise."
+      "title": "Visualização dos Resultados",
+      "description": "Visualização de um dashboard claro e intuitivo os resultados de estimativa e medição, com opção de exportação"
     },
     "organizationManagement": {
-      "title": "Gestão de Equipes",
-      "description": "Simulação educacional de estruturas organizacionais com acesso baseado em papéis para compreender dinâmicas de equipes de desenvolvimento de software."
+      "title": "Monitoramento da Medição do Software",
+      "description": "Recursos para o acompanhamento e avaliação contínua das métricas de software. Visualize o progresso, identifique tendências e suporte a tomada de decisões baseada em dados"
     },
     "automation": {
       "title": "Automação de Cálculos",
-      "description": "Processos automatizados de cálculo para demonstrar abordagens computacionais para métricas de software e precisão de estimativas."
+      "description": "Processos automatizados de cálculo para demonstrar abordagens computacionais para métricas de software e precisão de estimativas"
     },
     "collaboration": {
       "title": "Colaboração Acadêmica",
-      "description": "Recursos colaborativos projetados para ambientes educacionais, permitindo trabalho em grupo e aprendizado entre pares em engenharia de software."
+      "description": "Recursos colaborativos projetados para ambientes educacionais, permitindo trabalho em grupo e aprendizado entre pares em engenharia de software"
     }
   },
 
-  "whyChooseMeasura": "Por que Esta Plataforma Acadêmica?",
-  "benefitsDescription": "Benefícios educacionais de usar abordagens sistemáticas para estimativa e medição de software em pesquisa acadêmica.",
+  "whyChooseMeasura": "Por que Esta Plataforma?",
+  "benefitsDescription": "Colaboramos com empresas de TI a estimar, medir e otimizar projetos de software com base em dados claros e metodologias comprovadas",
 
   "stats": {
-    "accuracy": "Precisão Teórica",
-    "timeSaved": "Eficiência de Aprendizado",
-    "projects": "Casos de Estudo",
-    "teams": "Grupos de Pesquisa"
+    "accuracy": "Estimativas Precisas",
+    "timeSaved": "Eficiência Operacional",
+    "projects": "Tomada de Decisão",
+    "teams": "Colaboração"
   },
 
   "benefits": {
     "accurateEstimation": {
-      "title": "Precisão Educacional",
-      "description": "Aprenda a metodologia APF padrão da indústria através da prática e entenda a importância de estimativas precisas de projeto."
+      "title": "Estimativas Precisas",
+      "description": "Obtenha estimativas de projeto mais confiáveis usando a metodologia APF padrão da indústria"
     },
     "timeEfficiency": {
-      "title": "Eficiência na Pesquisa",
-      "description": "Foque no aprendizado de conceitos fundamentais automatizando cálculos complexos e dedicando tempo para compreender metodologias."
+      "title": "Eficiência Operacional",
+      "description": "Automatize cálculos complexos e o planejamento de medição, liberando sua equipe para focar em tarefas estratégicas e de maior valor"
     },
     "dataInsights": {
-      "title": "Análise Acadêmica",
-      "description": "Desenvolva habilidades analíticas através de visualização abrangente de dados e análise de medição para fins de pesquisa."
+      "title": "Decisões Baseadas em Dados",
+      "description": "Transforme dados brutos em insights acionáveis com visualizações abrangentes e análises de medição, impulsionando decisões estratégicas"
     },
     "teamCollaboration": {
-      "title": "Aprendizado Colaborativo",
-      "description": "Melhore a colaboração acadêmica com planos de medição compartilhados e exercícios de estimativa em grupo para melhor compreensão."
+      "title": "Colaboração Aprimorada",
+      "description": "Fomente a colaboração entre equipes com planos de medição compartilhados e estimativas padronizadas, melhorando a comunicação e a coesão do projeto"
     }
   },
 
-  "readyToGetStarted": "Pronto para Explorar a Pesquisa em Estimativa de Software?",
-  "ctaDescription": "Descubra abordagens acadêmicas para estimativa e medição de software através desta plataforma educacional desenvolvida para fins de pesquisa.",
+  "readyToGetStarted": "Pronto para explorar?",
+  "ctaDescription": "Explore uma plataforma que simplifica a medição de software, oferecendo as ferramentas e insights necessários para um controle eficaz de projetos",
   "tryDemoNow": "Testar Demo Agora",
   "createAccount": "Acessar Plataforma",
   "or": "ou",
@@ -104,7 +104,7 @@
   "signingIn": "Entrando...",
   "dismiss": "Dispensar",
 
-  "footerDescription": "Plataforma acadêmica para pesquisa em estimativa e medição de software. Desenvolvida como parte de trabalho de conclusão de curso (TCC) para fins educacionais.",
+  "footerDescription": "Plataforma para empresas de TI em estimativa e medição de software. Desenvolvida como parte de trabalho de conclusão de curso (TCC) para fins educacionais",
   "builtWith": "Construído com",
   "product": "Plataforma",
   "company": "Acadêmico",
@@ -112,5 +112,12 @@
   "privacy": "Política de Privacidade",
   "terms": "Termos de Serviço",
   "allRightsReserved": "Todos os direitos reservados",
-  "madeWithLove": "Feito com"
+  "madeWithLove": "Feito com",
+
+  "role": {
+    "user": "Usuário",
+    "admin": "Administrador",
+    "measurementAnalyst": "Analista de Medição",
+    "projectManager": "Gerente de Projetos"
+  }
 }

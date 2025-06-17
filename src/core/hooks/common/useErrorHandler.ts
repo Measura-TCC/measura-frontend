@@ -1,6 +1,9 @@
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { handleApiError } from "@/core/utils/errorHandler";
+import { useToast } from "./useToast";
 
 interface ErrorData {
   message?: string;
@@ -11,14 +14,65 @@ interface ErrorData {
 
 export const useErrorHandler = () => {
   const router = useRouter();
+  const { t } = useTranslation();
+  const toast = useToast();
 
-  const handleError = (error: AxiosError<ErrorData>) => {
-    console.error("Handling error:", error);
+  const handleError = useCallback(
+    (error: unknown, context?: string) => {
+      console.error("Error occurred:", error, "Context:", context);
 
-    const navigate = (path: string) => router.push(path);
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 409) {
+          const message = error.response.data?.message;
+          if (message?.includes("email")) {
+            toast.error({ message: t("errors.emailAlreadyExists") });
+            return;
+          }
+          if (message?.includes("username")) {
+            toast.error({ message: t("errors.usernameAlreadyExists") });
+            return;
+          }
+          if (message?.includes("organization")) {
+            toast.error({ message: t("errors.organizationAlreadyExists") });
+            return;
+          }
+          toast.error({ message: message || t("errors.conflict") });
+          return;
+        }
 
-    return handleApiError(error, navigate);
-  };
+        if (error.response?.status === 401) {
+          toast.error({ message: t("errors.unauthorized") });
+          return;
+        }
+
+        if (error.response?.status === 403) {
+          const message = error.response.data?.message;
+          if (message?.includes("organization")) {
+            toast.error({ message: t("errors.organizationAccessDenied") });
+            return;
+          }
+          toast.error({ message: t("errors.forbidden") });
+          return;
+        }
+
+        if (error.response?.status === 400) {
+          const message = error.response.data?.message;
+          toast.error({ message: message || t("errors.badRequest") });
+          return;
+        }
+
+        const navigate = (path: string) => router.push(path);
+        return handleApiError(error, navigate);
+      }
+
+      if (error instanceof Error) {
+        return error.message;
+      }
+
+      return "An unexpected error occurred.";
+    },
+    [router, t, toast]
+  );
 
   const getFormattedError = (error: AxiosError<ErrorData> | Error): string => {
     if (error instanceof AxiosError) {

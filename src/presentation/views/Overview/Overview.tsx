@@ -6,12 +6,12 @@ import { useOverview } from "@/core/hooks/overview/useOverview";
 import {
   OverviewPageHeader,
   OrganizationAlert,
-  DashboardSection,
+  // DashboardSection,
   QuickActionsSection,
   StatisticsSection,
   OrganizationSection,
   RoleSection,
-  ActivitySection,
+  // ActivitySection,
 } from "./components";
 
 interface OverviewViewProps {
@@ -27,9 +27,9 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ user }) => {
   const overviewHook = useOverview();
 
   const {
-    activities,
+    // activities,
     statistics,
-    isLoadingActivities,
+    // isLoadingActivities,
     isLoadingStatistics,
     handleCreateOrganization,
     handleNewFPAEstimate,
@@ -67,7 +67,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ user }) => {
         onCreateOrganization={handleCreateOrganization}
       />
 
-      <DashboardSection>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
         <QuickActionsSection
           hasOrganization={!!userOrganization}
           onNewFPAEstimate={handleNewFPAEstimate}
@@ -78,7 +78,8 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ user }) => {
           statistics={statistics}
           isLoadingStatistics={isLoadingStatistics}
         />
-
+      </div>
+      <div className="col-span-2 flex flex-col gap-4">
         <OrganizationSection
           userOrganization={userOrganization}
           isLoadingUserOrganization={isLoadingUserOrganization}
@@ -87,12 +88,12 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ user }) => {
         />
 
         <RoleSection user={user} />
-      </DashboardSection>
+      </div>
 
-      <ActivitySection
+      {/* <ActivitySection
         activities={activities}
         isLoadingActivities={isLoadingActivities}
-      />
+      /> */}
     </div>
   );
 };

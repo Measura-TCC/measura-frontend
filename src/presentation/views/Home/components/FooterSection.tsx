@@ -63,7 +63,7 @@ export const FooterSection: React.FC = () => {
               © {currentYear} Measura. {t("allRightsReserved")}
             </div>
             <div className="text-white/70 text-sm">
-              <span className="mr-2">Desenvolvido por:</span>
+              <span className="mr-2">{t("developedBy", { ns: "home" })}:</span>
               <Link
                 href="https://www.linkedin.com/in/joao-victor-eth/"
                 target="_blank"

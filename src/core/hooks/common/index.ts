@@ -1,6 +1,3 @@
-export { useErrorHandler } from './useErrorHandler';
-export type {
-  UseSWROptions,
-  ApiError,
-  ApiResponse,
-} from './types'; 
+export { useErrorHandler } from "./useErrorHandler";
+export { useToast } from "./useToast";
+export type { UseSWROptions, ApiError, ApiResponse } from "./types";

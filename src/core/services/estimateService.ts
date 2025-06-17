@@ -21,60 +21,186 @@ export interface EstimateResponse {
     | "APPLICATION_PROJECT";
   applicationBoundary: string;
   countingScope: string;
-  dataProcessing: number;
-  performanceRequirements: number;
-  heavilyUsedConfiguration: number;
-  transactionRate: number;
-  onlineDataEntry: number;
-  endUserEfficiency: number;
-  onlineUpdate: number;
-  complexProcessing: number;
-  reusability: number;
-  installationEase: number;
-  operationalEase: number;
-  multipleSites: number;
-  facilitateChange: number;
-  distributedFunctions: number;
-  totalDegreeOfInfluence: number;
-  valueAdjustmentFactor: number;
+  productivityFactor: number;
+  workingHoursPerDay: number;
+  averageDailyWorkingHours: number;
+  hourlyRateBRL?: number;
+  teamSize?: number;
+  internalLogicalFiles: string[];
+  externalInterfaceFiles: string[];
+  externalInputs: string[];
+  externalOutputs: string[];
+  externalQueries: string[];
+  generalSystemCharacteristics: {
+    values: number[];
+    totalInfluenceFactor: number;
+    valueAdjustmentFactor: number;
+  };
   unadjustedFunctionPoints: number;
+  valueAdjustmentFactor: number;
   adjustedFunctionPoints: number;
-  ilfCount: number;
-  eifCount: number;
-  eiCount: number;
-  eoCount: number;
-  eqCount: number;
-  productivityFactor?: number;
-  notes?: string;
-  status: "DRAFT" | "IN_PROGRESS" | "FINALIZED" | "ARCHIVED";
   estimatedEffortHours: number;
+  estimatedDuration: string;
+  estimatedTotalCost: number;
+  estimatedCostPerFunctionPoint: number;
+  estimatedCostPerPerson: number;
+  estimatedDurationDays?: number;
+  estimatedDurationMonths?: number;
+  estimatedDurationWeeks?: number;
+  documentReferences: string[];
+  status: "DRAFT" | "IN_PROGRESS" | "FINALIZED" | "ARCHIVED";
   createdBy: string;
   createdAt: string;
   updatedAt: string;
   version: number;
+  __v?: number;
 }
 
 export interface CalculationResponse {
-  unadjustedFunctionPoints: number;
-  valueAdjustmentFactor: number;
-  adjustedFunctionPoints: number;
-  estimatedEffortHours: number;
-  totalDegreeOfInfluence: number;
-  breakdown: {
-    ilf: { count: number; points: number };
-    eif: { count: number; points: number };
-    ei: { count: number; points: number };
-    eo: { count: number; points: number };
-    eq: { count: number; points: number };
+  message: string;
+  calculatedData: {
+    unadjustedFunctionPoints: number;
+    adjustedFunctionPoints: number;
+    estimatedEffortHours: number;
   };
 }
 
-interface EstimateWithComponents extends EstimateResponse {
-  internalLogicalFiles?: unknown[];
-  externalInterfaceFiles?: unknown[];
-  externalInputs?: unknown[];
-  externalOutputs?: unknown[];
-  externalQueries?: unknown[];
+export interface FunctionPointDistributionItem {
+  name: string;
+  value: number;
+  color: string;
+  abbreviation: string;
+}
+
+export interface ComplexityDistributionItem {
+  complexity: string;
+  count: number;
+  color: string;
+}
+
+export interface GSCRadarItem {
+  characteristic: string;
+  value: number;
+  fullMark: number;
+}
+
+export interface CostBreakdownItem {
+  category: string;
+  amount: number;
+  color: string;
+  unit: string;
+}
+
+export interface EffortBreakdownItem {
+  phase: string;
+  hours: number;
+  percentage: number;
+}
+
+export interface TimelineDataItem extends EffortBreakdownItem {
+  color: string;
+}
+
+export interface ProductivityMetricItem {
+  metric: string;
+  value: number;
+  benchmark?: number;
+  status?: string;
+}
+
+export interface EstimateOverviewResponse {
+  _id: string;
+  projectId: string;
+  name: string;
+  description: string;
+  status: string;
+  version: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+
+  project: {
+    _id: string;
+    name: string;
+    description: string;
+    organizationId?: string;
+    createdBy?: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+
+  configuration: {
+    countType: string;
+    applicationBoundary: string;
+    countingScope: string;
+    productivityFactor: number;
+    workingHoursPerDay: number;
+    averageDailyWorkingHours: number;
+    hourlyRateBRL: number;
+    teamSize: number;
+  };
+
+  components: {
+    detailed: {
+      internalLogicalFiles: string[];
+      externalInterfaceFiles: string[];
+      externalInputs: string[];
+      externalOutputs: string[];
+      externalQueries: string[];
+    };
+    summaryByType: {
+      ALI: number;
+      AIE: number;
+      EI: number;
+      EO: number;
+      EQ: number;
+    };
+    componentComplexitySummary: {
+      low: number;
+      average: number;
+      high: number;
+    };
+  };
+
+  functionPoints: {
+    unadjusted: number;
+    adjusted: number;
+  };
+
+  generalSystemCharacteristics: {
+    values: number[];
+    totalInfluenceFactor: number;
+    valueAdjustmentFactor: number;
+  };
+
+  effortEstimation: {
+    effort: {
+      estimatedEffortHours: number;
+      hoursPerPerson: number;
+    };
+    duration: {
+      estimatedDuration: string;
+      estimatedWorkingDays: number;
+    };
+  };
+
+  costEstimation: {
+    estimatedTotalCost: number;
+    estimatedCostPerFunctionPoint: number;
+    estimatedCostPerPerson: number;
+  };
+
+  documentReferences: string[];
+
+  chartData: {
+    functionPointDistribution: FunctionPointDistributionItem[];
+    complexityDistribution: ComplexityDistributionItem[];
+    gscRadarData: GSCRadarItem[];
+    costBreakdown: CostBreakdownItem[];
+    effortBreakdown: EffortBreakdownItem[];
+    timelineData: TimelineDataItem[];
+    productivityMetrics: ProductivityMetricItem[];
+  };
 }
 
 export interface EstimateOverview {
@@ -120,12 +246,11 @@ export interface EstimateOverview {
 export const transformToEstimateOverview = (
   estimate: EstimateResponse
 ): EstimateOverview => {
-  const extendedEstimate = estimate as EstimateWithComponents;
-  const internalLogicalFiles = extendedEstimate.internalLogicalFiles || [];
-  const externalInterfaceFiles = extendedEstimate.externalInterfaceFiles || [];
-  const externalInputs = extendedEstimate.externalInputs || [];
-  const externalOutputs = extendedEstimate.externalOutputs || [];
-  const externalQueries = extendedEstimate.externalQueries || [];
+  const internalLogicalFiles = estimate.internalLogicalFiles || [];
+  const externalInterfaceFiles = estimate.externalInterfaceFiles || [];
+  const externalInputs = estimate.externalInputs || [];
+  const externalOutputs = estimate.externalOutputs || [];
+  const externalQueries = estimate.externalQueries || [];
 
   const componentCounts = {
     ilf: internalLogicalFiles.length,
@@ -160,7 +285,10 @@ export const transformToEstimateOverview = (
     componentCounts,
     completionPercentage: totalComponents > 0 ? 80 : 20,
     hasComponents: totalComponents > 0,
-    hasGSC: estimate.valueAdjustmentFactor !== 1,
+    hasGSC:
+      estimate.generalSystemCharacteristics &&
+      estimate.generalSystemCharacteristics.values &&
+      estimate.generalSystemCharacteristics.values.length > 0,
     isCalculated: estimate.adjustedFunctionPoints > 0,
     createdAt: estimate.createdAt,
     updatedAt: estimate.updatedAt,
@@ -185,9 +313,9 @@ export const estimateService = {
 
   getEstimateOverview: async (params: {
     id: string;
-  }): Promise<EstimateOverview> => {
-    const response = await measuraApi.get(`/estimates/${params.id}`);
-    return transformToEstimateOverview(response.data);
+  }): Promise<EstimateOverviewResponse> => {
+    const response = await measuraApi.get(`/estimates/${params.id}/overview`);
+    return response.data;
   },
 
   getEstimate: async (params: { id: string }): Promise<EstimateResponse> => {

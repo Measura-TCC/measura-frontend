@@ -7,28 +7,30 @@ export enum UserRole {
   MEASUREMENT_ANALYST = "measurement-analyst",
 }
 
-const passwordSchema = z
-  .string()
-  .min(8, "A senha deve ter pelo menos 8 caracteres")
-  .regex(/[A-Z]/, "A senha deve conter pelo menos uma letra maiúscula")
-  .regex(/[a-z]/, "A senha deve conter pelo menos uma letra minúscula")
-  .regex(/\d/, "A senha deve conter pelo menos um número")
-  .regex(/[@$!%*?&]/, "A senha deve conter pelo menos um caractere especial");
+export const createPasswordSchema = (t: (key: string) => string) =>
+  z
+    .string()
+    .min(8, t("validation.passwordMinLength"))
+    .regex(/[A-Z]/, t("validation.passwordUppercase"))
+    .regex(/[a-z]/, t("validation.passwordLowercase"))
+    .regex(/\d/, t("validation.passwordNumber"))
+    .regex(/[@$!%*?&]/, t("validation.passwordSpecial"));
 
-export const registerSchema = z
-  .object({
-    username: z
-      .string()
-      .min(3, "Nome de usuário deve ter pelo menos 3 caracteres"),
-    email: z.string().email("Email inválido"),
-    password: passwordSchema,
-    role: z.enum([UserRole.PROJECT_MANAGER, UserRole.MEASUREMENT_ANALYST]),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Senhas não conferem",
-    path: ["confirmPassword"],
-  });
+export const createRegisterSchema = (t: (key: string) => string) =>
+  z
+    .object({
+      username: z.string().min(3, t("validation.usernameMinLength")),
+      email: z.string().email(t("validation.emailInvalid")),
+      password: createPasswordSchema(t),
+      role: z.enum([UserRole.PROJECT_MANAGER, UserRole.MEASUREMENT_ANALYST]),
+      confirmPassword: z
+        .string()
+        .min(1, t("validation.confirmPasswordRequired")),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("validation.passwordsDontMatch"),
+      path: ["confirmPassword"],
+    });
 
 export const loginSchema = z.object({
   usernameOrEmail: z.string().min(1, "Username or email is required"),
@@ -39,16 +41,17 @@ export const passwordResetRequestSchema = z.object({
   email: z.string().email("Email inválido"),
 });
 
-export const passwordResetSchema = z
-  .object({
-    token: z.string().min(1, "Token é obrigatório"),
-    password: passwordSchema,
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Senhas não conferem",
-    path: ["confirmPassword"],
-  });
+export const createPasswordResetSchema = (t: (key: string) => string) =>
+  z
+    .object({
+      token: z.string().min(1, "Token é obrigatório"),
+      password: createPasswordSchema(t),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("validation.passwordsDontMatch"),
+      path: ["confirmPassword"],
+    });
 
 export const firebaseLoginSchema = z.object({
   idToken: z.string().min(1, "Firebase ID token is required"),
@@ -57,6 +60,11 @@ export const firebaseLoginSchema = z.object({
 export const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
 });
+
+// Create default schemas with dummy translation function for types
+const dummyT = (key: string) => key;
+export const registerSchema = createRegisterSchema(dummyT);
+export const passwordResetSchema = createPasswordResetSchema(dummyT);
 
 export type RegisterFormData = z.infer<typeof registerSchema>;
 export type LoginFormData = z.infer<typeof loginSchema>;

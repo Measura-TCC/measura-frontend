@@ -95,7 +95,7 @@ export const useAuth = () => {
   };
 
   const user = store.user || mockUser;
-  const isAuthenticated = store.isAuthenticated || true;
+  const isAuthenticated = store.isAuthenticated;
 
   const login = async (loginData: LoginFormData) => {
     const response = await authService.login(loginData);
@@ -115,13 +115,15 @@ export const useAuth = () => {
     return response;
   };
 
-  const logout = async () => {
-    try {
-      await authService.logout();
-    } catch (error) {
+  const logout = () => {
+    clearAuth();
+
+    authService.logout().catch((error) => {
       console.debug("Logout service call failed:", error);
-    } finally {
-      clearAuth();
+    });
+
+    if (typeof window !== "undefined") {
+      window.location.href = "/";
     }
   };
 

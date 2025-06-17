@@ -17,7 +17,7 @@
   "notifications": "Notifications",
   "welcome": "Welcome to Measura",
   "appSubtitle": "Software Estimation & Measurement",
-  "appDescription": "A modular web application for software measurement and estimation using Function Point Analysis (FPA) and Goal-Question-Metric (GQM) methodologies.",
+  "appDescription": "A modular web application for software measurement and estimation, utilizing FPA and GQM methodologies, with a focus on meeting the expected results of the measurement process up to MR-MPS.BR Level F",
   "quickDemoLogin": "Quick Demo Login",
   "demoDescription": "Click above to explore the application with demo data",
   "keyFeatures": "Key Features:",
@@ -29,32 +29,32 @@
   "footerText": "Measura - Software Estimation & Measurement, Evolved",
   "techStack": "Built with Next.js, React, TypeScript & Tailwind CSS",
 
-  "heroSubtitle": "Academic Research on Software Estimation & Measurement",
-  "heroDescription": "An educational platform developed as part of academic research to demonstrate software estimation methodologies using Function Point Analysis (FPA) and comprehensive measurement planning through Goal-Question-Metric (GQM) approach.",
+  "heroSubtitle": "Estimate, measure, and track software projects with ease and efficiency",
+  "heroDescription": "A platform for IT companies that simplifies and enhances software estimation (FPA) and measurement planning (GQM), optimizing the collection and analysis of metrics throughout the entire project measurement process.",
   "getStartedFree": "Explore Platform",
   "learnMore": "Learn More",
   "academicProject": "Academic Research Project",
   "openSource": "Open Source",
 
-  "featuresTitle": "Research Features for Software Engineering Education",
-  "featuresDescription": "Essential methodologies and tools for learning software estimation and measurement techniques.",
+  "featuresTitle": "Software Measurement Process",
+  "featuresDescription": "Essential methodologies and tools for more assertive decisions, clear understanding, and effective control.",
 
   "features": {
     "fpaEstimation": {
       "title": "Function Point Analysis",
-      "description": "Educational implementation of IFPUG standard FPA methodology for learning software size estimation techniques and project planning fundamentals."
+      "description": "Implementation of the standard IFPUG FPA methodology for accurate software size estimation and effective project planning in IT companies."
     },
     "measurementPlans": {
       "title": "GQM Measurement Plans",
-      "description": "Academic exploration of Goal-Question-Metric methodology for creating comprehensive measurement plans and understanding software metrics."
+      "description": "Applies the Goal-Question-Metric (GQM) methodology to develop comprehensive measurement plans and enhance the analysis of software metrics in IT companies."
     },
     "projectTracking": {
-      "title": "Estimation Tracking",
-      "description": "Research tools for monitoring estimation accuracy, comparing methodologies, and generating academic reports for analysis."
+      "title": "Results Visualization",
+      "description": "Clear and intuitive dashboard visualization of estimation and measurement results, with export option"
     },
     "organizationManagement": {
-      "title": "Team Management",
-      "description": "Educational simulation of organizational structures with role-based access for understanding software development team dynamics."
+      "title": "Software Measurement Monitoring",
+      "description": "Features for the continuous tracking and evaluation of software metrics. Visualize progress, identify trends, and support data-driven decision-making."
     },
     "automation": {
       "title": "Calculation Automation",
@@ -66,37 +66,37 @@
     }
   },
 
-  "whyChooseMeasura": "Why This Academic Platform?",
-  "benefitsDescription": "Educational benefits of using systematic approaches to software estimation and measurement in academic research.",
+  "whyChooseMeasura": "Why This Platform?",
+  "benefitsDescription": "Supporting IT companies in estimating, measuring, and optimizing software projects through clear data and proven methodologies.",
 
   "stats": {
-    "accuracy": "Theoretical Accuracy",
-    "timeSaved": "Learning Efficiency",
-    "projects": "Study Cases",
-    "teams": "Research Groups"
+    "accuracy": "Accurate Estimates",
+    "timeSaved": "Operational Efficiency",
+    "projects": "Decision Making",
+    "teams": "Collaboration"
   },
 
   "benefits": {
     "accurateEstimation": {
-      "title": "Educational Precision",
-      "description": "Learn industry-standard FPA methodology through hands-on practice and understand the importance of accurate project estimation."
+      "title": "Precise Estimates",
+      "description": "Gain more reliable project estimates using the industry-standard FPA methodology."
     },
     "timeEfficiency": {
-      "title": "Research Efficiency",
-      "description": "Focus on learning core concepts by automating complex calculations and dedicating time to understanding methodologies."
+      "title": "Operational Efficiency",
+      "description": "Automate complex calculations and measurement planning, freeing your team to focus on strategic, higher-value tasks."
     },
     "dataInsights": {
-      "title": "Academic Analysis",
-      "description": "Develop analytical skills through comprehensive data visualization and measurement analysis for research purposes."
+      "title": "Data-Driven Decisions",
+      "description": "Transform raw data into actionable insights with comprehensive visualizations and measurement analyses, driving strategic decisions."
     },
     "teamCollaboration": {
-      "title": "Collaborative Learning",
-      "description": "Enhance academic collaboration with shared measurement plans and group estimation exercises for better understanding."
+      "title": "Enhanced Collaboration",
+      "description": "Foster collaboration among teams with shared measurement plans and standardized estimates, improving project communication and cohesion."
     }
   },
 
-  "readyToGetStarted": "Ready to Explore Software Estimation Research?",
-  "ctaDescription": "Discover academic approaches to software estimation and measurement through this educational platform developed for research purposes.",
+  "readyToGetStarted": "Ready to explore?",
+  "ctaDescription": "Explore a platform that simplifies software measurement, offering the necessary tools and insights for effective project control.",
   "tryDemoNow": "Try Demo Now",
   "createAccount": "Access Platform",
   "or": "or",
@@ -104,7 +104,7 @@
   "signingIn": "Signing In...",
   "dismiss": "Dismiss",
 
-  "footerDescription": "Academic platform for software estimation and measurement research. Developed as part of undergraduate thesis (TCC) for educational purposes.",
+  "footerDescription": "Platform for IT companies in software estimation and measurement. Developed as part of a final graduation project for educational purposes.",
   "builtWith": "Built with",
   "product": "Platform",
   "company": "Academic",
@@ -112,5 +112,23 @@
   "privacy": "Privacy Policy",
   "terms": "Terms of Service",
   "allRightsReserved": "All rights reserved",
-  "madeWithLove": "Made with"
+  "madeWithLove": "Made with",
+
+  "role": {
+    "user": "User",
+    "admin": "Administrator",
+    "measurementAnalyst": "Measurement Analyst",
+    "projectManager": "Project Manager"
+  },
+
+  "errors": {
+    "emailAlreadyExists": "This email is already registered. Please use a different email.",
+    "usernameAlreadyExists": "This username is already taken. Please choose a different one.",
+    "organizationAlreadyExists": "An organization with this name already exists.",
+    "conflict": "There was a conflict with your request. Please try again.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "forbidden": "Access denied. You don't have permission to access this resource.",
+    "organizationAccessDenied": "You must belong to an organization to access this resource.",
+    "badRequest": "Invalid request. Please check your input and try again."
+  }
 }

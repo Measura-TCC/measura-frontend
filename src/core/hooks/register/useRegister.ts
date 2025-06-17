@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
-import { registerSchema } from "@/core/schemas/auth";
+import { createRegisterSchema } from "@/core/schemas/auth";
 import { useAuth } from "@/core/hooks/auth";
 import { useErrorHandler } from "@/core/hooks/common/useErrorHandler";
 import {
@@ -46,7 +46,7 @@ export const useRegister = (): UseRegisterReturn => {
   );
 
   const registerForm = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(createRegisterSchema(t)),
     defaultValues: {
       username: "",
       email: "",

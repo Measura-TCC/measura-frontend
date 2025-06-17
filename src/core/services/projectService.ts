@@ -11,10 +11,8 @@ interface CreateProjectApiRequest {
 }
 
 export const projectService = {
-  getAll: async (params?: { organizationId?: string }): Promise<Project[]> => {
-    const response = await measuraApi.get("/projects", {
-      params,
-    });
+  getAll: async (): Promise<Project[]> => {
+    const response = await measuraApi.get("/projects");
     return response.data;
   },
 

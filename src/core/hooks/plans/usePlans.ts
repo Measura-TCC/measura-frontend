@@ -87,9 +87,7 @@ export const usePlans = (): UsePlansReturn => {
     error: plansError,
     isLoading: isLoadingPlans,
   } = useSWR(
-    userOrganization
-      ? `/api/plans?organizationId=${userOrganization.name}`
-      : null,
+    userOrganization ? "/api/plans" : null,
     async () => {
       const mockPlans: Plan[] = [
         {
@@ -105,7 +103,6 @@ export const usePlans = (): UsePlansReturn => {
           progress: 65,
           goalsCount: 8,
           metricsCount: 15,
-          organizationId: userOrganization?.name,
           gqmPhase: "data_collection",
         },
         {
@@ -121,7 +118,6 @@ export const usePlans = (): UsePlansReturn => {
           progress: 30,
           goalsCount: 5,
           metricsCount: 12,
-          organizationId: userOrganization?.name,
           gqmPhase: "definition",
         },
         {
@@ -136,7 +132,6 @@ export const usePlans = (): UsePlansReturn => {
           progress: 0,
           goalsCount: 4,
           metricsCount: 8,
-          organizationId: userOrganization?.name,
           gqmPhase: "planning",
         },
         {
@@ -151,7 +146,6 @@ export const usePlans = (): UsePlansReturn => {
           progress: 100,
           goalsCount: 6,
           metricsCount: 10,
-          organizationId: userOrganization?.name,
           gqmPhase: "completed",
         },
       ];
@@ -261,7 +255,7 @@ export const usePlans = (): UsePlansReturn => {
 
   const refreshData = async () => {
     if (userOrganization) {
-      await mutate(`/api/plans?organizationId=${userOrganization.name}`);
+      await mutate("/api/plans");
     }
   };
 
@@ -286,14 +280,13 @@ export const usePlans = (): UsePlansReturn => {
         progress: 0,
         goalsCount: 0,
         metricsCount: 0,
-        organizationId: userOrganization.name,
         gqmPhase: "planning",
       };
 
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       await mutate(
-        `/api/plans?organizationId=${userOrganization.name}`,
+        "/api/plans",
         (current: Plan[] | undefined) =>
           current ? [newPlan, ...current] : [newPlan],
         false
@@ -318,7 +311,7 @@ export const usePlans = (): UsePlansReturn => {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       await mutate(
-        `/api/plans?organizationId=${userOrganization.name}`,
+        "/api/plans",
         (current: Plan[] | undefined) =>
           current?.map((plan) =>
             plan.id === data.id ? { ...plan, ...data } : plan
@@ -341,7 +334,7 @@ export const usePlans = (): UsePlansReturn => {
       await new Promise((resolve) => setTimeout(resolve, 300));
 
       await mutate(
-        `/api/plans?organizationId=${userOrganization.name}`,
+        "/api/plans",
         (current: Plan[] | undefined) =>
           current?.filter((plan) => plan.id !== id),
         false
@@ -374,7 +367,7 @@ export const usePlans = (): UsePlansReturn => {
       await new Promise((resolve) => setTimeout(resolve, 300));
 
       await mutate(
-        `/api/plans?organizationId=${userOrganization.name}`,
+        "/api/plans",
         (current: Plan[] | undefined) =>
           current ? [duplicatedPlan, ...current] : [duplicatedPlan],
         false

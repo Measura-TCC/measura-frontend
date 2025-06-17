@@ -1,5 +1,6 @@
 import { UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -8,6 +9,7 @@ import {
   Button,
   Input,
 } from "@/presentation/components/primitives";
+import { EyeIcon, EyeOffIcon } from "@/presentation/assets/icons";
 import { LoginFormData } from "@/core/schemas/auth";
 
 interface LoginCardProps {
@@ -32,6 +34,7 @@ export const LoginCard: React.FC<LoginCardProps> = ({
 }) => {
   const { t } = useTranslation("login");
   const { register, handleSubmit } = loginForm;
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <Card>
@@ -75,13 +78,30 @@ export const LoginCard: React.FC<LoginCardProps> = ({
               >
                 {t("password")}
               </label>
-              <Input
-                {...register("password")}
-                id="password"
-                type="password"
-                placeholder={t("enterYourPassword")}
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <Input
+                  {...register("password")}
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder={t("enterYourPassword")}
+                  disabled={isLoading}
+                  className="pr-10"
+                />
+                <Button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  variant="ghost"
+                  size="sm"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 hover:cursor-pointer"
+                  disabled={isLoading}
+                >
+                  {showPassword ? (
+                    <EyeOffIcon className="w-5 h-5" />
+                  ) : (
+                    <EyeIcon className="w-5 h-5" />
+                  )}
+                </Button>
+              </div>
               {formErrors.password && (
                 <span className="text-sm text-red-600">
                   {formErrors.password.message}

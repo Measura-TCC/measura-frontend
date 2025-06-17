@@ -1,4 +1,5 @@
 {
+  "developedBy": "Developed by",
   "hero": {
     "title": "Simplified Measurement? It's With Measura!",
     "getStarted": "Get Started",
@@ -13,11 +14,11 @@
   },
   "team": {
     "title": "Meet the Team",
-    "description": "Educators, engineers and researchers committed to improving software measurement practices.",
+    "description": "Academics, developers, and researchers committed to improving software measurement practices.",
     "joinCommunity": "Join Our Community",
-    "communityDescription": "Contribute to the open source project and help improve software measurement practices in the academic community.",
+    "communityDescription": "Contribute to the open source project and help improve software measurement practices",
     "viewOnGithub": "View on GitHub",
-    "projectFooter": "Open source academic project • Developed with ❤️ for the community"
+    "projectFooter": "Open-source academic project • Built with dedication for the community."
   },
   "cta": {
     "title": "See how it works in practice with demo data",
