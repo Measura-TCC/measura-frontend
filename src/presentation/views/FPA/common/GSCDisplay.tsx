@@ -94,7 +94,7 @@ export const GSCDisplay = ({ estimate, onUpdate }: GSCDisplayProps) => {
 
   const hasGSCData =
     estimate.generalSystemCharacteristics &&
-    estimate.generalSystemCharacteristics.values.length === 14;
+    estimate.generalSystemCharacteristics.length === 14;
 
   const getRadarData = () => {
     if (!hasGSCData) return [];
