@@ -1,18 +1,20 @@
-'use client';
+"use client";
 
-import { HomeView } from '@/presentation/views';
-import { useAuth } from '@/core/hooks/useAuth';
+import { useRouter } from "next/navigation";
+import { HomeView } from "@/presentation/views";
+import { useAuth } from "@/core/hooks/auth/useAuth";
 
 const Home = () => {
-  const { isAuthenticated, isLoading, login} = useAuth();
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
 
   return (
-    <HomeView 
+    <HomeView
       isAuthenticated={isAuthenticated}
-      isLoading={isLoading}
-      onLogin={() => login('demo@measura.com', 'password')}
+      isLoading={false}
+      onLogin={() => router.push("/login")}
     />
   );
 };
 
-export default Home; 
+export default Home;

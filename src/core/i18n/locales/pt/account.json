@@ -1,0 +1,71 @@
+{
+  "title": "Configurações da Conta",
+  "subtitle": "Gerencie suas informações de conta, configurações de segurança e preferências.",
+  "error": {
+    "loadingTitle": "Erro ao Carregar Conta",
+    "loadingMessage": "Ocorreu um erro ao carregar as informações da sua conta.",
+    "tryAgain": "Tentar Novamente"
+  },
+  "tabs": {
+    "profile": "Perfil",
+    "security": "Segurança",
+    "preferences": "Preferências"
+  },
+  "profile": {
+    "title": "Informações do Perfil"
+  },
+  "form": {
+    "usernameLabel": "Nome de Usuário",
+    "usernamePlaceholder": "Digite seu nome de usuário",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Digite seu email",
+    "roleLabel": "Cargo Atual",
+    "roleHelp": "O cargo é definido pelo administrador da organização",
+    "updateButton": "Atualizar Perfil",
+    "updating": "Atualizando...",
+    "updateSuccess": "Perfil atualizado com sucesso",
+    "updateError": "Erro ao atualizar perfil. Tente novamente.",
+    "currentPasswordLabel": "Senha Atual",
+    "currentPasswordPlaceholder": "Digite sua senha atual",
+    "newPasswordLabel": "Nova Senha",
+    "newPasswordPlaceholder": "Digite sua nova senha",
+    "confirmPasswordLabel": "Confirmar Nova Senha",
+    "confirmPasswordPlaceholder": "Confirme sua nova senha",
+    "passwordRequirements": "A senha deve ter pelo menos 6 caracteres"
+  },
+  "statistics": {
+    "title": "Estatísticas da Conta",
+    "memberSince": "Membro desde",
+    "currentRole": "Cargo Atual",
+    "accountStatus": "Status da Conta",
+    "organization": "Organização",
+    "active": "Ativa"
+  },
+  "security": {
+    "title": "Alterar Senha",
+    "description": "Atualize sua senha para manter sua conta segura",
+    "updateButton": "Atualizar Senha",
+    "updating": "Atualizando...",
+    "updateSuccess": "Senha atualizada com sucesso"
+  },
+  "preferences": {
+    "title": "Idioma e Região",
+    "description": "Personalize suas configurações de idioma e região",
+    "languageLabel": "Idioma",
+    "languageHelp": "Selecione seu idioma preferido para a interface",
+    "organizationTitle": "Configurações da Organização",
+    "organizationStatus": "Status da Organização",
+    "connected": "Conectado",
+    "notConnected": "Não Conectado",
+    "organizationHelp": "Você está conectado a uma organização e pode criar estimativas",
+    "organizationHelpEmpty": "Conecte-se a uma organização para começar a criar estimativas"
+  },
+  "validation": {
+    "usernameMinLength": "Nome de usuário deve ter pelo menos 3 caracteres",
+    "emailInvalid": "Endereço de email inválido",
+    "currentPasswordRequired": "Senha atual é obrigatória",
+    "newPasswordMinLength": "Senha deve ter pelo menos 6 caracteres",
+    "confirmPasswordRequired": "Por favor, confirme sua senha",
+    "passwordsDontMatch": "As senhas não coincidem"
+  }
+}

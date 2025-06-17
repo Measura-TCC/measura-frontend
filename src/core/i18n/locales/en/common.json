@@ -17,7 +17,7 @@
   "notifications": "Notifications",
   "welcome": "Welcome to Measura",
   "appSubtitle": "Software Estimation & Measurement",
-  "appDescription": "A modular web application for software measurement and estimation using Function Point Analysis (FPA) and Goal-Question-Metric (GQM) methodologies.",
+  "appDescription": "A modular web application for software measurement and estimation, utilizing FPA and GQM methodologies, with a focus on meeting the expected results of the measurement process up to MR-MPS.BR Level F",
   "quickDemoLogin": "Quick Demo Login",
   "demoDescription": "Click above to explore the application with demo data",
   "keyFeatures": "Key Features:",
@@ -27,5 +27,108 @@
   "feature4": "• Role-based access control",
   "feature5": "• Dark/Light theme support",
   "footerText": "Measura - Software Estimation & Measurement, Evolved",
-  "techStack": "Built with Next.js, React, TypeScript & Tailwind CSS"
+  "techStack": "Built with Next.js, React, TypeScript & Tailwind CSS",
+
+  "heroSubtitle": "Estimate, measure, and track software projects with ease and efficiency",
+  "heroDescription": "A platform for IT companies that simplifies and enhances software estimation (FPA) and measurement planning (GQM), optimizing the collection and analysis of metrics throughout the entire project measurement process.",
+  "getStartedFree": "Explore Platform",
+  "learnMore": "Learn More",
+  "academicProject": "Academic Research Project",
+  "openSource": "Open Source",
+
+  "featuresTitle": "Software Measurement Process",
+  "featuresDescription": "Essential methodologies and tools for more assertive decisions, clear understanding, and effective control.",
+
+  "features": {
+    "fpaEstimation": {
+      "title": "Function Point Analysis",
+      "description": "Implementation of the standard IFPUG FPA methodology for accurate software size estimation and effective project planning in IT companies."
+    },
+    "measurementPlans": {
+      "title": "GQM Measurement Plans",
+      "description": "Applies the Goal-Question-Metric (GQM) methodology to develop comprehensive measurement plans and enhance the analysis of software metrics in IT companies."
+    },
+    "projectTracking": {
+      "title": "Results Visualization",
+      "description": "Clear and intuitive dashboard visualization of estimation and measurement results, with export option"
+    },
+    "organizationManagement": {
+      "title": "Software Measurement Monitoring",
+      "description": "Features for the continuous tracking and evaluation of software metrics. Visualize progress, identify trends, and support data-driven decision-making."
+    },
+    "automation": {
+      "title": "Calculation Automation",
+      "description": "Automated calculation processes to demonstrate computational approaches to software metrics and estimation accuracy."
+    },
+    "collaboration": {
+      "title": "Academic Collaboration",
+      "description": "Collaborative features designed for educational environments, enabling group work and peer learning in software engineering."
+    }
+  },
+
+  "whyChooseMeasura": "Why This Platform?",
+  "benefitsDescription": "Supporting IT companies in estimating, measuring, and optimizing software projects through clear data and proven methodologies.",
+
+  "stats": {
+    "accuracy": "Accurate Estimates",
+    "timeSaved": "Operational Efficiency",
+    "projects": "Decision Making",
+    "teams": "Collaboration"
+  },
+
+  "benefits": {
+    "accurateEstimation": {
+      "title": "Precise Estimates",
+      "description": "Gain more reliable project estimates using the industry-standard FPA methodology."
+    },
+    "timeEfficiency": {
+      "title": "Operational Efficiency",
+      "description": "Automate complex calculations and measurement planning, freeing your team to focus on strategic, higher-value tasks."
+    },
+    "dataInsights": {
+      "title": "Data-Driven Decisions",
+      "description": "Transform raw data into actionable insights with comprehensive visualizations and measurement analyses, driving strategic decisions."
+    },
+    "teamCollaboration": {
+      "title": "Enhanced Collaboration",
+      "description": "Foster collaboration among teams with shared measurement plans and standardized estimates, improving project communication and cohesion."
+    }
+  },
+
+  "readyToGetStarted": "Ready to explore?",
+  "ctaDescription": "Explore a platform that simplifies software measurement, offering the necessary tools and insights for effective project control.",
+  "tryDemoNow": "Try Demo Now",
+  "createAccount": "Access Platform",
+  "or": "or",
+  "setupInMinutes": "Quick setup",
+  "signingIn": "Signing In...",
+  "dismiss": "Dismiss",
+
+  "footerDescription": "Platform for IT companies in software estimation and measurement. Developed as part of a final graduation project for educational purposes.",
+  "builtWith": "Built with",
+  "product": "Platform",
+  "company": "Academic",
+  "about": "About",
+  "privacy": "Privacy Policy",
+  "terms": "Terms of Service",
+  "allRightsReserved": "All rights reserved",
+  "madeWithLove": "Made with",
+
+  "role": {
+    "user": "User",
+    "admin": "Administrator",
+    "measurementAnalyst": "Measurement Analyst",
+    "projectManager": "Project Manager"
+  },
+
+  "errors": {
+    "emailAlreadyExists": "This email is already registered. Please use a different email.",
+    "usernameAlreadyExists": "This username is already taken. Please choose a different one.",
+    "organizationAlreadyExists": "An organization with this name already exists.",
+    "conflict": "There was a conflict with your request. Please try again.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "forbidden": "Access denied. You don't have permission to access this resource.",
+    "organizationAccessDenied": "You must belong to an organization to access this resource.",
+    "badRequest": "Invalid request. Please check your input and try again."
+  }
 }

@@ -1,7 +1,8 @@
 {
-  "dashboard": "Dashboard",
+  "overview": "Overview",
+  "account": "My Account",
+  "organization": "Organization",
+  "projects": "Projects",
   "fpa": "FPA",
-  "gqm": "GQM",
-  "plans": "Plans",
-  "docs": "Documentation"
-} 
+  "plans": "Plans"
+}

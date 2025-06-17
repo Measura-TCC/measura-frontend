@@ -1,18 +1,32 @@
 export enum UserRole {
-  USER = 'user',
-  ANALYST = 'analyst',
-  MANAGER = 'manager',
-  ADMIN = 'admin',
+  USER = "user",
+  ANALYST = "measurement-analyst",
+  MANAGER = "project-manager",
+  ADMIN = "admin",
 }
 
 export interface User {
   id: string;
+  username: string;
   email: string;
-  name: string;
-  role: UserRole;
+  role: "user" | "admin" | "project-manager" | "measurement-analyst";
   avatar?: string;
+  isActive: boolean;
+  lastLoginAt?: Date;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface UserProfile extends User {
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+  bio?: string;
+  preferences: {
+    theme: "light" | "dark" | "system";
+    language: "pt" | "en";
+    timezone: string;
+  };
 }
 
 export interface AuthState {
@@ -21,19 +35,18 @@ export interface AuthState {
   isLoading: boolean;
 }
 
-// FPA Types
 export enum FunctionType {
-  EI = 'External Input',
-  EO = 'External Output',
-  EQ = 'External Inquiry',
-  ILF = 'Internal Logical File',
-  EIF = 'External Interface File',
+  EI = "External Input",
+  EO = "External Output",
+  EQ = "External Inquiry",
+  ILF = "Internal Logical File",
+  EIF = "External Interface File",
 }
 
 export enum ComplexityLevel {
-  LOW = 'Low',
-  AVERAGE = 'Average',
-  HIGH = 'High',
+  LOW = "Low",
+  AVERAGE = "Average",
+  HIGH = "High",
 }
 
 export interface FunctionPoint {
@@ -60,7 +73,6 @@ export interface FPAEstimate {
   version: number;
 }
 
-// GQM Types
 export interface Metric {
   id: string;
   name: string;
@@ -95,36 +107,35 @@ export interface Goal {
   updatedAt: Date;
 }
 
-// Measurement Plan Types
 export interface MeasurementPlan {
   id: string;
   name: string;
-  description: string;
-  projectId: string;
-  goals: string[]; // Goal IDs
-  estimates: string[]; // FPA Estimate IDs
-  teamMembers: string[]; // User IDs
-  deadline: Date;
-  status: 'draft' | 'active' | 'completed' | 'archived';
+  description?: string;
+  status: "draft" | "active" | "completed" | "archived";
+  startDate: Date;
+  endDate?: Date;
+  goals: string[];
+  estimates: string[];
+  teamMembers: string[];
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
-  version: number;
 }
 
-// Project Types
 export interface Project {
-  id: string;
+  _id: string;
   name: string;
   description: string;
-  status: 'planning' | 'active' | 'completed' | 'archived';
-  teamMembers: string[]; // User IDs
-  managerId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  status: "PLANNING" | "IN_PROGRESS" | "COMPLETED" | "ARCHIVED";
+  startDate?: string;
+  endDate?: string;
+  organizationId: string;
+  teamMembers: string[];
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-// Navigation Types
 export interface NavItem {
   name: string;
   href: string;
@@ -133,7 +144,6 @@ export interface NavItem {
   requiredRole?: UserRole[];
 }
 
-// Form Types
 export interface FormError {
   field: string;
   message: string;
@@ -146,13 +156,11 @@ export interface ApiResponse<T = unknown> {
   errors?: FormError[];
 }
 
-// Theme Types
-export type Theme = 'light' | 'dark' | 'system';
+export type Theme = "light" | "dark" | "system";
 
-// Activity Feed Types
 export interface Activity {
   id: string;
-  type: 'estimate_created' | 'goal_updated' | 'plan_completed' | 'user_joined';
+  type: "estimate_created" | "goal_updated" | "plan_completed" | "user_joined";
   title: string;
   description: string;
   userId: string;
@@ -160,4 +168,130 @@ export interface Activity {
   userAvatar?: string;
   createdAt: Date;
   metadata?: Record<string, unknown>;
-} 
+}
+
+export interface FPACalculationData {
+  id: string;
+  name: string;
+  description?: string;
+  projectType: "new-development" | "enhancement" | "redevelopment";
+  inputs: {
+    externalInputs: { count: number; complexity: ComplexityLevel };
+    externalOutputs: { count: number; complexity: ComplexityLevel };
+    externalInquiries: { count: number; complexity: ComplexityLevel };
+    internalLogicalFiles: { count: number; complexity: ComplexityLevel };
+    externalInterfaceFiles: { count: number; complexity: ComplexityLevel };
+  };
+  adjustmentFactors: {
+    dataTransmission: number;
+    distributedProcessing: number;
+    performance: number;
+    heavilyUsedConfiguration: number;
+    transactionRate: number;
+    onlineDataEntry: number;
+    endUserEfficiency: number;
+    onlineUpdate: number;
+    complexProcessing: number;
+    reusability: number;
+    installationEase: number;
+    operationalEase: number;
+    multipleSites: number;
+    facilitateChange: number;
+  };
+  results: {
+    rawFunctionPoints: number;
+    adjustedFunctionPoints: number;
+    complexity: ComplexityLevel;
+  };
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface GQMGoal {
+  id: string;
+  name: string;
+  description?: string;
+  purpose: "characterize" | "evaluate" | "predict" | "motivate";
+  focus: string;
+  viewpoint: string;
+  context: string;
+  questions: string[];
+  metrics: string[];
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface GQMQuestion {
+  id: string;
+  goalId: string;
+  text: string;
+  description?: string;
+  metrics: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface GQMMetric {
+  id: string;
+  questionId: string;
+  name: string;
+  description?: string;
+  type: "objective" | "subjective";
+  scale: "nominal" | "ordinal" | "interval" | "ratio";
+  unit?: string;
+  collectionMethod: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface NavigationItem {
+  id: string;
+  label: string;
+  href: string;
+  icon?: string;
+  children?: NavigationItem[];
+  permissions?: string[];
+}
+
+export interface FormField {
+  id: string;
+  name: string;
+  label: string;
+  type:
+    | "text"
+    | "email"
+    | "password"
+    | "number"
+    | "select"
+    | "textarea"
+    | "checkbox"
+    | "radio";
+  placeholder?: string;
+  required?: boolean;
+  validation?: {
+    min?: number;
+    max?: number;
+    pattern?: string;
+    message?: string;
+  };
+  options?: { label: string; value: string }[];
+}
+
+export interface ActivityFeedItem {
+  id: string;
+  type: "create" | "update" | "delete" | "complete";
+  entity: "project" | "plan" | "goal" | "estimate";
+  entityId: string;
+  entityName: string;
+  userId: string;
+  userEmail: string;
+  timestamp: Date;
+  metadata?: Record<string, unknown>;
+}
+
+export * from "./fpa";
+export * from "./plans";
+export * from "./register";
+export * from "./account";

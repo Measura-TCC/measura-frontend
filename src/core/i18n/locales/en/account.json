@@ -1,0 +1,71 @@
+{
+  "title": "Account Settings",
+  "subtitle": "Manage your account information, security settings, and preferences.",
+  "error": {
+    "loadingTitle": "Error Loading Account",
+    "loadingMessage": "There was an error loading your account information.",
+    "tryAgain": "Try Again"
+  },
+  "tabs": {
+    "profile": "Profile",
+    "security": "Security",
+    "preferences": "Preferences"
+  },
+  "profile": {
+    "title": "Profile Information"
+  },
+  "form": {
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "Enter your username",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter your email",
+    "roleLabel": "Current Role",
+    "roleHelp": "Role cannot be changed",
+    "updateButton": "Update Profile",
+    "updating": "Updating...",
+    "updateSuccess": "Profile updated successfully",
+    "updateError": "Error updating profile. Please try again.",
+    "currentPasswordLabel": "Current Password",
+    "currentPasswordPlaceholder": "Enter your current password",
+    "newPasswordLabel": "New Password",
+    "newPasswordPlaceholder": "Enter your new password",
+    "confirmPasswordLabel": "Confirm New Password",
+    "confirmPasswordPlaceholder": "Confirm your new password",
+    "passwordRequirements": "Password must be at least 6 characters long"
+  },
+  "statistics": {
+    "title": "Account Statistics",
+    "memberSince": "Member since",
+    "currentRole": "Current Role",
+    "accountStatus": "Account Status",
+    "organization": "Organization",
+    "active": "Active"
+  },
+  "security": {
+    "title": "Change Password",
+    "description": "Update your password to keep your account secure",
+    "updateButton": "Update Password",
+    "updating": "Updating...",
+    "updateSuccess": "Password updated successfully"
+  },
+  "preferences": {
+    "title": "Language & Region",
+    "description": "Customize your language and regional settings",
+    "languageLabel": "Language",
+    "languageHelp": "Select your preferred language for the interface",
+    "organizationTitle": "Organization Settings",
+    "organizationStatus": "Organization Status",
+    "connected": "Connected",
+    "notConnected": "Not Connected",
+    "organizationHelp": "You are connected to an organization and can create estimates",
+    "organizationHelpEmpty": "Connect to an organization to start creating estimates"
+  },
+  "validation": {
+    "usernameMinLength": "Username must be at least 3 characters",
+    "emailInvalid": "Invalid email address",
+    "currentPasswordRequired": "Current password is required",
+    "newPasswordMinLength": "Password must be at least 6 characters",
+    "confirmPasswordRequired": "Please confirm your password",
+    "passwordsDontMatch": "Passwords don't match"
+  }
+}
