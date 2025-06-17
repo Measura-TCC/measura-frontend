@@ -187,7 +187,7 @@ export const EstimateDetailManager = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => router.push("/fpa")}
+              onClick={() => router.push("/fpa?tab=created")}
               className="p-2 text-muted hover:text-secondary transition-colors hover:cursor-pointer"
             >
               <svg

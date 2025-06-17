@@ -35,6 +35,10 @@
     "valid": "Valid email format",
     "invalid": "Please enter a valid email address (e.g., user@example.com)"
   },
+  "passwordMatch": {
+    "match": "Passwords match",
+    "noMatch": "Passwords do not match"
+  },
   "validation": {
     "usernameMinLength": "Username must be at least 3 characters",
     "emailInvalid": "Invalid email address",

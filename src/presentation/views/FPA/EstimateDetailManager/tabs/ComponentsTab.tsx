@@ -7,6 +7,7 @@ import { CreateEIForm } from "@/presentation/views/FPA/FPAWorkflow/components/Cr
 import { CreateEOForm } from "@/presentation/views/FPA/FPAWorkflow/components/CreateEOForm";
 import { CreateEQForm } from "@/presentation/views/FPA/FPAWorkflow/components/CreateEQForm";
 import { CreateAIEForm } from "@/presentation/views/FPA/FPAWorkflow/components/CreateAIEForm";
+import { PlusIcon } from "@/presentation/assets/icons";
 import type { ComponentResponse } from "@/core/hooks/fpa/components/useComponents";
 
 type ComponentType = "ALI" | "EI" | "EO" | "EQ" | "AIE";
@@ -58,37 +59,42 @@ export const ComponentsTab = ({
           {[
             {
               type: "ALI" as ComponentType,
-              label: t("components.addALIComponents"),
-              desc: t("components.aliDescription"),
+              label: t("workflow.components.aliLabel"),
+              desc: t("workflow.components.aliDescription"),
             },
             {
               type: "EI" as ComponentType,
-              label: t("components.addEIComponents"),
-              desc: t("components.eiDescription"),
+              label: t("workflow.components.eiLabel"),
+              desc: t("workflow.components.eiDescription"),
             },
             {
               type: "EO" as ComponentType,
-              label: t("components.addEOComponents"),
-              desc: t("components.eoDescription"),
+              label: t("workflow.components.eoLabel"),
+              desc: t("workflow.components.eoDescription"),
             },
             {
               type: "EQ" as ComponentType,
-              label: t("components.addEQComponents"),
-              desc: t("components.eqDescription"),
+              label: t("workflow.components.eqLabel"),
+              desc: t("workflow.components.eqDescription"),
             },
             {
               type: "AIE" as ComponentType,
-              label: t("components.addAIEComponents"),
-              desc: t("components.aieDescription"),
+              label: t("workflow.components.aieLabel"),
+              desc: t("workflow.components.aieDescription"),
             },
           ].map(({ type, label, desc }) => (
             <button
               key={type}
               onClick={() => setSelectedComponentType(type)}
-              className="p-4 border border-border rounded-lg hover:border-primary/30 hover:shadow-sm transition-all text-left bg-background"
+              className="p-4 border border-border rounded-lg hover:border-primary/30 hover:shadow-sm transition-all text-center bg-background"
             >
-              <h3 className="font-medium text-default mb-2">{label}</h3>
-              <p className="text-sm text-secondary">{desc}</p>
+              <div className="flex flex-col items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-medium text-default">{label}</h3>
+                  <PlusIcon className="w-4 h-4" />
+                </div>
+                <p className="text-sm text-secondary text-center">{desc}</p>
+              </div>
             </button>
           ))}
         </div>

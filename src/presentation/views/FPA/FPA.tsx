@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useFPA } from "@/core/hooks/fpa/useFPA";
 import type { FPATab } from "./common/FPATabs";
 import { FPATabs, FPAPageHeader, OrganizationAlert } from "./common";
@@ -31,7 +32,15 @@ export const FPAView: React.FC = () => {
     getStatusColor,
   } = useFPA();
 
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<FPATab>("overview");
+
+  useEffect(() => {
+    const tabParam = searchParams.get("tab") as FPATab;
+    if (tabParam && ["overview", "estimates", "reference"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   const handleTabChange = (tab: FPATab) => {
     setActiveTab(tab);

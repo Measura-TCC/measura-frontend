@@ -64,10 +64,6 @@ export const CreateEstimateForm = ({
       };
       const estimate = await createEstimate(createData);
 
-      if (estimate && estimate._id) {
-        window.open(`/fpa/estimates/${estimate._id}`, "_blank");
-      }
-
       onSuccess(estimate as unknown as EstimateResponse);
     } catch (err) {
       setError(

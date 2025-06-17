@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { createALISchema, type CreateALIData } from "@/core/schemas/fpa";
 import { useFpaComponents } from "@/core/hooks/fpa/components/useFpaComponents";
 import { useState } from "react";
+import { Button } from "@/presentation/components/primitives";
 
 interface CreateALIFormProps {
   estimateId: string;
@@ -182,15 +183,16 @@ export const CreateALIForm = ({
       )}
 
       <div className="flex justify-end">
-        <button
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          variant="primary"
+          size="md"
         >
           {isSubmitting
             ? t("componentForms.ali.submitting")
             : t("componentForms.ali.submit")}
-        </button>
+        </Button>
       </div>
     </form>
   );

@@ -6,6 +6,7 @@ import { EyeIcon, EyeOffIcon } from "@/presentation/assets/icons";
 import { RegisterFormData, RoleOption } from "@/core/types/register";
 import { PasswordRequirements } from "./PasswordRequirements";
 import { EmailValidation } from "./EmailValidation";
+import { PasswordMatch } from "./PasswordMatch";
 
 interface RegisterFormProps {
   registerForm: UseFormReturn<RegisterFormData>;
@@ -29,8 +30,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showEmailValidation, setShowEmailValidation] = useState(false);
+  const [showPasswordMatch, setShowPasswordMatch] = useState(false);
 
-  // Watch fields for real-time validation feedback
   const password = watch("password") || "";
   const username = watch("username") || "";
   const email = watch("email") || "";
@@ -76,7 +77,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           disabled={isRegistering}
           onBlur={() => setShowEmailValidation(true)}
         />
-        {/* Show email validation on blur */}
+
         <EmailValidation
           email={email}
           show={showEmailValidation}
@@ -118,10 +119,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             )}
           </Button>
         </div>
-        {/* Show password requirements proactively */}
         <PasswordRequirements password={password} className="mt-2" />
 
-        {/* Only show error if there's an error AND user has started typing */}
         {formErrors.password && password.length > 0 && (
           <span className="text-sm text-red-600">
             {formErrors.password.message}
@@ -144,6 +143,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             placeholder={t("confirmPassword")}
             disabled={isRegistering}
             className="pr-10"
+            onBlur={() => setShowPasswordMatch(true)}
           />
           <Button
             type="button"
@@ -160,6 +160,14 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             )}
           </Button>
         </div>
+
+        <PasswordMatch
+          password={password}
+          confirmPassword={confirmPassword}
+          show={showPasswordMatch}
+          className="mt-2"
+        />
+
         {formErrors.confirmPassword && confirmPassword.length > 0 && (
           <span className="text-sm text-red-600">
             {formErrors.confirmPassword.message}

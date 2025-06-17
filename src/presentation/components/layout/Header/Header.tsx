@@ -22,7 +22,6 @@ export const Header = () => {
   const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
 
   const handleLogout = () => {
-    // Logout is now immediate and synchronous
     logout();
   };
 

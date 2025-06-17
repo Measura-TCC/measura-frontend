@@ -1,23 +1,29 @@
 import { useTranslation } from "react-i18next";
 import { CheckIcon, XIcon } from "@/presentation/assets/icons";
 
-interface EmailValidationProps {
-  email: string;
+interface PasswordMatchProps {
+  password: string;
+  confirmPassword: string;
   show: boolean;
   className?: string;
 }
 
-export const EmailValidation: React.FC<EmailValidationProps> = ({
-  email,
+export const PasswordMatch: React.FC<PasswordMatchProps> = ({
+  password,
+  confirmPassword,
   show,
   className = "",
 }) => {
   const { t } = useTranslation("register");
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const isValidEmail = emailRegex.test(email);
+  const passwordsMatch =
+    password.length > 0 &&
+    confirmPassword.length > 0 &&
+    password === confirmPassword;
+  const showMismatch =
+    confirmPassword.length > 0 && password !== confirmPassword;
 
-  if (!show || email.length === 0) {
+  if (!show || confirmPassword.length === 0) {
     return null;
   }
 
@@ -26,7 +32,7 @@ export const EmailValidation: React.FC<EmailValidationProps> = ({
       className={`flex items-center text-xs mt-1 transition-all duration-200 ${className}`}
     >
       <span className="mr-2 flex-shrink-0">
-        {isValidEmail ? (
+        {passwordsMatch ? (
           <div className="w-3 h-3 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
             <CheckIcon className="w-2 h-2 text-green-600 dark:text-green-400" />
           </div>
@@ -38,14 +44,16 @@ export const EmailValidation: React.FC<EmailValidationProps> = ({
       </span>
       <span
         className={`transition-colors duration-200 ${
-          isValidEmail
+          passwordsMatch
             ? "text-green-600 dark:text-green-400"
             : "text-red-500 dark:text-red-400"
         }`}
       >
-        {isValidEmail
-          ? t("emailValidation.valid")
-          : t("emailValidation.invalid")}
+        {passwordsMatch
+          ? t("passwordMatch.match")
+          : showMismatch
+          ? t("passwordMatch.noMatch")
+          : ""}
       </span>
     </div>
   );

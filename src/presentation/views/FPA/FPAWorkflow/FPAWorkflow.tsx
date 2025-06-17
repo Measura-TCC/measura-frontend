@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
@@ -16,7 +17,7 @@ import { CreateEOForm } from "./components/CreateEOForm";
 import { CreateEQForm } from "./components/CreateEQForm";
 import { CreateAIEForm } from "./components/CreateAIEForm";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
-import { OfficeIcon } from "@/presentation/assets/icons";
+import { OfficeIcon, PlusIcon } from "@/presentation/assets/icons";
 import { Button } from "@/presentation/components/primitives/Button/Button";
 import {
   useEstimateActions,
@@ -41,7 +42,16 @@ interface EstimateWithArrays {
 
 export const FPAWorkflow = () => {
   const { t } = useTranslation("fpa");
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<Tab>("new");
+
+  // Check for tab query parameter on mount
+  useEffect(() => {
+    const tabParam = searchParams.get("tab") as Tab;
+    if (tabParam && ["new", "created"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   const {
     state,
@@ -120,12 +130,7 @@ export const FPAWorkflow = () => {
     }
   };
 
-  const handleProjectConfigCompleted = (/* data: {
-    averageDailyWorkingHours: number;
-    teamSize: number;
-    hourlyRateBRL: number;
-    productivityFactor?: number;
-  } */) => {
+  const handleProjectConfigCompleted = () => {
     setCurrentStep(6);
   };
 
@@ -485,27 +490,27 @@ export const FPAWorkflow = () => {
                 {[
                   {
                     type: "ALI" as ComponentType,
-                    label: t("workflow.components.addALI"),
+                    label: t("workflow.components.aliLabel"),
                     desc: t("workflow.components.aliDescription"),
                   },
                   {
                     type: "EI" as ComponentType,
-                    label: t("workflow.components.addEI"),
+                    label: t("workflow.components.eiLabel"),
                     desc: t("workflow.components.eiDescription"),
                   },
                   {
                     type: "EO" as ComponentType,
-                    label: t("workflow.components.addEO"),
+                    label: t("workflow.components.eoLabel"),
                     desc: t("workflow.components.eoDescription"),
                   },
                   {
                     type: "EQ" as ComponentType,
-                    label: t("workflow.components.addEQ"),
+                    label: t("workflow.components.eqLabel"),
                     desc: t("workflow.components.eqDescription"),
                   },
                   {
                     type: "AIE" as ComponentType,
-                    label: t("workflow.components.addAIE"),
+                    label: t("workflow.components.aieLabel"),
                     desc: t("workflow.components.aieDescription"),
                   },
                 ].map(({ type, label, desc }) => (
@@ -514,10 +519,17 @@ export const FPAWorkflow = () => {
                     onClick={() => setSelectedComponentType(type)}
                     variant="ghost"
                     size="md"
-                    className="p-4 border border-border rounded-lg hover:border-primary/30 hover:shadow-sm transition-all text-left"
+                    className="p-4 border border-border rounded-lg hover:border-primary/30 hover:shadow-sm transition-all text-center"
                   >
-                    <h3 className="font-medium text-default mb-2">{label}</h3>
-                    <p className="text-sm text-secondary">{desc}</p>
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-medium text-default">{label}</h3>
+                        <PlusIcon className="w-4 h-4" />
+                      </div>
+                      <p className="text-sm text-secondary text-center">
+                        {desc}
+                      </p>
+                    </div>
                   </Button>
                 ))}
               </div>

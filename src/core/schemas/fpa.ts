@@ -146,7 +146,6 @@ export const createGSCSchema = z.object({
   multipleSites: z.number().min(0).max(5),
   facilitateChange: z.number().min(0).max(5),
   distributedFunctions: z.number().min(0).max(5),
-  productivityFactor: z.number().min(1).optional(),
   notes: z.string().max(2000).optional(),
 });
 

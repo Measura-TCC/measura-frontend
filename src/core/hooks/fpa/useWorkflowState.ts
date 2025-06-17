@@ -23,9 +23,9 @@ export interface WorkflowState {
     averageDailyWorkingHours?: number;
     teamSize?: number;
     hourlyRateBRL?: number;
+    productivityFactor?: number;
   };
   step4Data: {
-    productivityFactor?: number;
     generalSystemCharacteristics?: number[];
     notes?: string;
   };
@@ -42,10 +42,9 @@ const DEFAULT_STATE: WorkflowState = {
     averageDailyWorkingHours: 8,
     teamSize: 4,
     hourlyRateBRL: 150,
-  },
-  step4Data: {
     productivityFactor: 10,
   },
+  step4Data: {},
 };
 
 const STORAGE_KEY = "fpa-workflow-state";

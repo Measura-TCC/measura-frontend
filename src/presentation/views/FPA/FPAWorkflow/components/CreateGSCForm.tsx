@@ -24,7 +24,6 @@ interface CreateGSCFormProps {
     multipleSites?: number;
     facilitateChange?: number;
     distributedFunctions?: number;
-    productivityFactor?: number;
     notes?: string;
   };
 }
@@ -59,7 +58,6 @@ export const CreateGSCForm = ({
       multipleSites: initialValues?.multipleSites || 0,
       facilitateChange: initialValues?.facilitateChange || 0,
       distributedFunctions: initialValues?.distributedFunctions || 0,
-      productivityFactor: initialValues?.productivityFactor || 1,
       notes: initialValues?.notes || "",
     },
   });
@@ -162,28 +160,6 @@ export const CreateGSCForm = ({
       </div>
 
       <div className="space-y-4">
-        <div>
-          <label
-            htmlFor="productivityFactor"
-            className="block text-sm font-medium text-gray-700"
-          >
-            {t("forms.productivityFactor")}
-          </label>
-          <input
-            {...register("productivityFactor", { valueAsNumber: true })}
-            id="productivityFactor"
-            type="number"
-            step="0.1"
-            min="1"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          />
-          {errors.productivityFactor && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.productivityFactor.message}
-            </p>
-          )}
-        </div>
-
         <div>
           <label
             htmlFor="notes"
