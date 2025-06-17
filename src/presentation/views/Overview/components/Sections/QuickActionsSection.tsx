@@ -43,7 +43,7 @@ export const QuickActionsSection: React.FC<QuickActionsSectionProps> = ({
           className="w-full justify-start"
           variant="ghost"
           onClick={onNewMeasurementPlan}
-          disabled={!hasOrganization}
+          disabled={true}
         >
           <PlusIcon className="w-4 h-4 mr-2" />
           {t("newMeasurementPlan")}

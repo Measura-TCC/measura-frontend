@@ -126,8 +126,6 @@ export const FPAWorkflow = () => {
     hourlyRateBRL: number;
     productivityFactor?: number;
   } */) => {
-    // Project configuration data has been saved to the backend
-    // We can now proceed to the next step
     setCurrentStep(6);
   };
 
@@ -138,7 +136,7 @@ export const FPAWorkflow = () => {
       await calculateFunctionPoints({ estimateId: state.createdEstimate._id });
       setCalculationComplete(true);
     } catch {
-      // Error handling can be added here if needed
+      // TODO: Error handling can be added here if needed
     }
   };
 
@@ -166,12 +164,100 @@ export const FPAWorkflow = () => {
 
   const renderTabContent = () => {
     if (activeTab === "created") {
-      return <EstimatesDashboard />;
+      return <EstimatesDashboard onCreateNew={() => setActiveTab("new")} />;
     }
 
     return (
       <div className="space-y-8">
-        <div className="flex items-center justify-between">
+        <div className="block md:hidden">
+          <div className="overflow-x-auto pb-4">
+            <div className="flex items-center min-w-max px-4">
+              {[
+                {
+                  number: 1,
+                  name: t("workflow.step1Title").replace("1. ", ""),
+                },
+                {
+                  number: 2,
+                  name: t("workflow.step2Title").replace("2. ", ""),
+                },
+                {
+                  number: 3,
+                  name: t("workflow.step3Title").replace("3. ", ""),
+                },
+                {
+                  number: 4,
+                  name: t("workflow.step4Title").replace("4. ", ""),
+                },
+                {
+                  number: 5,
+                  name: t("workflow.step5Title").replace("5. ", ""),
+                },
+                {
+                  number: 6,
+                  name: t("workflow.step6Title").replace("6. ", ""),
+                },
+              ].map((step, index) => (
+                <div
+                  key={step.number}
+                  className="flex flex-col items-center flex-shrink-0"
+                >
+                  <div className="flex items-center">
+                    <div
+                      onClick={() => handleStepClick(step.number as Step)}
+                      className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
+                        state.currentStep >= step.number
+                          ? "bg-primary border-primary text-white"
+                          : canNavigateToStep(step.number as Step)
+                          ? "border-primary/50 text-primary/70 bg-primary/10"
+                          : "border-gray-300 text-gray-400 bg-gray-100"
+                      } ${
+                        state.currentStep === step.number
+                          ? "ring-4 ring-primary/20"
+                          : ""
+                      } ${
+                        canNavigateToStep(step.number as Step)
+                          ? "cursor-pointer hover:scale-110 hover:shadow-md"
+                          : "cursor-not-allowed opacity-60"
+                      }`}
+                      title={
+                        !canNavigateToStep(step.number as Step)
+                          ? "Complete a etapa anterior para desbloquear"
+                          : ""
+                      }
+                    >
+                      {step.number}
+                    </div>
+                    {index < 5 && (
+                      <div
+                        className={`w-16 h-0.5 mx-3 ${
+                          state.currentStep > step.number
+                            ? "bg-primary"
+                            : "bg-border"
+                        }`}
+                      />
+                    )}
+                  </div>
+                  <div className="mt-2 text-center max-w-20">
+                    <p
+                      className={`text-xs font-medium ${
+                        state.currentStep === step.number
+                          ? "text-primary"
+                          : canNavigateToStep(step.number as Step)
+                          ? "text-primary/70"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      {step.name}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="hidden md:flex items-center justify-between">
           {[
             { number: 1, name: t("workflow.step1Title").replace("1. ", "") },
             { number: 2, name: t("workflow.step2Title").replace("2. ", "") },
@@ -190,16 +276,23 @@ export const FPAWorkflow = () => {
                   className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all ${
                     state.currentStep >= step.number
                       ? "bg-primary border-primary text-white"
-                      : "border-border text-muted"
+                      : canNavigateToStep(step.number as Step)
+                      ? "border-primary/50 text-primary/70 bg-primary/10"
+                      : "border-gray-300 text-gray-400 bg-gray-100"
                   } ${
                     state.currentStep === step.number
                       ? "ring-4 ring-primary/20"
                       : ""
                   } ${
                     canNavigateToStep(step.number as Step)
-                      ? "cursor-pointer hover:scale-110"
-                      : "cursor-not-allowed"
+                      ? "cursor-pointer hover:scale-110 hover:shadow-md"
+                      : "cursor-not-allowed opacity-60"
                   }`}
+                  title={
+                    !canNavigateToStep(step.number as Step)
+                      ? "Complete a etapa anterior para desbloquear"
+                      : ""
+                  }
                 >
                   {step.number}
                 </div>
@@ -218,7 +311,9 @@ export const FPAWorkflow = () => {
                   className={`text-xs font-medium ${
                     state.currentStep === step.number
                       ? "text-primary"
-                      : "text-muted"
+                      : canNavigateToStep(step.number as Step)
+                      ? "text-primary/70"
+                      : "text-gray-400"
                   }`}
                 >
                   {step.name}
@@ -593,10 +688,10 @@ export const FPAWorkflow = () => {
             onClick={() => setActiveTab("new")}
             variant="ghost"
             size="sm"
-            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+            className={`py-2 px-1 border-b-2 font-medium text-sm  rounded-none${
               activeTab === "new"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted hover:text-secondary hover:border-border"
+                ? "border-primary text-primary rounded-none"
+                : "border-transparent text-muted hover:text-secondary hover:border-border rounded-none"
             }`}
           >
             {t("tabs.newEstimate")}
@@ -605,10 +700,10 @@ export const FPAWorkflow = () => {
             onClick={() => setActiveTab("created")}
             variant="ghost"
             size="sm"
-            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+            className={`py-2 px-1 border-b-2 font-medium text-sm rounded-none ${
               activeTab === "created"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted hover:text-secondary hover:border-border"
+                ? "border-primary text-primary rounded-none"
+                : "border-transparent text-muted hover:text-secondary hover:border-border rounded-none"
             }`}
           >
             {t("tabs.createdEstimates")}

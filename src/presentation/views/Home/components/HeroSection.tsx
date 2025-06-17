@@ -6,8 +6,35 @@ import measuraHome from "@/presentation/assets/images/measura-home.png";
 import { Button } from "@/presentation/components/primitives";
 import { ArrowRightIcon } from "@/presentation/assets/icons";
 
-export const HeroSection: React.FC = () => {
+interface HeroSectionProps {
+  isAuthenticated?: boolean;
+  onGetStarted?: () => void;
+}
+
+export const HeroSection: React.FC<HeroSectionProps> = ({
+  isAuthenticated = false,
+  onGetStarted,
+}) => {
   const { t } = useTranslation(["common", "home"]);
+
+  const handleGetStarted = () => {
+    if (onGetStarted) {
+      onGetStarted();
+    } else {
+      if (isAuthenticated) {
+        window.open("/overview", "_blank");
+      } else {
+        window.open("/login", "_blank");
+      }
+    }
+  };
+
+  const handleLearnMore = () => {
+    const featuresSection = document.getElementById("features");
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <section
@@ -27,7 +54,11 @@ export const HeroSection: React.FC = () => {
           {t("heroSubtitle")}
         </p>
         <div className="flex gap-2 justify-center mb-6">
-          <Button size="lg" className="px-8 py-2 flex items-center gap-2 group">
+          <Button
+            size="lg"
+            className="px-8 py-2 flex items-center gap-2 group"
+            onClick={handleGetStarted}
+          >
             {t("hero.getStarted", { ns: "home" })}
             <ArrowRightIcon className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
           </Button>
@@ -35,8 +66,9 @@ export const HeroSection: React.FC = () => {
             variant="secondary"
             size="lg"
             className="px-8 py-2 flex items-center border-2 gap-2 group border-violet-500 text-violet-600 hover:bg-violet-50"
+            onClick={handleLearnMore}
           >
-            {t("hero.getStarted", { ns: "home" })}
+            {t("learnMore")}
             <ArrowRightIcon className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
           </Button>
         </div>

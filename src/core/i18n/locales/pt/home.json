@@ -1,4 +1,5 @@
 {
+  "developedBy": "Desenvolvido por",
   "hero": {
     "title": "Medição Descomplicada? É Com o Measura!",
     "getStarted": "Começar",
@@ -13,11 +14,11 @@
   },
   "team": {
     "title": "Conheça o Time",
-    "description": "Educadores, engenheiros e pesquisadores comprometidos com a melhoria das práticas de medição de software.",
+    "description": "Docentes, desenvolvedores e pesquisadores comprometidos com a melhoria das práticas de medição de software",
     "joinCommunity": "Junte-se à Nossa Comunidade",
-    "communityDescription": "Contribua com o projeto open source e ajude a melhorar as práticas de medição de software na comunidade acadêmica.",
+    "communityDescription": "Contribua com o projeto open source e ajude a melhorar as práticas de medição de software",
     "viewOnGithub": "Ver no GitHub",
-    "projectFooter": "Projeto acadêmico open source • Desenvolvido com ❤️ para a comunidade"
+    "projectFooter": "Projeto acadêmico de código aberto • Construído com dedicação para a comunidade"
   },
   "cta": {
     "title": "Veja como funciona na prática com dados de demonstração",

@@ -15,9 +15,13 @@ import {
 
 interface EstimatesDashboardProps {
   projectId?: string;
+  onCreateNew?: () => void;
 }
 
-export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
+export const EstimatesDashboard = ({
+  projectId,
+  onCreateNew,
+}: EstimatesDashboardProps) => {
   const { t } = useTranslation("fpa");
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
@@ -103,7 +107,11 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
       router.push("/organization");
       return;
     }
-    router.push("/fpa");
+    if (onCreateNew) {
+      onCreateNew();
+    } else {
+      router.push("/fpa");
+    }
   };
 
   if (isLoadingUserOrganization || isLoadingEstimatesOverviews) {
@@ -175,7 +183,7 @@ export const EstimatesDashboard = ({ projectId }: EstimatesDashboardProps) => {
         </div>
         <button
           onClick={handleCreateEstimate}
-          className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors flex items-center space-x-2"
+          className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors flex items-center space-x-2 hover:cursor-pointer"
         >
           <PlusIcon className="w-5 h-5" />
           <span>{t("createNew")}</span>

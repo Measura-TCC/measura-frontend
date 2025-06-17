@@ -92,7 +92,7 @@ export const EstimateOverviewCard = ({
         </div>
       </div>
 
-      <div className="flex items-center space-x-4 mb-4">
+      <div className="flex items-center flex-wrap gap-x-4 gap-y-2 mb-4">
         <div className="flex items-center space-x-2">
           <div
             className={`w-3 h-3 rounded-full ${
@@ -162,31 +162,41 @@ export const EstimateOverviewCard = ({
           <p className="text-lg font-bold text-gray-900">
             {estimate.componentCounts?.ilf || 0}
           </p>
-          <p className="text-xs text-gray-600">ILF</p>
+          <p className="text-xs text-gray-600">
+            {t("workflow.components.aliLabel")}
+          </p>
         </div>
         <div className="text-center">
           <p className="text-lg font-bold text-gray-900">
             {estimate.componentCounts?.eif || 0}
           </p>
-          <p className="text-xs text-gray-600">EIF</p>
+          <p className="text-xs text-gray-600">
+            {t("workflow.components.aieLabel")}
+          </p>
         </div>
         <div className="text-center">
           <p className="text-lg font-bold text-gray-900">
             {estimate.componentCounts?.ei || 0}
           </p>
-          <p className="text-xs text-gray-600">EI</p>
+          <p className="text-xs text-gray-600">
+            {t("workflow.components.eiLabel")}
+          </p>
         </div>
         <div className="text-center">
           <p className="text-lg font-bold text-gray-900">
             {estimate.componentCounts?.eo || 0}
           </p>
-          <p className="text-xs text-gray-600">EO</p>
+          <p className="text-xs text-gray-600">
+            {t("workflow.components.eoLabel")}
+          </p>
         </div>
         <div className="text-center">
           <p className="text-lg font-bold text-gray-900">
             {estimate.componentCounts?.eq || 0}
           </p>
-          <p className="text-xs text-gray-600">EQ</p>
+          <p className="text-xs text-gray-600">
+            {t("workflow.components.eqLabel")}
+          </p>
         </div>
       </div>
 

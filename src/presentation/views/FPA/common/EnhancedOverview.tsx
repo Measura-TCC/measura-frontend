@@ -54,7 +54,6 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
   };
 
   const getTranslatedProductivityMetrics = () => {
-    // Transform backend data to properly formatted and translated metrics
     return [
       {
         metric: t("charts.labels.productivityMetrics.Hours per Function Point"),

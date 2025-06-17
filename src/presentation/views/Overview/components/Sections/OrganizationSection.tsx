@@ -72,7 +72,7 @@ export const OrganizationSection: React.FC<OrganizationSectionProps> = ({
             </p>
             <Button
               size="sm"
-              variant="ghost"
+              variant="primary"
               onClick={onManageOrganization}
               className="mt-2"
             >

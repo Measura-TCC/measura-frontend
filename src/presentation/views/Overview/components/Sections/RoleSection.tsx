@@ -5,6 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/presentation/components/primitives";
+import { useDecodeRole } from "@/core/hooks/common/useDecodeRole";
+import { UserRole } from "@/core/types";
 
 interface RoleSectionProps {
   user: {
@@ -15,7 +17,7 @@ interface RoleSectionProps {
 
 export const RoleSection: React.FC<RoleSectionProps> = ({ user }) => {
   const { t } = useTranslation("dashboard");
-
+  const decodedRole = useDecodeRole(user?.role as UserRole);
   return (
     <Card>
       <CardHeader>
@@ -24,7 +26,7 @@ export const RoleSection: React.FC<RoleSectionProps> = ({ user }) => {
       <CardContent>
         <div className="space-y-2">
           <p className="text-sm text-secondary">{t("currentRole")}</p>
-          <p className="font-semibold text-default capitalize">{user?.role}</p>
+          <p className="font-semibold text-default capitalize">{decodedRole}</p>
           <p className="text-sm text-muted">
             {user?.role === "admin" && t("role.admin")}
             {user?.role === "manager" && t("role.manager")}

@@ -21,12 +21,9 @@ export const Header = () => {
   const { user, logout } = useAuth();
   const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
+  const handleLogout = () => {
+    // Logout is now immediate and synchronous
+    logout();
   };
 
   const toggleTheme = () => {
@@ -55,7 +52,9 @@ export const Header = () => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <LanguageSwitcher />
+            <div className="hidden lg:block">
+              <LanguageSwitcher />
+            </div>
 
             <Button
               variant="ghost"

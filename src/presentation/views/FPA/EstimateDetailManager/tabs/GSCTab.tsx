@@ -20,7 +20,7 @@ export const GSCTab = ({ estimateOverview, onUpdate }: GSCTabProps) => {
           valueAdjustmentFactor:
             estimateOverview.generalSystemCharacteristics.valueAdjustmentFactor,
           generalSystemCharacteristics:
-            estimateOverview.generalSystemCharacteristics.values.values,
+            estimateOverview.generalSystemCharacteristics.values,
         }}
         onUpdate={async (generalSystemCharacteristics) => {
           try {

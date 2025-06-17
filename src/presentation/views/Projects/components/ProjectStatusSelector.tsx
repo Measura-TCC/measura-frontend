@@ -113,7 +113,6 @@ export const ProjectStatusSelector: React.FC<ProjectStatusSelectorProps> = ({
         )}
       </div>
 
-      {/* Status Badge */}
       {currentStatus && (
         <span
           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${currentStatus.color}`}

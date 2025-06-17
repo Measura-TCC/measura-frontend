@@ -31,7 +31,11 @@ export interface EstimateResponse {
   externalInputs: string[];
   externalOutputs: string[];
   externalQueries: string[];
-  generalSystemCharacteristics: number[];
+  generalSystemCharacteristics: {
+    values: number[];
+    totalInfluenceFactor: number;
+    valueAdjustmentFactor: number;
+  };
   unadjustedFunctionPoints: number;
   valueAdjustmentFactor: number;
   adjustedFunctionPoints: number;
@@ -115,7 +119,6 @@ export interface EstimateOverviewResponse {
   createdAt: string;
   updatedAt: string;
 
-  // ✨ NOVO: Informações completas do projeto
   project: {
     _id: string;
     name: string;
@@ -165,11 +168,7 @@ export interface EstimateOverviewResponse {
   };
 
   generalSystemCharacteristics: {
-    values: {
-      values: number[];
-      totalInfluenceFactor: number;
-      valueAdjustmentFactor: number;
-    };
+    values: number[];
     totalInfluenceFactor: number;
     valueAdjustmentFactor: number;
   };
@@ -288,7 +287,8 @@ export const transformToEstimateOverview = (
     hasComponents: totalComponents > 0,
     hasGSC:
       estimate.generalSystemCharacteristics &&
-      estimate.generalSystemCharacteristics.length > 0,
+      estimate.generalSystemCharacteristics.values &&
+      estimate.generalSystemCharacteristics.values.length > 0,
     isCalculated: estimate.adjustedFunctionPoints > 0,
     createdAt: estimate.createdAt,
     updatedAt: estimate.updatedAt,
