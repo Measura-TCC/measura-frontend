@@ -10,19 +10,18 @@ interface AppLayoutProps {
 }
 
 const AppLayout = ({ children }: AppLayoutProps) => {
-  const { isAuthenticated, user, accessToken } = useAuth();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      console.log("User not authenticated, redirecting to login");
-    }
-  }, [isAuthenticated, user, accessToken]);
+    const timeoutId = setTimeout(() => {
+      if (!isAuthenticated) {
+        console.log("User not authenticated, redirecting to login");
+        router.push("/login");
+      }
+    }, 100);
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/");
-    }
+    return () => clearTimeout(timeoutId);
   }, [isAuthenticated, router]);
 
   if (!isAuthenticated) {
