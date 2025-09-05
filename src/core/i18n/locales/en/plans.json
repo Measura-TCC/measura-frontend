@@ -14,6 +14,7 @@
   "yourPlans": "Your Plans",
   "progress": "Progress",
   "templates": "Plan Templates",
+  "planTemplates": "Plan Templates",
   "qualityAssurance": "Quality Assurance Plan",
   "qualityDescription": "Focus on quality metrics and defect tracking",
   "productivityAnalysis": "Productivity Analysis Plan",
@@ -21,10 +22,46 @@
   "projectPerformance": "Project Performance Plan",
   "performanceDescription": "Track project delivery and timeline metrics",
   "totalPlans": "Total Plans",
+  "statistics": "Statistics",
+  "organizationRequired": "Organization Required",
+  "organizationRequiredDescription": "You need to create or join an organization to create measurement plans and manage planning activities",
+  "createOrganization": "Create Organization",
+  "tabs": {
+    "overview": "Overview",
+    "plans": "Plans",
+    "templates": "Templates",
+    "gqm": "GQM"
+  },
+  "types": {
+    "measurement": "Measurement",
+    "quality": "Quality",
+    "performance": "Performance",
+    "estimation": "Estimation"
+  },
+  "gqm": {
+    "notStarted": "Not Started",
+    "noPlansForGQM": "No Plans for GQM",
+    "selectMeasurementFocus": "Select Measurement Focus",
+    "selectMeasurementFocusDescription": "Choose an organizational objective, then a specific question to answer, and finally select the metric to measure it.",
+    "selectObjective": "Select Objective",
+    "selectQuestion": "Select Question",
+    "selectMetric": "Select Metric",
+    "chooseObjective": "Choose an organizational objective...",
+    "chooseQuestion": "Choose a question to answer...",
+    "chooseMetric": "Choose a metric to measure...",
+    "searchObjectives": "Search objectives...",
+    "searchQuestions": "Search questions...",
+    "searchMetrics": "Search metrics...",
+    "currentSelection": "Current Selection",
+    "startSelection": "Confirm Selection",
+    "objective": "Objective",
+    "question": "Question",
+    "metric": "Metric"
+  },
   "status": {
     "active": "active",
     "completed": "completed",
     "draft": "draft",
     "scheduled": "scheduled"
   }
-} 
+}

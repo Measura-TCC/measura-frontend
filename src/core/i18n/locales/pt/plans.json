@@ -14,6 +14,7 @@
   "yourPlans": "Seus Planos",
   "progress": "Progresso",
   "templates": "Modelos de Plano",
+  "planTemplates": "Modelos de Plano",
   "qualityAssurance": "Plano de Garantia de Qualidade",
   "qualityDescription": "Foco em métricas de qualidade e rastreamento de defeitos",
   "productivityAnalysis": "Plano de Análise de Produtividade",
@@ -21,10 +22,46 @@
   "projectPerformance": "Plano de Performance do Projeto",
   "performanceDescription": "Acompanhar entrega do projeto e métricas de cronograma",
   "totalPlans": "Total de Planos",
+  "statistics": "Estatísticas",
+  "organizationRequired": "Organização Necessária",
+  "organizationRequiredDescription": "Você precisa criar ou ingressar em uma organização para criar planos de medição e gerenciar atividades de planejamento",
+  "createOrganization": "Criar Organização",
+  "tabs": {
+    "overview": "Visão Geral",
+    "plans": "Planos",
+    "templates": "Modelos",
+    "gqm": "GQM"
+  },
+  "types": {
+    "measurement": "Medição",
+    "quality": "Qualidade",
+    "performance": "Performance",
+    "estimation": "Estimativa"
+  },
+  "gqm": {
+    "notStarted": "Não Iniciado",
+    "noPlansForGQM": "Nenhum Plano para GQM",
+    "selectMeasurementFocus": "Selecionar Foco de Medição",
+    "selectMeasurementFocusDescription": "Escolha um objetivo organizacional, depois selecione uma pergunta específica para responder e, por fim, escolha a métrica para medi-la.",
+    "selectObjective": "Selecionar Objetivo",
+    "selectQuestion": "Selecionar Questão",
+    "selectMetric": "Selecionar Métrica",
+    "chooseObjective": "Escolha um objetivo organizacional...",
+    "chooseQuestion": "Escolha uma questão para responder...",
+    "chooseMetric": "Escolha uma métrica para medir...",
+    "searchObjectives": "Buscar objetivos...",
+    "searchQuestions": "Buscar questões...",
+    "searchMetrics": "Buscar métricas...",
+    "currentSelection": "Seleção Atual",
+    "startSelection": "Confirmar Seleção",
+    "objective": "Objetivo",
+    "question": "Questão",
+    "metric": "Métrica"
+  },
   "status": {
     "active": "ativo",
     "completed": "concluído",
     "draft": "rascunho",
     "scheduled": "agendado"
   }
-} 
+}
