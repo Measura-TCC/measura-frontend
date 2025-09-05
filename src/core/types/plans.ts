@@ -101,40 +101,10 @@ export interface GQMMetric {
   status: "planned" | "collecting" | "completed";
 }
 
-export interface GQMSelectionState {
-  objective: {
-    id: string;
-    name: string;
-    description: string;
-    purpose: string;
-    issue: string;
-    object: string;
-    viewpoint: string;
-    context: string;
-  } | null;
-  question: {
-    id: string;
-    objectiveId: string;
-    question: string;
-    category: string;
-  } | null;
-  metric: {
-    id: string;
-    questionId: string;
-    name: string;
-    unit: string;
-    description: string;
-    type: "objective" | "subjective";
-    scale: string;
-    measurementMethod?: string;
-  } | null;
-}
-
 export interface GQMData {
   goals: GQMGoal[];
   questions: GQMQuestion[];
   metrics: GQMMetric[];
-  selection?: GQMSelectionState;
 }
 
 export const PLAN_PERMISSIONS = {
