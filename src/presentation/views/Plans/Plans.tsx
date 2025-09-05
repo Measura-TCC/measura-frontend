@@ -57,6 +57,10 @@ export const PlansView = () => {
     console.log("Complete step:", step);
   };
 
+  const handleSelectionComplete = async (selection: import("@/core/types/plans").GQMSelectionState) => {
+    console.log("Selection complete:", selection);
+  };
+
   const componentMap = {
     overview: (
       <OverviewTab
@@ -101,6 +105,7 @@ export const PlansView = () => {
         onCreateQuestion={handleCreateQuestion}
         onCreateMetric={handleCreateMetric}
         onCompleteStep={handleCompleteStep}
+        onSelectionComplete={handleSelectionComplete}
       />
     ),
   };
