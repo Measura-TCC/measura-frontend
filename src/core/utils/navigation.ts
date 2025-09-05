@@ -53,7 +53,6 @@ export const getNavigationItems = (
     href: "/plans",
     icon: DocumentIcon,
     requiredRoles: [UserRole.ANALYST, UserRole.MANAGER, UserRole.ADMIN],
-    disabled: true,
   },
   {
     name: t("nav.account"),
@@ -108,7 +107,6 @@ export const getFilteredNavigation = (
         href: "/plans",
         icon: DocumentIcon,
         requiredRoles: [UserRole.ANALYST, UserRole.MANAGER, UserRole.ADMIN],
-        disabled: true,
       },
       {
         name: "Account",
