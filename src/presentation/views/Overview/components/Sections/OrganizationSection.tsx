@@ -14,6 +14,10 @@ interface Organization {
   description?: string;
   industry?: string;
   website?: string;
+  mission?: string;
+  vision?: string;
+  values?: string;
+  strategicObjectives?: string;
   createdAt: string;
 }
 
@@ -31,6 +35,11 @@ export const OrganizationSection: React.FC<OrganizationSectionProps> = ({
   onManageOrganization,
 }) => {
   const { t } = useTranslation("organization");
+  const mission = userOrganization?.mission ?? t("mock.mission");
+  const vision = userOrganization?.vision ?? t("mock.vision");
+  const values = userOrganization?.values ?? t("mock.values");
+  const strategicObjectives =
+    userOrganization?.strategicObjectives ?? t("mock.strategicObjectives");
 
   return (
     <Card>
@@ -70,11 +79,43 @@ export const OrganizationSection: React.FC<OrganizationSectionProps> = ({
               {t("memberSince")}{" "}
               {new Date(userOrganization.createdAt).toLocaleDateString()}
             </p>
+            <div className="mt-2">
+              <label className="text-xs font-medium text-gray-700">
+                {t("mission")}
+              </label>
+              <p className="text-sm text-secondary whitespace-pre-line">
+                {mission}
+              </p>
+            </div>
+            <div className="mt-2">
+              <label className="text-xs font-medium text-gray-700">
+                {t("vision")}
+              </label>
+              <p className="text-sm text-secondary whitespace-pre-line">
+                {vision}
+              </p>
+            </div>
+            <div className="mt-2">
+              <label className="text-xs font-medium text-gray-700">
+                {t("values")}
+              </label>
+              <p className="text-sm text-secondary whitespace-pre-line">
+                {values}
+              </p>
+            </div>
+            <div className="mt-2">
+              <label className="text-xs font-medium text-gray-700">
+                {t("strategicObjectives")}
+              </label>
+              <p className="text-sm text-secondary whitespace-pre-line">
+                {strategicObjectives}
+              </p>
+            </div>
             <Button
               size="sm"
               variant="primary"
               onClick={onManageOrganization}
-              className="mt-2"
+              className="mt-1"
             >
               {t("manageOrganization")}
             </Button>

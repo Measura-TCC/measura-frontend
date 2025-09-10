@@ -113,6 +113,84 @@ export const CreateOrganizationForm = ({
 
       <div>
         <label
+          htmlFor="mission"
+          className="block text-sm font-medium text-gray-700"
+        >
+          {t("form.missionLabel")}
+        </label>
+        <textarea
+          {...register("mission")}
+          id="mission"
+          rows={3}
+          placeholder={t("form.missionPlaceholder")}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        />
+        {errors.mission && (
+          <p className="mt-1 text-sm text-red-600">{errors.mission.message}</p>
+        )}
+      </div>
+
+      <div>
+        <label
+          htmlFor="vision"
+          className="block text-sm font-medium text-gray-700"
+        >
+          {t("form.visionLabel")}
+        </label>
+        <textarea
+          {...register("vision")}
+          id="vision"
+          rows={3}
+          placeholder={t("form.visionPlaceholder")}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        />
+        {errors.vision && (
+          <p className="mt-1 text-sm text-red-600">{errors.vision.message}</p>
+        )}
+      </div>
+
+      <div>
+        <label
+          htmlFor="values"
+          className="block text-sm font-medium text-gray-700"
+        >
+          {t("form.valuesLabel")}
+        </label>
+        <textarea
+          {...register("values")}
+          id="values"
+          rows={3}
+          placeholder={t("form.valuesPlaceholder")}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        />
+        {errors.values && (
+          <p className="mt-1 text-sm text-red-600">{errors.values.message}</p>
+        )}
+      </div>
+
+      <div>
+        <label
+          htmlFor="strategicObjectives"
+          className="block text-sm font-medium text-gray-700"
+        >
+          {t("form.strategicObjectivesLabel")}
+        </label>
+        <textarea
+          {...register("strategicObjectives")}
+          id="strategicObjectives"
+          rows={4}
+          placeholder={t("form.strategicObjectivesPlaceholder")}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        />
+        {errors.strategicObjectives && (
+          <p className="mt-1 text-sm text-red-600">
+            {errors.strategicObjectives.message}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label
           htmlFor="website"
           className="block text-sm font-medium text-gray-700"
         >

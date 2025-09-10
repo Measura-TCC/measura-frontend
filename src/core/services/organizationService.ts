@@ -10,6 +10,10 @@ export interface Organization {
   description?: string;
   website?: string;
   industry?: string;
+  mission?: string;
+  vision?: string;
+  values?: string;
+  strategicObjectives?: string;
   createdBy: string;
   createdAt: string;
   updatedAt: string;

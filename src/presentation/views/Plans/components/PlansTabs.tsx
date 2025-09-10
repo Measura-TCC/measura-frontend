@@ -31,11 +31,6 @@ export const PlansTabs: React.FC<PlansTabsProps> = ({
       label: t("tabs.templates"),
       disabled: false,
     },
-    {
-      id: "gqm" as PlanTab,
-      label: t("tabs.gqm"),
-      disabled: !hasOrganization,
-    },
   ];
 
   return (
