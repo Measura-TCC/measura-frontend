@@ -175,8 +175,8 @@ export const FPAWorkflow = () => {
     return (
       <div className="space-y-8">
         <div className="block md:hidden">
-          <div className="overflow-x-auto pb-4">
-            <div className="flex items-center min-w-max px-4">
+          <div className="px-4">
+            <div className="grid grid-cols-6 gap-1">
               {[
                 {
                   number: 1,
@@ -205,57 +205,44 @@ export const FPAWorkflow = () => {
               ].map((step, index) => (
                 <div
                   key={step.number}
-                  className="flex flex-col items-center flex-shrink-0"
+                  className="flex flex-col items-center"
                 >
-                  <div className="flex items-center">
-                    <div
-                      onClick={() => handleStepClick(step.number as Step)}
-                      className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
-                        state.currentStep >= step.number
-                          ? "bg-primary border-primary text-white"
-                          : canNavigateToStep(step.number as Step)
-                          ? "border-primary/50 text-primary/70 bg-primary/10"
-                          : "border-gray-300 text-gray-400 bg-gray-100"
-                      } ${
-                        state.currentStep === step.number
-                          ? "ring-4 ring-primary/20"
-                          : ""
-                      } ${
-                        canNavigateToStep(step.number as Step)
-                          ? "cursor-pointer hover:scale-110 hover:shadow-md"
-                          : "cursor-not-allowed opacity-60"
-                      }`}
-                      title={
-                        !canNavigateToStep(step.number as Step)
-                          ? "Complete a etapa anterior para desbloquear"
-                          : ""
-                      }
-                    >
-                      {step.number}
-                    </div>
-                    {index < 5 && (
-                      <div
-                        className={`w-16 h-0.5 mx-3 ${
-                          state.currentStep > step.number
-                            ? "bg-primary"
-                            : "bg-border"
-                        }`}
-                      />
-                    )}
+                  <div
+                    onClick={() => handleStepClick(step.number as Step)}
+                    className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all mb-1 ${
+                      state.currentStep >= step.number
+                        ? "bg-primary border-primary text-white"
+                        : canNavigateToStep(step.number as Step)
+                        ? "border-primary/50 text-primary/70 bg-primary/10"
+                        : "border-gray-300 text-gray-400 bg-gray-100"
+                    } ${
+                      state.currentStep === step.number
+                        ? "ring-2 ring-primary/20"
+                        : ""
+                    } ${
+                      canNavigateToStep(step.number as Step)
+                        ? "cursor-pointer hover:scale-105 hover:shadow-md"
+                        : "cursor-not-allowed opacity-60"
+                    }`}
+                    title={
+                      !canNavigateToStep(step.number as Step)
+                        ? "Complete a etapa anterior para desbloquear"
+                        : ""
+                    }
+                  >
+                    <span className="text-xs font-medium">{step.number}</span>
                   </div>
-                  <div className="mt-2 text-center max-w-20">
-                    <p
-                      className={`text-xs font-medium ${
-                        state.currentStep === step.number
-                          ? "text-primary"
-                          : canNavigateToStep(step.number as Step)
-                          ? "text-primary/70"
-                          : "text-gray-400"
-                      }`}
-                    >
-                      {step.name}
-                    </p>
-                  </div>
+                  <p
+                    className={`text-[10px] font-medium text-center leading-tight ${
+                      state.currentStep === step.number
+                        ? "text-primary"
+                        : canNavigateToStep(step.number as Step)
+                        ? "text-primary/70"
+                        : "text-gray-400"
+                    }`}
+                  >
+                    {step.name}
+                  </p>
                 </div>
               ))}
             </div>
@@ -368,7 +355,7 @@ export const FPAWorkflow = () => {
                         onClick={handleProjectSelected}
                         variant="primary"
                         size="md"
-                        className="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+                        className="mt-4"
                       >
                         {t("workflow.nextCreateEstimate")}
                       </Button>

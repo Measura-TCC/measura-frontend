@@ -155,19 +155,119 @@
   "workflow": {
     "title": "Fluxo de Trabalho do Plano de Medição",
     "subtitle": "Crie seu plano de medição seguindo estes passos guiados",
-    "step1Title": "1. Definir Básicos do Plano",
-    "step1Description": "Estabeleça a base para seu plano de medição com informações básicas",
-    "step2Title": "2. Aplicar Estrutura GQM",
-    "step2Description": "Defina objetivos de medição usando a abordagem Goal-Question-Metric",
-    "step3Title": "3. Derivar Questões-Chave",
-    "step3Description": "Crie questões que irão guiar suas atividades de medição",
-    "step4Title": "4. Definir Métricas",
-    "step4Description": "Especifique as métricas que irão responder suas questões",
-    "step5Title": "5. Configurar Coleta de Dados",
-    "step5Description": "Revise e finalize seu plano de medição",
-    "nextStep": "Próximo Passo",
+    "nextObjectives": "Próximo: Identificar Objetivos Organizacionais",
+    "nextQuestions": "Próximo: Identificar Questões",
+    "nextMetrics": "Próximo: Identificar Métricas",
+    "nextVisualization": "Próximo: Visualizar Plano de Medição",
     "backToOverview": "Voltar ao Resumo",
     "startWorkflow": "Iniciar Criação do Plano",
-    "finalizePlan": "Criar Plano"
+    "finalizePlan": "Finalizar Plano de Medição",
+    "creating": "Criando...",
+    "selectObjectivesTitle": "1. Selecionar Objetivos",
+    "chooseObjective": "Escolha um objetivo organizacional...",
+    "createNewObjective": "+ Criar Novo Objetivo",
+    "selectQuestions": "Selecionar Questões",
+    "chooseQuestion": "Escolha uma questão...",
+    "createNewQuestion": "+ Criar Nova Questão",
+    "selectedQuestions": "Questões Selecionadas ({{count}})",
+    "selectMetrics": "Selecionar Métricas",
+    "chooseMetric": "Escolha uma métrica...",
+    "createNewMetric": "+ Criar Nova Métrica",
+    "selectedMetrics": "Métricas Selecionadas ({{count}})",
+    "planSummary": "Resumo do Plano",
+    "gqmStructure": "Estrutura GQM",
+    "objective": "Objetivo",
+    "question": "Questão",
+    "metric": "Métrica",
+    "objectives": "Objetivos",
+    "questions": "Questões",
+    "metrics": "Métricas",
+    "unit": "Unidade",
+    "hideDetails": "Ocultar detalhes",
+    "showDetails": "Visualizar em mais detalhes",
+    "exportPdf": "Exportar PDF",
+    "exportPdfSoon": "Funcionalidade de exportar PDF será implementada em breve!",
+    "detailedGqmStructure": "Estrutura Detalhada GQM",
+    "steps": {
+      "step1": {
+        "title": "1. Definir Plano de Medição",
+        "description": "Estabeleça a base para seu plano de medição com informações básicas e definição GQM"
+      },
+      "step2": {
+        "title": "2. Identificar Objetivos Organizacionais",
+        "description": "Defina objetivos de medição usando a abordagem Goal-Question-Metric"
+      },
+      "step3": {
+        "title": "3. Identificar Questões",
+        "description": "Para cada objetivo selecionado, escolha as questões que irão guiar suas atividades de medição"
+      },
+      "step4": {
+        "title": "4. Identificar Métricas",
+        "description": "Para cada questão selecionada, escolha as métricas que irão responder essas questões"
+      },
+      "step5": {
+        "title": "5. Visualizar Plano de Medição",
+        "description": "Revise seu plano de medição completo com objetivos, questões e métricas"
+      }
+    }
+  },
+  "forms": {
+    "planName": "Nome do Plano",
+    "planNamePlaceholder": "Digite o nome do plano",
+    "owner": "Responsável",
+    "ownerPlaceholder": "Digite o nome do responsável",
+    "description": "Descrição",
+    "descriptionPlaceholder": "Breve descrição do plano de medição"
+  },
+  "goalForm": {
+    "purpose": "Propósito",
+    "selectPurpose": "Selecione o propósito...",
+    "issue": "Com respeito a",
+    "issuePlaceholder": "produtividade, qualidade, custo, desempenho...",
+    "viewpoint": "Do ponto de vista de",
+    "viewpointPlaceholder": "desenvolvedor, gerente, usuário, cliente...",
+    "context": "No contexto de",
+    "contextPlaceholder": "projeto web, aplicação móvel, sistema corporativo...",
+    "purposes": {
+      "know": "Conhecer",
+      "analyze": "Analisar",
+      "evaluate": "Avaliar",
+      "improve": "Melhorar",
+      "control": "Controlar",
+      "monitor": "Monitorar"
+    }
+  },
+  "objectives": {
+    "improveQuality": "Melhorar qualidade do software",
+    "reduceDevelopmentTime": "Reduzir tempo de desenvolvimento",
+    "increaseTeamProductivity": "Aumentar produtividade da equipe",
+    "decreaseBugQuantity": "Diminuir quantidade de bugs"
+  },
+  "questions": {
+    "defectRateInProduction": "Qual é a taxa de defeitos encontrados em produção?",
+    "criticalBugFixTime": "Quanto tempo leva para corrigir um bug crítico?",
+    "averageFeatureDevelopmentTime": "Qual é o tempo médio de desenvolvimento de uma feature?",
+    "dailyCodeLinesProduced": "Quantas linhas de código são produzidas por dia?",
+    "automatedTestCoverage": "Qual é a cobertura de testes automatizados?",
+    "bugsFoundDuringTesting": "Quantos bugs são encontrados durante os testes?"
+  },
+  "metrics": {
+    "defectsPerRelease": "Número de defeitos por release",
+    "averageFixTime": "Tempo médio de correção",
+    "developmentTimePerStoryPoint": "Tempo de desenvolvimento por story point",
+    "codeLinesPerDeveloper": "Linhas de código por desenvolvedor",
+    "codeCoveragePercentage": "Porcentagem de cobertura de código",
+    "bugsPerSprint": "Número de bugs por sprint",
+    "buildSuccessRate": "Taxa de sucesso de builds",
+    "applicationResponseTime": "Tempo de resposta da aplicação",
+    "units": {
+      "defects": "defeitos",
+      "hours": "horas",
+      "hoursPerSp": "horas/sp",
+      "locPerDev": "loc/dev",
+      "percentage": "%",
+      "bugs": "bugs",
+      "milliseconds": "ms"
+    }
   }
 }
