@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useForm, type Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -23,7 +23,6 @@ export interface OrganizationWizardProps {
   initialData?: Partial<CreateOrganizationData> & { id?: string };
   onCancel: () => void;
   onSuccess?: () => void;
-  hideFooter?: boolean;
   onControls?: (controls: {
     next: () => void;
     prev: () => void;
@@ -45,7 +44,6 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
   initialData,
   onCancel,
   onSuccess,
-  hideFooter,
   onControls,
 }) => {
   const { t } = useTranslation("organization");
@@ -54,6 +52,9 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
 
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const valueInputRef = useRef<HTMLInputElement>(null);
+  const objectiveInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<CreateOrganizationData>({
     resolver: zodResolver(createOrganizationSchema),
@@ -72,10 +73,43 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
     ),
   });
 
-  // utility
-  const next = async () => {
+  const { register, handleSubmit, formState, setValue, watch, getValues } =
+    form;
+  const { errors } = formState;
+
+  // Suggestions similar to Plans flow
+  const recommendedValues = (t("suggestions.values") as string)
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const recommendedObjectives = (t("suggestions.objectives") as string)
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const [valuesList, setValuesList] = useState<string[]>(() => {
+    const values = getValues("values");
+    if (!values) return [];
+    return values
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+  });
+
+  const [objectivesList, setObjectivesList] = useState<string[]>(() => {
+    const objectives = getValues("strategicObjectives");
+    if (!objectives) return [];
+    return objectives
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+  });
+
+  // utility functions
+  const next = useCallback(async () => {
     let fields: Path<CreateOrganizationData>[] = [];
-    if (currentStep === 1) fields = ["name", "description", "website", "industry"];
+    if (currentStep === 1)
+      fields = ["name", "description", "website", "industry"];
     if (currentStep === 2) fields = ["mission", "vision", "values"];
     if (currentStep === 3) fields = ["strategicObjectives"];
 
@@ -86,9 +120,13 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
     // Validate current step
     const valid = await form.trigger(fields, { shouldFocus: true });
     if (!valid) return;
-    setCurrentStep((s) => (Math.min(4, (s as number) + 1) as Step));
-  };
-  const prev = () => setCurrentStep((s) => (Math.max(1, (s as number) - 1) as Step));
+    setCurrentStep((s) => Math.min(4, (s as number) + 1) as Step);
+  }, [currentStep, setValue, valuesList, objectivesList, form]);
+
+  const prev = useCallback(
+    () => setCurrentStep((s) => Math.max(1, (s as number) - 1) as Step),
+    []
+  );
 
   const onSubmit = async (data: CreateOrganizationData) => {
     setIsSubmitting(true);
@@ -117,29 +155,6 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
       setIsSubmitting(false);
     }
   };
-
-  const { register, handleSubmit, formState, setValue, watch, getValues } = form;
-  const { errors } = formState;
-
-  // Suggestions similar to Plans flow
-  const recommendedValues = (t("suggestions.values") as string)
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  const recommendedObjectives = (t("suggestions.objectives") as string)
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-
-  // Local lists for chips
-  const [valuesList, setValuesList] = useState<string[]>(() => {
-    const base = initialData?.values;
-    return base ? base.split(/,|\n/).map((s) => s.trim()).filter(Boolean) : [];
-  });
-  const [objectivesList, setObjectivesList] = useState<string[]>(() => {
-    const base = initialData?.strategicObjectives;
-    return base ? base.split(/\n|,/).map((s) => s.trim()).filter(Boolean) : [];
-  });
 
   const addValueItem = (item: string) => {
     const v = item.trim();
@@ -209,7 +224,10 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
       canGoNext,
       canSubmit: allValid,
     });
-  }, [currentStep, isSubmitting, canGoNext, allValid, next, prev, submit, onControls, stepItems.length]);
+    // Intentionally excluding next, prev, submit, onControls from deps to prevent infinite re-renders
+    // These functions are stable within the component lifecycle
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep, isSubmitting, canGoNext, allValid, stepItems.length]);
 
   return (
     <div className="space-y-4">
@@ -235,12 +253,6 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
         ))}
       </div>
 
-      <div>
-        <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
-          ← {t("backToDetails")}
-        </Button>
-      </div>
-
       <Card>
         <CardHeader>
           <CardTitle>
@@ -250,7 +262,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
             {currentStep === 4 && t("steps.review")}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 min-h-[400px]">
           {currentStep === 1 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2 md:col-span-2">
@@ -276,7 +288,9 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.description && (
-                  <p className="text-sm text-red-600">{errors.description.message}</p>
+                  <p className="text-sm text-red-600">
+                    {errors.description.message}
+                  </p>
                 )}
               </div>
               <div className="space-y-2">
@@ -288,7 +302,9 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   placeholder={t("form.websitePlaceholder")}
                 />
                 {errors.website && (
-                  <p className="text-sm text-red-600">{errors.website.message}</p>
+                  <p className="text-sm text-red-600">
+                    {errors.website.message}
+                  </p>
                 )}
               </div>
               <div className="space-y-2">
@@ -300,7 +316,9 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   placeholder={t("form.industryPlaceholder")}
                 />
                 {errors.industry && (
-                  <p className="text-sm text-red-600">{errors.industry.message}</p>
+                  <p className="text-sm text-red-600">
+                    {errors.industry.message}
+                  </p>
                 )}
               </div>
             </div>
@@ -319,7 +337,9 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.mission && (
-                  <p className="text-sm text-red-600">{String(errors.mission.message)}</p>
+                  <p className="text-sm text-red-600">
+                    {String(errors.mission.message)}
+                  </p>
                 )}
               </div>
               <div className="space-y-2">
@@ -333,7 +353,9 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.vision && (
-                  <p className="text-sm text-red-600">{String(errors.vision.message)}</p>
+                  <p className="text-sm text-red-600">
+                    {String(errors.vision.message)}
+                  </p>
                 )}
               </div>
               <div className="space-y-2">
@@ -369,6 +391,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                 <div className="flex gap-2 mt-2">
                   <div className="flex-1">
                     <Input
+                      ref={valueInputRef}
                       placeholder={t("form.addValuePlaceholder")}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
@@ -383,10 +406,9 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   <Button
                     type="button"
                     onClick={() => {
-                      const input = document.activeElement as HTMLInputElement;
-                      if (input && input.tagName === "INPUT") {
-                        addValueItem(input.value);
-                        input.value = "";
+                      if (valueInputRef.current) {
+                        addValueItem(valueInputRef.current.value);
+                        valueInputRef.current.value = "";
                       }
                     }}
                     className="h-[2.25rem]"
@@ -415,18 +437,20 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                 )}
                 <input type="hidden" {...register("values")} />
                 {errors.values && (
-                  <p className="text-sm text-red-600">{String(errors.values.message)}</p>
+                  <p className="text-sm text-red-600">
+                    {String(errors.values.message)}
+                  </p>
                 )}
               </div>
             </div>
           )}
 
           {currentStep === 3 && (
-            <div className="space-y-2">
+            <div className="space-y-2 min-h-[20rem]">
               <label className="text-sm font-medium text-default">
                 {t("form.strategicObjectivesLabel")}
               </label>
-              {/* Suggested objectives dropdown */}
+
               <div className="relative mb-2">
                 <select
                   className="input-base appearance-none pr-8 bg-white"
@@ -438,7 +462,9 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                     }
                   }}
                 >
-                  <option value="">{t("form.selectObjectivePlaceholder")}</option>
+                  <option value="">
+                    {t("form.selectObjectivePlaceholder")}
+                  </option>
                   {recommendedObjectives
                     .filter((o) => !objectivesList.includes(o))
                     .map((o) => (
@@ -456,6 +482,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
               <div className="flex gap-2">
                 <div className="flex-1">
                   <Input
+                    ref={objectiveInputRef}
                     placeholder={t("form.addObjectivePlaceholder")}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
@@ -470,10 +497,9 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                 <Button
                   type="button"
                   onClick={() => {
-                    const input = document.activeElement as HTMLInputElement;
-                    if (input && input.tagName === "INPUT") {
-                      addObjectiveItem(input.value);
-                      input.value = "";
+                    if (objectiveInputRef.current) {
+                      addObjectiveItem(objectiveInputRef.current.value);
+                      objectiveInputRef.current.value = "";
                     }
                   }}
                   className="h-[2.25rem]"
@@ -502,7 +528,9 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
               )}
               <input type="hidden" {...register("strategicObjectives")} />
               {errors.strategicObjectives && (
-                <p className="text-sm text-red-600">{String(errors.strategicObjectives.message)}</p>
+                <p className="text-sm text-red-600">
+                  {String(errors.strategicObjectives.message)}
+                </p>
               )}
             </div>
           )}
@@ -515,7 +543,8 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
               </div>
               {form.getValues("description") && (
                 <div>
-                  <strong>{t("description")}:</strong> {form.getValues("description")}
+                  <strong>{t("description")}:</strong>{" "}
+                  {form.getValues("description")}
                 </div>
               )}
               {form.getValues("website") && (
@@ -545,40 +574,64 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
               )}
               {form.getValues("strategicObjectives") && (
                 <div>
-                  <strong>{t("strategicObjectives")}:</strong> {form.getValues("strategicObjectives")}
+                  <strong>{t("strategicObjectives")}:</strong>{" "}
+                  {form.getValues("strategicObjectives")}
                 </div>
               )}
             </div>
           )}
 
-          {!hideFooter && (
-            <div className="flex items-center justify-between pt-2">
-              <div className="flex gap-2">
-                <Button type="button" variant="ghost" onClick={onCancel}>
-                  {t("cancel")}
+          {/* Bottom Buttons - Appear on all steps */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-4 border-t border-border w-full gap-3">
+            <div className="flex gap-2 justify-center sm:justify-start w-full sm:w-auto">
+              <Button type="button" variant="ghost" onClick={onCancel} className="flex-1 sm:flex-none">
+                {t("cancel")}
+              </Button>
+              {mode === "edit" && initialData?.id && (
+                <Button
+                  type="button"
+                  variant="danger"
+                  onClick={handleDelete}
+                  disabled={isSubmitting}
+                  className="flex-1 sm:flex-none"
+                >
+                  {t("delete")}
                 </Button>
-                {mode === "edit" && initialData?.id && (
-                  <Button type="button" variant="danger" onClick={handleDelete} disabled={isSubmitting}>
-                    {t("delete")}
-                  </Button>
-                )}
-              </div>
-              <div className="flex gap-2">
-                <Button type="button" variant="secondary" onClick={prev} disabled={currentStep === 1}>
-                  {t("previous")}
-                </Button>
-                {currentStep < 4 ? (
-                  <Button type="button" variant="primary" onClick={next} disabled={!canGoNext}>
-                    {t("next")}
-                  </Button>
-                ) : (
-                  <Button type="button" variant="primary" disabled={isSubmitting || !allValid} onClick={submit}>
-                    {mode === "create" ? t("createOrganization") : t("save")}
-                  </Button>
-                )}
-              </div>
+              )}
             </div>
-          )}
+            <div className="flex gap-2 justify-center sm:justify-end w-full sm:w-auto">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={prev}
+                disabled={currentStep === 1}
+                className="flex-1 sm:flex-none"
+              >
+                {t("previous")}
+              </Button>
+              {currentStep < 4 ? (
+                <Button
+                  type="button"
+                  variant="primary"
+                  onClick={next}
+                  disabled={!canGoNext}
+                  className="flex-1 sm:flex-none"
+                >
+                  {t("next")}
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  variant="primary"
+                  disabled={isSubmitting || !allValid}
+                  onClick={submit}
+                  className="flex-1 sm:flex-none"
+                >
+                  {mode === "create" ? t("createOrganization") : t("save")}
+                </Button>
+              )}
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

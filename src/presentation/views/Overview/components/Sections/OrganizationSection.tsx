@@ -56,66 +56,136 @@ export const OrganizationSection: React.FC<OrganizationSectionProps> = ({
             <div className="animate-pulse bg-gray-200 h-3 w-1/2 rounded"></div>
           </div>
         ) : userOrganization ? (
-          <div className="space-y-2">
-            <p className="font-semibold text-default">
-              {userOrganization.name}
-            </p>
-            {userOrganization.industry && (
-              <p className="text-sm text-secondary">
-                {userOrganization.industry}
-              </p>
-            )}
-            {userOrganization.website && (
-              <a
-                href={userOrganization.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-primary hover:underline"
-              >
-                {t("visitWebsite")}
-              </a>
-            )}
-            <p className="text-xs text-muted">
-              {t("memberSince")}{" "}
-              {new Date(userOrganization.createdAt).toLocaleDateString()}
-            </p>
-            <div className="mt-2">
-              <label className="text-xs font-medium text-gray-700">
-                {t("mission")}
-              </label>
-              <p className="text-sm text-secondary whitespace-pre-line">
-                {mission}
-              </p>
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-md font-medium text-gray-700">
+                  {t("name")}
+                </label>
+                <p className="text-secondary">{userOrganization.name}</p>
+              </div>
+
+              {userOrganization.industry && (
+                <div>
+                  <label className="text-md font-medium text-gray-700">
+                    {t("industry")}
+                  </label>
+                  <p className="text-secondary">{userOrganization.industry}</p>
+                </div>
+              )}
+
+              <div>
+                <label className="text-md font-medium text-gray-700">
+                  {t("created")}
+                </label>
+                <p className="text-secondary text-sm">
+                  {new Date(userOrganization.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+
+              {userOrganization.website && (
+                <div>
+                  <label className="text-md font-medium text-gray-700">
+                    {t("website")}
+                  </label>
+                  <a
+                    href={userOrganization.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline block truncate text-sm"
+                  >
+                    {userOrganization.website}
+                  </a>
+                </div>
+              )}
             </div>
-            <div className="mt-2">
-              <label className="text-xs font-medium text-gray-700">
-                {t("vision")}
-              </label>
-              <p className="text-sm text-secondary whitespace-pre-line">
-                {vision}
-              </p>
+
+            <div className="space-y-4">
+              {userOrganization.description && (
+                <div>
+                  <label className="text-md font-medium text-gray-700">
+                    {t("description")}
+                  </label>
+                  <p className="text-secondary text-sm">
+                    {userOrganization.description}
+                  </p>
+                </div>
+              )}
+
+              <div>
+                <label className="text-md font-medium text-gray-700">
+                  {t("mission")}
+                </label>
+                <p className="text-secondary text-sm whitespace-pre-line">
+                  {mission}
+                </p>
+              </div>
+
+              <div>
+                <label className="text-md font-medium text-gray-700">
+                  {t("vision")}
+                </label>
+                <p className="text-secondary text-sm whitespace-pre-line">
+                  {vision}
+                </p>
+              </div>
+
+              <div>
+                <label className="text-md font-medium text-gray-700">
+                  {t("values")}
+                </label>
+                <p className="text-secondary text-sm whitespace-pre-line">
+                  {values}
+                </p>
+              </div>
+
+              <div>
+                <label className="text-md font-medium text-gray-700">
+                  {t("strategicObjectives")}
+                </label>
+                <div className="text-secondary text-sm whitespace-pre-line">
+                  <style jsx>{`
+                    .strategic-objectives {
+                      counter-reset: objective-counter;
+                    }
+                    .strategic-objectives p {
+                      margin: 0;
+                      padding: 0;
+                    }
+                    .strategic-objectives .objective-item {
+                      counter-increment: objective-counter;
+                      position: relative;
+                      padding-left: 1.5rem;
+                      margin-bottom: 0.5rem;
+                      display: block;
+                    }
+                    .strategic-objectives .objective-item::before {
+                      content: counter(objective-counter) ")";
+                      position: absolute;
+                      left: 0;
+                      font-weight: 600;
+                      color: #8b5cf6;
+                    }
+                  `}</style>
+                  <div className="strategic-objectives">
+                    {strategicObjectives.split("\n").map(
+                      (objective, index) =>
+                        objective.trim() && (
+                          <span key={index} className="objective-item">
+                            {objective.replace(/^\d+\)\s*/, "")}
+                          </span>
+                        )
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="mt-2">
-              <label className="text-xs font-medium text-gray-700">
-                {t("values")}
-              </label>
-              <p className="text-sm text-secondary whitespace-pre-line">
-                {values}
-              </p>
-            </div>
-            <div className="mt-2">
-              <label className="text-xs font-medium text-gray-700">
-                {t("strategicObjectives")}
-              </label>
-              <p className="text-sm text-secondary whitespace-pre-line">
-                {strategicObjectives}
-              </p>
-            </div>
+
             <Button
               size="sm"
               variant="primary"
               onClick={onManageOrganization}
-              className="mt-1"
+              className="mt-2"
             >
               {t("manageOrganization")}
             </Button>

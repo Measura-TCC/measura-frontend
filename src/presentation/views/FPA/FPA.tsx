@@ -46,8 +46,8 @@ export const FPAView: React.FC = () => {
     setActiveTab(tab);
   };
 
-  const handleEditEstimate = (estimate: Estimate) => {
-    console.log("Edit estimate:", estimate);
+  const handleEditEstimate = (_estimate: Estimate) => {
+    // TODO: Implement estimate editing logic
   };
 
   const renderTabContent = () => {

@@ -133,7 +133,6 @@ export const useAccount = (): UseAccountReturn => {
         return;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const updatedUser = await userService.updateUser({
         id: authUser.id,
         data: cleanUpdateData,

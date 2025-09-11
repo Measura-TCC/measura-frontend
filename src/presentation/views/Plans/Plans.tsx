@@ -41,24 +41,26 @@ export const PlansView = () => {
     getTypeLabel,
   } = plansHook;
 
-  const handleCreateGoal = async (goalData: Partial<GQMGoal>) => {
-    console.log("Create goal:", goalData);
+  const handleCreateGoal = async (_goalData: Partial<GQMGoal>) => {
+    // TODO: Implement goal creation logic
   };
 
-  const handleCreateQuestion = async (questionData: Partial<GQMQuestion>) => {
-    console.log("Create question:", questionData);
+  const handleCreateQuestion = async (_questionData: Partial<GQMQuestion>) => {
+    // TODO: Implement question creation logic
   };
 
-  const handleCreateMetric = async (metricData: Partial<GQMMetric>) => {
-    console.log("Create metric:", metricData);
+  const handleCreateMetric = async (_metricData: Partial<GQMMetric>) => {
+    // TODO: Implement metric creation logic
   };
 
-  const handleCompleteStep = async (step: number) => {
-    console.log("Complete step:", step);
+  const handleCompleteStep = async (_step: number) => {
+    // TODO: Implement step completion logic
   };
 
-  const handleSelectionComplete = async (selection: import("@/core/types/plans").GQMSelectionState) => {
-    console.log("Selection complete:", selection);
+  const handleSelectionComplete = async (
+    _selection: import("@/core/types/plans").GQMSelectionState
+  ) => {
+    // TODO: Implement selection completion logic
   };
 
   const componentMap = {
@@ -79,7 +81,9 @@ export const PlansView = () => {
         formatDate={formatDate}
         getStatusColor={getStatusColor}
         getTypeLabel={(type: string) => getTypeLabel(type as PlanType)}
-        onEditPlan={(plan: Plan) => console.log("Edit plan:", plan)}
+        onEditPlan={(_plan: Plan) => {
+          // TODO: Implement plan editing logic
+        }}
         onDeletePlan={deletePlan}
         onDuplicatePlan={duplicatePlan}
         onManageGQM={(plan: Plan) => {

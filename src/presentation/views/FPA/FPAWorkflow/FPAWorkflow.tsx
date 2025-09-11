@@ -7,7 +7,7 @@ import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
 import { EstimatesDashboard } from "./EstimatesDashboard";
 import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
-import { CreateOrganizationForm } from "../../Organizations/components/CreateOrganizationForm";
+import { CreateOrganizationForm } from "../../Organization/components/CreateOrganizationForm";
 import { CreateEstimateForm } from "./components/CreateEstimateForm";
 import { CreateGSCForm } from "./components/CreateGSCForm";
 import { CreateProjectConfigurationForm } from "./components/CreateProjectConfigurationForm";
