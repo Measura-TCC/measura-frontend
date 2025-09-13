@@ -15,6 +15,20 @@ export interface StepData {
   collectionSetup?: boolean;
 }
 
+export interface GoalForm {
+  purpose: string;
+  issue: string;
+  object: string;
+  viewpoint: string;
+  context: string;
+}
+
+export interface MeasurementPlanFormData {
+  planName: string;
+  associatedProject: string;
+  planResponsible: string;
+}
+
 
 export interface LegacyObjective {
   id: string;

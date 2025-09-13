@@ -137,6 +137,46 @@ export interface GQMData {
   selection?: GQMSelectionState;
 }
 
+export interface Measurement {
+  measurementEntity: string;        // max 50 chars
+  measurementAcronym: string;       // max 3 chars
+  measurementProperties: string;    // max 200 chars
+  measurementUnit: string;          // max 50 chars
+  measurementScale: string;         // free text
+  measurementProcedure: string;     // max 1000 chars
+  measurementFrequency: string;     // max 50 chars
+  measurementResponsible?: string;  // string
+}
+
+export interface Metric {
+  metricName: string;               // max 50 chars
+  metricDescription: string;        // max 400 chars
+  metricMnemonic: string;           // max 3 chars
+  metricFormula: string;            // string
+  metricControlRange: [number, number]; // [min, max]
+  analysisProcedure: string;        // max 1000 chars
+  analysisFrequency: string;        // max 50 chars
+  analysisResponsible?: string;     // string
+  measurements: Measurement[];      // one-to-many
+}
+
+export interface Question {
+  questionText: string;
+  metrics: Metric[];
+}
+
+export interface Objective {
+  objectiveTitle: string;
+  questions: Question[];
+}
+
+export interface MeasurementPlan {
+  planName: string;
+  associatedProject: string;
+  planResponsible: string;
+  objectives: Objective[];
+}
+
 export const PLAN_PERMISSIONS = {
   CREATE_PLAN: "create_plan",
   EDIT_PLAN: "edit_plan",

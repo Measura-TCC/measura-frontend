@@ -22,8 +22,14 @@ import { Step4 } from "./steps/Step4";
 import { Step5 } from "./steps/Step5";
 import { StepIndicator } from "./components/StepIndicator";
 
-import type { PlanStep, StepData } from "./utils/types";
-import type { GoalForm } from "@/core/types/measurement-plans";
+import type { PlanStep, StepData, GoalForm } from "./utils/types";
+
+interface MeasurementPlanFormData {
+  planName: string;
+  associatedProject: string;
+  planResponsible: string;
+}
+
 import {
   availableObjectives,
   availableQuestions,
@@ -51,7 +57,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 }) => {
   const { t } = useTranslation("plans");
   const { projects } = useProjects();
-  const [currentStep, setCurrentStep] = useState<PlanStep>(5);
+  const [currentStep, setCurrentStep] = useState<PlanStep>(1);
   const [stepData, setStepData] = useState<StepData>({});
   const [showWorkflow, setShowWorkflow] = useState(false);
   const [selectedObjectives, setSelectedObjectives] = useState<Objective[]>([]);
@@ -120,13 +126,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       case 1:
         return (
           <Step1
-            planForm={planForm}
             measurementPlanForm={measurementPlanForm}
             setMeasurementPlanForm={setMeasurementPlanForm}
             formErrors={formErrors}
             canCreatePlan={canCreatePlan}
-            goalForm={goalForm}
-            setGoalForm={setGoalForm}
             onNext={() => {
               setStepData((prev) => ({
                 ...prev,

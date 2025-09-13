@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Card,
@@ -7,33 +8,24 @@ import {
   Button,
 } from "@/presentation/components/primitives";
 import { availableMetrics } from "../utils/stepData";
+import type { Objective, Metric } from "@/core/types/plans";
+import { CustomMetricModal } from "../components/CustomMetricModal";
+import { MetricAccordion } from "../components/MetricAccordion";
 
 interface Step4Props {
-  selectedObjectives: string[];
-  selectedQuestionsPerObjective: Record<string, string[]>;
-  selectedMetricsPerQuestion: Record<string, string[]>;
-  onAddMetricToQuestion: (questionId: string, metricId: string) => void;
-  onRemoveMetricFromQuestion: (questionId: string, metricId: string) => void;
-  getObjectiveName: (id: string) => string;
-  getQuestionName: (id: string) => string;
-  getMetricName: (id: string) => string;
-  getMetricUnit: (id: string) => string;
+  selectedObjectives: Objective[];
+  onUpdateObjective: (index: number, objective: Objective) => void;
   onNext: () => void;
 }
 
 export const Step4: React.FC<Step4Props> = ({
   selectedObjectives,
-  selectedQuestionsPerObjective,
-  selectedMetricsPerQuestion,
-  onAddMetricToQuestion,
-  onRemoveMetricFromQuestion,
-  getObjectiveName,
-  getQuestionName,
-  getMetricName,
-  getMetricUnit,
+  onUpdateObjective,
   onNext,
 }) => {
   const { t } = useTranslation("plans");
+  const [isCustomMetricModalOpen, setIsCustomMetricModalOpen] = useState(false);
+  const [currentQuestionForMetric, setCurrentQuestionForMetric] = useState<{objectiveIndex: number, questionIndex: number} | null>(null);
 
   return (
     <Card>
@@ -45,30 +37,29 @@ export const Step4: React.FC<Step4Props> = ({
           {t("workflow.steps.step4.description")}
         </p>
 
-        {selectedObjectives.map((objectiveId, objIndex) => {
-          const objectiveQuestions = selectedQuestionsPerObjective[objectiveId] || [];
-          if (objectiveQuestions.length === 0) return null;
+        {selectedObjectives.map((objective, objIndex) => {
+          if (objective.questions.length === 0) return null;
 
           return (
-            <div key={objectiveId} className="border border-border rounded-lg p-4 space-y-4">
+            <div key={objective.objectiveTitle} className="border border-border rounded-lg p-4 space-y-4">
               <div className="flex items-center gap-2">
                 <span className="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium">
                   {objIndex + 1}
                 </span>
                 <h4 className="font-medium text-default">
-                  {getObjectiveName(objectiveId)}
+                  {t(objective.objectiveTitle)}
                 </h4>
               </div>
 
               <div className="space-y-4">
-                {objectiveQuestions.map((questionId, qIndex) => (
-                  <div key={questionId} className="border border-gray-200 rounded-lg p-4 bg-gray-50 space-y-3">
+                {objective.questions.map((question, qIndex) => (
+                  <div key={question.questionText} className="border border-gray-200 rounded-lg p-4 bg-gray-50 space-y-3">
                     <div className="flex items-center gap-2">
                       <span className="bg-secondary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-medium">
                         Q{qIndex + 1}
                       </span>
                       <h5 className="font-medium text-sm">
-                        {getQuestionName(questionId)}
+                        {t(question.questionText)}
                       </h5>
                     </div>
 
@@ -83,17 +74,32 @@ export const Step4: React.FC<Step4Props> = ({
                             value=""
                             onChange={(e) => {
                               if (e.target.value) {
-                                onAddMetricToQuestion(questionId, e.target.value);
-                                e.target.value = "";
+                                const metric = availableMetrics.find(
+                                  (m) => m.metricName === e.target.value
+                                );
+                                if (metric) {
+                                  const updatedQuestion = {
+                                    ...question,
+                                    metrics: [...question.metrics, metric]
+                                  };
+                                  const updatedObjective = {
+                                    ...objective,
+                                    questions: objective.questions.map(q =>
+                                      q.questionText === question.questionText ? updatedQuestion : q
+                                    )
+                                  };
+                                  onUpdateObjective(objIndex, updatedObjective);
+                                  e.target.value = "";
+                                }
                               }
                             }}
                           >
                             <option value="">{t("workflow.chooseMetric")}</option>
                             {availableMetrics
-                              .filter(m => !selectedMetricsPerQuestion[questionId]?.includes(m.id))
+                              .filter(m => !question.metrics.some(existing => existing.metricName === m.metricName))
                               .map(metric => (
-                                <option key={metric.id} value={metric.id}>
-                                  {t(metric.name)} ({t(metric.unit)})
+                                <option key={metric.metricName} value={metric.metricName}>
+                                  {t(metric.metricName)} ({t(metric.measurements[0]?.measurementUnit || '')})
                                 </option>
                               ))
                             }
@@ -104,35 +110,57 @@ export const Step4: React.FC<Step4Props> = ({
                             </svg>
                           </div>
                         </div>
-                        <button className="mt-2 text-primary text-sm hover:underline">
+                        <button
+                          className="mt-2 text-primary text-sm hover:underline"
+                          onClick={() => {
+                            setCurrentQuestionForMetric({ objectiveIndex: objIndex, questionIndex: qIndex });
+                            setIsCustomMetricModalOpen(true);
+                          }}
+                        >
                           {t("workflow.createNewMetric")}
                         </button>
                       </div>
 
-                      {selectedMetricsPerQuestion[questionId]?.length > 0 && (
+                      {question.metrics.length > 0 && (
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-default">
-                            {t("workflow.selectedMetrics", { count: selectedMetricsPerQuestion[questionId].length })}
+                            {t("workflow.selectedMetrics", { count: question.metrics.length })}
                           </label>
-                          <div className="space-y-2">
-                            {selectedMetricsPerQuestion[questionId].map((metricId, mIndex) => (
-                              <div key={metricId} className="flex items-center justify-between bg-white p-3 rounded-md border">
-                                <div className="flex items-center gap-2">
-                                  <span className="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-medium">
-                                    M{mIndex + 1}
-                                  </span>
-                                  <div className="text-sm">
-                                    <span className="font-medium">{getMetricName(metricId)}</span>
-                                    <span className="text-gray-500 ml-1">({getMetricUnit(metricId)})</span>
-                                  </div>
-                                </div>
-                                <button 
-                                  className="text-red-500 hover:text-red-700 text-sm"
-                                  onClick={() => onRemoveMetricFromQuestion(questionId, metricId)}
-                                >
-                                  ×
-                                </button>
-                              </div>
+                          <div className="space-y-3">
+                            {question.metrics.map((metric, mIndex) => (
+                              <MetricAccordion
+                                key={metric.metricName}
+                                metric={metric}
+                                metricIndex={mIndex}
+                                onUpdateMetric={(updatedMetric) => {
+                                  const updatedQuestion = {
+                                    ...question,
+                                    metrics: question.metrics.map(m =>
+                                      m.metricName === metric.metricName ? updatedMetric : m
+                                    )
+                                  };
+                                  const updatedObjective = {
+                                    ...objective,
+                                    questions: objective.questions.map(q =>
+                                      q.questionText === question.questionText ? updatedQuestion : q
+                                    )
+                                  };
+                                  onUpdateObjective(objIndex, updatedObjective);
+                                }}
+                                onRemoveMetric={() => {
+                                  const updatedQuestion = {
+                                    ...question,
+                                    metrics: question.metrics.filter(m => m.metricName !== metric.metricName)
+                                  };
+                                  const updatedObjective = {
+                                    ...objective,
+                                    questions: objective.questions.map(q =>
+                                      q.questionText === question.questionText ? updatedQuestion : q
+                                    )
+                                  };
+                                  onUpdateObjective(objIndex, updatedObjective);
+                                }}
+                              />
                             ))}
                           </div>
                         </div>
@@ -146,13 +174,44 @@ export const Step4: React.FC<Step4Props> = ({
         })}
 
         <div className="flex gap-2 mt-6">
-          {selectedMetricsPerQuestion && Object.values(selectedMetricsPerQuestion).some(metrics => metrics.length > 0) && (
+          {selectedObjectives.some(objective =>
+            objective.questions.some(question => question.metrics.length > 0)
+          ) && (
             <Button onClick={onNext} variant="primary">
               {t("workflow.nextVisualization")}
             </Button>
           )}
         </div>
       </CardContent>
+
+      <CustomMetricModal
+        isOpen={isCustomMetricModalOpen}
+        onClose={() => {
+          setIsCustomMetricModalOpen(false);
+          setCurrentQuestionForMetric(null);
+        }}
+        onAddMetric={(metric: Metric) => {
+          if (currentQuestionForMetric) {
+            const { objectiveIndex, questionIndex } = currentQuestionForMetric;
+            const objective = selectedObjectives[objectiveIndex];
+            const question = objective.questions[questionIndex];
+
+            const updatedQuestion = {
+              ...question,
+              metrics: [...question.metrics, metric]
+            };
+
+            const updatedObjective = {
+              ...objective,
+              questions: objective.questions.map((q, idx) =>
+                idx === questionIndex ? updatedQuestion : q
+              )
+            };
+
+            onUpdateObjective(objectiveIndex, updatedObjective);
+          }
+        }}
+      />
     </Card>
   );
 };

@@ -225,7 +225,11 @@
     "owner": "Responsável",
     "ownerPlaceholder": "Digite o nome do responsável",
     "description": "Descrição",
-    "descriptionPlaceholder": "Breve descrição do plano de medição"
+    "descriptionPlaceholder": "Breve descrição do plano de medição",
+    "associatedProject": "Projeto Associado",
+    "selectProject": "Selecionar Projeto",
+    "planResponsible": "Responsável pelo Plano",
+    "planResponsiblePlaceholder": "Digite a pessoa responsável pelo plano"
   },
   "goalForm": {
     "purpose": "Propósito",
@@ -397,6 +401,14 @@
     "addCustomMetric": "Adicionar Métrica Personalizada",
     "measurements": " Medidas"
   },
+  "question": {
+    "questionText": "Texto da Questão",
+    "questionDescription": "Descrição da Questão",
+    "questionMnemonic": "Mnemônico da Questão",
+    "questionTextPlaceholder": "Digite o texto da questão",
+    "questionDescriptionPlaceholder": "Digite a descrição da questão (opcional)",
+    "questionMnemonicPlaceholder": "Digite o mnemônico (opcional)"
+  },
   "modals": {
     "customMetric": {
       "title": "Selecionar ou Criar Métrica",
@@ -427,6 +439,16 @@
       "responsiblePlaceholder": "Digite o responsável pela medição",
       "create": "Criar Medição",
       "cancel": "Cancelar"
+    },
+    "customQuestion": {
+      "title": "Selecionar ou Criar Questão",
+      "predefinedTab": "Predefinidas",
+      "customTab": "Personalizada",
+      "predefinedDescription": "Selecione uma questão predefinida da lista abaixo:",
+      "customDescription": "Crie uma questão personalizada para seu plano de medição:",
+      "addButton": "Adicionar",
+      "createButton": "Criar Questão",
+      "cancelButton": "Cancelar"
     }
   },
   "accordion": {

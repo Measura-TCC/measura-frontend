@@ -197,7 +197,11 @@
     "owner": "Owner",
     "ownerPlaceholder": "Enter the owner name",
     "description": "Description",
-    "descriptionPlaceholder": "Brief description of the measurement plan"
+    "descriptionPlaceholder": "Brief description of the measurement plan",
+    "associatedProject": "Associated Project",
+    "selectProject": "Select Project",
+    "planResponsible": "Plan Responsible",
+    "planResponsiblePlaceholder": "Enter the person responsible for the plan"
   },
   "goalForm": {
     "purpose": "Purpose",
@@ -354,6 +358,14 @@
     "addCustomMetric": "Add Custom Metric",
     "measurements": "Measurements"
   },
+  "question": {
+    "questionText": "Question Text",
+    "questionDescription": "Question Description",
+    "questionMnemonic": "Question Mnemonic",
+    "questionTextPlaceholder": "Enter the question text",
+    "questionDescriptionPlaceholder": "Enter question description (optional)",
+    "questionMnemonicPlaceholder": "Enter mnemonic (optional)"
+  },
   "modals": {
     "customMetric": {
       "title": "Select or Create Metric",
@@ -384,6 +396,16 @@
       "responsiblePlaceholder": "Enter measurement responsible",
       "create": "Create Measurement",
       "cancel": "Cancel"
+    },
+    "customQuestion": {
+      "title": "Select or Create Question",
+      "predefinedTab": "Predefined",
+      "customTab": "Custom",
+      "predefinedDescription": "Select a predefined question from the list below:",
+      "customDescription": "Create a custom question for your measurement plan:",
+      "addButton": "Add",
+      "createButton": "Create Question",
+      "cancelButton": "Cancel"
     }
   },
   "accordion": {

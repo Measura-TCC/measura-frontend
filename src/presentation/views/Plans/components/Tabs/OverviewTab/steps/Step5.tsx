@@ -9,9 +9,11 @@ import {
 } from "@/presentation/components/primitives";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/presentation/assets/icons";
 import type { Project } from "@/core/schemas/projects";
+import type { MeasurementPlan } from "@/core/types/plans";
+import { PlanVisualization } from "../../../PlanVisualization";
 
 interface Step5Props {
-  measurementPlan: any;
+  measurementPlan: MeasurementPlan;
   projects: Project[];
   isCreatingPlan: boolean;
   onFinalize: () => void;
@@ -27,7 +29,7 @@ export const Step5: React.FC<Step5Props> = ({
   const [showDetailedView, setShowDetailedView] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
 
-  const objectivesPerPage = 1;
+  // const objectivesPerPage = 1; // Unused variable
   const totalPages = measurementPlan.objectives.length;
 
   const goToPreviousPage = () => {
@@ -229,10 +231,13 @@ export const Step5: React.FC<Step5Props> = ({
 
           {showDetailedView && (
             <div className="mt-6 border-t border-gray-200 pt-6">
-              <div className="text-center p-8">
-                <h3 className="text-lg font-semibold">Plan Details Viewer</h3>
-                <p className="text-gray-600">Plan visualization component will be implemented here</p>
-              </div>
+              <PlanVisualization
+                plan={measurementPlan}
+                projects={projects}
+                showNavigation={false}
+                externalCurrentPage={currentPage}
+                onExternalPageChange={setCurrentPage}
+              />
             </div>
           )}
         </div>

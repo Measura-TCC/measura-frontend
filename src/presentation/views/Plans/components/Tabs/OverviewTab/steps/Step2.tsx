@@ -7,12 +7,12 @@ import {
   Button,
 } from "@/presentation/components/primitives";
 import { availableObjectives } from "../utils/stepData";
+import type { Objective } from "@/core/types/plans";
 
 interface Step2Props {
-  selectedObjectives: string[];
-  onAddObjective: (objectiveId: string) => void;
-  onRemoveObjective: (objectiveId: string) => void;
-  getObjectiveName: (id: string) => string;
+  selectedObjectives: Objective[];
+  onAddObjective: (objective: Objective) => void;
+  onRemoveObjective: (objectiveTitle: string) => void;
   onNext: () => void;
 }
 
@@ -20,7 +20,6 @@ export const Step2: React.FC<Step2Props> = ({
   selectedObjectives,
   onAddObjective,
   onRemoveObjective,
-  getObjectiveName,
   onNext,
 }) => {
   const { t } = useTranslation("plans");
@@ -37,7 +36,9 @@ export const Step2: React.FC<Step2Props> = ({
 
         <div className="space-y-4">
           <div>
-            <h4 className="font-medium mb-2">{t("workflow.selectObjectivesTitle")}</h4>
+            <h4 className="font-medium mb-2">
+              {t("workflow.selectObjectivesTitle")}
+            </h4>
             <div className="space-y-2">
               <div className="relative">
                 <select
@@ -45,20 +46,33 @@ export const Step2: React.FC<Step2Props> = ({
                   value=""
                   onChange={(e) => {
                     if (e.target.value) {
-                      onAddObjective(e.target.value);
-                      e.target.value = "";
+                      const objective = availableObjectives.find(
+                        (obj) => obj.objectiveTitle === e.target.value
+                      );
+                      if (objective) {
+                        onAddObjective(objective);
+                        e.target.value = "";
+                      }
                     }
                   }}
                 >
                   <option value="">{t("workflow.chooseObjective")}</option>
                   {availableObjectives
-                    .filter(obj => !selectedObjectives.includes(obj.id))
-                    .map(objective => (
-                      <option key={objective.id} value={objective.id}>
-                        {t(objective.name)}
+                    .filter(
+                      (obj) =>
+                        !selectedObjectives.some(
+                          (selected) =>
+                            selected.objectiveTitle === obj.objectiveTitle
+                        )
+                    )
+                    .map((objective) => (
+                      <option
+                        key={objective.objectiveTitle}
+                        value={objective.objectiveTitle}
+                      >
+                        {t(objective.objectiveTitle)}
                       </option>
-                    ))
-                  }
+                    ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                   <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
@@ -66,16 +80,21 @@ export const Step2: React.FC<Step2Props> = ({
                   </svg>
                 </div>
               </div>
-              
+
               {selectedObjectives.length > 0 && (
                 <div className="mt-3">
                   <div className="flex flex-wrap gap-2">
-                    {selectedObjectives.map(objectiveId => (
-                      <div key={objectiveId} className="inline-flex items-center bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                        <span>{getObjectiveName(objectiveId)}</span>
-                        <button 
+                    {selectedObjectives.map((objective) => (
+                      <div
+                        key={objective.objectiveTitle}
+                        className="inline-flex items-center bg-primary/10 text-primary px-3 py-1 rounded-full text-sm"
+                      >
+                        <span>{t(objective.objectiveTitle)}</span>
+                        <button
                           className="ml-2 text-primary hover:text-primary/70"
-                          onClick={() => onRemoveObjective(objectiveId)}
+                          onClick={() =>
+                            onRemoveObjective(objective.objectiveTitle)
+                          }
                         >
                           ×
                         </button>
@@ -85,10 +104,6 @@ export const Step2: React.FC<Step2Props> = ({
                 </div>
               )}
             </div>
-            
-            <button className="mt-2 text-primary text-sm hover:underline">
-              {t("workflow.createNewObjective")}
-            </button>
           </div>
         </div>
 

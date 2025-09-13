@@ -1,5 +1,6 @@
 import type { PlanStep, StepData } from "./types";
-import type { Objective, MeasurementPlanFormData, GoalForm } from "@/core/types/measurement-plans";
+import type { Objective } from "@/core/types/plans";
+import type { MeasurementPlanFormData, GoalForm } from "./types";
 
 export const canNavigateToStep = (
   step: PlanStep,
