@@ -1,37 +1,32 @@
+import { MeasurementPlan, Objective, Question, Metric } from "@/core/types/plans";
+
 export type PlanStep = 1 | 2 | 3 | 4 | 5;
 
 export interface StepData {
   planBasics?: {
     name: string;
     description: string;
-    type: string;
     owner: string;
+    type: string;
   };
-  goals?: unknown[];
-  questions?: unknown[];
-  metrics?: unknown[];
+  objectives?: Objective[];
+  questions?: Question[];
+  metrics?: Metric[];
   collectionSetup?: boolean;
 }
 
-export interface GoalForm {
-  purpose: string;
-  issue: string;
-  object: string;
-  viewpoint: string;
-  context: string;
-}
 
-export interface Objective {
+export interface LegacyObjective {
   id: string;
   name: string;
 }
 
-export interface Question {
+export interface LegacyQuestion {
   id: string;
   name: string;
 }
 
-export interface Metric {
+export interface LegacyMetric {
   id: string;
   name: string;
   unit: string;

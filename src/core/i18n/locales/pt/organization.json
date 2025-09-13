@@ -27,7 +27,7 @@
   "mission": "Missão",
   "vision": "Visão",
   "values": "Valores",
-  "strategicObjectives": "Objetivos Estratégicos",
+  "strategicObjectives": "Objetivos Organizacionais",
   "steps": {
     "basics": "1. Dados Básicos",
     "identity": "2. Identidade",
@@ -70,7 +70,7 @@
     "addValuePlaceholder": "Cadastre um valor personalizado",
     "selectValuePlaceholder": "Escolha um valor...",
     "strategicObjectivesLabel": "Objetivos Estratégicos",
-    "strategicObjectivesPlaceholder": "Liste os objetivos estratégicos...",
+    "strategicObjectivesPlaceholder": "Liste os Objetivos Organizacionais...",
     "addObjectivePlaceholder": "Cadastre um objetivo personalizado",
     "selectObjectivePlaceholder": "Escolha um objetivo...",
     "createButton": "Criar Organização",

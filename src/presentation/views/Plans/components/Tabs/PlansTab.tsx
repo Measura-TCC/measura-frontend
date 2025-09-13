@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -33,6 +34,7 @@ export const PlansTab: React.FC<PlansTabProps> = ({
   onManageGQM,
 }) => {
   const { t } = useTranslation("plans");
+  const router = useRouter();
 
   const getGQMPhaseLabel = (phase?: GQMPhase) => {
     if (!phase) return t("gqm.notStarted");
@@ -87,7 +89,8 @@ export const PlansTab: React.FC<PlansTabProps> = ({
             {plans.map((plan) => (
               <div
                 key={plan.id}
-                className="p-4 border border-border rounded-lg hover:shadow-sm transition-shadow"
+                className="p-4 border border-border rounded-lg hover:shadow-sm transition-shadow cursor-pointer"
+                onClick={() => router.push(`/plans/details/${plan.id}`)}
               >
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-medium text-default">{plan.name}</h3>
@@ -158,28 +161,40 @@ export const PlansTab: React.FC<PlansTabProps> = ({
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => onManageGQM(plan)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onManageGQM(plan);
+                      }}
                     >
                       {t("manageGQM")}
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => onEditPlan(plan)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEditPlan(plan);
+                      }}
                     >
                       {t("edit")}
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => onDuplicatePlan(plan.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDuplicatePlan(plan.id);
+                      }}
                     >
                       {t("duplicate")}
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => onDeletePlan(plan.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeletePlan(plan.id);
+                      }}
                       className="text-red-600 hover:text-red-700"
                     >
                       {t("delete")}

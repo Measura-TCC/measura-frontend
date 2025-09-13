@@ -119,7 +119,7 @@ export const Step3: React.FC<Step3Props> = ({
         ))}
 
         <div className="flex gap-2 mt-6">
-          {Object.values(selectedQuestionsPerObjective).some(questions => questions.length > 0) && (
+          {selectedQuestionsPerObjective && Object.values(selectedQuestionsPerObjective).some(questions => questions.length > 0) && (
             <Button onClick={onNext} variant="primary">
               {t("workflow.nextMetrics")}
             </Button>

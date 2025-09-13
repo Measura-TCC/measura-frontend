@@ -21,7 +21,7 @@
   "progress": "Progresso",
   "dates": "Datas",
   "goals": "objetivos",
-  "metrics": "métricas",
+  "metricsCount": "métricas",
   "edit": "Editar",
   "duplicate": "Duplicar",
   "delete": "Excluir",
@@ -91,7 +91,7 @@
       "completed": "Concluído"
     },
     "phaseDescriptions": {
-      "planning": "Definir objetivos de negócio e software alinhados com objetivos estratégicos",
+      "planning": "Definir objetivos de negócio e software alinhados com objetivos organizacionais",
       "definition": "Aplicar estrutura GQM para derivar questões-chave e definir métricas",
       "data_collection": "Estabelecer procedimentos de coleta de dados e reunir medições",
       "interpretation": "Analisar dados e interpretar descobertas no contexto dos objetivos originais",
@@ -166,11 +166,18 @@
     "selectObjectivesTitle": "1. Selecionar Objetivos",
     "chooseObjective": "Escolha um objetivo organizacional...",
     "createNewObjective": "+ Criar Novo Objetivo",
+    "addCustomObjectivePlaceholder": "Digite um objetivo personalizado",
+    "addCustomQuestionPlaceholder": "Digite uma questão personalizada",
+    "addCustomMetricPlaceholder": "Digite uma métrica personalizada",
+    "add": "Adicionar",
+    "completeStepToUnlock": "Complete a etapa anterior para desbloquear",
     "selectQuestions": "Selecionar Questões",
+    "selectPredefinedQuestion": "Escolha uma questão predefinida...",
     "chooseQuestion": "Escolha uma questão...",
     "createNewQuestion": "+ Criar Nova Questão",
     "selectedQuestions": "Questões Selecionadas ({{count}})",
     "selectMetrics": "Selecionar Métricas",
+    "selectPredefinedMetric": "Escolha uma métrica predefinida...",
     "chooseMetric": "Escolha uma métrica...",
     "createNewMetric": "+ Criar Nova Métrica",
     "selectedMetrics": "Métricas Selecionadas ({{count}})",
@@ -182,6 +189,7 @@
     "objectives": "Objetivos",
     "questions": "Questões",
     "metrics": "Métricas",
+    "measurements": "Medidas",
     "unit": "Unidade",
     "hideDetails": "Ocultar detalhes",
     "showDetails": "Visualizar em mais detalhes",
@@ -241,7 +249,23 @@
     "improveQuality": "Melhorar qualidade do software",
     "reduceDevelopmentTime": "Reduzir tempo de desenvolvimento",
     "increaseTeamProductivity": "Aumentar produtividade da equipe",
-    "decreaseBugQuantity": "Diminuir quantidade de bugs"
+    "decreaseBugQuantity": "Diminuir quantidade de bugs",
+    "improveCustomerSatisfaction": "Melhorar satisfação do cliente",
+    "reduceMaintenanceCost": "Reduzir custo de manutenção",
+    "enhanceSystemPerformance": "Melhorar desempenho do sistema",
+    "increaseCodeReusability": "Aumentar reusabilidade do código",
+    "objectives.improveQuality": "Melhorar qualidade do software",
+    "objectives.reduceDevelopmentTime": "Reduzir tempo de desenvolvimento",
+    "objectives.increaseTeamProductivity": "Aumentar produtividade da equipe",
+    "objectives.decreaseBugQuantity": "Diminuir quantidade de bugs",
+    "objectives.improveCustomerSatisfaction": "Melhorar satisfação do cliente",
+    "objectives.reduceMaintenanceCost": "Reduzir custo de manutenção",
+    "objectives.enhanceSystemPerformance": "Melhorar desempenho do sistema",
+    "objectives.increaseCodeReusability": "Aumentar reusabilidade do código",
+    "increaseFunctionalValueCadence": "Aumentar cadência de valor funcional",
+    "reduceTimeToDeliverValue": "Reduzir tempo para entregar valor",
+    "accelerateRecoveryAfterFailures": "Acelerar recuperação após falhas",
+    "increaseStabilityOfChanges": "Aumentar estabilidade de mudanças"
   },
   "questions": {
     "defectRateInProduction": "Qual é a taxa de defeitos encontrados em produção?",
@@ -249,7 +273,15 @@
     "averageFeatureDevelopmentTime": "Qual é o tempo médio de desenvolvimento de uma feature?",
     "dailyCodeLinesProduced": "Quantas linhas de código são produzidas por dia?",
     "automatedTestCoverage": "Qual é a cobertura de testes automatizados?",
-    "bugsFoundDuringTesting": "Quantos bugs são encontrados durante os testes?"
+    "bugsFoundDuringTesting": "Quantos bugs são encontrados durante os testes?",
+    "customerSatisfactionScore": "Qual é a pontuação de satisfação do cliente?",
+    "systemAvailability": "Qual é a disponibilidade do sistema?",
+    "codeReviewCoverage": "Qual é a cobertura de revisão de código?",
+    "deploymentFrequency": "Qual é a frequência de deployment?",
+    "howManyFunctionPointsPerPeriod": "Quantos Pontos de Função entregamos por período?",
+    "howLongCommitToProduction": "Quanto tempo um commit leva para chegar à produção?",
+    "howLongToRestoreService": "Quanto tempo levamos para restaurar o serviço?",
+    "whatFractionDeploysFailure": "Que fração de deploys causa incidentes ou rollbacks?"
   },
   "metrics": {
     "defectsPerRelease": "Número de defeitos por release",
@@ -260,6 +292,26 @@
     "bugsPerSprint": "Número de bugs por sprint",
     "buildSuccessRate": "Taxa de sucesso de builds",
     "applicationResponseTime": "Tempo de resposta da aplicação",
+    "userSatisfactionRating": "Avaliação de satisfação do usuário",
+    "systemUptimePercentage": "Porcentagem de tempo de atividade do sistema",
+    "productivityHhPF": "Produtividade (Hh/PF)",
+    "leadTimeForChanges": "Lead Time para Mudanças",
+    "meanTimeToRestore": "Tempo Médio para Restaurar (MTTR)",
+    "changeFailureRate": "Taxa de Falha de Mudanças (%)",
+    "descriptions": {
+      "defectsPerRelease": "Contagem de defeitos encontrados após lançamento do software",
+      "averageFixTime": "Tempo médio necessário para resolver defeitos reportados",
+      "developmentTimePerStoryPoint": "Tempo gasto desenvolvendo cada story point de funcionalidade",
+      "codeLinesPerDeveloper": "Número de linhas de código produzidas por desenvolvedor",
+      "codeCoveragePercentage": "Porcentagem de código coberto por testes automatizados",
+      "bugsPerSprint": "Número de bugs identificados durante cada sprint de desenvolvimento",
+      "buildSuccessRate": "Porcentagem de builds automatizados bem-sucedidos",
+      "applicationResponseTime": "Tempo necessário para a aplicação responder às solicitações",
+      "productivityHhPF": "Horas de esforço por Ponto de Função entregue no período/projeto. Agregação recomendada por MEDIANA para robustez a valores discrepantes.",
+      "leadTimeForChanges": "Tempo em horas entre timestamp do commit e timestamp do deployment. Agregado por MEDIANA.",
+      "meanTimeToRestore": "Tempo entre início do incidente (TIN) e restauração (TRS), agregado por MEDIANA.",
+      "changeFailureRate": "Porcentagem de deploys para produção que resultam em falha (incidente ou rollback) dentro da janela de correlação."
+    },
     "units": {
       "defects": "defeitos",
       "hours": "horas",
@@ -268,6 +320,190 @@
       "percentage": "%",
       "bugs": "bugs",
       "milliseconds": "ms"
+    },
+    "metrics.units.defects": "defeitos",
+    "metrics.units.hours": "horas",
+    "metrics.units.hoursPerSp": "horas/sp",
+    "metrics.units.locPerDev": "loc/dev",
+    "metrics.units.percentage": "%",
+    "metrics.units.bugs": "bugs",
+    "metrics.units.milliseconds": "ms",
+    "measurementEntities": {
+      "worklog": "Log de Trabalho",
+      "deliveredFunctionPoints": "Pontos de Função Entregues",
+      "deploymentToProduction": "Deployment para Produção",
+      "commit": "Commit",
+      "incidentStart": "Início do Incidente",
+      "serviceRestoration": "Restauração do Serviço",
+      "deployFailure": "Falha de Deploy",
+      "deployTotal": "Deploy Total",
+      "bugReport": "Relatório de Bug",
+      "codeLine": "Linha de Código",
+      "testCase": "Caso de Teste",
+      "buildExecution": "Execução de Build",
+      "apiResponse": "Resposta da API",
+      "userStory": "História de Usuário",
+      "codeReview": "Revisão de Código",
+      "systemResource": "Recurso do Sistema",
+      "userSession": "Sessão do Usuário",
+      "deployment": "Deployment"
+    }
+  },
+  "measurementPlan": {
+    "planName": "Nome do Plano",
+    "associatedProject": "Projeto Associado",
+    "planResponsible": "Responsável pelo Plano",
+    "selectProject": "Selecionar Projeto",
+    "chooseProject": "Escolha um projeto..."
+  },
+  "measurement": {
+    "measurementEntity": "Entidade de Medida",
+    "measurementAcronym": "Acrônimo de  Medida",
+    "measurementProperties": "Propriedades de  Medida",
+    "measurementUnit": "Unidade de  Medida",
+    "measurementScale": "Escala de  Medida",
+    "measurementProcedure": "Procedimento de  Medida",
+    "measurementFrequency": "Frequência de  Medida",
+    "measurementResponsible": "Responsável pela  Medida",
+    "generalInfo": "Informações Gerais",
+    "controlAnalysis": "Controle e Análise",
+    "measurementDetails": "Detalhes da  Medida",
+    "addMeasurement": "Adicionar  Medida",
+    "customMeasurement": " Medida Personalizada",
+    "selectMeasurement": "Selecionar  Medida",
+    "measurementsCount": "medidas"
+  },
+  "units": {
+    "hoursDecimals": "horas (2 decimais)",
+    "functionPoints": "Pontos de Função",
+    "msEpochUTC": "ms (epoch UTC)",
+    "countPerFailedDeploy": "contagem (por deploy com falha)",
+    "countPerDeploy": "contagem (por deploy)"
+  },
+  "scales": {
+    "continuous": "contínua",
+    "discrete": "discreta"
+  },
+  "metric": {
+    "metricName": "Nome da Métrica",
+    "metricDescription": "Descrição da Métrica",
+    "metricMnemonic": "Mnemônico da Métrica",
+    "metricFormula": "Fórmula da Métrica",
+    "metricControlRange": "Intervalo de Controle da Métrica",
+    "analysisProcedure": "Procedimento de Análise",
+    "analysisFrequency": "Frequência de Análise",
+    "analysisResponsible": "Responsável pela Análise",
+    "customMetric": "Métrica Personalizada",
+    "addCustomMetric": "Adicionar Métrica Personalizada",
+    "measurements": " Medidas"
+  },
+  "modals": {
+    "customMetric": {
+      "title": "Selecionar ou Criar Métrica",
+      "predefinedTab": "Predefinidas",
+      "customTab": "Personalizada",
+      "predefinedDescription": "Selecione uma métrica predefinida da lista abaixo:",
+      "namePlaceholder": "Digite o nome da métrica",
+      "descriptionPlaceholder": "Digite a descrição da métrica",
+      "mnemonicPlaceholder": "Digite o mnemônico (máx 3 chars)",
+      "formulaPlaceholder": "Digite a fórmula da métrica",
+      "minRange": "Intervalo Mínimo",
+      "maxRange": "Intervalo Máximo",
+      "analysisProcedurePlaceholder": "Digite o procedimento de análise",
+      "analysisFrequencyPlaceholder": "Digite a frequência de análise",
+      "analysisResponsiblePlaceholder": "Digite o responsável pela análise",
+      "create": "Criar Métrica",
+      "cancel": "Cancelar"
+    },
+    "customMeasurement": {
+      "title": "Criar Medição Personalizada",
+      "entityPlaceholder": "Digite a entidade de medição",
+      "acronymPlaceholder": "Digite o acrônimo (máx 3 chars)",
+      "propertiesPlaceholder": "Digite as propriedades de medição",
+      "unitPlaceholder": "Digite a unidade de medição",
+      "scalePlaceholder": "Digite a escala de medição",
+      "procedurePlaceholder": "Digite o procedimento de medição",
+      "frequencyPlaceholder": "Digite a frequência de medição",
+      "responsiblePlaceholder": "Digite o responsável pela medição",
+      "create": "Criar Medição",
+      "cancel": "Cancelar"
+    }
+  },
+  "accordion": {
+    "expand": "Expandir",
+    "collapse": "Recolher",
+    "measurementsCount": "{{count}}  Medida(s)"
+  },
+  "planVisualization": {
+    "title": "Visualização do Plano de Medição",
+    "pageOf": "{{current}} de {{total}}",
+    "previous": "Anterior",
+    "next": "Próximo"
+  },
+  "export": {
+    "exportPlan": "Exportar Plano",
+    "exportPdf": "Exportar como PDF",
+    "exportDocx": "Exportar como DOCX",
+    "selectFormat": "Exportar Plano",
+    "exporting": "Exportando...",
+    "success": "{{format}} exportado com sucesso!",
+    "error": "Falha ao exportar. Tente novamente."
+  },
+  "planDetails": {
+    "back": "Voltar aos Planos",
+    "notFound": "Plano não encontrado",
+    "notFoundDescription": "O plano solicitado não foi encontrado ou você não tem acesso a ele."
+  },
+  "measurements": {
+    "properties": {
+      "worklog": "Total de horas registradas no período do projeto. Excluir férias/treinamentos. Consolidar por iteração/release.",
+      "deliveredFunctionPoints": "Pontos de Função entregues e aceitos na iteração/release (conforme planilha IFPUG/COSMIC). Apenas escopo concluído (feito/aceito).",
+      "deploymentToProduction": "Timestamp UTC da promoção para produção. Único por deploy, inclui deployment_id e SHAs.",
+      "commit": "Timestamp UTC do commit. Único por commit (SHA).",
+      "incidentStart": "Timestamp UTC quando incidente foi aberto. Um por incident_id. Manter severidade e serviço impactado.",
+      "serviceRestoration": "Timestamp UTC quando serviço foi restaurado. Um por incident_id.",
+      "deployFailure": "Um registro por deploy de produção classificado como falha (rollback ou incidente).",
+      "deployTotal": "Um registro por deploy de produção. Inclui sucessos e falhas."
+    },
+    "procedures": {
+      "worklog": "Integrar Timesheet/ERP com boards (Jira/Azure). Filtrar por projeto/épico/iteração; remover duplicatas; validar categorias.",
+      "deliveredFunctionPoints": "Consolidar planilha IFPUG/COSMIC. Mapear itens 'feitos/aceitos' por iteração/release; somar PF entregues.",
+      "deploymentToProduction": "A cada deploy de produção, capturar timestamp de fim da promoção do CI/CD; vincular deployment_id e commits.",
+      "commit": "No commit para branch principal, capturar timestamp via webhook Git; registrar SHA e epoch_ms.",
+      "incidentStart": "Na criação de incidente no PagerDuty/Opsgenie/Jira, capturar timestamp disparado. Persistir incident_id, severidade.",
+      "serviceRestoration": "Na resolução de incidente, capturar timestamp resolvido ou StatusPage retornar ao operacional. Persistir incident_id, severidade.",
+      "deployFailure": "Ingerir eventos de deployment e incidentes. Vincular DPF=1 quando rollback ou incidente vinculado ao deploy.",
+      "deployTotal": "A cada promoção de produção, registrar DPT=1 com deployment_id e repo."
+    },
+    "frequency": {
+      "continuousIteration": "Contínuo / agregado por iteração ou release",
+      "perIteration": "Por iteração / por release",
+      "perDeploy": "Por deploy (contínuo)",
+      "perCommit": "Por commit (contínuo)",
+      "perIncident": "Por incidente (contínuo)",
+      "perDeployIncident": "Por deploy/incidente"
+    },
+    "responsible": {
+      "timesheetERP": "Integração Timesheet/ERP",
+      "pfMeasurementTeam": "Equipe de Medição de PF",
+      "measurementAnalyst": "Analista de Medição"
+    }
+  },
+  "analysis": {
+    "procedures": {
+      "productivityHhPF": "Agregar por iteração/release e projeto/equipe. Calcular mediana, média e p90. Comparar com meta calibrada (≤20–25 Hh/PF). Segmentar por tipo de demanda, tecnologia, tamanho PF, escopo, retrabalho. Investigar outliers.",
+      "leadTimeForChanges": "Semanal: calcular mediana LT por mudança, mais p90/p95. Comparar com meta <24h. Segmentar por repo/serviço. Investigar outliers por estágio do pipeline. Registrar ações como reduzir WIP ou paralelizar testes.",
+      "meanTimeToRestore": "Mensal por serviço/sistema. Calcular mediana, p90/p95. Segmentar por severidade (P1–P3) e causa. Comparar com meta <1h. Cruzar com disponibilidade/SLO. Investigar outliers.",
+      "changeFailureRate": "Agregação mensal por release/serviço. Monitorar tendência. Se CFR > 15%, disparar ações corretivas (post-mortem, hardening, testes). Correlacionar com Lead Time e MTTR."
+    },
+    "frequency": {
+      "perIteration": "Por iteração / por release",
+      "weekly": "Semanal",
+      "monthly": "Mensal",
+      "monthlyRelease": "Mensal / por release"
+    },
+    "responsible": {
+      "productivityTeam": "Equipe de Engenharia de Produtividade"
     }
   }
 }

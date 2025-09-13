@@ -12,6 +12,7 @@ import { PlusIcon, ChartIcon } from "@/presentation/assets/icons";
 import type {
   PlanFormData,
   PlansStatistics,
+  Objective,
 } from "@/core/types/plans";
 
 import { Step1 } from "./steps/Step1";
@@ -21,9 +22,15 @@ import { Step4 } from "./steps/Step4";
 import { Step5 } from "./steps/Step5";
 import { StepIndicator } from "./components/StepIndicator";
 
-import type { PlanStep, StepData, GoalForm } from "./utils/types";
-import { availableObjectives, availableQuestions, availableMetrics } from "./utils/stepData";
+import type { PlanStep, StepData } from "./utils/types";
+import type { GoalForm } from "@/core/types/measurement-plans";
+import {
+  availableObjectives,
+  availableQuestions,
+  availableMetrics,
+} from "./utils/stepData";
 import { canNavigateToStep } from "./utils/stepValidation";
+import { useProjects } from "@/core/hooks/projects/useProjects";
 
 interface OverviewTabProps {
   statistics: PlansStatistics;
@@ -43,14 +50,19 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
   onCreatePlan,
 }) => {
   const { t } = useTranslation("plans");
-  const [currentStep, setCurrentStep] = useState<PlanStep>(1);
+  const { projects } = useProjects();
+  const [currentStep, setCurrentStep] = useState<PlanStep>(5);
   const [stepData, setStepData] = useState<StepData>({});
   const [showWorkflow, setShowWorkflow] = useState(false);
-  const [selectedObjectives, setSelectedObjectives] = useState<string[]>([]);
-  const [selectedQuestionsPerObjective, setSelectedQuestionsPerObjective] = useState<Record<string, string[]>>({});
-  const [selectedMetricsPerQuestion, setSelectedMetricsPerQuestion] = useState<Record<string, string[]>>({});
+  const [selectedObjectives, setSelectedObjectives] = useState<Objective[]>([]);
+  const [measurementPlanForm, setMeasurementPlanForm] =
+    useState<MeasurementPlanFormData>({
+      planName: "",
+      associatedProject: "",
+      planResponsible: "",
+    });
 
-  const { setValue, handleSubmit } = planForm;
+  const { setValue } = planForm;
 
   const [goalForm, setGoalForm] = useState<GoalForm>({
     purpose: "",
@@ -60,98 +72,47 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
     context: "",
   });
 
-  setValue("type", "measurement");
-
-  const handleAddObjective = (objectiveId: string) => {
-    if (objectiveId && !selectedObjectives.includes(objectiveId)) {
-      setSelectedObjectives(prev => [...prev, objectiveId]);
-    }
-  };
-
-  const handleRemoveObjective = (objectiveId: string) => {
-    setSelectedObjectives(prev => prev.filter(id => id !== objectiveId));
-  };
-
-  const getObjectiveName = (id: string) => {
-    const objective = availableObjectives.find(obj => obj.id === id);
-    return objective ? t(objective.name) : id;
-  };
-
-  const handleAddQuestionToObjective = (objectiveId: string, questionId: string) => {
-    if (questionId && !selectedQuestionsPerObjective[objectiveId]?.includes(questionId)) {
-      setSelectedQuestionsPerObjective(prev => ({
-        ...prev,
-        [objectiveId]: [...(prev[objectiveId] || []), questionId]
-      }));
-    }
-  };
-
-  const handleRemoveQuestionFromObjective = (objectiveId: string, questionId: string) => {
-    setSelectedQuestionsPerObjective(prev => ({
-      ...prev,
-      [objectiveId]: prev[objectiveId]?.filter(id => id !== questionId) || []
-    }));
-  };
-
-  const getQuestionName = (id: string) => {
-    const question = availableQuestions.find(q => q.id === id);
-    return question ? t(question.name) : id;
-  };
-
-  const handleAddMetricToQuestion = (questionId: string, metricId: string) => {
-    if (metricId && !selectedMetricsPerQuestion[questionId]?.includes(metricId)) {
-      setSelectedMetricsPerQuestion(prev => ({
-        ...prev,
-        [questionId]: [...(prev[questionId] || []), metricId]
-      }));
-    }
-  };
-
-  const handleRemoveMetricFromQuestion = (questionId: string, metricId: string) => {
-    setSelectedMetricsPerQuestion(prev => ({
-      ...prev,
-      [questionId]: prev[questionId]?.filter(id => id !== metricId) || []
-    }));
-  };
-
-  const getMetricName = (id: string) => {
-    const metric = availableMetrics.find(m => m.id === id);
-    return metric ? t(metric.name) : id;
-  };
-
-  const getMetricUnit = (id: string) => {
-    const metric = availableMetrics.find(m => m.id === id);
-    return metric ? t(metric.unit) : "";
-  };
+  // setValue("type", "measurement"); // Removed as not needed for MeasurementPlanFormData
 
   const handleStepClick = (step: PlanStep) => {
-    if (canNavigateToStep(step, stepData, selectedObjectives, selectedQuestionsPerObjective, selectedMetricsPerQuestion)) {
+    if (
+      canNavigateToStep(
+        step,
+        stepData,
+        selectedObjectives,
+        measurementPlanForm,
+        goalForm
+      )
+    ) {
       setCurrentStep(step);
     }
   };
 
-  const handleBasicsSubmit = async (data: PlanFormData) => {
-    setStepData((prev) => ({ ...prev, planBasics: data }));
-    setCurrentStep(2);
-  };
-
   const handleFinalizePlan = async () => {
-    if (stepData.planBasics) {
-      await onCreatePlan(stepData.planBasics);
-      setShowWorkflow(false);
-      setCurrentStep(1);
-      setStepData({});
-      setSelectedObjectives([]);
-      setSelectedQuestionsPerObjective({});
-      setSelectedMetricsPerQuestion({});
-      setGoalForm({
-        purpose: "",
-        issue: "",
-        object: "",
-        viewpoint: "",
-        context: "",
-      });
-    }
+    await onCreatePlan({
+      name:
+        measurementPlanForm.planName ||
+        `Plan for ${measurementPlanForm.associatedProject}`,
+      owner: measurementPlanForm.planResponsible,
+      description: measurementPlanForm.associatedProject,
+      type: "measurement",
+    });
+    setShowWorkflow(false);
+    setCurrentStep(1);
+    setStepData({});
+    setSelectedObjectives([]);
+    setMeasurementPlanForm({
+      planName: "",
+      associatedProject: "",
+      planResponsible: "",
+    });
+    setGoalForm({
+      purpose: "",
+      issue: "",
+      object: "",
+      viewpoint: "",
+      context: "",
+    });
   };
 
   const renderStepContent = () => {
@@ -160,11 +121,24 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         return (
           <Step1
             planForm={planForm}
+            measurementPlanForm={measurementPlanForm}
+            setMeasurementPlanForm={setMeasurementPlanForm}
             formErrors={formErrors}
             canCreatePlan={canCreatePlan}
             goalForm={goalForm}
             setGoalForm={setGoalForm}
-            onNext={handleSubmit(handleBasicsSubmit)}
+            onNext={() => {
+              setStepData((prev) => ({
+                ...prev,
+                planBasics: {
+                  name: measurementPlanForm.planName,
+                  description: measurementPlanForm.associatedProject,
+                  owner: measurementPlanForm.planResponsible,
+                  type: "measurement",
+                },
+              }));
+              setCurrentStep(2);
+            }}
           />
         );
 
@@ -172,9 +146,14 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         return (
           <Step2
             selectedObjectives={selectedObjectives}
-            onAddObjective={handleAddObjective}
-            onRemoveObjective={handleRemoveObjective}
-            getObjectiveName={getObjectiveName}
+            onAddObjective={(objective) => {
+              setSelectedObjectives((prev) => [...prev, objective]);
+            }}
+            onRemoveObjective={(objectiveTitle) => {
+              setSelectedObjectives((prev) =>
+                prev.filter((obj) => obj.objectiveTitle !== objectiveTitle)
+              );
+            }}
             onNext={() => setCurrentStep(3)}
           />
         );
@@ -183,11 +162,11 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         return (
           <Step3
             selectedObjectives={selectedObjectives}
-            selectedQuestionsPerObjective={selectedQuestionsPerObjective}
-            onAddQuestionToObjective={handleAddQuestionToObjective}
-            onRemoveQuestionFromObjective={handleRemoveQuestionFromObjective}
-            getObjectiveName={getObjectiveName}
-            getQuestionName={getQuestionName}
+            onUpdateObjective={(index, objective) => {
+              setSelectedObjectives((prev) =>
+                prev.map((obj, i) => (i === index ? objective : obj))
+              );
+            }}
             onNext={() => setCurrentStep(4)}
           />
         );
@@ -196,14 +175,11 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         return (
           <Step4
             selectedObjectives={selectedObjectives}
-            selectedQuestionsPerObjective={selectedQuestionsPerObjective}
-            selectedMetricsPerQuestion={selectedMetricsPerQuestion}
-            onAddMetricToQuestion={handleAddMetricToQuestion}
-            onRemoveMetricFromQuestion={handleRemoveMetricFromQuestion}
-            getObjectiveName={getObjectiveName}
-            getQuestionName={getQuestionName}
-            getMetricName={getMetricName}
-            getMetricUnit={getMetricUnit}
+            onUpdateObjective={(index, objective) => {
+              setSelectedObjectives((prev) =>
+                prev.map((obj, i) => (i === index ? objective : obj))
+              );
+            }}
             onNext={() => setCurrentStep(5)}
           />
         );
@@ -211,14 +187,13 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       case 5:
         return (
           <Step5
-            stepData={stepData}
-            selectedObjectives={selectedObjectives}
-            selectedQuestionsPerObjective={selectedQuestionsPerObjective}
-            selectedMetricsPerQuestion={selectedMetricsPerQuestion}
-            getObjectiveName={getObjectiveName}
-            getQuestionName={getQuestionName}
-            getMetricName={getMetricName}
-            getMetricUnit={getMetricUnit}
+            measurementPlan={{
+              planName: measurementPlanForm.planName,
+              associatedProject: measurementPlanForm.associatedProject,
+              planResponsible: measurementPlanForm.planResponsible,
+              objectives: selectedObjectives,
+            }}
+            projects={projects || []}
             isCreatingPlan={isCreatingPlan}
             onFinalize={handleFinalizePlan}
           />
@@ -234,7 +209,15 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       <div className="space-y-6">
         <StepIndicator
           currentStep={currentStep}
-          canNavigateToStep={(step: PlanStep) => canNavigateToStep(step, stepData, selectedObjectives, selectedQuestionsPerObjective, selectedMetricsPerQuestion)}
+          canNavigateToStep={(step: PlanStep) =>
+            canNavigateToStep(
+              step,
+              stepData,
+              selectedObjectives,
+              measurementPlanForm,
+              goalForm
+            )
+          }
           onStepClick={handleStepClick}
         />
 

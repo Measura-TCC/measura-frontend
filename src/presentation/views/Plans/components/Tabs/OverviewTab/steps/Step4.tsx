@@ -146,7 +146,7 @@ export const Step4: React.FC<Step4Props> = ({
         })}
 
         <div className="flex gap-2 mt-6">
-          {Object.values(selectedMetricsPerQuestion).some(metrics => metrics.length > 0) && (
+          {selectedMetricsPerQuestion && Object.values(selectedMetricsPerQuestion).some(metrics => metrics.length > 0) && (
             <Button onClick={onNext} variant="primary">
               {t("workflow.nextVisualization")}
             </Button>

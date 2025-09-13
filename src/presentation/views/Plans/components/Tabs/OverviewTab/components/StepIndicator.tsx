@@ -22,25 +22,55 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
           key={step.number}
           className="flex flex-col items-center flex-1"
         >
-          <button
-            onClick={() => onStepClick(step.number as PlanStep)}
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-              currentStep === step.number
-                ? "bg-primary text-white"
-                : canNavigateToStep(step.number as PlanStep)
-                ? "bg-primary/20 text-primary hover:bg-primary/30"
-                : "bg-gray-200 text-gray-400"
-            }`}
-            disabled={!canNavigateToStep(step.number as PlanStep)}
-          >
-            {step.number}
-          </button>
-          <div className="text-xs text-center mt-1 max-w-20">
-            {t(step.titleKey)}
+          <div className="flex items-center w-full">
+            <div
+              onClick={() => onStepClick(step.number as PlanStep)}
+              className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all ${
+                currentStep >= step.number
+                  ? "bg-primary border-primary text-white"
+                  : canNavigateToStep(step.number as PlanStep)
+                  ? "border-primary/50 text-primary/70 bg-primary/10"
+                  : "border-gray-300 text-gray-400 bg-gray-100"
+              } ${
+                currentStep === step.number
+                  ? "ring-4 ring-primary/20"
+                  : ""
+              } ${
+                canNavigateToStep(step.number as PlanStep)
+                  ? "cursor-pointer hover:scale-110 hover:shadow-md"
+                  : "cursor-not-allowed opacity-60"
+              }`}
+              title={
+                !canNavigateToStep(step.number as PlanStep)
+                  ? t("workflow.completeStepToUnlock")
+                  : ""
+              }
+            >
+              {step.number}
+            </div>
+            {index < steps.length - 1 && (
+              <div
+                className={`flex-1 h-0.5 mx-2 ${
+                  currentStep > step.number
+                    ? "bg-primary"
+                    : "bg-border"
+                }`}
+              />
+            )}
           </div>
-          {index < steps.length - 1 && (
-            <div className="flex-1 h-px bg-gray-200 mt-4 mx-2" />
-          )}
+          <div className="mt-2 text-center">
+            <p
+              className={`text-xs font-medium ${
+                currentStep === step.number
+                  ? "text-primary"
+                  : canNavigateToStep(step.number as PlanStep)
+                  ? "text-primary/70"
+                  : "text-gray-400"
+              }`}
+            >
+              {t(step.titleKey)}
+            </p>
+          </div>
         </div>
       ))}
     </div>
