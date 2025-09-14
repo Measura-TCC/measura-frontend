@@ -7,19 +7,34 @@ import {
   CardTitle,
   Button,
 } from "@/presentation/components/primitives";
-import { DocumentIcon } from "@/presentation/assets/icons";
-import { Plan, PlanStatus, GQMPhase } from "@/core/types/plans";
+import {
+  DocumentIcon,
+  EyeIcon,
+  GearIcon,
+  TrashIcon,
+} from "@/presentation/assets/icons";
+import {
+  MeasurementPlanSummaryDto,
+  MeasurementPlanStatus
+} from "@/core/types/plans";
 
 interface PlansTabProps {
-  plans: Plan[] | undefined;
+  plans: MeasurementPlanSummaryDto[] | undefined;
   isLoadingPlans: boolean;
   formatDate: (date: Date | string) => string;
-  getStatusColor: (status: PlanStatus) => string;
-  getTypeLabel: (type: string) => string;
-  onEditPlan: (plan: Plan) => void;
-  onDeletePlan: (id: string) => void;
-  onDuplicatePlan: (id: string) => void;
-  onManageGQM: (plan: Plan) => void;
+  getStatusColor: (status: MeasurementPlanStatus) => string;
+  onViewPlan: (planId: string) => void;
+  onEditPlan?: (planId: string) => void;
+  onDeletePlan: (planId: string) => void;
+  projects?: Array<{ _id: string; name: string; }>;
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (pageSize: number) => void;
 }
 
 export const PlansTab: React.FC<PlansTabProps> = ({
@@ -27,185 +42,247 @@ export const PlansTab: React.FC<PlansTabProps> = ({
   isLoadingPlans,
   formatDate,
   getStatusColor,
-  getTypeLabel,
+  onViewPlan,
   onEditPlan,
   onDeletePlan,
-  onDuplicatePlan,
-  onManageGQM,
+  projects = [],
+  pagination,
+  onPageChange,
+  onPageSizeChange,
 }) => {
   const { t } = useTranslation("plans");
   const router = useRouter();
 
-  const getGQMPhaseLabel = (phase?: GQMPhase) => {
-    if (!phase) return t("gqm.notStarted");
-    return t(`gqm.phases.${phase}`);
-  };
-
-  const getGQMPhaseColor = (phase?: GQMPhase) => {
-    switch (phase) {
-      case "completed":
-        return "bg-green-100 text-green-800";
-      case "data_collection":
-        return "bg-blue-100 text-blue-800";
-      case "interpretation":
-        return "bg-purple-100 text-purple-800";
-      case "definition":
-        return "bg-yellow-100 text-yellow-800";
-      case "planning":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
+  const getProjectName = (projectId: string): string => {
+    const project = projects.find(p => p._id === projectId);
+    return project?.name || projectId;
   };
 
   if (isLoadingPlans) {
     return (
       <div className="space-y-4">
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="animate-pulse">
-            <div className="h-32 bg-gray-200 rounded-lg"></div>
-          </div>
+        {[...Array(3)].map((_, index) => (
+          <Card key={index} className="animate-pulse">
+            <CardHeader>
+              <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-full"></div>
+                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+              </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
     );
   }
 
+  if (!plans || plans.length === 0) {
+    return (
+      <Card>
+        <CardContent className="text-center py-12">
+          <DocumentIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            {t("noPlan")}
+          </h3>
+          <p className="text-gray-500 mb-6">
+            {t("createFirstPlan")}
+          </p>
+          <Button onClick={() => router.push("/plans?tab=overview")}>
+            {t("createPlan")}
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("yourPlans")}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {!plans || plans.length === 0 ? (
-          <div className="text-center py-8">
-            <DocumentIcon className="w-12 h-12 text-muted mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-default mb-2">
-              {t("noPlansYet")}
-            </h3>
-            <p className="text-secondary mb-4">{t("noPlansDescription")}</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {plans.map((plan) => (
-              <div
-                key={plan.id}
-                className="p-4 border border-border rounded-lg hover:shadow-sm transition-shadow cursor-pointer"
-                onClick={() => router.push(`/plans/details/${plan.id}`)}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-medium text-default">{plan.name}</h3>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`px-2 py-1 text-xs rounded-full ${getStatusColor(
-                        plan.status
-                      )}`}
-                    >
-                      {t(`status.${plan.status}`)}
-                    </span>
-                    <span
-                      className={`px-2 py-1 text-xs rounded-full ${getGQMPhaseColor(
-                        plan.gqmPhase
-                      )}`}
-                    >
-                      {getGQMPhaseLabel(plan.gqmPhase)}
-                    </span>
-                  </div>
+    <div className="space-y-4">
+      {plans.map((plan) => (
+        <Card key={plan.id} className="hover:shadow-md transition-shadow">
+          <CardHeader>
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <CardTitle className="text-xl mb-2">
+                  {plan.planName}
+                </CardTitle>
+                <div className="flex items-center space-x-4 text-sm text-gray-600">
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(plan.status)}`}>
+                    {t(`status.${plan.status}`)}
+                  </span>
+                  <span>
+                    {t("responsible")}: {plan.planResponsible}
+                  </span>
+                  <span>
+                    {t("project")}: {getProjectName(plan.associatedProject)}
+                  </span>
                 </div>
-                <p className="text-sm text-secondary mb-3">
-                  {plan.description}
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
-                  <div>
-                    <h4 className="text-xs font-medium text-secondary mb-1">
-                      {t("type")}:
-                    </h4>
-                    <span className="px-2 py-1 bg-background-secondary text-xs rounded capitalize">
-                      {getTypeLabel(plan.type)}
-                    </span>
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-medium text-secondary mb-1">
-                      {t("owner")}:
-                    </h4>
-                    <span className="px-2 py-1 bg-background-secondary text-xs rounded">
-                      {plan.owner}
-                    </span>
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-medium text-secondary mb-1">
-                      {t("progress")}:
-                    </h4>
-                    <span className="px-2 py-1 bg-background-secondary text-xs rounded">
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onViewPlan(plan.id)}
+                >
+                  <EyeIcon className="h-4 w-4 mr-1" />
+                  {t("view")}
+                </Button>
+                {onEditPlan && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onEditPlan(plan.id)}
+                  >
+                    <GearIcon className="h-4 w-4 mr-1" />
+                    {t("edit")}
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onDeletePlan(plan.id)}
+                  className="text-red-600 hover:text-red-700 hover:border-red-300"
+                >
+                  <TrashIcon className="h-4 w-4 mr-1" />
+                  {t("delete")}
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div>
+                <span className="font-medium text-gray-900">
+                  {t("progress")}
+                </span>
+                <div className="mt-1">
+                  <div className="flex items-center">
+                    <div className="flex-1 bg-gray-200 rounded-full h-2 mr-2">
+                      <div
+                        className="bg-blue-600 h-2 rounded-full"
+                        style={{ width: `${plan.progress}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-xs text-gray-600">
                       {plan.progress}%
                     </span>
                   </div>
-                  <div>
-                    <h4 className="text-xs font-medium text-secondary mb-1">
-                      {t("dates")}:
-                    </h4>
-                    <span className="text-xs text-muted">
-                      {formatDate(plan.startDate)} - {formatDate(plan.endDate)}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4 text-xs text-muted">
-                    <span>
-                      {plan.goalsCount} {t("goals")}
-                    </span>
-                    <span>
-                      {plan.metricsCount} {t("metrics")}
-                    </span>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onManageGQM(plan);
-                      }}
-                    >
-                      {t("manageGQM")}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onEditPlan(plan);
-                      }}
-                    >
-                      {t("edit")}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDuplicatePlan(plan.id);
-                      }}
-                    >
-                      {t("duplicate")}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDeletePlan(plan.id);
-                      }}
-                      className="text-red-600 hover:text-red-700"
-                    >
-                      {t("delete")}
-                    </Button>
-                  </div>
                 </div>
               </div>
-            ))}
+              <div>
+                <span className="font-medium text-gray-900">
+                  {t("workflow.objectives")}
+                </span>
+                <p className="text-gray-600">{plan.objectivesCount}</p>
+              </div>
+              <div>
+                <span className="font-medium text-gray-900">
+                  {t("workflow.questions")}
+                </span>
+                <p className="text-gray-600">{plan.questionsCount}</p>
+              </div>
+              <div>
+                <span className="font-medium text-gray-900">
+                  {t("workflow.metrics")}
+                </span>
+                <p className="text-gray-600">{plan.metricsCount}</p>
+              </div>
+            </div>
+            <div className="mt-4 text-xs text-gray-500 border-t pt-4">
+              <div className="flex justify-between">
+                <span>
+                  {t("created")}: {formatDate(plan.createdAt)}
+                </span>
+                <span>
+                  {t("updated")}: {formatDate(plan.updatedAt)}
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+
+      {/* Pagination */}
+      {pagination && pagination.totalPages > 1 && (
+        <div className="flex items-center justify-between mt-6">
+          <div className="flex items-center space-x-2 text-sm text-gray-600">
+            <span>
+              {t("showing")} {((pagination.page - 1) * pagination.limit) + 1} - {Math.min(pagination.page * pagination.limit, pagination.total)} {t("of")} {pagination.total} {t("plans")}
+            </span>
+            {onPageSizeChange && (
+              <div className="flex items-center space-x-2 ml-4">
+                <span>{t("rowsPerPage")}</span>
+                <select
+                  value={pagination.limit}
+                  onChange={(e) => onPageSizeChange(parseInt(e.target.value))}
+                  className="px-2 py-1 border border-gray-300 rounded text-sm"
+                >
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            )}
           </div>
-        )}
-      </CardContent>
-    </Card>
+
+          {onPageChange && (
+            <div className="flex items-center space-x-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onPageChange(pagination.page - 1)}
+                disabled={pagination.page <= 1}
+                className="px-2 py-1"
+              >
+                {t("previous")}
+              </Button>
+
+              {/* Page numbers */}
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+                  let pageNum = i + 1;
+
+                  // Adjust page numbers if we're past the first few pages
+                  if (pagination.totalPages > 5) {
+                    if (pagination.page <= 3) {
+                      pageNum = i + 1;
+                    } else if (pagination.page >= pagination.totalPages - 2) {
+                      pageNum = pagination.totalPages - 4 + i;
+                    } else {
+                      pageNum = pagination.page - 2 + i;
+                    }
+                  }
+
+                  return (
+                    <Button
+                      key={pageNum}
+                      variant={pagination.page === pageNum ? "primary" : "ghost"}
+                      size="sm"
+                      onClick={() => onPageChange(pageNum)}
+                      className="px-3 py-1 min-w-[32px]"
+                    >
+                      {pageNum}
+                    </Button>
+                  );
+                })}
+              </div>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onPageChange(pagination.page + 1)}
+                disabled={pagination.page >= pagination.totalPages}
+                className="px-2 py-1"
+              >
+                {t("next")}
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 };

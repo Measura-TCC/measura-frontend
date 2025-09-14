@@ -1,67 +1,74 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
-import { usePlans } from "@/core/hooks/plans/usePlans";
+import { useMeasurementPlans } from "@/core/hooks/measurementPlans";
+import { useProjects } from "@/core/hooks/projects/useProjects";
 import {
   PlanTab,
-  Plan,
-  PlanType,
-  GQMGoal,
-  GQMQuestion,
-  GQMMetric,
+  MeasurementPlanStatus,
 } from "@/core/types/plans";
-import { PlansTabs, PlansPageHeader, OrganizationAlert } from "./components";
-import { OverviewTab, PlansTab, TemplatesTab, GQMTab } from "./components/Tabs";
+import { PlansTabs, PlansPageHeader, OrganizationAlert, PlansFilters } from "./components";
+import { OverviewTab, PlansTab } from "./components/Tabs";
 
 export const PlansView = () => {
+  const router = useRouter();
   const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
-  const plansHook = usePlans();
+  const { projects } = useProjects();
   const [activeTab, setActiveTab] = useState<PlanTab>("overview");
-  const [selectedPlanForGQM, setSelectedPlanForGQM] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<MeasurementPlanStatus | undefined>();
+  const [projectFilter, setProjectFilter] = useState<string | undefined>();
+
+  const plansHook = useMeasurementPlans({
+    page: currentPage,
+    limit: pageSize,
+    search: searchQuery,
+    status: statusFilter,
+    projectId: projectFilter,
+  });
 
   const {
     plans,
-    templates,
+    pagination,
     statistics,
     isLoadingPlans,
     isCreatingPlan,
     plansError,
     canCreatePlan,
     hasOrganization,
-    planForm,
-    formErrors,
-    createPlan,
-    deletePlan,
-    duplicatePlan,
-    applyTemplate,
-    getGQMDataForPlan,
     formatDate,
     getStatusColor,
-    getTypeLabel,
+    deletePlan,
+    operationError,
+    clearError,
   } = plansHook;
 
-  const handleCreateGoal = async (_goalData: Partial<GQMGoal>) => {
-    // TODO: Implement goal creation logic
+  const handleSearchChange = (search: string) => {
+    setSearchQuery(search);
+    setCurrentPage(1); // Reset to first page when searching
   };
 
-  const handleCreateQuestion = async (_questionData: Partial<GQMQuestion>) => {
-    // TODO: Implement question creation logic
+  const handleStatusChange = (status: MeasurementPlanStatus | undefined) => {
+    setStatusFilter(status);
+    setCurrentPage(1); // Reset to first page when filtering
   };
 
-  const handleCreateMetric = async (_metricData: Partial<GQMMetric>) => {
-    // TODO: Implement metric creation logic
+  const handleProjectChange = (projectId: string | undefined) => {
+    setProjectFilter(projectId);
+    setCurrentPage(1); // Reset to first page when filtering
   };
 
-  const handleCompleteStep = async (_step: number) => {
-    // TODO: Implement step completion logic
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setStatusFilter(undefined);
+    setProjectFilter(undefined);
+    setCurrentPage(1);
   };
 
-  const handleSelectionComplete = async (
-    _selection: import("@/core/types/plans").GQMSelectionState
-  ) => {
-    // TODO: Implement selection completion logic
-  };
 
   const componentMap = {
     overview: (
@@ -69,9 +76,6 @@ export const PlansView = () => {
         statistics={statistics}
         canCreatePlan={canCreatePlan}
         isCreatingPlan={isCreatingPlan}
-        planForm={planForm}
-        formErrors={formErrors}
-        onCreatePlan={createPlan}
       />
     ),
     plans: (
@@ -80,36 +84,28 @@ export const PlansView = () => {
         isLoadingPlans={isLoadingPlans}
         formatDate={formatDate}
         getStatusColor={getStatusColor}
-        getTypeLabel={(type: string) => getTypeLabel(type as PlanType)}
-        onEditPlan={(_plan: Plan) => {
-          // TODO: Implement plan editing logic
+        projects={projects}
+        pagination={pagination}
+        onViewPlan={(planId) => {
+          router.push(`/plans/${planId}`);
         }}
-        onDeletePlan={deletePlan}
-        onDuplicatePlan={duplicatePlan}
-        onManageGQM={(plan: Plan) => {
-          setSelectedPlanForGQM(plan.id);
-          setActiveTab("gqm");
+        onDeletePlan={async (planId) => {
+          if (confirm('Are you sure you want to delete this plan?')) {
+            try {
+              await deletePlan(planId);
+            } catch (error) {
+              // Error is already handled by the hook
+              console.error('Failed to delete plan:', error);
+            }
+          }
         }}
-      />
-    ),
-    templates: (
-      <TemplatesTab
-        templates={templates}
-        canCreatePlan={canCreatePlan}
-        onApplyTemplate={applyTemplate}
-      />
-    ),
-    gqm: (
-      <GQMTab
-        plans={plans}
-        selectedPlanId={selectedPlanForGQM}
-        gqmData={getGQMDataForPlan(selectedPlanForGQM)}
-        onSelectPlan={setSelectedPlanForGQM}
-        onCreateGoal={handleCreateGoal}
-        onCreateQuestion={handleCreateQuestion}
-        onCreateMetric={handleCreateMetric}
-        onCompleteStep={handleCompleteStep}
-        onSelectionComplete={handleSelectionComplete}
+        onPageChange={(page) => {
+          setCurrentPage(page);
+        }}
+        onPageSizeChange={(pageSize) => {
+          setPageSize(pageSize);
+          setCurrentPage(1); // Reset to first page when changing page size
+        }}
       />
     ),
   };
@@ -163,11 +159,51 @@ export const PlansView = () => {
 
       <OrganizationAlert hasOrganization={hasOrganization} />
 
+      {operationError && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="text-red-400 mr-3">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-red-800">Operation Failed</h3>
+                <p className="text-sm text-red-700 mt-1">{operationError}</p>
+              </div>
+            </div>
+            <button
+              onClick={clearError}
+              className="text-red-400 hover:text-red-600 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
       <PlansTabs
         activeTab={activeTab}
         onTabChange={setActiveTab}
         hasOrganization={hasOrganization}
       />
+
+      {activeTab === "plans" && hasOrganization && (
+        <PlansFilters
+          searchQuery={searchQuery}
+          statusFilter={statusFilter}
+          projectFilter={projectFilter}
+          projects={projects?.map(p => ({ id: p._id, name: p.name })) || []}
+          onSearchChange={handleSearchChange}
+          onStatusChange={handleStatusChange}
+          onProjectChange={handleProjectChange}
+          onClearFilters={handleClearFilters}
+          isLoading={isLoadingPlans}
+        />
+      )}
 
       {componentMap[activeTab]}
     </div>

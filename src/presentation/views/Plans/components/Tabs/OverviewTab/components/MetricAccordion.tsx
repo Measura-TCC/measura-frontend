@@ -4,7 +4,7 @@ import {
   Button,
 } from "@/presentation/components/primitives";
 import { PlusIcon } from "@/presentation/assets/icons";
-import type { Metric, Measurement } from "@/core/types/plans";
+import type { Metric, Measurement } from "../utils/types";
 import { CustomMeasurementModal } from "./CustomMeasurementModal";
 
 interface MetricAccordionProps {
@@ -84,7 +84,7 @@ export const MetricAccordion: React.FC<MetricAccordionProps> = ({
                 <div className="bg-gray-50 rounded-lg p-3 space-y-2 text-sm">
                   <div>
                     <span className="font-medium">{t("metric.metricDescription")}:</span>{" "}
-                    {t(metric.metricDescription)}
+                    {metric.metricDescription ? t(metric.metricDescription) : "No description available"}
                   </div>
                   <div>
                     <span className="font-medium">{t("metric.metricFormula")}:</span>{" "}
@@ -92,16 +92,16 @@ export const MetricAccordion: React.FC<MetricAccordionProps> = ({
                   </div>
                   <div>
                     <span className="font-medium">{t("metric.metricControlRange")}:</span>{" "}
-                    [{metric.metricControlRange[0]}, {metric.metricControlRange[1]}]
+                    [{metric.metricControlRange?.[0] ?? 0}, {metric.metricControlRange?.[1] ?? 100}]
                   </div>
                   <div>
                     <span className="font-medium">{t("metric.analysisProcedure")}:</span>{" "}
-                    {t(metric.analysisProcedure)}
+                    {metric.analysisProcedure ? t(metric.analysisProcedure) : '-'}
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <span className="font-medium">{t("metric.analysisFrequency")}:</span>{" "}
-                      {t(metric.analysisFrequency)}
+                      {metric.analysisFrequency ? t(metric.analysisFrequency) : '-'}
                     </div>
                     <div>
                       <span className="font-medium">{t("metric.analysisResponsible")}:</span>{" "}

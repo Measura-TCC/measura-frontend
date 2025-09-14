@@ -4,7 +4,7 @@ import {
   Button,
   Input,
 } from "@/presentation/components/primitives";
-import type { Measurement } from "@/core/types/plans";
+import type { Measurement } from "../utils/types";
 import { availableMeasurements } from "../utils/stepData";
 
 interface CustomMeasurementModalProps {

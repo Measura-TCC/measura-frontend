@@ -18,7 +18,7 @@ interface MeasurementPlanFormData {
 interface Step1Props {
   measurementPlanForm: MeasurementPlanFormData;
   setMeasurementPlanForm: React.Dispatch<React.SetStateAction<MeasurementPlanFormData>>;
-  formErrors: Record<string, { message?: string }>;
+  formErrors?: Record<string, { message?: string }>;
   canCreatePlan: boolean;
   onNext: () => void;
 }
@@ -43,11 +43,30 @@ export const Step1: React.FC<Step1Props> = ({
           {t("workflow.steps.step1.description")}
         </p>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-4">
           <div className="space-y-2">
             <label className="text-sm font-medium text-default">
-              {t("forms.associatedProject")}
+              {t("forms.planName")}
             </label>
+            <Input
+              value={measurementPlanForm.planName}
+              onChange={(e) => setMeasurementPlanForm((prev: MeasurementPlanFormData) => ({...prev, planName: e.target.value}))}
+              placeholder={t("forms.planNamePlaceholder")}
+              disabled={!canCreatePlan}
+              maxLength={255}
+            />
+            {formErrors?.planName && (
+              <p className="text-sm text-red-600">
+                {formErrors?.planName?.message}
+              </p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-default">
+                {t("forms.associatedProject")}
+              </label>
             <select
               value={measurementPlanForm.associatedProject}
               onChange={(e) => setMeasurementPlanForm((prev: MeasurementPlanFormData) => ({...prev, associatedProject: e.target.value}))}
@@ -61,9 +80,9 @@ export const Step1: React.FC<Step1Props> = ({
                 </option>
               ))}
             </select>
-            {formErrors.associatedProject && (
+            {formErrors?.associatedProject && (
               <p className="text-sm text-red-600">
-                {formErrors.associatedProject.message}
+                {formErrors?.associatedProject?.message}
               </p>
             )}
           </div>
@@ -77,11 +96,12 @@ export const Step1: React.FC<Step1Props> = ({
               placeholder={t("forms.planResponsiblePlaceholder")}
               disabled={!canCreatePlan}
             />
-            {formErrors.planResponsible && (
+            {formErrors?.planResponsible && (
               <p className="text-sm text-red-600">
-                {formErrors.planResponsible.message}
+                {formErrors?.planResponsible?.message}
               </p>
             )}
+            </div>
           </div>
         </div>
 
@@ -90,8 +110,9 @@ export const Step1: React.FC<Step1Props> = ({
           onClick={onNext}
           disabled={
             !canCreatePlan ||
+            !measurementPlanForm.planName?.trim() ||
             !measurementPlanForm.associatedProject ||
-            !measurementPlanForm.planResponsible
+            !measurementPlanForm.planResponsible?.trim()
           }
           variant="primary"
           className="w-full md:w-auto"

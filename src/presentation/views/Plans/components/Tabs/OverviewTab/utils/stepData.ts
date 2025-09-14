@@ -3,7 +3,7 @@ import type {
   Question,
   Metric,
   Measurement,
-} from "@/core/types/plans";
+} from "./types";
 
 export const availableObjectives: Objective[] = [
   { objectiveTitle: "objectives.increaseFunctionalValueCadence", questions: [] }, // HPF

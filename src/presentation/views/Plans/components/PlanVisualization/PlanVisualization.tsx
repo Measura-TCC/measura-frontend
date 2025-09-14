@@ -44,8 +44,8 @@ export const PlanVisualization: React.FC<PlanVisualizationProps> = ({
       ? externalCurrentPage
       : internalCurrentPage;
 
-  // If using external pagination, show 1 objective per page, otherwise 2
-  const objectivesPerPage = externalCurrentPage !== undefined ? 1 : 2;
+  // Always show 1 objective per page for better visualization
+  const objectivesPerPage = 1;
   const totalPages = Math.ceil(plan.objectives.length / objectivesPerPage);
 
   const getPageData = (pageIndex: number): PlanPage => {
@@ -246,35 +246,38 @@ export const PlanVisualization: React.FC<PlanVisualizationProps> = ({
                                   key={`${measurement.measurementAcronym}-${measurementIndex}`}
                                   className="ml-4 space-y-1 mb-4 last:mb-0"
                                 >
+                                  <div className="font-medium text-gray-900">
+                                    {t("types.measurement")} {measurementIndex + 1}
+                                  </div>
                                   <div>
                                     <strong>
                                       {t("measurement.measurementProperties")}:
                                     </strong>{" "}
-                                    {t(measurement.measurementProperties)}
+                                    {measurement.measurementProperties}
                                   </div>
                                   <div>
                                     <strong>
                                       {t("measurement.measurementUnit")}:
                                     </strong>{" "}
-                                    {t(measurement.measurementUnit)}
+                                    {measurement.measurementUnit}
                                   </div>
                                   <div>
                                     <strong>
                                       {t("measurement.measurementScale")}:
                                     </strong>{" "}
-                                    {t(measurement.measurementScale)}
+                                    {measurement.measurementScale}
                                   </div>
                                   <div>
                                     <strong>
                                       {t("measurement.measurementProcedure")}:
                                     </strong>{" "}
-                                    {t(measurement.measurementProcedure)}
+                                    {measurement.measurementProcedure}
                                   </div>
                                   <div>
                                     <strong>
                                       {t("measurement.measurementFrequency")}:
                                     </strong>{" "}
-                                    {t(measurement.measurementFrequency)}
+                                    {measurement.measurementFrequency}
                                   </div>
                                   {measurement.measurementResponsible && (
                                     <div>
@@ -284,7 +287,7 @@ export const PlanVisualization: React.FC<PlanVisualizationProps> = ({
                                         )}
                                         :
                                       </strong>{" "}
-                                      {t(measurement.measurementResponsible)}
+                                      {measurement.measurementResponsible}
                                     </div>
                                   )}
                                 </div>

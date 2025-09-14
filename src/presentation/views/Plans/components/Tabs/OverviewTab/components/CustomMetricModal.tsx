@@ -4,7 +4,7 @@ import {
   Button,
   Input,
 } from "@/presentation/components/primitives";
-import type { Metric } from "@/core/types/plans";
+import type { Metric } from "../utils/types";
 import { availableMetrics } from "../utils/stepData";
 
 interface CustomMetricModalProps {
@@ -127,7 +127,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                     </span>
                   </div>
                   <p className="text-sm text-secondary mb-2">
-                    {t(metric.metricDescription)}
+                    {metric.metricDescription ? t(metric.metricDescription) : "No description available"}
                   </p>
                   <div className="text-xs text-gray-500">
                     <span className="font-medium">{t("metric.metricFormula")}:</span>{" "}
@@ -221,13 +221,13 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                 </label>
                 <Input
                   type="number"
-                  value={customMetric.metricControlRange[0]}
+                  value={customMetric.metricControlRange?.[0] ?? 0}
                   onChange={(e) =>
                     setCustomMetric((prev) => ({
                       ...prev,
                       metricControlRange: [
                         Number(e.target.value),
-                        prev.metricControlRange[1],
+                        prev.metricControlRange?.[1] ?? 100,
                       ],
                     }))
                   }
@@ -240,12 +240,12 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                 </label>
                 <Input
                   type="number"
-                  value={customMetric.metricControlRange[1]}
+                  value={customMetric.metricControlRange?.[1] ?? 100}
                   onChange={(e) =>
                     setCustomMetric((prev) => ({
                       ...prev,
                       metricControlRange: [
-                        prev.metricControlRange[0],
+                        prev.metricControlRange?.[0] ?? 0,
                         Number(e.target.value),
                       ],
                     }))
@@ -317,9 +317,9 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                 onClick={handleCreateCustomMetric}
                 disabled={
                   !customMetric.metricName.trim() ||
-                  !customMetric.metricDescription.trim() ||
-                  !customMetric.metricMnemonic.trim() ||
-                  !customMetric.metricFormula.trim()
+                  !customMetric.metricDescription?.trim() ||
+                  !customMetric.metricMnemonic?.trim() ||
+                  !customMetric.metricFormula?.trim()
                 }
               >
                 {t("modals.customMetric.create")}

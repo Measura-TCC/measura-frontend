@@ -8,7 +8,7 @@ import {
   Button,
 } from "@/presentation/components/primitives";
 import { availableQuestions } from "../utils/stepData";
-import type { Objective, Question, Metric } from "@/core/types/plans";
+import type { Objective, Question, Metric } from "../utils/types";
 import { CustomMetricModal } from "../components/CustomMetricModal";
 import { CustomQuestionModal } from "../components/CustomQuestionModal";
 

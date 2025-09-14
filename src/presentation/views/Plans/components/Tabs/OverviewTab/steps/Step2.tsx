@@ -7,7 +7,7 @@ import {
   Button,
 } from "@/presentation/components/primitives";
 import { availableObjectives } from "../utils/stepData";
-import type { Objective } from "@/core/types/plans";
+import type { Objective } from "../utils/types";
 
 interface Step2Props {
   selectedObjectives: Objective[];

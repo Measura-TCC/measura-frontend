@@ -54,7 +54,7 @@
     "gqm": "GQM"
   },
   "types": {
-    "measurement": "Medição",
+    "measurement": "Medida",
     "quality": "Qualidade",
     "performance": "Performance",
     "estimation": "Estimativa"
@@ -472,9 +472,16 @@
     "error": "Falha ao exportar. Tente novamente."
   },
   "planDetails": {
+    "title": "Detalhes do Plano",
+    "status": "Status",
+    "project": "Projeto",
     "back": "Voltar aos Planos",
     "notFound": "Plano não encontrado",
-    "notFoundDescription": "O plano solicitado não foi encontrado ou você não tem acesso a ele."
+    "notFoundDescription": "O plano solicitado não foi encontrado ou você não tem acesso a ele.",
+    "editingMode": "Modo de edição",
+    "confirmDelete": "Tem certeza que deseja excluir o plano '{{planName}}'?",
+    "planLoadError": "Erro ao carregar o plano",
+    "planNotFound": "Plano não encontrado"
   },
   "measurements": {
     "properties": {
@@ -527,5 +534,50 @@
     "responsible": {
       "productivityTeam": "Equipe de Engenharia de Produtividade"
     }
-  }
+  },
+  "searchPlans": "Buscar Planos",
+  "searchPlansPlaceholder": "Digite o nome do plano...",
+  "search": "Buscar",
+  "filterByStatus": "Filtrar por Status",
+  "filterByProject": "Filtrar por Projeto",
+  "allStatuses": "Todos os Status",
+  "allProjects": "Todos os Projetos",
+  "activeFilters": "Filtros Ativos",
+  "clearFilters": "Limpar Filtros",
+  "project": "Projeto",
+  "unknownProject": "Projeto Desconhecido",
+  "noPlan": "Nenhum Plano",
+  "createFirstPlan": "Crie seu primeiro plano de medição",
+  "view": "Visualizar",
+  "responsible": "Responsável",
+  "created": "Criado",
+  "updated": "Atualizado",
+  "showing": "Mostrando",
+  "of": "de",
+  "plans": "planos",
+  "rowsPerPage": "Linhas por página",
+  "previous": "Anterior",
+  "next": "Próximo",
+  "save": "Salvar",
+  "cancel": "Cancelar",
+  "back": "Voltar",
+  "overallProgress": "Progresso Geral",
+  "planContent": "Conteúdo do Plano",
+  "noPlanContent": "Nenhum Conteúdo no Plano",
+  "startByAddingObjective": "Comece adicionando um objetivo",
+  "addObjective": "Adicionar Objetivo",
+  "addFirstObjective": "Adicionar Primeiro Objetivo",
+  "addQuestion": "Adicionar Questão",
+  "addFirstQuestion": "Adicionar Primeira Questão",
+  "noQuestionsYet": "Nenhuma questão ainda",
+  "addMetric": "Adicionar Métrica",
+  "addFirstMetric": "Adicionar Primeira Métrica",
+  "noMetricsYet": "Nenhuma métrica ainda",
+  "noMeasurementsYet": "Nenhuma medida ainda",
+  "addFirstMeasurement": "Adicionar Primeira Medida",
+  "properties": "Propriedades",
+  "procedure": "Procedimento",
+  "formula": "Fórmula",
+  "controlRange": "Intervalo de Controle",
+  "analysisFreq": "Frequência de Análise"
 }

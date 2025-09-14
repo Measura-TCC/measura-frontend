@@ -9,28 +9,60 @@ import {
 } from "@/presentation/components/primitives";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/presentation/assets/icons";
 import type { Project } from "@/core/schemas/projects";
-import type { MeasurementPlan } from "@/core/types/plans";
-import { PlanVisualization } from "../../../PlanVisualization";
+
+interface MeasurementPlanFormData {
+  planName: string;
+  associatedProject: string;
+  planResponsible: string;
+}
+
+interface Objective {
+  objectiveTitle: string;
+  questions: Question[];
+}
+
+interface Question {
+  questionText: string;
+  metrics: Metric[];
+}
+
+interface Metric {
+  metricName: string;
+  measurements: Measurement[];
+}
+
+interface Measurement {
+  measurementUnit: string;
+}
+
+interface BundledPlanData {
+  planName: string;
+  associatedProject: string;
+  planResponsible: string;
+  objectives: Objective[];
+}
 
 interface Step5Props {
-  measurementPlan: MeasurementPlan;
+  measurementPlanForm: MeasurementPlanFormData;
+  selectedObjectives: Objective[];
   projects: Project[];
   isCreatingPlan: boolean;
-  onFinalize: () => void;
+  onFinalize: (planData: BundledPlanData) => Promise<void>;
+  onBack: () => void;
 }
 
 export const Step5: React.FC<Step5Props> = ({
-  measurementPlan,
+  measurementPlanForm,
+  selectedObjectives,
   projects,
   isCreatingPlan,
   onFinalize,
+  onBack,
 }) => {
   const { t } = useTranslation("plans");
-  const [showDetailedView, setShowDetailedView] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
 
-  // const objectivesPerPage = 1; // Unused variable
-  const totalPages = measurementPlan.objectives.length;
+  const totalPages = selectedObjectives.length;
 
   const goToPreviousPage = () => {
     setCurrentPage((prev) => Math.max(0, prev - 1));
@@ -41,25 +73,36 @@ export const Step5: React.FC<Step5Props> = ({
   };
 
   const getCurrentObjective = () => {
-    return measurementPlan.objectives[currentPage];
+    return selectedObjectives[currentPage];
   };
 
   const getProjectName = () => {
-    const project = projects.find(p => p._id === measurementPlan.associatedProject);
-    return project?.name || measurementPlan.associatedProject;
+    const project = projects.find(p => p._id === measurementPlanForm.associatedProject);
+    return project?.name || measurementPlanForm.associatedProject;
   };
 
-  const totalObjectives = measurementPlan.objectives.length;
-  const totalQuestions = measurementPlan.objectives.reduce(
+  const handleFinalizePlan = async () => {
+    const bundledData: BundledPlanData = {
+      planName: measurementPlanForm.planName,
+      associatedProject: measurementPlanForm.associatedProject,
+      planResponsible: measurementPlanForm.planResponsible,
+      objectives: selectedObjectives,
+    };
+
+    await onFinalize(bundledData);
+  };
+
+  const totalObjectives = selectedObjectives.length;
+  const totalQuestions = selectedObjectives.reduce(
     (sum, obj) => sum + obj.questions.length,
     0
   );
-  const totalMetrics = measurementPlan.objectives.reduce(
+  const totalMetrics = selectedObjectives.reduce(
     (sum, obj) =>
       sum + obj.questions.reduce((qSum, q) => qSum + q.metrics.length, 0),
     0
   );
-  const totalMeasurements = measurementPlan.objectives.reduce(
+  const totalMeasurements = selectedObjectives.reduce(
     (sum, obj) =>
       sum +
       obj.questions.reduce(
@@ -89,7 +132,7 @@ export const Step5: React.FC<Step5Props> = ({
             </div>
             <div>
               <strong>{t("measurementPlan.planResponsible")}:</strong>{" "}
-              {measurementPlan.planResponsible}
+              {measurementPlanForm.planResponsible}
             </div>
           </div>
 
@@ -100,10 +143,7 @@ export const Step5: React.FC<Step5Props> = ({
               </h4>
               {totalPages > 1 && (
                 <span className="text-sm text-gray-600">
-                  {t("planVisualization.pageOf", {
-                    current: currentPage + 1,
-                    total: totalPages,
-                  })}
+                  {currentPage + 1} / {totalPages}
                 </span>
               )}
             </div>
@@ -115,7 +155,7 @@ export const Step5: React.FC<Step5Props> = ({
                     G{currentPage + 1}
                   </span>
                   <strong>{t("workflow.objective")}:</strong>{" "}
-                  {t(getCurrentObjective().objectiveTitle)}
+                  {getCurrentObjective().objectiveTitle}
                 </div>
 
                 {getCurrentObjective().questions.length > 0 && (
@@ -127,7 +167,7 @@ export const Step5: React.FC<Step5Props> = ({
                             Q{qIndex + 1}
                           </span>
                           <strong>{t("workflow.question")}:</strong>{" "}
-                          {t(question.questionText)}
+                          {question.questionText}
                         </div>
 
                         {question.metrics.length > 0 && (
@@ -142,10 +182,13 @@ export const Step5: React.FC<Step5Props> = ({
                                 </span>
                                 <strong>{t("workflow.metric")}:</strong>{" "}
                                 <span className="font-medium">
-                                  {t(metric.metricName)}
-                                </span>{" "}
-                                ({t(metric.measurements[0]?.measurementUnit) || ""}
-                                )
+                                  {metric.metricName}
+                                </span>
+                                {metric.measurements[0] && (
+                                  <span className="text-gray-600">
+                                    {" "}({metric.measurements[0].measurementUnit})
+                                  </span>
+                                )}
                               </div>
                             ))}
                           </div>
@@ -217,39 +260,33 @@ export const Step5: React.FC<Step5Props> = ({
             </div>
           </div>
 
-          <div className="mt-4 flex justify-center">
-            <Button
-              onClick={() => setShowDetailedView(!showDetailedView)}
-              variant="ghost"
-              className="text-primary hover:text-primary/80"
-            >
-              {showDetailedView
-                ? t("workflow.hideDetails")
-                : t("workflow.showDetails")}
-            </Button>
-          </div>
-
-          {showDetailedView && (
-            <div className="mt-6 border-t border-gray-200 pt-6">
-              <PlanVisualization
-                plan={measurementPlan}
-                projects={projects}
-                showNavigation={false}
-                externalCurrentPage={currentPage}
-                onExternalPageChange={setCurrentPage}
-              />
+          {selectedObjectives.length === 0 && (
+            <div className="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+              <p className="text-yellow-800 text-sm">
+                {t("workflow.noDataWarning")}
+              </p>
             </div>
           )}
         </div>
 
-        <Button
-          onClick={onFinalize}
-          disabled={isCreatingPlan}
-          className="w-full"
-          variant="primary"
-        >
-          {isCreatingPlan ? t("workflow.creating") : t("workflow.finalizePlan")}
-        </Button>
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="secondary"
+            onClick={onBack}
+            disabled={isCreatingPlan}
+          >
+            {t("workflow.back")}
+          </Button>
+
+          <Button
+            onClick={handleFinalizePlan}
+            disabled={isCreatingPlan || selectedObjectives.length === 0}
+            className="flex-1"
+            variant="primary"
+          >
+            {isCreatingPlan ? t("workflow.creating") : t("workflow.finalizePlan")}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

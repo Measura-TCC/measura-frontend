@@ -4,7 +4,7 @@ import {
   Button,
   Input,
 } from "@/presentation/components/primitives";
-import type { Question } from "@/core/types/plans";
+import type { Question } from "../utils/types";
 import { availableQuestions } from "../utils/stepData";
 
 interface CustomQuestionModalProps {

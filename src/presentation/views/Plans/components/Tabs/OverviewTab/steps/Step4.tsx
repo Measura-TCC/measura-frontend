@@ -8,7 +8,7 @@ import {
   Button,
 } from "@/presentation/components/primitives";
 import { availableMetrics } from "../utils/stepData";
-import type { Objective, Metric } from "@/core/types/plans";
+import type { Objective, Metric } from "../utils/types";
 import { CustomMetricModal } from "../components/CustomMetricModal";
 import { MetricAccordion } from "../components/MetricAccordion";
 
