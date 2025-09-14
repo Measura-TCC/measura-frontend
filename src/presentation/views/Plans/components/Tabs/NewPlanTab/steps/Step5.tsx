@@ -7,8 +7,10 @@ import {
   CardTitle,
   Button,
 } from "@/presentation/components/primitives";
-import { ArrowLeftIcon, ArrowRightIcon } from "@/presentation/assets/icons";
+import { ArrowLeftIcon, ArrowRightIcon, EyeIcon } from "@/presentation/assets/icons";
 import type { Project } from "@/core/schemas/projects";
+import { PlanVisualization } from "../../../PlanVisualization";
+import type { MeasurementPlan } from "@/core/types/plans";
 
 interface MeasurementPlanFormData {
   planName: string;
@@ -61,6 +63,7 @@ export const Step5: React.FC<Step5Props> = ({
 }) => {
   const { t } = useTranslation("plans");
   const [currentPage, setCurrentPage] = useState(0);
+  const [showDetailed, setShowDetailed] = useState(false);
 
   const totalPages = selectedObjectives.length;
 
@@ -79,6 +82,41 @@ export const Step5: React.FC<Step5Props> = ({
   const getProjectName = () => {
     const project = projects.find(p => p._id === measurementPlanForm.associatedProject);
     return project?.name || measurementPlanForm.associatedProject;
+  };
+
+  // Convert data to MeasurementPlan format for PlanVisualization
+  const convertToPlanFormat = (): MeasurementPlan => {
+    return {
+      planName: measurementPlanForm.planName,
+      associatedProject: measurementPlanForm.associatedProject,
+      planResponsible: measurementPlanForm.planResponsible,
+      objectives: selectedObjectives.map((objective) => ({
+        objectiveTitle: objective.objectiveTitle,
+        questions: objective.questions.map((question) => ({
+          questionText: question.questionText,
+          metrics: question.metrics.map((metric, mIndex) => ({
+            metricName: metric.metricName,
+            metricDescription: `Description for ${metric.metricName}`,
+            metricMnemonic: `M${mIndex + 1}`,
+            metricFormula: metric.metricName,
+            metricControlRange: [0, 100] as [number, number],
+            analysisProcedure: `Analysis procedure for ${metric.metricName}`,
+            analysisFrequency: "Monthly",
+            analysisResponsible: measurementPlanForm.planResponsible,
+            measurements: metric.measurements.map((measurement, measIndex) => ({
+              measurementEntity: `Entity ${measIndex + 1}`,
+              measurementAcronym: `M${measIndex + 1}`,
+              measurementProperties: `Properties for ${metric.metricName}`,
+              measurementUnit: measurement.measurementUnit,
+              measurementScale: "continuous",
+              measurementProcedure: `Procedure for ${metric.metricName}`,
+              measurementFrequency: "Daily",
+              measurementResponsible: measurementPlanForm.planResponsible,
+            }))
+          }))
+        }))
+      })),
+    };
   };
 
   const handleFinalizePlan = async () => {
@@ -124,19 +162,36 @@ export const Step5: React.FC<Step5Props> = ({
         </p>
 
         <div className="bg-gray-50 rounded-lg p-4">
-          <h4 className="font-medium mb-4">{t("workflow.planSummary")}</h4>
-          <div className="space-y-2 text-sm mb-4">
-            <div>
-              <strong>{t("measurementPlan.associatedProject")}:</strong>{" "}
-              {getProjectName()}
-            </div>
-            <div>
-              <strong>{t("measurementPlan.planResponsible")}:</strong>{" "}
-              {measurementPlanForm.planResponsible}
-            </div>
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="font-medium">{t("workflow.planSummary")}</h4>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setShowDetailed(!showDetailed)}
+              className="flex items-center gap-2"
+            >
+              <EyeIcon className="w-4 h-4" />
+              {showDetailed ? "Ver Resumo" : "Visualizar Detalhes"}
+            </Button>
           </div>
+          {!showDetailed ? (
+            <>
+              <div className="space-y-2 text-sm mb-4">
+                <div>
+                  <strong>{t("measurementPlan.planName")}:</strong>{" "}
+                  {measurementPlanForm.planName}
+                </div>
+                <div>
+                  <strong>{t("measurementPlan.associatedProject")}:</strong>{" "}
+                  {getProjectName()}
+                </div>
+                <div>
+                  <strong>{t("measurementPlan.planResponsible")}:</strong>{" "}
+                  {measurementPlanForm.planResponsible}
+                </div>
+              </div>
 
-          <div className="space-y-4">
+              <div className="space-y-4">
             <div className="flex justify-between items-center">
               <h4 className="font-medium text-primary">
                 {t("workflow.gqmStructure")}
@@ -155,7 +210,7 @@ export const Step5: React.FC<Step5Props> = ({
                     G{currentPage + 1}
                   </span>
                   <strong>{t("workflow.objective")}:</strong>{" "}
-                  {getCurrentObjective().objectiveTitle}
+                  {t(getCurrentObjective().objectiveTitle)}
                 </div>
 
                 {getCurrentObjective().questions.length > 0 && (
@@ -167,7 +222,7 @@ export const Step5: React.FC<Step5Props> = ({
                             Q{qIndex + 1}
                           </span>
                           <strong>{t("workflow.question")}:</strong>{" "}
-                          {question.questionText}
+                          {t(question.questionText)}
                         </div>
 
                         {question.metrics.length > 0 && (
@@ -182,11 +237,11 @@ export const Step5: React.FC<Step5Props> = ({
                                 </span>
                                 <strong>{t("workflow.metric")}:</strong>{" "}
                                 <span className="font-medium">
-                                  {metric.metricName}
+                                  {t(metric.metricName)}
                                 </span>
                                 {metric.measurements[0] && (
                                   <span className="text-gray-600">
-                                    {" "}({metric.measurements[0].measurementUnit})
+                                    {" "}({t(metric.measurements[0].measurementUnit)})
                                   </span>
                                 )}
                               </div>
@@ -260,11 +315,21 @@ export const Step5: React.FC<Step5Props> = ({
             </div>
           </div>
 
-          {selectedObjectives.length === 0 && (
-            <div className="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-              <p className="text-yellow-800 text-sm">
-                {t("workflow.noDataWarning")}
-              </p>
+              {selectedObjectives.length === 0 && (
+                <div className="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <p className="text-yellow-800 text-sm">
+                    {t("workflow.noDataWarning")}
+                  </p>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="mt-4">
+              <PlanVisualization
+                plan={convertToPlanFormat()}
+                projects={projects}
+                showNavigation={true}
+              />
             </div>
           )}
         </div>
@@ -275,13 +340,12 @@ export const Step5: React.FC<Step5Props> = ({
             onClick={onBack}
             disabled={isCreatingPlan}
           >
-            {t("workflow.back")}
+            {t("back")}
           </Button>
 
           <Button
             onClick={handleFinalizePlan}
             disabled={isCreatingPlan || selectedObjectives.length === 0}
-            className="flex-1"
             variant="primary"
           >
             {isCreatingPlan ? t("workflow.creating") : t("workflow.finalizePlan")}

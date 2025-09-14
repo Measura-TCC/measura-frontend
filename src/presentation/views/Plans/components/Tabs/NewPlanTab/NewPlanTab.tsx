@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -37,21 +38,24 @@ import { canNavigateToStep } from "./utils/stepValidation";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useMeasurementPlans } from "@/core/hooks/measurementPlans";
 import { translateObjectiveForAPI, validatePlanData } from "./utils/dataTranslation";
+import { useToast } from "@/core/hooks/common";
 
-interface OverviewTabProps {
+interface NewPlanTabProps {
   statistics: PlansStatistics;
   canCreatePlan: boolean;
   isCreatingPlan: boolean;
 }
 
-export const OverviewTab: React.FC<OverviewTabProps> = ({
+export const NewPlanTab: React.FC<NewPlanTabProps> = ({
   statistics,
   canCreatePlan,
   isCreatingPlan,
 }) => {
   const { t } = useTranslation("plans");
+  const router = useRouter();
   const { projects } = useProjects();
   const { createPlan: createMeasurementPlan } = useMeasurementPlans();
+  const toast = useToast();
   const [currentStep, setCurrentStep] = useState<PlanStep>(1);
   const [stepData, setStepData] = useState<StepData>({});
   const [showWorkflow, setShowWorkflow] = useState(false);
@@ -124,10 +128,21 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         objectives: translatedObjectives,
       });
 
+      // Show success toast message
+      toast.success({
+        message: t("planCreatedSuccessfully", { planName: bundledData.planName }),
+        duration: 4000,
+        position: "top-right"
+      });
+
+      // Reset workflow state
       setShowWorkflow(false);
       setCurrentStep(1);
       setStepData({});
       setSelectedObjectives([]);
+
+      // Redirect to Created Plans tab
+      router.push("/plans?tab=createdPlans");
       setMeasurementPlanForm({
         planName: "",
         associatedProject: "",
@@ -165,6 +180,14 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                   type: "measurement",
                 },
               }));
+              // Populate goalForm to satisfy Step 2 validation
+              setGoalForm({
+                purpose: "analyze", // Default purpose
+                issue: "productivity", // Default issue based on measurement focus
+                object: measurementPlanForm.planName || "software project", // Use plan name as object
+                viewpoint: "manager", // Default viewpoint
+                context: measurementPlanForm.associatedProject || "project context", // Use project as context
+              });
               setCurrentStep(2);
             }}
           />
@@ -252,7 +275,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             variant="ghost"
             size="sm"
           >
-            ← {t("workflow.backToOverview")}
+            ← {t("workflow.backToNewPlan")}
           </Button>
         </div>
 

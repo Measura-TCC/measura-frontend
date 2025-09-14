@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
 import { useMeasurementPlans } from "@/core/hooks/measurementPlans";
 import { useProjects } from "@/core/hooks/projects/useProjects";
@@ -10,13 +10,21 @@ import {
   MeasurementPlanStatus,
 } from "@/core/types/plans";
 import { PlansTabs, PlansPageHeader, OrganizationAlert, PlansFilters } from "./components";
-import { OverviewTab, PlansTab } from "./components/Tabs";
+import { NewPlanTab, CreatedPlansTab } from "./components/Tabs";
 
 export const PlansView = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
   const { projects } = useProjects();
-  const [activeTab, setActiveTab] = useState<PlanTab>("overview");
+  const [activeTab, setActiveTab] = useState<PlanTab>("newPlan");
+
+  useEffect(() => {
+    const tabParam = searchParams.get("tab") as PlanTab;
+    if (tabParam && ["newPlan", "createdPlans"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
@@ -71,15 +79,15 @@ export const PlansView = () => {
 
 
   const componentMap = {
-    overview: (
-      <OverviewTab
+    newPlan: (
+      <NewPlanTab
         statistics={statistics}
         canCreatePlan={canCreatePlan}
         isCreatingPlan={isCreatingPlan}
       />
     ),
-    plans: (
-      <PlansTab
+    createdPlans: (
+      <CreatedPlansTab
         plans={plans}
         isLoadingPlans={isLoadingPlans}
         formatDate={formatDate}
@@ -88,16 +96,6 @@ export const PlansView = () => {
         pagination={pagination}
         onViewPlan={(planId) => {
           router.push(`/plans/${planId}`);
-        }}
-        onDeletePlan={async (planId) => {
-          if (confirm('Are you sure you want to delete this plan?')) {
-            try {
-              await deletePlan(planId);
-            } catch (error) {
-              // Error is already handled by the hook
-              console.error('Failed to delete plan:', error);
-            }
-          }
         }}
         onPageChange={(page) => {
           setCurrentPage(page);
@@ -191,7 +189,7 @@ export const PlansView = () => {
         hasOrganization={hasOrganization}
       />
 
-      {activeTab === "plans" && hasOrganization && (
+      {activeTab === "createdPlans" && hasOrganization && (
         <PlansFilters
           searchQuery={searchQuery}
           statusFilter={statusFilter}

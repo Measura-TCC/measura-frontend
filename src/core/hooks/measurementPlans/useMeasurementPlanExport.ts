@@ -72,14 +72,19 @@ export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams)
   const downloadFile = useCallback(
     async (downloadUrl: string, filename: string): Promise<void> => {
       try {
+        // Construct the full URL if it's a relative path
+        const fullUrl = downloadUrl.startsWith('http')
+          ? downloadUrl
+          : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}${downloadUrl}`;
+
         const link = document.createElement("a");
-        link.href = downloadUrl;
+        link.href = fullUrl;
         link.download = filename;
         link.target = "_blank";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-      } catch (error) {
+      } catch {
         throw new Error("Failed to download file");
       }
     },

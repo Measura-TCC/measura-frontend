@@ -1,2 +1,2 @@
-export { OverviewTab } from "./OverviewTab/OverviewTab";
-export { PlansTab } from "./PlansTab";
+export { NewPlanTab } from "./NewPlanTab/NewPlanTab";
+export { CreatedPlansTab } from "./CreatedPlansTab/CreatedPlansTab";

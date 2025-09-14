@@ -61,16 +61,16 @@ export const MetricAccordion: React.FC<MetricAccordionProps> = ({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button
+            <div
               onClick={(e) => {
                 e.stopPropagation();
                 onRemoveMetric();
               }}
-              className="text-red-500 hover:text-red-700 text-sm p-1"
+              className="text-red-500 hover:text-red-700 text-sm p-1 cursor-pointer"
               title="Remove metric"
             >
               ×
-            </button>
+            </div>
             <span className="text-gray-500">
               {isOpen ? '▼' : '▶'}
             </span>
@@ -147,13 +147,13 @@ export const MetricAccordion: React.FC<MetricAccordionProps> = ({
                                 {t(measurement.measurementEntity)}
                               </h6>
                             </div>
-                            <button
+                            <div
                               onClick={() => handleRemoveMeasurement(measurementIndex)}
-                              className="text-red-500 hover:text-red-700 text-sm"
+                              className="text-red-500 hover:text-red-700 text-sm cursor-pointer"
                               title="Remove measurement"
                             >
                               ×
-                            </button>
+                            </div>
                           </div>
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-600">

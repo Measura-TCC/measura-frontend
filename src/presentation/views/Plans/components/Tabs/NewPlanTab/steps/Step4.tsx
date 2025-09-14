@@ -129,7 +129,7 @@ export const Step4: React.FC<Step4Props> = ({
                           <div className="space-y-3">
                             {question.metrics.map((metric, mIndex) => (
                               <MetricAccordion
-                                key={metric.metricName}
+                                key={`${objIndex}-${qIndex}-${mIndex}-${metric.metricName}`}
                                 metric={metric}
                                 metricIndex={mIndex}
                                 onUpdateMetric={(updatedMetric) => {

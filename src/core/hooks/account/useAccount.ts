@@ -133,7 +133,7 @@ export const useAccount = (): UseAccountReturn => {
         return;
       }
 
-      const updatedUser = await userService.updateUser({
+      await userService.updateUser({
         id: authUser.id,
         data: cleanUpdateData,
       });

@@ -9,7 +9,7 @@ export enum ExportFormat {
   DOCX = "docx",
 }
 
-export type PlanTab = "overview" | "plans";
+export type PlanTab = "newPlan" | "createdPlans";
 
 export interface Measurement {
   measurementEntity: string;

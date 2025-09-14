@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useRouter } from "next/navigation";
 import { PlanTab } from "@/core/types/plans";
 import { Button } from "@/presentation/components/primitives/Button/Button";
 
@@ -14,16 +15,22 @@ export const PlansTabs: React.FC<PlansTabsProps> = ({
   hasOrganization,
 }) => {
   const { t } = useTranslation("plans");
+  const router = useRouter();
+
+  const handleTabChange = (tab: PlanTab) => {
+    onTabChange(tab);
+    router.push(`/plans?tab=${tab}`, { scroll: false });
+  };
 
   const tabConfig = [
     {
-      id: "overview" as PlanTab,
-      label: t("tabs.overview"),
+      id: "newPlan" as PlanTab,
+      label: t("tabs.newPlan"),
       disabled: false,
     },
     {
-      id: "plans" as PlanTab,
-      label: t("tabs.plans"),
+      id: "createdPlans" as PlanTab,
+      label: t("tabs.createdPlans"),
       disabled: !hasOrganization,
     },
   ];
@@ -34,7 +41,7 @@ export const PlansTabs: React.FC<PlansTabsProps> = ({
         {tabConfig.map(({ id, label, disabled }) => (
           <Button
             key={id}
-            onClick={() => !disabled && onTabChange(id)}
+            onClick={() => !disabled && handleTabChange(id)}
             disabled={disabled}
             variant="ghost"
             size="sm"

@@ -98,7 +98,8 @@ export const PlansFilters: React.FC<PlansFiltersProps> = ({
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder={t("searchPlansPlaceholder")}
-                className="pl-10"
+                className="!pl-10"
+                style={{ paddingLeft: '2.5rem' }}
                 disabled={isLoading}
               />
             </div>
@@ -202,7 +203,7 @@ export const PlansFilters: React.FC<PlansFiltersProps> = ({
 
             {statusFilter && (
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                {t("status")}: {t(`status.${statusFilter}`)}
+                {t("planDetails.status")}: {t(`status.${statusFilter}`)}
                 <button
                   onClick={() => onStatusChange(undefined)}
                   className="ml-1 text-green-600 hover:text-green-800"

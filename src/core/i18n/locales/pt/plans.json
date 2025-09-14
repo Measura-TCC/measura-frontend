@@ -48,8 +48,8 @@
   "organizationRequiredDescription": "Você precisa criar ou ingressar em uma organização para criar planos de medição e gerenciar atividades de planejamento",
   "createOrganization": "Criar Organização",
   "tabs": {
-    "overview": "Visão Geral",
-    "plans": "Planos",
+    "newPlan": "Criar Plano",
+    "createdPlans": "Planos Criados",
     "templates": "Modelos",
     "gqm": "GQM"
   },
@@ -159,7 +159,7 @@
     "nextQuestions": "Próximo: Identificar Questões",
     "nextMetrics": "Próximo: Identificar Métricas",
     "nextVisualization": "Próximo: Visualizar Plano de Medição",
-    "backToOverview": "Voltar ao Resumo",
+    "backToNewPlan": "Voltar ao Criar Plano",
     "startWorkflow": "Iniciar Criação do Plano",
     "finalizePlan": "Finalizar Plano de Medição",
     "creating": "Criando...",
@@ -562,6 +562,7 @@
   "cancel": "Cancelar",
   "back": "Voltar",
   "overallProgress": "Progresso Geral",
+  "planCreatedSuccessfully": "Plano '{{planName}}' criado com sucesso!",
   "planContent": "Conteúdo do Plano",
   "noPlanContent": "Nenhum Conteúdo no Plano",
   "startByAddingObjective": "Comece adicionando um objetivo",

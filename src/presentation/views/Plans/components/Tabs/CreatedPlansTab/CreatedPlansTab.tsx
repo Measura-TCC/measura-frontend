@@ -9,23 +9,18 @@ import {
 } from "@/presentation/components/primitives";
 import {
   DocumentIcon,
-  EyeIcon,
-  GearIcon,
-  TrashIcon,
 } from "@/presentation/assets/icons";
 import {
   MeasurementPlanSummaryDto,
   MeasurementPlanStatus
 } from "@/core/types/plans";
 
-interface PlansTabProps {
+interface CreatedPlansTabProps {
   plans: MeasurementPlanSummaryDto[] | undefined;
   isLoadingPlans: boolean;
   formatDate: (date: Date | string) => string;
   getStatusColor: (status: MeasurementPlanStatus) => string;
   onViewPlan: (planId: string) => void;
-  onEditPlan?: (planId: string) => void;
-  onDeletePlan: (planId: string) => void;
   projects?: Array<{ _id: string; name: string; }>;
   pagination?: {
     page: number;
@@ -37,14 +32,12 @@ interface PlansTabProps {
   onPageSizeChange?: (pageSize: number) => void;
 }
 
-export const PlansTab: React.FC<PlansTabProps> = ({
+export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
   plans,
   isLoadingPlans,
   formatDate,
   getStatusColor,
   onViewPlan,
-  onEditPlan,
-  onDeletePlan,
   projects = [],
   pagination,
   onPageChange,
@@ -90,7 +83,7 @@ export const PlansTab: React.FC<PlansTabProps> = ({
           <p className="text-gray-500 mb-6">
             {t("createFirstPlan")}
           </p>
-          <Button onClick={() => router.push("/plans?tab=overview")}>
+          <Button onClick={() => router.push("/plans?tab=newPlan")}>
             {t("createPlan")}
           </Button>
         </CardContent>
@@ -101,53 +94,26 @@ export const PlansTab: React.FC<PlansTabProps> = ({
   return (
     <div className="space-y-4">
       {plans.map((plan) => (
-        <Card key={plan.id} className="hover:shadow-md transition-shadow">
+        <Card
+          key={plan.id}
+          className="hover:shadow-md transition-shadow cursor-pointer"
+          onClick={() => onViewPlan(plan.id)}
+        >
           <CardHeader>
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <CardTitle className="text-xl mb-2">
-                  {plan.planName}
-                </CardTitle>
-                <div className="flex items-center space-x-4 text-sm text-gray-600">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(plan.status)}`}>
-                    {t(`status.${plan.status}`)}
-                  </span>
-                  <span>
-                    {t("responsible")}: {plan.planResponsible}
-                  </span>
-                  <span>
-                    {t("project")}: {getProjectName(plan.associatedProject)}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onViewPlan(plan.id)}
-                >
-                  <EyeIcon className="h-4 w-4 mr-1" />
-                  {t("view")}
-                </Button>
-                {onEditPlan && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEditPlan(plan.id)}
-                  >
-                    <GearIcon className="h-4 w-4 mr-1" />
-                    {t("edit")}
-                  </Button>
-                )}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onDeletePlan(plan.id)}
-                  className="text-red-600 hover:text-red-700 hover:border-red-300"
-                >
-                  <TrashIcon className="h-4 w-4 mr-1" />
-                  {t("delete")}
-                </Button>
+            <div>
+              <CardTitle className="text-xl mb-2">
+                {plan.planName}
+              </CardTitle>
+              <div className="flex items-center space-x-4 text-sm text-gray-600">
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(plan.status)}`}>
+                  {t(`status.${plan.status}`)}
+                </span>
+                <span>
+                  {t("responsible")}: {plan.planResponsible}
+                </span>
+                <span>
+                  {t("project")}: {getProjectName(plan.associatedProject)}
+                </span>
               </div>
             </div>
           </CardHeader>

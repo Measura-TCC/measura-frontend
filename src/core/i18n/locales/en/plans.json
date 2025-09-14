@@ -48,8 +48,8 @@
   "organizationRequiredDescription": "You need to create or join an organization to create measurement plans and manage planning activities",
   "createOrganization": "Create Organization",
   "tabs": {
-    "overview": "Overview",
-    "plans": "Plans",
+    "newPlan": "Create Plan",
+    "createdPlans": "Created Plans",
     "templates": "Templates",
     "gqm": "GQM"
   },
@@ -131,7 +131,7 @@
     "nextQuestions": "Next: Identify Questions",
     "nextMetrics": "Next: Identify Metrics",
     "nextVisualization": "Next: Visualize Measurement Plan",
-    "backToOverview": "Back to Overview",
+    "backToNewPlan": "Back to Create Plan",
     "startWorkflow": "Start Plan Creation",
     "finalizePlan": "Finalize Measurement Plan",
     "creating": "Creating...",
