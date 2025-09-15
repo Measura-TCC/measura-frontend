@@ -12,7 +12,6 @@ import { PlusIcon, ChartIcon } from "@/presentation/assets/icons";
 import type {
   CreateMeasurementPlanDto,
   PlansStatistics,
-  Objective,
 } from "@/core/types/plans";
 
 import { Step1 } from "./steps/Step1";
@@ -22,8 +21,8 @@ import { Step4 } from "./steps/Step4";
 import { Step5 } from "./steps/Step5";
 import { StepIndicator } from "./components/StepIndicator";
 
-import type { PlanStep, StepData } from "./utils/types";
-import type { GoalForm } from "@/core/types/measurement-plans";
+import type { PlanStep, StepData, Objective } from "./utils/types";
+import type { GoalForm, MeasurementPlanFormData } from "@/core/types/measurement-plans";
 import {
   availableObjectives,
   availableQuestions,
@@ -51,7 +50,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 }) => {
   const { t } = useTranslation("plans");
   const { projects } = useProjects();
-  const [currentStep, setCurrentStep] = useState<PlanStep>(1);
+  const [currentStep, setCurrentStep] = useState<number>(1);
   const [stepData, setStepData] = useState<StepData>({});
   const [showWorkflow, setShowWorkflow] = useState(false);
   const [selectedObjectives, setSelectedObjectives] = useState<Objective[]>([]);
@@ -65,6 +64,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
   const { setValue } = planForm;
 
   const [goalForm, setGoalForm] = useState<GoalForm>({
+    goal: "",
     purpose: "",
     issue: "",
     object: "",
@@ -74,14 +74,12 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
   // setValue("type", "measurement"); // Removed as not needed for MeasurementPlanFormData
 
-  const handleStepClick = (step: PlanStep) => {
+  const handleStepClick = (step: number) => {
     if (
       canNavigateToStep(
+        currentStep,
         step,
-        stepData,
-        selectedObjectives,
-        measurementPlanForm,
-        goalForm
+        stepData
       )
     ) {
       setCurrentStep(step);
@@ -90,12 +88,13 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
   const handleFinalizePlan = async () => {
     await onCreatePlan({
-      name:
-        measurementPlanForm.planName ||
-        `Plan for ${measurementPlanForm.associatedProject}`,
-      owner: measurementPlanForm.planResponsible,
-      description: measurementPlanForm.associatedProject,
-      type: "measurement",
+      planName: measurementPlanForm.planName,
+      associatedProject: measurementPlanForm.associatedProject,
+      planResponsible: measurementPlanForm.planResponsible,
+      objectives: selectedObjectives.map(obj => ({
+        objectiveTitle: obj.objectiveTitle,
+        questions: obj.questions || []
+      }))
     });
     setShowWorkflow(false);
     setCurrentStep(1);
@@ -107,6 +106,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       planResponsible: "",
     });
     setGoalForm({
+      goal: "",
       purpose: "",
       issue: "",
       object: "",
@@ -193,9 +193,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
               planResponsible: measurementPlanForm.planResponsible,
               objectives: selectedObjectives,
             }}
-            projects={projects || []}
-            isCreatingPlan={isCreatingPlan}
-            onFinalize={handleFinalizePlan}
+            onFinish={handleFinalizePlan}
           />
         );
 
@@ -209,16 +207,8 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       <div className="space-y-6">
         <StepIndicator
           currentStep={currentStep}
-          canNavigateToStep={(step: PlanStep) =>
-            canNavigateToStep(
-              step,
-              stepData,
-              selectedObjectives,
-              measurementPlanForm,
-              goalForm
-            )
-          }
-          onStepClick={handleStepClick}
+          totalSteps={5}
+          stepTitles={["Plan", "Objectives", "Questions", "Metrics", "Review"]}
         />
 
         <div className="mt-6">
@@ -296,7 +286,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <div className="flex justify-between items-center">
               <span className="text-secondary">{t("totalGoals")}</span>
               <span className="font-semibold text-default">
-                {statistics.totalGoals}
+                {statistics.totalObjectives}
               </span>
             </div>
             <div className="flex justify-between items-center">

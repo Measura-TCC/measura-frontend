@@ -48,43 +48,45 @@ export const CreateOrganizationForm = ({
   } = useForm<CreateOrganizationData>({
     resolver: zodResolver(createOrganizationSchema),
     defaultValues: {
-      objectives: [{
-        title: ""
-      }]
-    }
+      objectives: [
+        {
+          title: "",
+        },
+      ],
+    },
   });
-
-  console.log("Form errors:", errors);
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "objectives"
+    name: "objectives",
   });
 
   const { createOrganization } = useOrganizationActions();
 
   const onSubmit = async (data: CreateOrganizationData) => {
-    console.log("Form submitted! Raw data:", data);
     setIsSubmitting(true);
     setError(null);
 
     try {
       const transformedData = {
         ...data,
-        objectives: data.objectives?.filter(obj => obj.title?.trim()).map(obj => ({
-          title: obj.title.trim(),
-          description: obj.title.trim(),
-          priority: "MEDIUM" as const,
-          status: "PLANNING" as const,
-          progress: 0,
-          targetDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
-        })),
-        strategicObjectives: undefined
+        objectives: data.objectives
+          ?.filter((obj) => obj.title?.trim())
+          .map((obj) => ({
+            title: obj.title.trim(),
+            description: obj.title.trim(),
+            priority: "MEDIUM" as const,
+            status: "PLANNING" as const,
+            progress: 0,
+            targetDate: new Date(
+              Date.now() + 365 * 24 * 60 * 60 * 1000
+            ).toISOString(),
+          })),
+        strategicObjectives: undefined,
       };
 
-      console.log("Sending organization data:", transformedData);
       const result = await createOrganization(transformedData);
-      console.log("Organization created successfully:", result);
+
       reset();
       onSuccess?.(result as Organization);
     } catch (err) {
@@ -225,16 +227,18 @@ export const CreateOrganizationForm = ({
           type="button"
           variant="secondary"
           size="sm"
-          onClick={() => append({
-            title: ""
-          })}
+          onClick={() =>
+            append({
+              title: "",
+            })
+          }
         >
           {t("form.addObjectiveButton")}
         </Button>
         {errors.objectives && (
           <p className="mt-1 text-sm text-red-600">
             {Array.isArray(errors.objectives)
-              ? errors.objectives.find(obj => obj?.title)?.title?.message
+              ? errors.objectives.find((obj) => obj?.title)?.title?.message
               : errors.objectives.message}
           </p>
         )}

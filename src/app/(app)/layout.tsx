@@ -16,7 +16,6 @@ const AppLayout = ({ children }: AppLayoutProps) => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (!isAuthenticated) {
-        console.log("User not authenticated, redirecting to login");
         router.push("/login");
       }
     }, 100);

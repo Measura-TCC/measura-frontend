@@ -150,8 +150,6 @@ export const useAccount = (): UseAccountReturn => {
 
     setIsUpdatingPassword(true);
     try {
-      console.log("Password update not implemented yet", data);
-
       resetPasswordForm();
     } catch (error) {
       console.error("Error updating password:", error);
@@ -161,9 +159,7 @@ export const useAccount = (): UseAccountReturn => {
     }
   };
 
-  const refreshData = async (): Promise<void> => {
-    console.log("Refreshing account data");
-  };
+  const refreshData = async (): Promise<void> => {};
 
   const formatDate = (date: Date | string): string => {
     const locale = i18n.language === "pt" ? "pt-BR" : "en-US";

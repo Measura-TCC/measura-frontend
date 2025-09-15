@@ -1,12 +1,12 @@
-import { useCallback } from 'react';
-import { useOrganizationStore } from './useOrganizationStore';
-import { organizationService } from '@/core/services/organizationService';
-import type { Organization } from './useOrganizationStore';
+import { useCallback } from "react";
+import { useOrganizationStore } from "./useOrganizationStore";
+import { organizationService } from "@/core/services/organizationService";
+import type { Organization } from "./useOrganizationStore";
 
 export class OrganizationAccessError extends Error {
-  constructor(message = 'Organization access required') {
+  constructor(message = "Organization access required") {
     super(message);
-    this.name = 'OrganizationAccessError';
+    this.name = "OrganizationAccessError";
   }
 }
 
@@ -42,38 +42,36 @@ export const useOrganization = () => {
 
       // Clear any cached demo organization ID
       if (store.activeOrganizationId === "demo-organization-id") {
-        console.log("Clearing demo organization ID from cache");
         store.forceClearCache();
       }
 
       const userOrganization = await organizationService.getUserOrganization();
-      console.log("loadUserOrganizations - fetched userOrganization:", userOrganization);
 
       // For now, we assume a user belongs to one organization
       // This can be extended to support multiple organizations later
-      const organizations = userOrganization ? [{
-        id: userOrganization._id,
-        name: userOrganization.name,
-        description: userOrganization.description,
-        createdAt: userOrganization.createdAt,
-        updatedAt: userOrganization.updatedAt
-      }] : [];
-
-      console.log("loadUserOrganizations - processed organizations:", organizations);
+      const organizations = userOrganization
+        ? [
+            {
+              id: userOrganization._id,
+              name: userOrganization.name,
+              description: userOrganization.description,
+              createdAt: userOrganization.createdAt,
+              updatedAt: userOrganization.updatedAt,
+            },
+          ]
+        : [];
 
       store.setUserOrganizations(organizations);
 
       // Auto-set the active organization if there's exactly one
       if (organizations.length === 1) {
-        console.log("loadUserOrganizations - setting active organization:", organizations[0].id);
         store.setActiveOrganization(organizations[0].id);
-      } else {
-        console.log("loadUserOrganizations - not setting active org, organizations.length:", organizations.length);
       }
 
       return organizations;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to load organizations';
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to load organizations";
       store.setError(errorMessage);
       throw error;
     } finally {
@@ -81,15 +79,22 @@ export const useOrganization = () => {
     }
   }, [store]);
 
-  const selectOrganization = useCallback((organizationId: string | null) => {
-    if (organizationId) {
-      const organization = store.userOrganizations.find(org => org.id === organizationId);
-      if (!organization) {
-        throw new Error(`Organization with ID ${organizationId} not found in user organizations`);
+  const selectOrganization = useCallback(
+    (organizationId: string | null) => {
+      if (organizationId) {
+        const organization = store.userOrganizations.find(
+          (org) => org.id === organizationId
+        );
+        if (!organization) {
+          throw new Error(
+            `Organization with ID ${organizationId} not found in user organizations`
+          );
+        }
       }
-    }
-    store.setActiveOrganization(organizationId);
-  }, [store.userOrganizations, store.setActiveOrganization]);
+      store.setActiveOrganization(organizationId);
+    },
+    [store.userOrganizations, store.setActiveOrganization]
+  );
 
   const clearOrganizations = useCallback(() => {
     store.clearOrganization();

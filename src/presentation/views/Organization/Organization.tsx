@@ -11,10 +11,12 @@ import {
 } from "@/presentation/components/primitives";
 import { BuildingIcon, PlusIcon } from "@/presentation/assets/icons";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { CreateOrganizationForm } from "@/presentation/views/Organization/components/CreateOrganizationForm";
 import { OrganizationWizard } from "@/presentation/views/Organization/components/OrganizationWizard";
 
 export const OrganizationView: React.FC = () => {
   const { t } = useTranslation("organization");
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const [showWizard, setShowWizard] = useState(false);
   const {
     userOrganization,
@@ -28,6 +30,10 @@ export const OrganizationView: React.FC = () => {
   const strategicObjectives =
     userOrganization?.strategicObjectives ?? t("mock.strategicObjectives");
 
+  const handleOrganizationCreated = async () => {
+    setShowCreateForm(false);
+    await mutateUserOrganization();
+  };
   const handleWizardSuccess = async () => {
     setShowWizard(false);
     await mutateUserOrganization();
@@ -266,7 +272,8 @@ export const OrganizationView: React.FC = () => {
           </Card>
         </div>
       ) : (
-        !showWizard && (
+        !showWizard &&
+        !showCreateForm && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -278,6 +285,7 @@ export const OrganizationView: React.FC = () => {
               <p className="text-secondary">{t("noOrganizationMessage")}</p>
               <Button
                 onClick={() => {
+                  setShowCreateForm(true);
                   setShowWizard(true);
                 }}
               >
@@ -289,7 +297,7 @@ export const OrganizationView: React.FC = () => {
         )
       )}
 
-      {showWizard && !userOrganization && (
+      {showCreateForm && !userOrganization && (
         <Card>
           <CardHeader>
             <CardTitle>
@@ -297,11 +305,7 @@ export const OrganizationView: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <OrganizationWizard
-              mode="create"
-              onCancel={() => setShowWizard(false)}
-              onSuccess={handleWizardSuccess}
-            />
+            <CreateOrganizationForm onSuccess={handleOrganizationCreated} />
           </CardContent>
         </Card>
       )}

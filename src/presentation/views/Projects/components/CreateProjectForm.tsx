@@ -26,40 +26,29 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
 
   const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
   const { createProject } = useProjectActions();
-  const { activeOrganizationId, loadUserOrganizations, forceClearCache } = useOrganization();
-  const { objectives: organizationalObjectives, isLoadingObjectives, objectivesError } = useOrganizationalObjectives(activeOrganizationId || undefined);
+  const { activeOrganizationId, loadUserOrganizations, forceClearCache } =
+    useOrganization();
+  const {
+    objectives: organizationalObjectives,
+    isLoadingObjectives,
+    objectivesError,
+  } = useOrganizationalObjectives(activeOrganizationId || undefined);
 
   // Load user organizations on mount to ensure activeOrganizationId is set
   useEffect(() => {
-    console.log("CreateProjectForm organization initialization:", {
-      activeOrganizationId,
-      userOrganizationId: userOrganization?._id
-    });
-
     // Force refresh if we have demo organization ID
     if (activeOrganizationId === "demo-organization-id") {
-      console.log("Found demo organization ID, force clearing cache and reloading...");
       forceClearCache();
       loadUserOrganizations().catch(console.error);
     } else if (!activeOrganizationId) {
-      console.log("No active organization ID, loading organizations...");
       loadUserOrganizations().catch(console.error);
     }
-  }, [activeOrganizationId, loadUserOrganizations, forceClearCache, userOrganization]);
-
-  // Debug organizational objectives
-  useEffect(() => {
-    console.log("Organizational objectives debug:", {
-      activeOrganizationId,
-      userOrganizationId: userOrganization?._id,
-      objectivesType: typeof organizationalObjectives,
-      objectivesIsArray: Array.isArray(organizationalObjectives),
-      objectivesCount: Array.isArray(organizationalObjectives) ? organizationalObjectives.length : 'Not an array',
-      objectives: organizationalObjectives,
-      isLoadingObjectives,
-      objectivesError
-    });
-  }, [activeOrganizationId, userOrganization, organizationalObjectives, isLoadingObjectives, objectivesError]);
+  }, [
+    activeOrganizationId,
+    loadUserOrganizations,
+    forceClearCache,
+    userOrganization,
+  ]);
 
   const {
     register,
@@ -70,13 +59,15 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
   } = useForm<CreateProjectRequest>({
     resolver: zodResolver(createProjectSchema),
     defaultValues: {
-      objectives: [{ title: "", description: "", organizationalObjectiveIds: [] }]
-    }
+      objectives: [
+        { title: "", description: "", organizationalObjectiveIds: [] },
+      ],
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "objectives"
+    name: "objectives",
   });
 
   const onSubmit = async (data: CreateProjectRequest) => {
@@ -103,7 +94,9 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
         startDate: data.startDate,
         endDate: data.endDate,
         teamMembers: teamMembersArray,
-        objectives: data.objectives?.filter(obj => obj.title.trim() && obj.description.trim()),
+        objectives: data.objectives?.filter(
+          (obj) => obj.title.trim() && obj.description.trim()
+        ),
       };
 
       const result = await createProject(projectData);
@@ -278,7 +271,10 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
             {t("createProjectForm.projectObjectives")}
           </label>
           {fields.map((field, index) => (
-            <div key={field.id} className="border border-gray-200 rounded-md p-4 mb-4">
+            <div
+              key={field.id}
+              className="border border-gray-200 rounded-md p-4 mb-4"
+            >
               <div className="grid grid-cols-1 gap-4">
                 <div>
                   <input
@@ -310,7 +306,9 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
                     {t("createProjectForm.linkToOrganizationalObjectives")}
                   </label>
                   <select
-                    {...register(`objectives.${index}.organizationalObjectiveIds`)}
+                    {...register(
+                      `objectives.${index}.organizationalObjectiveIds`
+                    )}
                     multiple
                     className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     size={3}
@@ -320,8 +318,11 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
                       <option disabled>Loading objectives...</option>
                     ) : objectivesError ? (
                       <option disabled>Error loading objectives</option>
-                    ) : !Array.isArray(organizationalObjectives) || organizationalObjectives.length === 0 ? (
-                      <option disabled>No organizational objectives available</option>
+                    ) : !Array.isArray(organizationalObjectives) ||
+                      organizationalObjectives.length === 0 ? (
+                      <option disabled>
+                        No organizational objectives available
+                      </option>
                     ) : (
                       organizationalObjectives.map((orgObj) => (
                         <option key={orgObj._id} value={orgObj._id}>
@@ -351,7 +352,13 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
           ))}
           <Button
             type="button"
-            onClick={() => append({ title: "", description: "", organizationalObjectiveIds: [] })}
+            onClick={() =>
+              append({
+                title: "",
+                description: "",
+                organizationalObjectiveIds: [],
+              })
+            }
             variant="secondary"
             size="sm"
           >

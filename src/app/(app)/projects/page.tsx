@@ -28,30 +28,25 @@ export default function ProjectsPage() {
   const router = useRouter();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
-  const { activeOrganizationId, loadUserOrganizations, forceClearCache } = useOrganization();
+  const { activeOrganizationId, loadUserOrganizations, forceClearCache } =
+    useOrganization();
   const { projects, isLoadingProjects } = useProjects();
-  const { objectives: organizationalObjectives } = useOrganizationalObjectives();
+  const { objectives: organizationalObjectives } =
+    useOrganizationalObjectives();
 
   // Debug organization state
   useEffect(() => {
-    console.log("ProjectsPage - Organization state:", {
-      activeOrganizationId,
-      userOrganizationId: userOrganization?._id,
-      userOrganizationName: userOrganization?.name,
-      isLoadingUserOrganization,
-      projectsCount: projects?.length,
-      isLoadingProjects
-    });
-
     // Force clear cache if demo ID is detected
     if (activeOrganizationId === "demo-organization-id") {
-      console.log("ProjectsPage - Found demo organization ID, clearing cache");
       forceClearCache();
     }
 
     // Directly set the active organization ID if we have userOrganization but no activeOrganizationId
     if (!activeOrganizationId && userOrganization?._id) {
-      console.log("ProjectsPage - Setting active organization ID directly:", userOrganization._id);
+      console.log(
+        "ProjectsPage - Setting active organization ID directly:",
+        userOrganization._id
+      );
       const { setActiveOrganization } = useOrganizationStore.getState();
       setActiveOrganization(userOrganization._id);
     }
@@ -62,7 +57,7 @@ export default function ProjectsPage() {
     projects,
     isLoadingProjects,
     forceClearCache,
-    loadUserOrganizations
+    loadUserOrganizations,
   ]);
 
   const handleProjectCreated = () => {
@@ -247,18 +242,30 @@ export default function ProjectsPage() {
                 </div>
                 {project.objectives && project.objectives.length > 0 && (
                   <div className="border-t border-border pt-3 mt-3">
-                    <h4 className="text-sm font-medium mb-2">Project Objectives:</h4>
+                    <h4 className="text-sm font-medium mb-2">
+                      Project Objectives:
+                    </h4>
                     {project.objectives.slice(0, 2).map((obj) => (
-                      <div key={obj._id} className="text-xs bg-blue-50 p-2 rounded mb-1">
+                      <div
+                        key={obj._id}
+                        className="text-xs bg-blue-50 p-2 rounded mb-1"
+                      >
                         <div className="font-medium">{obj.title}</div>
-                        {obj.organizationalObjectiveIds && obj.organizationalObjectiveIds.length > 0 && (
-                          <div className="text-blue-600 mt-1">
-                            {t("linkedTo")} {obj.organizationalObjectiveIds
-                              .map(id => organizationalObjectives.find(org => org._id === id)?.title)
-                              .filter(Boolean)
-                              .join(", ")}
-                          </div>
-                        )}
+                        {obj.organizationalObjectiveIds &&
+                          obj.organizationalObjectiveIds.length > 0 && (
+                            <div className="text-blue-600 mt-1">
+                              {t("linkedTo")}{" "}
+                              {obj.organizationalObjectiveIds
+                                .map(
+                                  (id) =>
+                                    organizationalObjectives.find(
+                                      (org) => org._id === id
+                                    )?.title
+                                )
+                                .filter(Boolean)
+                                .join(", ")}
+                            </div>
+                          )}
                       </div>
                     ))}
                     {project.objectives.length > 2 && (
