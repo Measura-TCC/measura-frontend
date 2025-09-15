@@ -23,7 +23,7 @@ const componentService = {
   getALIComponents: async (
     estimateId: string
   ): Promise<ComponentResponse[]> => {
-    const response = await measuraApi.get(`/estimates/${estimateId}/ilf`);
+    const response = await measuraApi.get(`/estimates/${estimateId}/components/ilf`);
     return response.data;
   },
 
@@ -31,13 +31,13 @@ const componentService = {
     estimateId: string,
     componentId: string
   ): Promise<void> => {
-    await measuraApi.delete(`/estimates/${estimateId}/ilf/${componentId}`);
+    await measuraApi.delete(`/estimates/${estimateId}/components/ilf/${componentId}`);
   },
 
   getAIEComponents: async (
     estimateId: string
   ): Promise<ComponentResponse[]> => {
-    const response = await measuraApi.get(`/estimates/${estimateId}/eif`);
+    const response = await measuraApi.get(`/estimates/${estimateId}/components/eif`);
     return response.data;
   },
 
@@ -45,11 +45,11 @@ const componentService = {
     estimateId: string,
     componentId: string
   ): Promise<void> => {
-    await measuraApi.delete(`/estimates/${estimateId}/eif/${componentId}`);
+    await measuraApi.delete(`/estimates/${estimateId}/components/eif/${componentId}`);
   },
 
   getEIComponents: async (estimateId: string): Promise<ComponentResponse[]> => {
-    const response = await measuraApi.get(`/estimates/${estimateId}/ei`);
+    const response = await measuraApi.get(`/estimates/${estimateId}/components/ei`);
     return response.data;
   },
 
@@ -57,11 +57,11 @@ const componentService = {
     estimateId: string,
     componentId: string
   ): Promise<void> => {
-    await measuraApi.delete(`/estimates/${estimateId}/ei/${componentId}`);
+    await measuraApi.delete(`/estimates/${estimateId}/components/ei/${componentId}`);
   },
 
   getEOComponents: async (estimateId: string): Promise<ComponentResponse[]> => {
-    const response = await measuraApi.get(`/estimates/${estimateId}/eo`);
+    const response = await measuraApi.get(`/estimates/${estimateId}/components/eo`);
     return response.data;
   },
 
@@ -69,11 +69,11 @@ const componentService = {
     estimateId: string,
     componentId: string
   ): Promise<void> => {
-    await measuraApi.delete(`/estimates/${estimateId}/eo/${componentId}`);
+    await measuraApi.delete(`/estimates/${estimateId}/components/eo/${componentId}`);
   },
 
   getEQComponents: async (estimateId: string): Promise<ComponentResponse[]> => {
-    const response = await measuraApi.get(`/estimates/${estimateId}/eq`);
+    const response = await measuraApi.get(`/estimates/${estimateId}/components/eq`);
     return response.data;
   },
 
@@ -81,12 +81,12 @@ const componentService = {
     estimateId: string,
     componentId: string
   ): Promise<void> => {
-    await measuraApi.delete(`/estimates/${estimateId}/eq/${componentId}`);
+    await measuraApi.delete(`/estimates/${estimateId}/components/eq/${componentId}`);
   },
 };
 
 export const useALIComponents = (estimateId: string) => {
-  const key = estimateId ? `/estimates/${estimateId}/ilf` : null;
+  const key = estimateId ? `/estimates/${estimateId}/components/ilf` : null;
 
   const {
     data,
@@ -104,7 +104,7 @@ export const useALIComponents = (estimateId: string) => {
 };
 
 export const useAIEComponents = (estimateId: string) => {
-  const key = estimateId ? `/estimates/${estimateId}/eif` : null;
+  const key = estimateId ? `/estimates/${estimateId}/components/eif` : null;
 
   const {
     data,
@@ -122,7 +122,7 @@ export const useAIEComponents = (estimateId: string) => {
 };
 
 export const useEIComponents = (estimateId: string) => {
-  const key = estimateId ? `/estimates/${estimateId}/ei` : null;
+  const key = estimateId ? `/estimates/${estimateId}/components/ei` : null;
 
   const {
     data,
@@ -140,7 +140,7 @@ export const useEIComponents = (estimateId: string) => {
 };
 
 export const useEOComponents = (estimateId: string) => {
-  const key = estimateId ? `/estimates/${estimateId}/eo` : null;
+  const key = estimateId ? `/estimates/${estimateId}/components/eo` : null;
 
   const {
     data,
@@ -158,7 +158,7 @@ export const useEOComponents = (estimateId: string) => {
 };
 
 export const useEQComponents = (estimateId: string) => {
-  const key = estimateId ? `/estimates/${estimateId}/eq` : null;
+  const key = estimateId ? `/estimates/${estimateId}/components/eq` : null;
 
   const {
     data,
@@ -182,7 +182,7 @@ export const useComponentActions = () => {
   ) => {
     try {
       await componentService.deleteALIComponent(estimateId, componentId);
-      await mutate(`/estimates/${estimateId}/ilf`);
+      await mutate(`/estimates/${estimateId}/components/ilf`);
       await mutate(`/estimates/${estimateId}`);
     } catch (error) {
       throw error;
@@ -195,7 +195,7 @@ export const useComponentActions = () => {
   ) => {
     try {
       await componentService.deleteAIEComponent(estimateId, componentId);
-      await mutate(`/estimates/${estimateId}/eif`);
+      await mutate(`/estimates/${estimateId}/components/eif`);
       await mutate(`/estimates/${estimateId}`);
     } catch (error) {
       throw error;
@@ -205,7 +205,7 @@ export const useComponentActions = () => {
   const deleteEIComponent = async (estimateId: string, componentId: string) => {
     try {
       await componentService.deleteEIComponent(estimateId, componentId);
-      await mutate(`/estimates/${estimateId}/ei`);
+      await mutate(`/estimates/${estimateId}/components/ei`);
       await mutate(`/estimates/${estimateId}`);
     } catch (error) {
       throw error;
@@ -215,7 +215,7 @@ export const useComponentActions = () => {
   const deleteEOComponent = async (estimateId: string, componentId: string) => {
     try {
       await componentService.deleteEOComponent(estimateId, componentId);
-      await mutate(`/estimates/${estimateId}/eo`);
+      await mutate(`/estimates/${estimateId}/components/eo`);
       await mutate(`/estimates/${estimateId}`);
     } catch (error) {
       throw error;
@@ -225,7 +225,7 @@ export const useComponentActions = () => {
   const deleteEQComponent = async (estimateId: string, componentId: string) => {
     try {
       await componentService.deleteEQComponent(estimateId, componentId);
-      await mutate(`/estimates/${estimateId}/eq`);
+      await mutate(`/estimates/${estimateId}/components/eq`);
       await mutate(`/estimates/${estimateId}`);
     } catch (error) {
       throw error;

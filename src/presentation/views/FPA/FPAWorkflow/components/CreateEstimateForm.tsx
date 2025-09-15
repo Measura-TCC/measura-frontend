@@ -23,17 +23,25 @@ const estimateSchema = z.object({
     "ENHANCEMENT_PROJECT",
     "APPLICATION_PROJECT",
   ]),
+  teamSize: z.number().min(1).max(100),
+  hourlyRateBRL: z.number().min(0.01),
 });
 
 type EstimateFormData = z.infer<typeof estimateSchema>;
 
 interface CreateEstimateFormProps {
   projectId: string;
+  initialData?: {
+    name?: string;
+    description?: string;
+    countType?: string;
+  };
   onSuccess: (estimate: EstimateResponse) => void;
 }
 
 export const CreateEstimateForm = ({
   projectId,
+  initialData,
   onSuccess,
 }: CreateEstimateFormProps) => {
   const { t } = useTranslation("fpa");
@@ -47,8 +55,13 @@ export const CreateEstimateForm = ({
   } = useForm<EstimateFormData>({
     resolver: zodResolver(estimateSchema),
     defaultValues: {
-      description: "Default project description for FPA estimation",
-      countType: "DEVELOPMENT_PROJECT",
+      name: initialData?.name || "",
+      description: initialData?.description || "Default project description for FPA estimation",
+      countType: (initialData?.countType as "DEVELOPMENT_PROJECT" | "ENHANCEMENT_PROJECT" | "APPLICATION_PROJECT") || "DEVELOPMENT_PROJECT",
+      applicationBoundary: "",
+      countingScope: "",
+      teamSize: 1, // Minimum allowed value - will be updated in Step 5
+      hourlyRateBRL: 0.01, // Minimum allowed value - will be updated in Step 5
     },
   });
 
@@ -195,6 +208,10 @@ export const CreateEstimateForm = ({
           </div>
         </div>
       </fieldset>
+
+      {/* Hidden fields for required backend validation - will be updated in Step 5 */}
+      <input type="hidden" {...register("teamSize", { valueAsNumber: true })} />
+      <input type="hidden" {...register("hourlyRateBRL", { valueAsNumber: true })} />
 
       <div className="flex justify-end space-x-3">
         <Button

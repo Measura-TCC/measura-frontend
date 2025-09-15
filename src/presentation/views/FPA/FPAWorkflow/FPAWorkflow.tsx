@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganization } from "@/core/hooks/organizations/useOrganization";
 import { EstimatesDashboard } from "./EstimatesDashboard";
 import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
-import { CreateOrganizationForm } from "../../Organizations/components/CreateOrganizationForm";
+import { CreateOrganizationForm } from "../../Organization/components/CreateOrganizationForm";
 import { CreateEstimateForm } from "./components/CreateEstimateForm";
 import { CreateGSCForm } from "./components/CreateGSCForm";
 import { CreateProjectConfigurationForm } from "./components/CreateProjectConfigurationForm";
@@ -17,7 +18,7 @@ import { CreateEOForm } from "./components/CreateEOForm";
 import { CreateEQForm } from "./components/CreateEQForm";
 import { CreateAIEForm } from "./components/CreateAIEForm";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
-import { OfficeIcon, PlusIcon } from "@/presentation/assets/icons";
+import { OfficeIcon, PlusIcon, DocumentIcon } from "@/presentation/assets/icons";
 import { Button } from "@/presentation/components/primitives/Button/Button";
 import {
   useEstimateActions,
@@ -42,16 +43,10 @@ interface EstimateWithArrays {
 
 export const FPAWorkflow = () => {
   const { t } = useTranslation("fpa");
+  const { requireOrganization } = useOrganization();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("new");
-
-  // Check for tab query parameter on mount
-  useEffect(() => {
-    const tabParam = searchParams.get("tab") as Tab;
-    if (tabParam && ["new", "created"].includes(tabParam)) {
-      setActiveTab(tabParam);
-    }
-  }, [searchParams]);
 
   const {
     state,
@@ -71,6 +66,19 @@ export const FPAWorkflow = () => {
   const { estimate: currentEstimateData, mutateEstimate } = useEstimate({
     id: state.createdEstimate?._id || "",
   });
+
+  useEffect(() => {
+    const tabParam = searchParams.get("tab") as Tab;
+    if (tabParam && ["new", "created"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+
+    const projectParam = searchParams.get("project");
+    if (projectParam) {
+      setSelectedProjectId(projectParam);
+      setActiveTab("new");
+    }
+  }, [searchParams, setSelectedProjectId]);
 
   if (isLoadingUserOrganization) {
     return (
@@ -104,6 +112,32 @@ export const FPAWorkflow = () => {
     );
   }
 
+  if (!isLoadingProjects && userOrganization && (!projects || projects.length === 0)) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="text-center py-12">
+          <div className="text-blue-500 mb-4">
+            <DocumentIcon className="w-12 h-12 mx-auto" />
+          </div>
+          <h3 className="text-lg font-medium text-default mb-2">
+            {t("noProjectsTitle")}
+          </h3>
+          <p className="text-secondary mb-4">
+            {t("noProjectsDescription")}
+          </p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => router.push("/projects")}
+              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+            >
+              {t("goToProjects")}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const handleCancel = () => {
     resetWorkflow();
     setActiveTab("new");
@@ -115,10 +149,12 @@ export const FPAWorkflow = () => {
     setCurrentStep(3);
   };
 
+
   const handleGSCCompleted = async (generalSystemCharacteristics: number[]) => {
     if (!state.createdEstimate) return;
 
     try {
+      requireOrganization();
       await estimateService.updateEstimate({
         id: state.createdEstimate._id,
         data: { generalSystemCharacteristics },
@@ -175,8 +211,8 @@ export const FPAWorkflow = () => {
     return (
       <div className="space-y-8">
         <div className="block md:hidden">
-          <div className="overflow-x-auto pb-4">
-            <div className="flex items-center min-w-max px-4">
+          <div className="px-4">
+            <div className="grid grid-cols-6 gap-1">
               {[
                 {
                   number: 1,
@@ -202,60 +238,47 @@ export const FPAWorkflow = () => {
                   number: 6,
                   name: t("workflow.step6Title").replace("6. ", ""),
                 },
-              ].map((step, index) => (
+              ].map((step) => (
                 <div
                   key={step.number}
-                  className="flex flex-col items-center flex-shrink-0"
+                  className="flex flex-col items-center"
                 >
-                  <div className="flex items-center">
-                    <div
-                      onClick={() => handleStepClick(step.number as Step)}
-                      className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
-                        state.currentStep >= step.number
-                          ? "bg-primary border-primary text-white"
-                          : canNavigateToStep(step.number as Step)
-                          ? "border-primary/50 text-primary/70 bg-primary/10"
-                          : "border-gray-300 text-gray-400 bg-gray-100"
-                      } ${
-                        state.currentStep === step.number
-                          ? "ring-4 ring-primary/20"
-                          : ""
-                      } ${
-                        canNavigateToStep(step.number as Step)
-                          ? "cursor-pointer hover:scale-110 hover:shadow-md"
-                          : "cursor-not-allowed opacity-60"
-                      }`}
-                      title={
-                        !canNavigateToStep(step.number as Step)
-                          ? "Complete a etapa anterior para desbloquear"
-                          : ""
-                      }
-                    >
-                      {step.number}
-                    </div>
-                    {index < 5 && (
-                      <div
-                        className={`w-16 h-0.5 mx-3 ${
-                          state.currentStep > step.number
-                            ? "bg-primary"
-                            : "bg-border"
-                        }`}
-                      />
-                    )}
+                  <div
+                    onClick={() => handleStepClick(step.number as Step)}
+                    className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all mb-1 ${
+                      state.currentStep >= step.number
+                        ? "bg-primary border-primary text-white"
+                        : canNavigateToStep(step.number as Step)
+                        ? "border-primary/50 text-primary/70 bg-primary/10"
+                        : "border-gray-300 text-gray-400 bg-gray-100"
+                    } ${
+                      state.currentStep === step.number
+                        ? "ring-2 ring-primary/20"
+                        : ""
+                    } ${
+                      canNavigateToStep(step.number as Step)
+                        ? "cursor-pointer hover:scale-105 hover:shadow-md"
+                        : "cursor-not-allowed opacity-60"
+                    }`}
+                    title={
+                      !canNavigateToStep(step.number as Step)
+                        ? "Complete a etapa anterior para desbloquear"
+                        : ""
+                    }
+                  >
+                    <span className="text-xs font-medium">{step.number}</span>
                   </div>
-                  <div className="mt-2 text-center max-w-20">
-                    <p
-                      className={`text-xs font-medium ${
-                        state.currentStep === step.number
-                          ? "text-primary"
-                          : canNavigateToStep(step.number as Step)
-                          ? "text-primary/70"
-                          : "text-gray-400"
-                      }`}
-                    >
-                      {step.name}
-                    </p>
-                  </div>
+                  <p
+                    className={`text-[10px] font-medium text-center leading-tight ${
+                      state.currentStep === step.number
+                        ? "text-primary"
+                        : canNavigateToStep(step.number as Step)
+                        ? "text-primary/70"
+                        : "text-gray-400"
+                    }`}
+                  >
+                    {step.name}
+                  </p>
                 </div>
               ))}
             </div>
@@ -368,7 +391,7 @@ export const FPAWorkflow = () => {
                         onClick={handleProjectSelected}
                         variant="primary"
                         size="md"
-                        className="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+                        className="mt-4"
                       >
                         {t("workflow.nextCreateEstimate")}
                       </Button>
@@ -412,8 +435,7 @@ export const FPAWorkflow = () => {
             <p className="text-secondary mb-6">
               {t("workflow.step3Description")}
             </p>
-
-            {currentEstimateData && (
+                {currentEstimateData && (
               <div className="mb-6 p-4 bg-background-secondary rounded-lg">
                 <h3 className="text-lg font-medium mb-3 text-default">
                   {t("workflow.addedComponents")}

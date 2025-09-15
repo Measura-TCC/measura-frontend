@@ -25,8 +25,10 @@ export const RoleSection: React.FC<RoleSectionProps> = ({ user }) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          <p className="text-sm text-secondary">{t("currentRole")}</p>
-          <p className="font-semibold text-default capitalize">{decodedRole}</p>
+          <label className="text-md font-medium text-gray-700">
+            {t("currentRole")}
+          </label>
+          <p className="text-secondary text-sm capitalize">{decodedRole}</p>
           <p className="text-sm text-muted">
             {user?.role === "admin" && t("role.admin")}
             {user?.role === "manager" && t("role.manager")}

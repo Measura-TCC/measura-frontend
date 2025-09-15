@@ -60,6 +60,10 @@ export const createEISchema = z.object({
     .string()
     .min(10, "Primary intent must be at least 10 characters")
     .max(500),
+  processingLogic: z
+    .string()
+    .min(10, "Processing logic must be at least 10 characters")
+    .max(1000),
   fileTypesReferenced: z.number().min(0),
   dataElementTypes: z.number().min(0),
   notes: z.string().max(2000).optional(),

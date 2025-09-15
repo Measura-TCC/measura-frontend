@@ -39,12 +39,20 @@
     "loadingText": "Loading...",
     "organizationRequiredError": "You need to belong to an organization to create projects.",
     "contactAdminMessage": "Please contact your administrator to be added to an organization.",
-    "failedToCreateProject": "Failed to create project"
+    "failedToCreateProject": "Failed to create project",
+    "projectObjectives": "Project Objectives",
+    "objectiveTitle": "Objective title",
+    "objectiveDescription": "Objective description",
+    "linkToOrganizationalObjectives": "Link to Organizational Objectives",
+    "holdCtrlCmdToSelect": "Hold Ctrl/Cmd to select multiple objectives",
+    "addAnotherObjective": "Add Another Objective",
+    "remove": "Remove"
   },
   "validation": {
     "nameMinLength": "Name must be at least 3 characters",
     "nameMaxLength": "Name must not exceed 100 characters",
     "descriptionMinLength": "Description must be at least 10 characters",
     "descriptionMaxLength": "Description must not exceed 1000 characters"
-  }
+  },
+  "linkedTo": "Linked to:"
 }

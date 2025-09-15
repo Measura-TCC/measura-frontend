@@ -15,6 +15,11 @@ export const createProjectSchemaWithTranslation = (
     startDate: z.string().optional(),
     endDate: z.string().optional(),
     teamMembers: z.string().optional(),
+    objectives: z.array(z.object({
+      title: z.string().min(1, t("validation.objectiveTitleRequired")),
+      description: z.string().min(1, t("validation.objectiveDescriptionRequired")),
+      organizationalObjectiveIds: z.array(z.string()).optional(),
+    })).optional(),
   });
 
 export const createProjectSchema = z.object({
@@ -29,6 +34,11 @@ export const createProjectSchema = z.object({
   startDate: z.string().optional(),
   endDate: z.string().optional(),
   teamMembers: z.string().optional(),
+  objectives: z.array(z.object({
+    title: z.string().min(1, "Objective title is required"),
+    description: z.string().min(1, "Objective description is required"),
+    organizationalObjectiveIds: z.array(z.string()).optional(),
+  })).optional(),
 });
 
 export const updateProjectSchema = z.object({
@@ -48,10 +58,28 @@ export const updateProjectSchema = z.object({
   startDate: z.string().optional(),
   endDate: z.string().optional(),
   teamMembers: z.array(z.string()).optional(),
+  objectives: z.array(z.object({
+    title: z.string().min(1, "Objective title is required"),
+    description: z.string().min(1, "Objective description is required"),
+    organizationalObjectiveIds: z.array(z.string()).optional(),
+  })).optional(),
 });
 
 export type CreateProjectRequest = z.infer<typeof createProjectSchema>;
 export type UpdateProjectRequest = z.infer<typeof updateProjectSchema>;
+
+export interface ProjectObjective {
+  _id: string;
+  title: string;
+  description: string;
+  organizationalObjectiveIds: string[];
+}
+
+export interface CreateProjectObjectiveDto {
+  title: string;
+  description: string;
+  organizationalObjectiveIds?: string[];
+}
 
 export interface Project {
   _id: string;
@@ -62,6 +90,9 @@ export interface Project {
   endDate?: string;
   organizationId: string;
   teamMembers: string[];
+  objectives: ProjectObjective[];
+  measurementPlanId?: string | null;
+  estimateId?: string | null;
   createdBy: string;
   createdAt: string;
   updatedAt: string;

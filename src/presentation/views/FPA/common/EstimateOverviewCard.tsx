@@ -53,6 +53,13 @@ export const EstimateOverviewCard = ({
     });
   };
 
+  const formatNumber = (value: number | undefined | null): string => {
+    if (value === undefined || value === null || isNaN(value)) {
+      return "0";
+    }
+    return Number(value.toFixed(2)).toString();
+  };
+
   const handleCardClick = () => {
     if (onClick) {
       onClick();
@@ -106,7 +113,7 @@ export const EstimateOverviewCard = ({
         <div className="flex items-center space-x-2">
           <div
             className={`w-3 h-3 rounded-full ${
-              estimate.hasGSC ? "bg-green-500" : "bg-gray-300"
+              estimate.hasGSC || estimate.valueAdjustmentFactor ? "bg-green-500" : "bg-gray-300"
             }`}
           />
           <span className="text-sm text-gray-600">GSC</span>
@@ -130,9 +137,11 @@ export const EstimateOverviewCard = ({
               {t("workflow.adjustedFunctionPoints", "Adjusted Function Points")}
             </p>
             <p className="text-2xl font-bold text-indigo-600">
-              {estimate.adjustedFunctionPoints ||
-                estimate.unadjustedFunctionPoints ||
-                0}
+              {formatNumber(
+                estimate.adjustedFunctionPoints ||
+                  estimate.unadjustedFunctionPoints ||
+                  0
+              )}
             </p>
           </div>
           {estimate.valueAdjustmentFactor &&
@@ -140,7 +149,7 @@ export const EstimateOverviewCard = ({
               <div className="text-right">
                 <p className="text-sm text-gray-600">{t("calculations.vaf")}</p>
                 <p className="text-lg font-semibold text-blue-600">
-                  {estimate.valueAdjustmentFactor?.toFixed(2)}
+                  {formatNumber(estimate.valueAdjustmentFactor)}
                 </p>
               </div>
             )}
@@ -151,7 +160,7 @@ export const EstimateOverviewCard = ({
               {t("workflow.estimatedEffort", "Estimated Effort")}
             </p>
             <p className="text-sm font-medium text-indigo-700">
-              {estimate.estimatedEffortHours} {t("costs.hours")}
+              {formatNumber(estimate.estimatedEffortHours)} {t("costs.hours")}
             </p>
           </div>
         )}

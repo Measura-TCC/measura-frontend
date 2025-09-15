@@ -21,7 +21,7 @@
   "progress": "Progress",
   "dates": "Dates",
   "goals": "goals",
-  "metrics": "metrics",
+  "metricsCount": "metrics",
   "edit": "Edit",
   "duplicate": "Duplicate",
   "delete": "Delete",
@@ -47,9 +47,13 @@
   "organizationRequired": "Organization Required",
   "organizationRequiredDescription": "You need to create or join an organization to create measurement plans and manage planning activities",
   "createOrganization": "Create Organization",
+  "noProjectsTitle": "No Projects Found",
+  "noProjectsDescription": "You need to create at least one project before creating measurement plans.",
+  "goToProjects": "Go to Projects",
+  "createProject": "Create Project",
   "tabs": {
-    "overview": "Overview",
-    "plans": "Plans",
+    "newPlan": "Create Plan",
+    "createdPlans": "Created Plans",
     "templates": "Templates",
     "gqm": "GQM"
   },
@@ -127,19 +131,376 @@
   "workflow": {
     "title": "Measurement Plan Workflow",
     "subtitle": "Create your measurement plan by following these guided steps",
-    "step1Title": "1. Define Plan Basics",
-    "step1Description": "Set the foundation for your measurement plan with basic information",
-    "step2Title": "2. Apply GQM Structure",
-    "step2Description": "Define measurement goals using the Goal-Question-Metric approach",
-    "step3Title": "3. Derive Key Questions",
-    "step3Description": "Create questions that will guide your measurement activities",
-    "step4Title": "4. Define Metrics",
-    "step4Description": "Specify the metrics that will answer your questions",
-    "step5Title": "5. Setup Data Collection",
-    "step5Description": "Review and finalize your measurement plan",
-    "nextStep": "Next Step",
-    "backToOverview": "Back to Overview",
+    "nextObjectives": "Next: Identify Organizational Objectives",
+    "nextQuestions": "Next: Identify Questions",
+    "nextMetrics": "Next: Identify Metrics",
+    "nextVisualization": "Next: Visualize Measurement Plan",
+    "backToNewPlan": "Back to Create Plan",
     "startWorkflow": "Start Plan Creation",
-    "finalizePlan": "Create Plan"
+    "finalizePlan": "Finalize Measurement Plan",
+    "creating": "Creating...",
+    "selectObjectivesTitle": "1. Select Objectives",
+    "chooseObjective": "Choose a measurement objective...",
+    "chooseMeasurementObjective": "Choose a measurement objective...",
+    "planObjectives": "Measurement Objectives",
+    "projectObjectives": "Project Objectives",
+    "selectProject": "Select Project",
+    "noObjectivesFound": "No objectives found for this project",
+    "linkedTo": "Linked to:",
+    "createNewObjective": "+ Create New Objective",
+    "addCustomObjectivePlaceholder": "Enter a custom objective",
+    "addCustomQuestionPlaceholder": "Enter a custom question",
+    "addCustomMetricPlaceholder": "Enter a custom metric",
+    "add": "Add",
+    "completeStepToUnlock": "Complete the previous step to unlock",
+    "selectQuestions": "Select Questions",
+    "selectPredefinedQuestion": "Choose a predefined question...",
+    "chooseQuestion": "Choose a question...",
+    "createNewQuestion": "+ Create New Question",
+    "selectedQuestions": "Selected Questions ({{count}})",
+    "selectMetrics": "Select Metrics",
+    "selectPredefinedMetric": "Choose a predefined metric...",
+    "chooseMetric": "Choose a metric...",
+    "createNewMetric": "+ Create New Metric",
+    "selectedMetrics": "Selected Metrics ({{count}})",
+    "planSummary": "Plan Summary",
+    "gqmStructure": "GQM Structure",
+    "objective": "Objective",
+    "question": "Question",
+    "metric": "Metric",
+    "objectives": "Objectives",
+    "questions": "Questions",
+    "metrics": "Metrics",
+    "measurements": "Measurements",
+    "unit": "Unit",
+    "hideDetails": "Hide details",
+    "showDetails": "Show more details",
+    "exportPdf": "Export PDF",
+    "exportPdfSoon": "PDF export functionality will be implemented soon!",
+    "detailedGqmStructure": "Detailed GQM Structure",
+    "steps": {
+      "step1": {
+        "title": "1. Define Measurement Plan",
+        "description": "Set the foundation for your measurement plan with basic information and GQM definition"
+      },
+      "step2": {
+        "title": "2. Identify Organizational Objectives",
+        "description": "Define measurement goals using the Goal-Question-Metric approach"
+      },
+      "step3": {
+        "title": "3. Identify Questions",
+        "description": "For each selected objective, choose the questions that will guide your measurement activities"
+      },
+      "step4": {
+        "title": "4. Identify Metrics",
+        "description": "For each selected question, choose the metrics that will answer those questions"
+      },
+      "step5": {
+        "title": "5. Visualize Measurement Plan",
+        "description": "Review your complete measurement plan with objectives, questions and metrics"
+      }
+    }
+  },
+  "forms": {
+    "planName": "Plan Name",
+    "planNamePlaceholder": "Enter the plan name",
+    "owner": "Owner",
+    "ownerPlaceholder": "Enter the owner name",
+    "description": "Description",
+    "descriptionPlaceholder": "Brief description of the measurement plan",
+    "associatedProject": "Associated Project",
+    "selectProject": "Select Project",
+    "planResponsible": "Plan Responsible",
+    "planResponsiblePlaceholder": "Enter the person responsible for the plan"
+  },
+  "goalForm": {
+    "purpose": "Purpose",
+    "selectPurpose": "Select purpose...",
+    "issue": "With respect to",
+    "issuePlaceholder": "productivity, quality, cost, performance...",
+    "viewpoint": "From the viewpoint of",
+    "viewpointPlaceholder": "developer, manager, user, customer...",
+    "context": "In the context of",
+    "contextPlaceholder": "web project, mobile app, enterprise system...",
+    "purposes": {
+      "know": "Know",
+      "analyze": "Analyze",
+      "evaluate": "Evaluate",
+      "improve": "Improve",
+      "control": "Control",
+      "monitor": "Monitor"
+    }
+  },
+  "objectives": {
+    "improveQuality": "Improve software quality",
+    "reduceDevelopmentTime": "Reduce development time",
+    "increaseTeamProductivity": "Increase team productivity",
+    "decreaseBugQuantity": "Decrease bug quantity",
+    "improveCustomerSatisfaction": "Improve customer satisfaction",
+    "reduceMaintenanceCost": "Reduce maintenance cost",
+    "enhanceSystemPerformance": "Enhance system performance",
+    "increaseCodeReusability": "Increase code reusability",
+    "increaseFunctionalValueCadence": "Increase functional value cadence",
+    "reduceTimeToDeliverValue": "Reduce time to deliver value",
+    "accelerateRecoveryAfterFailures": "Accelerate recovery after failures",
+    "increaseStabilityOfChanges": "Increase stability of changes"
+  },
+  "questions": {
+    "defectRateInProduction": "What is the defect rate found in production?",
+    "criticalBugFixTime": "How long does it take to fix a critical bug?",
+    "averageFeatureDevelopmentTime": "What is the average feature development time?",
+    "dailyCodeLinesProduced": "How many lines of code are produced per day?",
+    "automatedTestCoverage": "What is the automated test coverage?",
+    "bugsFoundDuringTesting": "How many bugs are found during testing?",
+    "customerSatisfactionScore": "What is the customer satisfaction score?",
+    "systemAvailability": "What is the system availability?",
+    "codeReviewCoverage": "What is the code review coverage?",
+    "deploymentFrequency": "What is the deployment frequency?",
+    "howManyFunctionPointsPerPeriod": "How many Function Points do we deliver per period?",
+    "howLongCommitToProduction": "How long does a commit take to reach production?",
+    "howLongToRestoreService": "How long does it take us to restore the service?",
+    "whatFractionDeploysFailure": "What fraction of deploys causes incidents or rollbacks?"
+  },
+  "metrics": {
+    "defectsPerRelease": "Number of defects per release",
+    "averageFixTime": "Average fix time",
+    "developmentTimePerStoryPoint": "Development time per story point",
+    "codeLinesPerDeveloper": "Lines of code per developer",
+    "codeCoveragePercentage": "Code coverage percentage",
+    "bugsPerSprint": "Number of bugs per sprint",
+    "buildSuccessRate": "Build success rate",
+    "applicationResponseTime": "Application response time",
+    "userSatisfactionRating": "User satisfaction rating",
+    "systemUptimePercentage": "System uptime percentage",
+    "productivityHhPF": "Productivity (Hh/PF)",
+    "leadTimeForChanges": "Lead Time for Changes",
+    "meanTimeToRestore": "Mean Time to Restore (MTTR)",
+    "changeFailureRate": "Change Failure Rate (%)",
+    "descriptions": {
+      "defectsPerRelease": "Count of defects found after software release",
+      "averageFixTime": "Average time required to resolve reported defects",
+      "developmentTimePerStoryPoint": "Time spent developing each story point of functionality",
+      "codeLinesPerDeveloper": "Number of code lines produced per developer",
+      "codeCoveragePercentage": "Percentage of code covered by automated tests",
+      "bugsPerSprint": "Number of bugs identified during each development sprint",
+      "buildSuccessRate": "Percentage of successful automated builds",
+      "applicationResponseTime": "Time taken for the application to respond to requests",
+      "productivityHhPF": "Effort hours per Function Point delivered in the period/project. Recommended aggregation by MEDIAN for robustness to outliers.",
+      "leadTimeForChanges": "Time in hours between commit timestamp and deployment timestamp. Aggregated by MEDIAN.",
+      "meanTimeToRestore": "Time between incident start (TIN) and restoration (TRS), aggregated by MEDIAN.",
+      "changeFailureRate": "Percentage of deploys to production resulting in failure (incident or rollback) within the correlation window."
+    },
+    "units": {
+      "defects": "defects",
+      "hours": "hours",
+      "hoursPerSp": "hours/sp",
+      "locPerDev": "loc/dev",
+      "percentage": "%",
+      "bugs": "bugs",
+      "milliseconds": "ms"
+    },
+    "measurementEntities": {
+      "worklog": "Worklog",
+      "deliveredFunctionPoints": "Delivered Function Points",
+      "deploymentToProduction": "Deployment to Production",
+      "commit": "Commit",
+      "incidentStart": "Incident Start",
+      "serviceRestoration": "Service Restoration",
+      "deployFailure": "Deploy Failure",
+      "deployTotal": "Deploy Total",
+      "bugReport": "Bug Report",
+      "codeLine": "Code Line",
+      "testCase": "Test Case",
+      "buildExecution": "Build Execution",
+      "apiResponse": "API Response",
+      "userStory": "User Story",
+      "codeReview": "Code Review",
+      "systemResource": "System Resource",
+      "userSession": "User Session",
+      "deployment": "Deployment"
+    }
+  },
+  "measurementPlan": {
+    "planName": "Plan Name",
+    "associatedProject": "Associated Project",
+    "planResponsible": "Plan Responsible",
+    "selectProject": "Select Project",
+    "chooseProject": "Choose a project..."
+  },
+  "measurement": {
+    "measurementEntity": "Measurement Entity",
+    "measurementAcronym": "Measurement Acronym",
+    "measurementProperties": "Measurement Properties",
+    "measurementUnit": "Measurement Unit",
+    "measurementScale": "Measurement Scale",
+    "measurementProcedure": "Measurement Procedure",
+    "measurementFrequency": "Measurement Frequency",
+    "measurementResponsible": "Measurement Responsible",
+    "generalInfo": "General Information",
+    "controlAnalysis": "Control and Analysis",
+    "measurementDetails": "Measurement Details",
+    "addMeasurement": "Add Measurement",
+    "customMeasurement": "Custom Measurement",
+    "selectMeasurement": "Select Measurement",
+    "measurementsCount": "measurements"
+  },
+  "units": {
+    "hoursDecimals": "hours (2 decimals)",
+    "functionPoints": "Function Points",
+    "msEpochUTC": "ms (epoch UTC)",
+    "countPerFailedDeploy": "count (per failed deploy)",
+    "countPerDeploy": "count (per deploy)"
+  },
+  "scales": {
+    "continuous": "continuous",
+    "discrete": "discrete"
+  },
+  "metric": {
+    "metricName": "Metric Name",
+    "metricDescription": "Metric Description",
+    "metricMnemonic": "Metric Mnemonic",
+    "metricFormula": "Metric Formula",
+    "metricControlRange": "Metric Control Range",
+    "analysisProcedure": "Analysis Procedure",
+    "analysisFrequency": "Analysis Frequency",
+    "analysisResponsible": "Analysis Responsible",
+    "customMetric": "Custom Metric",
+    "addCustomMetric": "Add Custom Metric",
+    "measurements": "Measurements"
+  },
+  "question": {
+    "questionText": "Question Text",
+    "questionDescription": "Question Description",
+    "questionMnemonic": "Question Mnemonic",
+    "questionTextPlaceholder": "Enter the question text",
+    "questionDescriptionPlaceholder": "Enter question description (optional)",
+    "questionMnemonicPlaceholder": "Enter mnemonic (optional)"
+  },
+  "modals": {
+    "customMetric": {
+      "title": "Select or Create Metric",
+      "predefinedTab": "Predefined",
+      "customTab": "Custom",
+      "predefinedDescription": "Select a predefined metric from the list below:",
+      "namePlaceholder": "Enter metric name",
+      "descriptionPlaceholder": "Enter metric description",
+      "mnemonicPlaceholder": "Enter mnemonic (max 3 chars)",
+      "formulaPlaceholder": "Enter metric formula",
+      "minRange": "Minimum Range",
+      "maxRange": "Maximum Range",
+      "analysisProcedurePlaceholder": "Enter analysis procedure",
+      "analysisFrequencyPlaceholder": "Enter analysis frequency",
+      "analysisResponsiblePlaceholder": "Enter analysis responsible",
+      "create": "Create Metric",
+      "cancel": "Cancel"
+    },
+    "customMeasurement": {
+      "title": "Create Custom Measurement",
+      "entityPlaceholder": "Enter measurement entity",
+      "acronymPlaceholder": "Enter acronym (max 3 chars)",
+      "propertiesPlaceholder": "Enter measurement properties",
+      "unitPlaceholder": "Enter measurement unit",
+      "scalePlaceholder": "Enter measurement scale",
+      "procedurePlaceholder": "Enter measurement procedure",
+      "frequencyPlaceholder": "Enter measurement frequency",
+      "responsiblePlaceholder": "Enter measurement responsible",
+      "create": "Create Measurement",
+      "cancel": "Cancel"
+    },
+    "customQuestion": {
+      "title": "Select or Create Question",
+      "predefinedTab": "Predefined",
+      "customTab": "Custom",
+      "predefinedDescription": "Select a predefined question from the list below:",
+      "customDescription": "Create a custom question for your measurement plan:",
+      "addButton": "Add",
+      "createButton": "Create Question",
+      "cancelButton": "Cancel"
+    }
+  },
+  "accordion": {
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "measurementsCount": "{{count}} measurements"
+  },
+  "planVisualization": {
+    "title": "Measurement Plan Visualization",
+    "pageOf": "{{current}} of {{total}}",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "export": {
+    "exportPlan": "Export Plan",
+    "exportPdf": "Export as PDF",
+    "exportDocx": "Export as DOCX",
+    "selectFormat": "Export Plan",
+    "exporting": "Exporting...",
+    "success": "{{format}} exported successfully!",
+    "error": "Failed to export. Please try again."
+  },
+  "planDetails": {
+    "back": "Back to Plans",
+    "notFound": "Plan not found",
+    "notFoundDescription": "The requested plan could not be found or you don't have access to it."
+  },
+  "measurements": {
+    "properties": {
+      "worklog": "Total hours logged in project period. Exclude vacations/trainings. Consolidate per iteration/release.",
+      "deliveredFunctionPoints": "Function Points delivered and accepted in iteration/release (per IFPUG/COSMIC sheet). Only completed scope (done/accepted).",
+      "deploymentToProduction": "UTC timestamp of production promotion. Unique per deploy, includes deployment_id and SHAs.",
+      "commit": "UTC timestamp of commit. Unique per commit (SHA).",
+      "incidentStart": "UTC timestamp when incident opened. One per incident_id. Maintain severity and impacted service.",
+      "serviceRestoration": "UTC timestamp when service restored. One per incident_id.",
+      "deployFailure": "One record per production deploy classified as failure (rollback or incident).",
+      "deployTotal": "One record per production deploy. Includes successes and failures.",
+      "productivityHhPF": "Total hours logged in project period and Function Points delivered. Exclude vacations/trainings. Consolidate per iteration/release.",
+      "leadTimeForChanges": "UTC timestamp of commit and UTC timestamp of production promotion. Unique per commit (SHA) and deploy.",
+      "meanTimeToRestore": "UTC timestamp when incident opened and UTC timestamp when service restored. One per incident_id.",
+      "changeFailureRate": "One record per production deploy classified as failure and one record per total deploy."
+    },
+    "procedures": {
+      "worklog": "Integrate Timesheet/ERP with boards (Jira/Azure). Filter per project/epic/iteration; deduplicate; validate categories.",
+      "deliveredFunctionPoints": "Consolidate IFPUG/COSMIC sheet. Map 'done/accepted' items per iteration/release; sum PF delivered.",
+      "deploymentToProduction": "On each production deploy, capture promotion end timestamp from CI/CD; link deployment_id and commits.",
+      "commit": "On commit to main branch, capture timestamp via Git webhook; log SHA and epoch_ms.",
+      "incidentStart": "On incident creation in PagerDuty/Opsgenie/Jira, capture triggered timestamp. Persist incident_id, severity.",
+      "serviceRestoration": "On incident resolution, capture resolved timestamp or StatusPage return to operational. Persist incident_id, severity.",
+      "deployFailure": "Ingest deployment events and incidents. Link DPF=1 when rollback or incident tied to deploy.",
+      "deployTotal": "On each production promotion, log DPT=1 with deployment_id and repo.",
+      "productivityHhPF": "Integrate Timesheet/ERP with boards and consolidate IFPUG/COSMIC sheet. Filter per project/iteration; map 'done/accepted' items; calculate Hh/PF ratio.",
+      "leadTimeForChanges": "On commit to main branch and each production deploy, capture timestamps via Git webhook and CI/CD; calculate time difference.",
+      "meanTimeToRestore": "On incident creation and resolution, capture timestamps via PagerDuty/Opsgenie/StatusPage; calculate restoration time.",
+      "changeFailureRate": "Ingest deployment events and incidents. Calculate ratio between failed deploys (rollback/incident) and total deploys."
+    },
+    "frequency": {
+      "continuousIteration": "Continuous / aggregated per iteration or release",
+      "perIteration": "Per iteration / per release",
+      "perDeploy": "Per deploy (continuous)",
+      "perCommit": "Per commit (continuous)",
+      "perIncident": "Per incident (continuous)",
+      "perDeployIncident": "Per deploy/incident"
+    },
+    "responsible": {
+      "timesheetERP": "Timesheet/ERP Integration",
+      "pfMeasurementTeam": "PF Measurement Team",
+      "measurementAnalyst": "Measurement Analyst"
+    }
+  },
+  "analysis": {
+    "procedures": {
+      "productivityHhPF": "Aggregate per iteration/release and project/team. Calculate median, mean, and p90. Compare with calibrated target (≤20–25 Hh/PF). Segment by demand type, technology, PF size, scope, rework. Investigate outliers.",
+      "leadTimeForChanges": "Weekly: calculate median LT per change, plus p90/p95. Compare with <24h target. Segment by repo/service. Investigate outliers per pipeline stage. Register actions like reducing WIP or parallelizing tests.",
+      "meanTimeToRestore": "Monthly per service/system. Calculate median, p90/p95. Segment by severity (P1–P3) and cause. Compare with <1h target. Cross with availability/SLO. Investigate outliers.",
+      "changeFailureRate": "Monthly aggregation per release/service. Monitor trend. If CFR > 15%, trigger corrective actions (post-mortem, hardening, testing). Correlate with Lead Time and MTTR."
+    },
+    "frequency": {
+      "perIteration": "Per iteration / per release",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "monthlyRelease": "Monthly / per release"
+    },
+    "responsible": {
+      "productivityTeam": "Productivity Engineering Team"
+    }
   }
 }

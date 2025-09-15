@@ -24,6 +24,34 @@
   "memberSince": "Member since",
   "manageOrganization": "Manage Organization",
   "noOrganizationAssigned": "No organization assigned",
+  "mission": "Mission",
+  "vision": "Vision",
+  "values": "Values",
+  "strategicObjectives": "Strategic Objectives",
+  "steps": {
+    "basics": "1. Organization Basics",
+    "identity": "2. Identity",
+    "strategy": "3. Strategy",
+    "review": "4. Review & Finish"
+  },
+  "next": "Next",
+  "previous": "Previous",
+  "save": "Save",
+  "delete": "Delete",
+  "confirmDelete": "Are you sure you want to delete this organization? This action cannot be undone.",
+  "reviewInstructions": "Review the information before finishing.",
+  "backToDetails": "Back to details",
+  "add": "Add",
+  "suggestions": {
+    "values": "Transparency, Collaboration, Excellence, Innovation, Integrity, Accountability, Customer Focus",
+    "objectives": "Improve software quality, Reduce costs, Increase customer satisfaction, Shorten time-to-market, Increase productivity, Enhance reliability"
+  },
+  "mock": {
+    "mission": "Deliver reliable measurement solutions that empower teams to make data-driven decisions.",
+    "vision": "Be the most trusted platform for software measurement and insights.",
+    "values": "Transparency, Collaboration, Excellence, Continuous Improvement.",
+    "strategicObjectives": "1) Expand usage across teams.\n2) Improve analytics depth.\n3) Reduce time-to-insight by 30%."
+  },
   "form": {
     "organizationNameLabel": "Organization Name *",
     "organizationNamePlaceholder": "Enter organization name",
@@ -33,8 +61,23 @@
     "websitePlaceholder": "https://example.com",
     "industryLabel": "Industry",
     "industryPlaceholder": "e.g., Technology, Healthcare, Finance",
+    "missionLabel": "Mission",
+    "missionPlaceholder": "What is your organization's mission?",
+    "visionLabel": "Vision",
+    "visionPlaceholder": "What is the long-term vision?",
+    "valuesLabel": "Values",
+    "valuesPlaceholder": "Core values (comma-separated or text)",
+    "addValuePlaceholder": "Register a custom value",
+    "selectValuePlaceholder": "Choose a value...",
+    "strategicObjectivesLabel": "Strategic Objectives",
+    "strategicObjectivesPlaceholder": "List the strategic objectives...",
+    "addObjectivePlaceholder": "Register a custom objective",
+    "selectObjectivePlaceholder": "Choose an objective...",
+    "addObjectiveButton": "Add Objective",
+    "removeButton": "Remove",
     "createButton": "Create Organization",
     "creating": "Creating...",
     "failedToCreate": "Failed to create organization"
   }
 }
+

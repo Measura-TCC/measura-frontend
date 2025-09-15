@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -16,20 +17,47 @@ import {
 } from "@/presentation/assets/icons";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
 import { useProjects } from "@/core/hooks/projects/useProjects";
+import { useOrganizationalObjectives } from "@/core/hooks/organizations";
+import { useOrganization } from "@/core/hooks/organizations/useOrganization";
+import { useOrganizationStore } from "@/core/hooks/organizations/useOrganizationStore";
 import { CreateProjectForm } from "@/presentation/views/Projects/components/CreateProjectForm";
 import { ProjectStatusSelector } from "@/presentation/views/Projects/components/ProjectStatusSelector";
 
 export default function ProjectsPage() {
   const { t, i18n } = useTranslation("projects");
+  const router = useRouter();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { activeOrganizationId, loadUserOrganizations, forceClearCache } =
+    useOrganization();
   const { projects, isLoadingProjects } = useProjects();
+  const { objectives: organizationalObjectives } =
+    useOrganizationalObjectives();
 
-  useEffect(() => {}, [
+  // Debug organization state
+  useEffect(() => {
+    // Force clear cache if demo ID is detected
+    if (activeOrganizationId === "demo-organization-id") {
+      forceClearCache();
+    }
+
+    // Directly set the active organization ID if we have userOrganization but no activeOrganizationId
+    if (!activeOrganizationId && userOrganization?._id) {
+      console.log(
+        "ProjectsPage - Setting active organization ID directly:",
+        userOrganization._id
+      );
+      const { setActiveOrganization } = useOrganizationStore.getState();
+      setActiveOrganization(userOrganization._id);
+    }
+  }, [
+    activeOrganizationId,
     userOrganization,
     isLoadingUserOrganization,
     projects,
     isLoadingProjects,
+    forceClearCache,
+    loadUserOrganizations,
   ]);
 
   const handleProjectCreated = () => {
@@ -196,6 +224,57 @@ export default function ProjectsPage() {
                 <div className="border-t border-border pt-3">
                   <ProjectStatusSelector project={project} />
                 </div>
+                <div className="flex gap-2 mt-3">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => router.push(`/plans?project=${project._id}`)}
+                  >
+                    View Plans
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => router.push(`/fpa?project=${project._id}`)}
+                  >
+                    View Estimates
+                  </Button>
+                </div>
+                {project.objectives && project.objectives.length > 0 && (
+                  <div className="border-t border-border pt-3 mt-3">
+                    <h4 className="text-sm font-medium mb-2">
+                      Project Objectives:
+                    </h4>
+                    {project.objectives.slice(0, 2).map((obj) => (
+                      <div
+                        key={obj._id}
+                        className="text-xs bg-blue-50 p-2 rounded mb-1"
+                      >
+                        <div className="font-medium">{obj.title}</div>
+                        {obj.organizationalObjectiveIds &&
+                          obj.organizationalObjectiveIds.length > 0 && (
+                            <div className="text-blue-600 mt-1">
+                              {t("linkedTo")}{" "}
+                              {obj.organizationalObjectiveIds
+                                .map(
+                                  (id) =>
+                                    organizationalObjectives.find(
+                                      (org) => org._id === id
+                                    )?.title
+                                )
+                                .filter(Boolean)
+                                .join(", ")}
+                            </div>
+                          )}
+                      </div>
+                    ))}
+                    {project.objectives.length > 2 && (
+                      <div className="text-xs text-gray-500">
+                        +{project.objectives.length - 2} more objectives
+                      </div>
+                    )}
+                  </div>
+                )}
                 {project.startDate && (
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-muted">{t("startDate")}</span>

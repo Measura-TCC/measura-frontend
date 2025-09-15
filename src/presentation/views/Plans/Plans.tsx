@@ -1,111 +1,117 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
-import { usePlans } from "@/core/hooks/plans/usePlans";
+import { useMeasurementPlans } from "@/core/hooks/measurementPlans";
+import { useProjects } from "@/core/hooks/projects/useProjects";
 import {
   PlanTab,
-  Plan,
-  PlanType,
-  GQMGoal,
-  GQMQuestion,
-  GQMMetric,
+  MeasurementPlanStatus,
 } from "@/core/types/plans";
-import { PlansTabs, PlansPageHeader, OrganizationAlert } from "./components";
-import { OverviewTab, PlansTab, TemplatesTab, GQMTab } from "./components/Tabs";
+import { PlansTabs, PlansPageHeader, OrganizationAlert, PlansFilters } from "./components";
+import { DocumentIcon } from "@/presentation/assets/icons";
+import { NewPlanTab, CreatedPlansTab } from "./components/Tabs";
 
 export const PlansView = () => {
+  const { t } = useTranslation("plans");
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
-  const plansHook = usePlans();
-  const [activeTab, setActiveTab] = useState<PlanTab>("overview");
-  const [selectedPlanForGQM, setSelectedPlanForGQM] = useState<string>("");
+  const { projects, isLoadingProjects } = useProjects();
+  const [activeTab, setActiveTab] = useState<PlanTab>("newPlan");
+
+  useEffect(() => {
+    const tabParam = searchParams.get("tab") as PlanTab;
+    if (tabParam && ["newPlan", "createdPlans"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+
+    const projectParam = searchParams.get("project");
+    if (projectParam) {
+      setProjectFilter(projectParam);
+      setActiveTab("newPlan");
+    }
+  }, [searchParams]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<MeasurementPlanStatus | undefined>();
+  const [projectFilter, setProjectFilter] = useState<string | undefined>();
+
+  const plansHook = useMeasurementPlans({
+    page: currentPage,
+    limit: pageSize,
+    search: searchQuery,
+    status: statusFilter,
+    projectId: projectFilter,
+  });
 
   const {
     plans,
-    templates,
+    pagination,
     statistics,
     isLoadingPlans,
     isCreatingPlan,
     plansError,
     canCreatePlan,
     hasOrganization,
-    planForm,
-    formErrors,
-    createPlan,
-    deletePlan,
-    duplicatePlan,
-    applyTemplate,
-    getGQMDataForPlan,
     formatDate,
     getStatusColor,
-    getTypeLabel,
+    operationError,
+    clearError,
   } = plansHook;
 
-  const handleCreateGoal = async (goalData: Partial<GQMGoal>) => {
-    console.log("Create goal:", goalData);
+  const handleSearchChange = (search: string) => {
+    setSearchQuery(search);
+    setCurrentPage(1); // Reset to first page when searching
   };
 
-  const handleCreateQuestion = async (questionData: Partial<GQMQuestion>) => {
-    console.log("Create question:", questionData);
+  const handleStatusChange = (status: MeasurementPlanStatus | undefined) => {
+    setStatusFilter(status);
+    setCurrentPage(1); // Reset to first page when filtering
   };
 
-  const handleCreateMetric = async (metricData: Partial<GQMMetric>) => {
-    console.log("Create metric:", metricData);
+  const handleProjectChange = (projectId: string | undefined) => {
+    setProjectFilter(projectId);
+    setCurrentPage(1); // Reset to first page when filtering
   };
 
-  const handleCompleteStep = async (step: number) => {
-    console.log("Complete step:", step);
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setStatusFilter(undefined);
+    setProjectFilter(undefined);
+    setCurrentPage(1);
   };
 
-  const handleSelectionComplete = async (selection: import("@/core/types/plans").GQMSelectionState) => {
-    console.log("Selection complete:", selection);
-  };
 
   const componentMap = {
-    overview: (
-      <OverviewTab
+    newPlan: (
+      <NewPlanTab
         statistics={statistics}
         canCreatePlan={canCreatePlan}
         isCreatingPlan={isCreatingPlan}
-        planForm={planForm}
-        formErrors={formErrors}
-        onCreatePlan={createPlan}
       />
     ),
-    plans: (
-      <PlansTab
+    createdPlans: (
+      <CreatedPlansTab
         plans={plans}
         isLoadingPlans={isLoadingPlans}
         formatDate={formatDate}
         getStatusColor={getStatusColor}
-        getTypeLabel={(type: string) => getTypeLabel(type as PlanType)}
-        onEditPlan={(plan: Plan) => console.log("Edit plan:", plan)}
-        onDeletePlan={deletePlan}
-        onDuplicatePlan={duplicatePlan}
-        onManageGQM={(plan: Plan) => {
-          setSelectedPlanForGQM(plan.id);
-          setActiveTab("gqm");
+        projects={projects || []}
+        pagination={pagination}
+        onViewPlan={(planId) => {
+          router.push(`/plans/${planId}`);
         }}
-      />
-    ),
-    templates: (
-      <TemplatesTab
-        templates={templates}
-        canCreatePlan={canCreatePlan}
-        onApplyTemplate={applyTemplate}
-      />
-    ),
-    gqm: (
-      <GQMTab
-        plans={plans}
-        selectedPlanId={selectedPlanForGQM}
-        gqmData={getGQMDataForPlan(selectedPlanForGQM)}
-        onSelectPlan={setSelectedPlanForGQM}
-        onCreateGoal={handleCreateGoal}
-        onCreateQuestion={handleCreateQuestion}
-        onCreateMetric={handleCreateMetric}
-        onCompleteStep={handleCompleteStep}
-        onSelectionComplete={handleSelectionComplete}
+        onPageChange={(page) => {
+          setCurrentPage(page);
+        }}
+        onPageSizeChange={(pageSize) => {
+          setPageSize(pageSize);
+          setCurrentPage(1); // Reset to first page when changing page size
+        }}
       />
     ),
   };
@@ -159,11 +165,75 @@ export const PlansView = () => {
 
       <OrganizationAlert hasOrganization={hasOrganization} />
 
+      {hasOrganization && !isLoadingProjects && (!projects || projects.length === 0) && (
+        <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+          <div className="text-center space-y-4">
+            <div className="text-blue-500 mb-4">
+              <DocumentIcon className="w-12 h-12 mx-auto" />
+            </div>
+            <div>
+              <h3 className="text-lg font-medium text-blue-900">
+                {t("noProjectsTitle")}
+              </h3>
+              <p className="text-blue-700 mt-1">
+                {t("noProjectsDescription")}
+              </p>
+            </div>
+            <button
+              onClick={() => router.push("/projects")}
+              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+            >
+              {t("goToProjects")}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {operationError && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="text-red-400 mr-3">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-red-800">Operation Failed</h3>
+                <p className="text-sm text-red-700 mt-1">{operationError}</p>
+              </div>
+            </div>
+            <button
+              onClick={clearError}
+              className="text-red-400 hover:text-red-600 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
       <PlansTabs
         activeTab={activeTab}
         onTabChange={setActiveTab}
         hasOrganization={hasOrganization}
       />
+
+      {activeTab === "createdPlans" && hasOrganization && (
+        <PlansFilters
+          searchQuery={searchQuery}
+          statusFilter={statusFilter}
+          projectFilter={projectFilter}
+          projects={projects?.map(p => ({ id: p._id, name: p.name })) || []}
+          onSearchChange={handleSearchChange}
+          onStatusChange={handleStatusChange}
+          onProjectChange={handleProjectChange}
+          onClearFilters={handleClearFilters}
+          isLoading={isLoadingPlans}
+        />
+      )}
 
       {componentMap[activeTab]}
     </div>

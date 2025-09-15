@@ -46,23 +46,29 @@ export const StatisticsSection: React.FC<StatisticsSectionProps> = ({
         <CardTitle>{t("statistics")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex justify-between items-center">
-          <span className="text-secondary">{t("totalEstimates")}</span>
-          <span className="font-semibold text-default">
+        <div>
+          <label className="text-md font-medium text-gray-700">
+            {t("totalEstimates")}
+          </label>
+          <p className="text-secondary text-sm">
             {statistics.totalEstimates}
-          </span>
+          </p>
         </div>
-        <div className="flex justify-between items-center">
-          <span className="text-secondary">{t("activeGoals")}</span>
-          <span className="font-semibold text-default">
+        <div>
+          <label className="text-md font-medium text-gray-700">
+            {t("activeGoals")}
+          </label>
+          <p className="text-secondary text-sm">
             {statistics.activeGoals}
-          </span>
+          </p>
         </div>
-        <div className="flex justify-between items-center">
-          <span className="text-secondary">{t("completedPlans")}</span>
-          <span className="font-semibold text-default">
+        <div>
+          <label className="text-md font-medium text-gray-700">
+            {t("completedPlans")}
+          </label>
+          <p className="text-secondary text-sm">
             {statistics.completedPlans}
-          </span>
+          </p>
         </div>
       </CardContent>
     </Card>

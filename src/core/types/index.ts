@@ -10,6 +10,7 @@ export interface User {
   username: string;
   email: string;
   role: "user" | "admin" | "project-manager" | "measurement-analyst";
+  organizationId?: string | null;
   avatar?: string;
   isActive: boolean;
   lastLoginAt?: Date;
@@ -131,6 +132,14 @@ export interface Project {
   endDate?: string;
   organizationId: string;
   teamMembers: string[];
+  objectives: Array<{
+    _id: string;
+    title: string;
+    description: string;
+    organizationalObjectiveIds: string[];
+  }>;
+  measurementPlanId?: string | null;
+  estimateId?: string | null;
   createdBy: string;
   createdAt: string;
   updatedAt: string;

@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { useProjectActions } from "@/core/hooks/projects/useProjects";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganization } from "@/core/hooks/organizations/useOrganization";
+import { useOrganizationalObjectives } from "@/core/hooks/organizations";
 import {
   CreateProjectRequest,
   createProjectSchema,
@@ -24,14 +26,48 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
 
   const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
   const { createProject } = useProjectActions();
+  const { activeOrganizationId, loadUserOrganizations, forceClearCache } =
+    useOrganization();
+  const {
+    objectives: organizationalObjectives,
+    isLoadingObjectives,
+    objectivesError,
+  } = useOrganizationalObjectives(activeOrganizationId || undefined);
+
+  // Load user organizations on mount to ensure activeOrganizationId is set
+  useEffect(() => {
+    // Force refresh if we have demo organization ID
+    if (activeOrganizationId === "demo-organization-id") {
+      forceClearCache();
+      loadUserOrganizations().catch(console.error);
+    } else if (!activeOrganizationId) {
+      loadUserOrganizations().catch(console.error);
+    }
+  }, [
+    activeOrganizationId,
+    loadUserOrganizations,
+    forceClearCache,
+    userOrganization,
+  ]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm<CreateProjectRequest>({
     resolver: zodResolver(createProjectSchema),
+    defaultValues: {
+      objectives: [
+        { title: "", description: "", organizationalObjectiveIds: [] },
+      ],
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "objectives",
   });
 
   const onSubmit = async (data: CreateProjectRequest) => {
@@ -58,6 +94,9 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
         startDate: data.startDate,
         endDate: data.endDate,
         teamMembers: teamMembersArray,
+        objectives: data.objectives?.filter(
+          (obj) => obj.title.trim() && obj.description.trim()
+        ),
       };
 
       const result = await createProject(projectData);
@@ -227,6 +266,106 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
           )}
         </div>
 
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            {t("createProjectForm.projectObjectives")}
+          </label>
+          {fields.map((field, index) => (
+            <div
+              key={field.id}
+              className="border border-gray-200 rounded-md p-4 mb-4"
+            >
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <input
+                    {...register(`objectives.${index}.title`)}
+                    placeholder={t("createProjectForm.objectiveTitle")}
+                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
+                  {errors.objectives?.[index]?.title && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.objectives[index]?.title?.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <textarea
+                    {...register(`objectives.${index}.description`)}
+                    placeholder={t("createProjectForm.objectiveDescription")}
+                    rows={2}
+                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
+                  {errors.objectives?.[index]?.description && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.objectives[index]?.description?.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    {t("createProjectForm.linkToOrganizationalObjectives")}
+                  </label>
+                  <select
+                    {...register(
+                      `objectives.${index}.organizationalObjectiveIds`
+                    )}
+                    multiple
+                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    size={3}
+                    disabled={isLoadingObjectives}
+                  >
+                    {isLoadingObjectives ? (
+                      <option disabled>Loading objectives...</option>
+                    ) : objectivesError ? (
+                      <option disabled>Error loading objectives</option>
+                    ) : !Array.isArray(organizationalObjectives) ||
+                      organizationalObjectives.length === 0 ? (
+                      <option disabled>
+                        No organizational objectives available
+                      </option>
+                    ) : (
+                      organizationalObjectives.map((orgObj) => (
+                        <option key={orgObj._id} value={orgObj._id}>
+                          {orgObj.title}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {t("createProjectForm.holdCtrlCmdToSelect")}
+                  </p>
+                </div>
+                <div className="flex justify-end">
+                  {fields.length > 1 && (
+                    <Button
+                      type="button"
+                      onClick={() => remove(index)}
+                      variant="danger"
+                      size="sm"
+                    >
+                      {t("createProjectForm.remove")}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+          <Button
+            type="button"
+            onClick={() =>
+              append({
+                title: "",
+                description: "",
+                organizationalObjectiveIds: [],
+              })
+            }
+            variant="secondary"
+            size="sm"
+          >
+            {t("createProjectForm.addAnotherObjective")}
+          </Button>
+        </div>
+
         {error && (
           <div className="rounded-md bg-red-50 p-4">
             <p className="text-sm text-red-700">{error}</p>
@@ -239,7 +378,6 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
             disabled={isSubmitting}
             variant="primary"
             size="md"
-            className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting
               ? t("createProjectForm.creating")

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { STORAGE_KEYS } from "@/core/utils/constants";
 import { authService } from "@/core/services/authService";
+import { useOrganizationStore } from "../organizations/useOrganizationStore";
 import type { AuthResponse } from "@/core/services/authService";
 import type {
   LoginFormData,
@@ -101,6 +102,13 @@ export const useAuth = () => {
   const login = async (loginData: LoginFormData) => {
     const response = await authService.login(loginData);
     setAuth(response);
+
+    // Initialize organization data after successful login
+    if (response.user?.organizationId) {
+      const orgStore = useOrganizationStore.getState();
+      orgStore.setActiveOrganization(response.user.organizationId);
+    }
+
     return response;
   };
 
@@ -113,11 +121,22 @@ export const useAuth = () => {
     }
 
     setAuth(response);
+
+    // Initialize organization data after successful registration
+    if (response.user?.organizationId) {
+      const orgStore = useOrganizationStore.getState();
+      orgStore.setActiveOrganization(response.user.organizationId);
+    }
+
     return response;
   };
 
   const logout = () => {
     clearAuth();
+
+    // Clear organization data on logout
+    const orgStore = useOrganizationStore.getState();
+    orgStore.clearOrganization();
 
     authService.logout().catch((error) => {
       console.debug("Logout service call failed:", error);
@@ -148,6 +167,7 @@ export const useAuth = () => {
     return response;
   };
 
+
   return {
     ...store,
     user,
@@ -160,5 +180,6 @@ export const useAuth = () => {
     resetPassword,
     verifyEmail,
     resendVerification,
+
   };
 };

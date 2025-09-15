@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { estimateService } from "@/core/services/estimateService";
+import { useOrganization } from "@/core/hooks/organizations/useOrganization";
 import { Button } from "@/presentation/components/primitives/Button/Button";
 
 const projectConfigSchema = z.object({
@@ -44,6 +45,7 @@ export const CreateProjectConfigurationForm = ({
   onSuccess,
 }: CreateProjectConfigurationFormProps) => {
   const { t } = useTranslation("fpa");
+  const { requireOrganization } = useOrganization();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -73,6 +75,7 @@ export const CreateProjectConfigurationForm = ({
       setError(null);
 
       // Update the estimate with project configuration data
+      requireOrganization();
       await estimateService.updateEstimate({
         id: estimateId,
         data: {

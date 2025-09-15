@@ -125,6 +125,27 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
 
       <div>
         <label
+          htmlFor="processingLogic"
+          className="block text-sm font-medium text-gray-700"
+        >
+          {t("componentForms.ei.processingLogic")}
+        </label>
+        <textarea
+          {...register("processingLogic")}
+          id="processingLogic"
+          rows={3}
+          placeholder={t("componentForms.ei.processingLogicPlaceholder")}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        />
+        {errors.processingLogic && (
+          <p className="mt-1 text-sm text-red-600">
+            {errors.processingLogic.message}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label
           htmlFor="fileTypesReferenced"
           className="block text-sm font-medium text-gray-700"
         >

@@ -17,6 +17,7 @@ export interface AuthResponse {
     username: string;
     email: string;
     role: string;
+    organizationId?: string | null;
     isEmailVerified: boolean;
     createdAt: string;
     updatedAt: string;

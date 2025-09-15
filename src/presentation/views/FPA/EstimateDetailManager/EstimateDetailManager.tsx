@@ -7,6 +7,7 @@ import {
   useEstimate,
   useEstimateOverview,
 } from "@/core/hooks/fpa/estimates/useEstimate";
+import { OrganizationGuard } from "@/presentation/components/common/OrganizationGuard/OrganizationGuard";
 import {
   useALIComponents,
   useAIEComponents,
@@ -182,7 +183,8 @@ export const EstimateDetailManager = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <OrganizationGuard>
+      <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -217,10 +219,10 @@ export const EstimateDetailManager = ({
             />
             <span
               className={`px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(
-                currentData.status
+                currentData.status || 'DRAFT'
               )}`}
             >
-              {t(`status.${currentData.status.toLowerCase()}`)}
+              {t(`status.${(currentData.status || 'DRAFT').toLowerCase()}`)}
             </span>
             <span className="text-sm text-muted">v{currentData.version}</span>
           </div>
@@ -254,7 +256,7 @@ export const EstimateDetailManager = ({
 
       {activeTab === "overview" && (
         <EstimateOverviewTab
-          estimateOverview={estimateOverview}
+          estimateOverview={estimateOverview || undefined}
           isLoadingEstimateOverview={isLoadingEstimateOverview}
           overviewError={overviewError}
         />
@@ -287,6 +289,7 @@ export const EstimateDetailManager = ({
       {activeTab === "gsc" && estimateOverview && (
         <GSCTab
           estimateOverview={estimateOverview}
+          estimate={estimate}
           onUpdate={() => {
             mutateEstimate();
             mutateEstimateOverview();
@@ -297,6 +300,7 @@ export const EstimateDetailManager = ({
       {activeTab === "calculations" && estimateOverview && (
         <CalculationsTab estimateOverview={estimateOverview} />
       )}
-    </div>
+      </div>
+    </OrganizationGuard>
   );
 };

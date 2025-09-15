@@ -1,53 +1,138 @@
-export type PlanStatus = "active" | "completed" | "draft" | "scheduled";
-export type PlanType = "measurement" | "estimation" | "quality" | "performance";
-export type PlanTab = "overview" | "plans" | "templates" | "gqm";
+export enum MeasurementPlanStatus {
+  DRAFT = "draft",
+  ACTIVE = "active",
+  COMPLETED = "completed",
+}
 
-export interface Plan {
+export enum ExportFormat {
+  PDF = "pdf",
+  DOCX = "docx",
+}
+
+export type PlanTab = "newPlan" | "createdPlans";
+
+export interface Measurement {
+  measurementEntity: string;
+  measurementAcronym: string;
+  measurementProperties: string;
+  measurementUnit: string;
+  measurementScale: string;
+  measurementProcedure: string;
+  measurementFrequency: string;
+  measurementResponsible?: string;
+}
+
+export interface Metric {
+  metricName: string;
+  metricDescription: string;
+  metricMnemonic: string;
+  metricFormula: string;
+  metricControlRange: [number, number];
+  analysisProcedure: string;
+  analysisFrequency: string;
+  analysisResponsible?: string;
+  measurements: Measurement[];
+}
+
+export interface Question {
+  questionText: string;
+  metrics: Metric[];
+}
+
+export interface Objective {
+  objectiveTitle: string;
+  questions: Question[];
+}
+
+export interface MeasurementPlan {
+  planName: string;
+  associatedProject: string;
+  planResponsible: string;
+  objectives: Objective[];
+}
+
+export interface CreateMeasurementPlanDto {
+  planName: string;
+  associatedProject: string;
+  planResponsible: string;
+  objectives?: CreateObjectiveDto[];
+}
+
+export interface CreateObjectiveDto {
+  objectiveTitle: string;
+  questions?: CreateQuestionDto[];
+}
+
+export interface CreateQuestionDto {
+  questionText: string;
+  metrics?: CreateMetricDto[];
+}
+
+export interface CreateMetricDto {
+  metricName: string;
+  metricDescription: string;
+  metricMnemonic: string;
+  metricFormula: string;
+  metricControlRange: [number, number];
+  analysisProcedure: string;
+  analysisFrequency: string;
+  analysisResponsible?: string;
+  measurements: CreateMeasurementDto[];
+}
+
+export interface CreateMeasurementDto {
+  measurementEntity: string;
+  measurementAcronym: string;
+  measurementProperties: string;
+  measurementUnit: string;
+  measurementScale: string;
+  measurementProcedure: string;
+  measurementFrequency: string;
+  measurementResponsible?: string;
+}
+
+export interface MeasurementPlanSummaryDto {
   id: string;
-  name: string;
-  description: string;
-  type: PlanType;
-  startDate: Date;
-  endDate: Date;
-  status: PlanStatus;
-  owner: string;
+  planName: string;
+  associatedProject: string;
+  planResponsible: string;
+  status: MeasurementPlanStatus;
+  createdAt: Date;
+  updatedAt: Date;
+  objectivesCount: number;
+  questionsCount: number;
+  metricsCount: number;
+  measurementsCount: number;
   progress: number;
-  goalsCount: number;
-  metricsCount: number;
-  gqmPhase?: GQMPhase;
 }
 
-export interface PlanFormData {
-  name: string;
-  description: string;
-  type: PlanType;
-  owner: string;
+export interface MeasurementPlanResponseDto extends MeasurementPlanSummaryDto {
+  organizationId: string;
+  createdBy: string;
+  objectives: Objective[];
 }
 
-export interface CreatePlanRequest {
-  name: string;
-  description: string;
-  type: PlanType;
-  owner: string;
+export interface UpdateMeasurementPlanDto {
+  planName?: string;
+  associatedProject?: string;
+  planResponsible?: string;
+  status?: MeasurementPlanStatus;
+  objectives?: CreateObjectiveDto[];
 }
 
-export interface UpdatePlanRequest {
-  id: string;
-  name?: string;
-  description?: string;
-  status?: PlanStatus;
-  progress?: number;
-  gqmPhase?: GQMPhase;
+export interface ExportMeasurementPlanDto {
+  format: ExportFormat;
+  options?: {
+    includeDetails?: boolean;
+    includeMeasurements?: boolean;
+    includeAnalysis?: boolean;
+  };
 }
 
-export interface PlanTemplate {
-  id: string;
-  name: string;
-  description: string;
-  type: PlanType;
-  estimatedDuration: number;
-  goalsCount: number;
-  metricsCount: number;
+export interface ExportResponseDto {
+  downloadUrl: string;
+  filename: string;
+  expiresAt: string;
 }
 
 export interface PlansStatistics {
@@ -56,85 +141,62 @@ export interface PlansStatistics {
   completedPlans: number;
   draftPlans: number;
   averageProgress: number;
-  totalGoals: number;
+  totalObjectives: number;
+  totalQuestions: number;
   totalMetrics: number;
+  totalMeasurements: number;
 }
 
-export type GQMPhase =
-  | "planning"
-  | "definition"
-  | "data_collection"
-  | "interpretation"
-  | "completed";
-
-export interface GQMGoal {
-  id: string;
-  planId: string;
-  purpose: string;
-  issue: string;
-  object: string;
-  viewpoint: string;
-  context: string;
-  status: "draft" | "active" | "completed";
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
-export interface GQMQuestion {
-  id: string;
-  goalId: string;
-  question: string;
-  rationale: string;
-  priority: "high" | "medium" | "low";
-  status: "draft" | "active" | "answered";
-}
-
-export interface GQMMetric {
-  id: string;
-  questionId: string;
-  name: string;
+export interface OrganizationObjective {
+  _id: string;
+  title: string;
   description: string;
-  type: "objective" | "subjective";
-  scale: string;
-  unit: string;
-  measurementMethod: string;
-  collectionFrequency: string;
-  responsible: string;
-  status: "planned" | "collecting" | "completed";
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  status: 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD' | 'CANCELLED';
+  targetDate?: string;
+  completionDate?: string;
+  progress?: number;
 }
 
-export interface GQMSelectionState {
-  objective: {
-    id: string;
-    name: string;
-    description: string;
-    purpose: string;
-    issue: string;
-    object: string;
-    viewpoint: string;
-    context: string;
-  } | null;
-  question: {
-    id: string;
-    objectiveId: string;
-    question: string;
-    category: string;
-  } | null;
-  metric: {
-    id: string;
-    questionId: string;
-    name: string;
-    unit: string;
-    description: string;
-    type: "objective" | "subjective";
-    scale: string;
-    measurementMethod?: string;
-  } | null;
+export interface CreateOrganizationalObjectiveDto {
+  title: string;
+  description: string;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  status?: 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD' | 'CANCELLED';
+  targetDate?: string;
+  progress?: number;
 }
 
-export interface GQMData {
-  goals: GQMGoal[];
-  questions: GQMQuestion[];
-  metrics: GQMMetric[];
-  selection?: GQMSelectionState;
+export interface UpdateOrganizationalObjectiveDto {
+  _id?: string;
+  title?: string;
+  description?: string;
+  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  status?: 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD' | 'CANCELLED';
+  targetDate?: string;
+  completionDate?: string;
+  progress?: number;
+}
+
+export interface PredefinedMeasurement {
+  measurementEntity: string;
+  measurementAcronym: string;
+  measurementProperties: string;
+  measurementUnit: string;
+  measurementScale: string;
+  measurementProcedure: string;
+  measurementFrequency: string;
+  measurementResponsible?: string;
 }
 
 export const PLAN_PERMISSIONS = {
@@ -142,5 +204,5 @@ export const PLAN_PERMISSIONS = {
   EDIT_PLAN: "edit_plan",
   DELETE_PLAN: "delete_plan",
   VIEW_PLANS: "view_plans",
-  MANAGE_GQM: "manage_gqm",
+  EXPORT_PLAN: "export_plan",
 } as const;

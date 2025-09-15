@@ -6,7 +6,6 @@ import { useFPA } from "@/core/hooks/fpa/useFPA";
 import type { FPATab } from "./common/FPATabs";
 import { FPATabs, FPAPageHeader, OrganizationAlert } from "./common";
 import { OverviewTab, EstimatesTab, ReferenceTab } from "./common/Tabs";
-import { Estimate } from "@/core/types/fpa";
 
 export const FPAView: React.FC = () => {
   const {
@@ -46,8 +45,8 @@ export const FPAView: React.FC = () => {
     setActiveTab(tab);
   };
 
-  const handleEditEstimate = (estimate: Estimate) => {
-    console.log("Edit estimate:", estimate);
+  const handleEditEstimate = () => {
+    // TODO: Implement estimate editing logic
   };
 
   const renderTabContent = () => {

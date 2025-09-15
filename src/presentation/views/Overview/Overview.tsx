@@ -67,17 +67,16 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ user }) => {
         onCreateOrganization={handleCreateOrganization}
       />
 
+      <QuickActionsSection
+        hasOrganization={!!userOrganization}
+        onNewFPAEstimate={handleNewFPAEstimate}
+        onNewMeasurementPlan={handleNewMeasurementPlan}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-        <QuickActionsSection
-          hasOrganization={!!userOrganization}
-          onNewFPAEstimate={handleNewFPAEstimate}
-          onNewMeasurementPlan={handleNewMeasurementPlan}
-        />
-
-        <StatisticsSection
+        {/* <StatisticsSection
           statistics={statistics}
           isLoadingStatistics={isLoadingStatistics}
-        />
+        /> */}
       </div>
       <div className="col-span-2 flex flex-col gap-4">
         <OrganizationSection

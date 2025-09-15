@@ -22,7 +22,7 @@ export const CalculationsTab = ({ estimateOverview }: CalculationsTabProps) => {
               {t("calculations.unadjustedFunctionPoints")}
             </dt>
             <dd className="mt-1 text-lg font-semibold text-default">
-              {estimateOverview.functionPoints.unadjusted}
+              {(estimateOverview as any).functionPointsSummary.pfna}
             </dd>
           </div>
           <div>
@@ -30,10 +30,7 @@ export const CalculationsTab = ({ estimateOverview }: CalculationsTabProps) => {
               {t("calculations.valueAdjustmentFactor")}
             </dt>
             <dd className="mt-1 text-lg font-semibold text-default">
-              {
-                estimateOverview.generalSystemCharacteristics
-                  .valueAdjustmentFactor
-              }
+              {(estimateOverview as any).functionPointsSummary.adjustmentFactor}
             </dd>
           </div>
           <div>
@@ -41,7 +38,7 @@ export const CalculationsTab = ({ estimateOverview }: CalculationsTabProps) => {
               {t("calculations.adjustedFunctionPoints")}
             </dt>
             <dd className="mt-1 text-lg font-semibold text-primary">
-              {estimateOverview.functionPoints.adjusted}
+              {(estimateOverview as any).functionPointsSummary.pfa.toFixed(2)}
             </dd>
           </div>
           <div>
@@ -49,10 +46,7 @@ export const CalculationsTab = ({ estimateOverview }: CalculationsTabProps) => {
               {t("calculations.totalDegreeOfInfluence")}
             </dt>
             <dd className="mt-1 text-lg font-semibold text-default">
-              {
-                estimateOverview.generalSystemCharacteristics
-                  .totalInfluenceFactor
-              }
+              {(estimateOverview as any).functionPointsSummary.influenceDegree}
               /70
             </dd>
           </div>
