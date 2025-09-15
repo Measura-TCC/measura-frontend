@@ -53,5 +53,6 @@
     "nameMaxLength": "O nome não deve exceder 100 caracteres",
     "descriptionMinLength": "A descrição deve ter pelo menos 10 caracteres",
     "descriptionMaxLength": "A descrição não deve exceder 1000 caracteres"
-  }
+  },
+  "linkedTo": "Vinculado a:"
 }

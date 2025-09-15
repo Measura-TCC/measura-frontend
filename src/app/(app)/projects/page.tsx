@@ -253,7 +253,7 @@ export default function ProjectsPage() {
                         <div className="font-medium">{obj.title}</div>
                         {obj.organizationalObjectiveIds && obj.organizationalObjectiveIds.length > 0 && (
                           <div className="text-blue-600 mt-1">
-                            Linked to: {obj.organizationalObjectiveIds
+                            {t("linkedTo")} {obj.organizationalObjectiveIds
                               .map(id => organizationalObjectives.find(org => org._id === id)?.title)
                               .filter(Boolean)
                               .join(", ")}

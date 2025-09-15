@@ -58,25 +58,22 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
       {
         metric: t("charts.labels.productivityMetrics.Hours per Function Point"),
         value:
-          estimateOverview.chartData.productivityMetrics.find(
-            (m) => m.metric === "Hours per Function Point"
-          )?.value || 0,
+          (estimateOverview as any).productivityMetrics
+            ?.hoursPerFunctionPoint || 0,
       },
       {
         metric: t("charts.labels.productivityMetrics.Function Points per Day"),
         value:
-          estimateOverview.chartData.productivityMetrics.find(
-            (m) => m.metric === "Function Points per Day"
-          )?.value || 0,
+          (estimateOverview as any).productivityMetrics?.functionPointsPerDay ||
+          0,
       },
       {
         metric: t(
           "charts.labels.productivityMetrics.Function Points per Person-Month"
         ),
         value:
-          estimateOverview.chartData.productivityMetrics.find(
-            (m) => m.metric === "Function Points per Person-Month"
-          )?.value || 0,
+          (estimateOverview as any).productivityMetrics
+            ?.functionPointsPerPersonMonth || 0,
       },
     ];
   };
@@ -99,7 +96,10 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
     return colors[status as keyof typeof colors] || colors.DRAFT;
   };
 
-  const hasCostData = estimateOverview.costEstimation.estimatedTotalCost > 0;
+  const hasCostData =
+    ((estimateOverview.costEstimation as any)?.totalCost ||
+      estimateOverview.costEstimation?.estimatedTotalCost ||
+      0) > 0;
 
   return (
     <div className="space-y-6">
@@ -134,7 +134,10 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
               <span className="text-muted">•</span>
               <span className="text-muted">
                 {t("estimateForm.countType")}:{" "}
-                {translateCountType(estimateOverview.configuration.countType)}
+                {translateCountType(
+                  (estimateOverview as any).countingType ||
+                    "DEVELOPMENT_PROJECT"
+                )}
               </span>
               {estimateOverview.project && (
                 <>
@@ -150,13 +153,15 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
           <div className="flex flex-col lg:items-end gap-2">
             <span
               className={`px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(
-                estimateOverview.status
+                estimateOverview.status || "DRAFT"
               )}`}
             >
-              {t(`status.${estimateOverview.status.toLowerCase()}`)}
+              {t(
+                `status.${(estimateOverview.status || "DRAFT").toLowerCase()}`
+              )}
             </span>
             <span className="text-sm text-muted">
-              v{estimateOverview.version}
+              v{estimateOverview.version || 1}
             </span>
           </div>
         </div>
@@ -167,13 +172,17 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
               {t("overview.adjustedFunctionPoints")}
             </div>
             <div className="text-2xl font-bold text-primary">
-              {estimateOverview.functionPoints.adjusted}
+              {(estimateOverview as any).functionPointsSummary?.pfa.toFixed(
+                2
+              ) || 0}
             </div>
             <div className="text-xs text-primary/70 mt-1">
-              {estimateOverview.functionPoints.unadjusted} PFNA ×{" "}
-              {estimateOverview.generalSystemCharacteristics.valueAdjustmentFactor.toFixed(
-                2
-              )}{" "}
+              {(estimateOverview as any).functionPointsSummary?.pfna || 0} PFNA
+              ×{" "}
+              {(
+                (estimateOverview as any).functionPointsSummary
+                  ?.adjustmentFactor || 1
+              ).toFixed(2)}{" "}
               {t("overview.valueAdjustmentFactor")}
             </div>
           </div>
@@ -183,10 +192,17 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
               {t("overview.estimatedEffort")}
             </div>
             <div className="text-2xl font-bold text-green-800">
-              {estimateOverview.effortEstimation.effort.estimatedEffortHours}h
+              {(estimateOverview as any).effortEstimation?.totalHours.toFixed(
+                2
+              ) || 0}
+              h
             </div>
             <div className="text-xs text-green-600 mt-1">
-              {estimateOverview.effortEstimation.duration.estimatedDuration}
+              {(estimateOverview as any).effortEstimation?.durationDays
+                ? `${Math.ceil(
+                    (estimateOverview as any).effortEstimation.durationDays
+                  )} days`
+                : "0 days"}
             </div>
           </div>
 
@@ -197,12 +213,18 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
               </div>
               <div className="text-2xl font-bold text-amber-800">
                 {formatCurrency(
-                  estimateOverview.costEstimation.estimatedTotalCost
+                  (estimateOverview.costEstimation as any)?.totalCost ||
+                    estimateOverview.costEstimation?.estimatedTotalCost ||
+                    0
                 )}
               </div>
               <div className="text-xs text-amber-600 mt-1">
                 {formatCurrency(
-                  estimateOverview.costEstimation.estimatedCostPerFunctionPoint
+                  (estimateOverview.costEstimation as any)
+                    ?.costPerFunctionPoint ||
+                    estimateOverview.costEstimation
+                      ?.estimatedCostPerFunctionPoint ||
+                    0
                 )}
                 {t("overview.perFunctionPoint")}
               </div>
@@ -214,10 +236,8 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
               {t("overview.totalComponents")}
             </div>
             <div className="text-2xl font-bold text-purple-800">
-              {Object.values(estimateOverview.components.summaryByType).reduce(
-                (sum, count) => sum + count,
-                0
-              )}
+              {(estimateOverview as any).functionPointsSummary?.componentCounts
+                ?.total?.count || 0}
             </div>
           </div>
         </div>
@@ -234,7 +254,8 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
                 {t("overview.teamSize")}
               </div>
               <div className="font-medium text-default">
-                {estimateOverview.configuration.teamSize} {t("overview.people")}
+                {(estimateOverview as any).projectConfig?.teamSize || 1}{" "}
+                {t("overview.people")}
               </div>
             </div>
             <div>
@@ -242,7 +263,9 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
                 {t("overview.dailyHours")}
               </div>
               <div className="font-medium text-default">
-                {estimateOverview.configuration.averageDailyWorkingHours}h/dia
+                {(estimateOverview as any).projectConfig
+                  ?.averageDailyWorkingHours || 8}
+                h/dia
               </div>
             </div>
             <div>
@@ -250,7 +273,10 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
                 {t("overview.hourlyRate")}
               </div>
               <div className="font-medium text-default">
-                {formatCurrency(estimateOverview.configuration.hourlyRateBRL)}/h
+                {formatCurrency(
+                  (estimateOverview as any).projectConfig?.hourlyRateBRL || 0
+                )}
+                /h
               </div>
             </div>
             <div>
@@ -258,7 +284,9 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
                 {t("overview.productivity")}
               </div>
               <div className="font-medium text-default">
-                {estimateOverview.configuration.productivityFactor}h/PF
+                {(estimateOverview as any).projectConfig?.productivityFactor ||
+                  20}
+                h/PF
               </div>
             </div>
           </div>
@@ -274,7 +302,8 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
                 {t("components.aliTitle")}
               </span>
               <span className="font-medium text-default">
-                {estimateOverview.components.summaryByType.ALI}{" "}
+                {(estimateOverview as any).functionPointsSummary
+                  ?.componentCounts?.ali?.count || 0}{" "}
                 {t("components.components")}
               </span>
             </div>
@@ -283,7 +312,8 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
                 {t("components.aieTitle")}
               </span>
               <span className="font-medium text-default">
-                {estimateOverview.components.summaryByType.AIE}{" "}
+                {(estimateOverview as any).functionPointsSummary
+                  ?.componentCounts?.aie?.count || 0}{" "}
                 {t("components.components")}
               </span>
             </div>
@@ -292,7 +322,8 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
                 {t("components.eiTitle")}
               </span>
               <span className="font-medium text-default">
-                {estimateOverview.components.summaryByType.EI}{" "}
+                {(estimateOverview as any).functionPointsSummary
+                  ?.componentCounts?.ei?.count || 0}{" "}
                 {t("components.components")}
               </span>
             </div>
@@ -301,7 +332,8 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
                 {t("components.eoTitle")}
               </span>
               <span className="font-medium text-default">
-                {estimateOverview.components.summaryByType.EO}{" "}
+                {(estimateOverview as any).functionPointsSummary
+                  ?.componentCounts?.eo?.count || 0}{" "}
                 {t("components.components")}
               </span>
             </div>
@@ -310,7 +342,8 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
                 {t("components.eqTitle")}
               </span>
               <span className="font-medium text-default">
-                {estimateOverview.components.summaryByType.EQ}{" "}
+                {(estimateOverview as any).functionPointsSummary
+                  ?.componentCounts?.eq?.count || 0}{" "}
                 {t("components.components")}
               </span>
             </div>
@@ -318,9 +351,8 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
               <div className="flex justify-between items-center font-semibold">
                 <span className="text-default">{t("analysis.total")}</span>
                 <span className="text-primary">
-                  {Object.values(
-                    estimateOverview.components.summaryByType
-                  ).reduce((sum, count) => sum + count, 0)}{" "}
+                  {(estimateOverview as any).functionPointsSummary
+                    ?.componentCounts?.total?.count || 0}{" "}
                   {t("components.components")}
                 </span>
               </div>
@@ -334,7 +366,8 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center p-3 bg-green-50 border border-green-200 rounded-lg">
                 <div className="text-lg font-bold text-green-800">
-                  {estimateOverview.components.componentComplexitySummary.low}
+                  {(estimateOverview as any).functionPointsSummary
+                    ?.complexityDistribution?.low?.count || 0}
                 </div>
                 <div className="text-xs text-green-600">
                   {t("complexityLabels.LOW")}
@@ -342,10 +375,8 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
               </div>
               <div className="text-center p-3 bg-amber-50 border border-amber-200 rounded-lg">
                 <div className="text-lg font-bold text-amber-800">
-                  {
-                    estimateOverview.components.componentComplexitySummary
-                      .average
-                  }
+                  {(estimateOverview as any).functionPointsSummary
+                    ?.complexityDistribution?.medium?.count || 0}
                 </div>
                 <div className="text-xs text-amber-600">
                   {t("complexityLabels.AVERAGE")}
@@ -353,7 +384,8 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
               </div>
               <div className="text-center p-3 bg-red-50 border border-red-200 rounded-lg">
                 <div className="text-lg font-bold text-red-800">
-                  {estimateOverview.components.componentComplexitySummary.high}
+                  {(estimateOverview as any).functionPointsSummary
+                    ?.complexityDistribution?.high?.count || 0}
                 </div>
                 <div className="text-xs text-red-600">
                   {t("complexityLabels.HIGH")}
@@ -373,9 +405,28 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
             <ResponsiveContainer width="100%" height="100%">
               <PieChart style={{ cursor: "pointer" }}>
                 <Pie
-                  data={estimateOverview.chartData.functionPointDistribution.filter(
-                    (item) => item.value > 0
-                  )}
+                  data={Object.entries(
+                    (estimateOverview as any).functionPointsSummary
+                      ?.componentCounts || {}
+                  )
+                    .filter(
+                      ([key, item]) =>
+                        key !== "total" && ((item as any)?.count || 0) > 0
+                    )
+                    .map(([key, item]) => ({
+                      value: (item as any)?.points || 0,
+                      abbreviation: key.toUpperCase(),
+                      color:
+                        key === "ali"
+                          ? "#8b5cf6"
+                          : key === "aie"
+                          ? "#10b981"
+                          : key === "ei"
+                          ? "#f59e0b"
+                          : key === "eo"
+                          ? "#ef4444"
+                          : "#6366f1",
+                    }))}
                   dataKey="value"
                   nameKey="abbreviation"
                   cx="50%"
@@ -389,11 +440,27 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
                   strokeWidth={2}
                   stroke="#ffffff"
                 >
-                  {estimateOverview.chartData.functionPointDistribution
-                    .filter((item) => item.value > 0)
-                    .map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
+                  {Object.entries(
+                    (estimateOverview as any).functionPointsSummary
+                      ?.componentCounts || {}
+                  )
+                    .filter(
+                      ([key, item]) =>
+                        key !== "total" && ((item as any)?.count || 0) > 0
+                    )
+                    .map(([key, item], index) => {
+                      const color =
+                        key === "ali"
+                          ? "#8b5cf6"
+                          : key === "aie"
+                          ? "#10b981"
+                          : key === "ei"
+                          ? "#f59e0b"
+                          : key === "eo"
+                          ? "#ef4444"
+                          : "#6366f1";
+                      return <Cell key={`cell-${index}`} fill={color} />;
+                    })}
                 </Pie>
                 <Tooltip
                   formatter={(value, name) => [
@@ -416,28 +483,41 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
             </ResponsiveContainer>
           </div>
           <div className="grid grid-cols-2 gap-2 mt-4">
-            {estimateOverview.chartData.functionPointDistribution.map(
-              (item) => (
-                <div
-                  key={item.abbreviation}
-                  className="flex items-center gap-2 text-sm"
-                >
-                  <div
-                    className="w-3 h-3 rounded"
-                    style={{ backgroundColor: item.color }}
-                  />
-                  <span
-                    className={`${
-                      item.value > 0
-                        ? "text-default font-medium"
-                        : "text-secondary"
-                    }`}
-                  >
-                    {translateComponentLabel(item.abbreviation)}: {item.value}
-                  </span>
-                </div>
-              )
-            )}
+            {Object.entries(
+              (estimateOverview as any).functionPointsSummary
+                ?.componentCounts || {}
+            )
+              .filter(([key, item]) => key !== "total")
+              .map(([key, item]) => {
+                const color =
+                  key === "ali"
+                    ? "#8b5cf6"
+                    : key === "aie"
+                    ? "#10b981"
+                    : key === "ei"
+                    ? "#f59e0b"
+                    : key === "eo"
+                    ? "#ef4444"
+                    : "#6366f1";
+                const points = (item as any)?.points || 0;
+                return (
+                  <div key={key} className="flex items-center gap-2 text-sm">
+                    <div
+                      className="w-3 h-3 rounded"
+                      style={{ backgroundColor: color }}
+                    />
+                    <span
+                      className={`${
+                        points > 0
+                          ? "text-default font-medium"
+                          : "text-secondary"
+                      }`}
+                    >
+                      {translateComponentLabel(key.toUpperCase())}: {points}
+                    </span>
+                  </div>
+                );
+              })}
           </div>
         </div>
 
@@ -448,18 +528,23 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={estimateOverview.chartData.complexityDistribution.map(
-                  (item) => ({
-                    ...item,
-                    complexity: translateComplexityLabel(item.complexity),
-                    fill:
-                      item.complexity === "Low"
-                        ? "#10b981"
-                        : item.complexity === "Average"
-                        ? "#f59e0b"
-                        : "#ef4444",
-                  })
-                )}
+                data={Object.entries(
+                  (estimateOverview as any).functionPointsSummary
+                    ?.complexityDistribution || {}
+                ).map(([key, item]) => ({
+                  complexity: translateComplexityLabel(
+                    key === "medium"
+                      ? "Average"
+                      : key.charAt(0).toUpperCase() + key.slice(1)
+                  ),
+                  count: (item as any)?.count || 0,
+                  fill:
+                    key === "low"
+                      ? "#10b981"
+                      : key === "medium"
+                      ? "#f59e0b"
+                      : "#ef4444",
+                }))}
                 style={{ cursor: "pointer" }}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
@@ -491,43 +576,49 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
                   }}
                 />
                 <Bar dataKey="count" fill="#8b5cf6">
-                  {estimateOverview.chartData.complexityDistribution.map(
-                    (entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={
-                          entry.complexity === "Low"
-                            ? "#10b981"
-                            : entry.complexity === "Average"
-                            ? "#f59e0b"
-                            : "#ef4444"
-                        }
-                      />
-                    )
-                  )}
+                  {Object.entries(
+                    (estimateOverview as any).functionPointsSummary
+                      ?.complexityDistribution || {}
+                  ).map(([key, item], index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={
+                        key === "low"
+                          ? "#10b981"
+                          : key === "medium"
+                          ? "#f59e0b"
+                          : "#ef4444"
+                      }
+                    />
+                  ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
           <div className="grid grid-cols-3 gap-2 mt-4">
-            {estimateOverview.chartData.complexityDistribution.map((item) => (
-              <div
-                key={item.complexity}
-                className="flex items-center gap-2 text-sm"
-              >
+            {Object.entries(
+              (estimateOverview as any).functionPointsSummary
+                ?.complexityDistribution || {}
+            ).map(([key, item]) => (
+              <div key={key} className="flex items-center gap-2 text-sm">
                 <div
                   className="w-3 h-3 rounded"
                   style={{
                     backgroundColor:
-                      item.complexity === "Low"
+                      key === "low"
                         ? "#10b981"
-                        : item.complexity === "Average"
+                        : key === "medium"
                         ? "#f59e0b"
                         : "#ef4444",
                   }}
                 />
                 <span className="text-default font-medium">
-                  {translateComplexityLabel(item.complexity)}: {item.count}
+                  {translateComplexityLabel(
+                    key === "medium"
+                      ? "Average"
+                      : key.charAt(0).toUpperCase() + key.slice(1)
+                  )}
+                  : {(item as any)?.count || 0}
                 </span>
               </div>
             ))}

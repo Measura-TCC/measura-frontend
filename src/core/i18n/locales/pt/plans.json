@@ -106,7 +106,7 @@
     "selectObjective": "Selecionar Objetivo",
     "selectQuestion": "Selecionar Questão",
     "selectMetric": "Selecionar Métrica",
-    "chooseObjective": "Escolha um objetivo organizacional...",
+    "chooseObjective": "Escolha o objetivo de medição...",
     "chooseQuestion": "Escolha uma questão para responder...",
     "chooseMetric": "Escolha uma métrica para medir...",
     "searchObjectives": "Buscar objetivos...",
@@ -168,7 +168,13 @@
     "finalizePlan": "Finalizar Plano de Medição",
     "creating": "Criando...",
     "selectObjectivesTitle": "1. Selecionar Objetivos",
-    "chooseObjective": "Escolha um objetivo organizacional...",
+    "chooseObjective": "Escolha o objetivo de medição...",
+    "chooseMeasurementObjective": "Escolha o objetivo de medição...",
+    "planObjectives": "Objetivos de Medição",
+    "projectObjectives": "Objetivos do Projeto",
+    "selectProject": "Selecionar Projeto",
+    "noObjectivesFound": "Nenhum objetivo encontrado para este projeto",
+    "linkedTo": "Vinculado a:",
     "createNewObjective": "+ Criar Novo Objetivo",
     "addCustomObjectivePlaceholder": "Digite um objetivo personalizado",
     "addCustomQuestionPlaceholder": "Digite uma questão personalizada",
@@ -206,7 +212,7 @@
         "description": "Estabeleça a base para seu plano de medição com informações básicas e definição GQM"
       },
       "step2": {
-        "title": "2. Identificar Objetivos Organizacionais",
+        "title": "2. Identificar Objetivos",
         "description": "Defina objetivos de medição usando a abordagem Goal-Question-Metric"
       },
       "step3": {
@@ -496,7 +502,11 @@
       "incidentStart": "Timestamp UTC quando incidente foi aberto. Um por incident_id. Manter severidade e serviço impactado.",
       "serviceRestoration": "Timestamp UTC quando serviço foi restaurado. Um por incident_id.",
       "deployFailure": "Um registro por deploy de produção classificado como falha (rollback ou incidente).",
-      "deployTotal": "Um registro por deploy de produção. Inclui sucessos e falhas."
+      "deployTotal": "Um registro por deploy de produção. Inclui sucessos e falhas.",
+      "productivityHhPF": "Total de horas registradas no período do projeto e Pontos de Função entregues. Excluir férias/treinamentos. Consolidar por iteração/release.",
+      "leadTimeForChanges": "Timestamp UTC do commit e timestamp UTC da promoção para produção. Único por commit (SHA) e deploy.",
+      "meanTimeToRestore": "Timestamp UTC quando incidente foi aberto e timestamp UTC quando serviço foi restaurado. Um por incident_id.",
+      "changeFailureRate": "Um registro por deploy de produção classificado como falha e um registro por deploy total."
     },
     "procedures": {
       "worklog": "Integrar Timesheet/ERP com boards (Jira/Azure). Filtrar por projeto/épico/iteração; remover duplicatas; validar categorias.",
@@ -506,7 +516,11 @@
       "incidentStart": "Na criação de incidente no PagerDuty/Opsgenie/Jira, capturar timestamp disparado. Persistir incident_id, severidade.",
       "serviceRestoration": "Na resolução de incidente, capturar timestamp resolvido ou StatusPage retornar ao operacional. Persistir incident_id, severidade.",
       "deployFailure": "Ingerir eventos de deployment e incidentes. Vincular DPF=1 quando rollback ou incidente vinculado ao deploy.",
-      "deployTotal": "A cada promoção de produção, registrar DPT=1 com deployment_id e repo."
+      "deployTotal": "A cada promoção de produção, registrar DPT=1 com deployment_id e repo.",
+      "productivityHhPF": "Integrar Timesheet/ERP com boards e consolidar planilha IFPUG/COSMIC. Filtrar por projeto/iteração; mapear itens 'feitos/aceitos'; calcular razão Hh/PF.",
+      "leadTimeForChanges": "No commit para branch principal e a cada deploy de produção, capturar timestamps via webhook Git e CI/CD; calcular diferença temporal.",
+      "meanTimeToRestore": "Na criação e resolução de incidentes, capturar timestamps via PagerDuty/Opsgenie/StatusPage; calcular tempo de restauração.",
+      "changeFailureRate": "Ingerir eventos de deployment e incidentes. Calcular razão entre deploys com falha (rollback/incidente) e total de deploys."
     },
     "frequency": {
       "continuousIteration": "Contínuo / agregado por iteração ou release",

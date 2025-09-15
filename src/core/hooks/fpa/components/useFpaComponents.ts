@@ -9,7 +9,7 @@ import type {
 } from "@/core/schemas/fpa";
 
 export const useALIComponents = (params: { estimateId: string }) => {
-  const key = params.estimateId ? `/estimates/${params.estimateId}/ilf` : null;
+  const key = params.estimateId ? `/estimates/${params.estimateId}/components/ilf` : null;
 
   const {
     data: aliComponents,
@@ -27,7 +27,7 @@ export const useALIComponents = (params: { estimateId: string }) => {
 };
 
 export const useEIComponents = (params: { estimateId: string }) => {
-  const key = params.estimateId ? `/estimates/${params.estimateId}/ei` : null;
+  const key = params.estimateId ? `/estimates/${params.estimateId}/components/ei` : null;
 
   const {
     data: eiComponents,
@@ -45,7 +45,7 @@ export const useEIComponents = (params: { estimateId: string }) => {
 };
 
 export const useEOComponents = (params: { estimateId: string }) => {
-  const key = params.estimateId ? `/estimates/${params.estimateId}/eo` : null;
+  const key = params.estimateId ? `/estimates/${params.estimateId}/components/eo` : null;
 
   const {
     data: eoComponents,
@@ -63,7 +63,7 @@ export const useEOComponents = (params: { estimateId: string }) => {
 };
 
 export const useEQComponents = (params: { estimateId: string }) => {
-  const key = params.estimateId ? `/estimates/${params.estimateId}/eq` : null;
+  const key = params.estimateId ? `/estimates/${params.estimateId}/components/eq` : null;
 
   const {
     data: eqComponents,
@@ -81,7 +81,7 @@ export const useEQComponents = (params: { estimateId: string }) => {
 };
 
 export const useAIEComponents = (params: { estimateId: string }) => {
-  const key = params.estimateId ? `/estimates/${params.estimateId}/eif` : null;
+  const key = params.estimateId ? `/estimates/${params.estimateId}/components/eif` : null;
 
   const {
     data: aieComponents,
@@ -138,7 +138,7 @@ export const useFpaComponentActions = () => {
   }) => {
     try {
       const result = await fpaComponentService.createALIComponent(params);
-      await mutate(`/estimates/${params.estimateId}/ilf`);
+      await mutate(`/estimates/${params.estimateId}/components/ilf`);
       return result;
     } catch (error) {
       throw error;
@@ -151,7 +151,7 @@ export const useFpaComponentActions = () => {
   }) => {
     try {
       const result = await fpaComponentService.createEIComponent(params);
-      await mutate(`/estimates/${params.estimateId}/ei`);
+      await mutate(`/estimates/${params.estimateId}/components/ei`);
       return result;
     } catch (error) {
       throw error;
@@ -164,7 +164,7 @@ export const useFpaComponentActions = () => {
   }) => {
     try {
       const result = await fpaComponentService.createEOComponent(params);
-      await mutate(`/estimates/${params.estimateId}/eo`);
+      await mutate(`/estimates/${params.estimateId}/components/eo`);
       return result;
     } catch (error) {
       throw error;
@@ -177,7 +177,7 @@ export const useFpaComponentActions = () => {
   }) => {
     try {
       const result = await fpaComponentService.createEQComponent(params);
-      await mutate(`/estimates/${params.estimateId}/eq`);
+      await mutate(`/estimates/${params.estimateId}/components/eq`);
       return result;
     } catch (error) {
       throw error;
@@ -190,7 +190,7 @@ export const useFpaComponentActions = () => {
   }) => {
     try {
       const result = await fpaComponentService.createAIEComponent(params);
-      await mutate(`/estimates/${params.estimateId}/eif`);
+      await mutate(`/estimates/${params.estimateId}/components/eif`);
       return result;
     } catch (error) {
       throw error;
@@ -198,11 +198,11 @@ export const useFpaComponentActions = () => {
   };
 
   const invalidateAllComponents = async (estimateId: string) => {
-    await mutate(`/estimates/${estimateId}/ilf`);
-    await mutate(`/estimates/${estimateId}/ei`);
-    await mutate(`/estimates/${estimateId}/eo`);
-    await mutate(`/estimates/${estimateId}/eq`);
-    await mutate(`/estimates/${estimateId}/eif`);
+    await mutate(`/estimates/${estimateId}/components/ilf`);
+    await mutate(`/estimates/${estimateId}/components/ei`);
+    await mutate(`/estimates/${estimateId}/components/eo`);
+    await mutate(`/estimates/${estimateId}/components/eq`);
+    await mutate(`/estimates/${estimateId}/components/eif`);
     await mutate(`/estimates/${estimateId}`);
   };
 

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
+import { Card, CardContent } from "@/presentation/components/primitives";
 import {
-  Card,
-  CardContent,
-} from "@/presentation/components/primitives";
-import { useMeasurementPlan, useMeasurementPlans } from "@/core/hooks/measurementPlans";
+  useMeasurementPlan,
+  useMeasurementPlans,
+} from "@/core/hooks/measurementPlans";
 import { useMeasurementPlanExport } from "@/core/hooks/measurementPlans";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { ExportFormat, MeasurementPlanStatus } from "@/core/types/plans";
@@ -35,12 +35,13 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
   });
 
   const { plan, planError, isLoadingPlan } = useMeasurementPlan({ planId });
-  const { deletePlan, updatePlan, isUpdatingPlan, operationError, clearError } = useMeasurementPlans();
+  const { deletePlan, updatePlan, isUpdatingPlan, operationError, clearError } =
+    useMeasurementPlans();
   const { projects } = useProjects();
   const exportHook = useMeasurementPlanExport({ planId });
 
   const getProjectName = (projectId: string): string => {
-    const project = projects?.find(p => p._id === projectId);
+    const project = projects?.find((p) => p._id === projectId);
     return project?.name || projectId;
   };
 
@@ -91,9 +92,16 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
 
     try {
       await updatePlan(planId, {
-        planName: editForm.planName !== plan.planName ? editForm.planName : undefined,
-        associatedProject: editForm.associatedProject !== plan.associatedProject ? editForm.associatedProject : undefined,
-        planResponsible: editForm.planResponsible !== plan.planResponsible ? editForm.planResponsible : undefined,
+        planName:
+          editForm.planName !== plan.planName ? editForm.planName : undefined,
+        associatedProject:
+          editForm.associatedProject !== plan.associatedProject
+            ? editForm.associatedProject
+            : undefined,
+        planResponsible:
+          editForm.planResponsible !== plan.planResponsible
+            ? editForm.planResponsible
+            : undefined,
         status: editForm.status !== plan.status ? editForm.status : undefined,
       });
       setIsEditing(false);
@@ -113,8 +121,11 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
     });
   };
 
-  const handleEditFormChange = (field: string, value: string | MeasurementPlanStatus) => {
-    setEditForm(prev => ({ ...prev, [field]: value }));
+  const handleEditFormChange = (
+    field: string,
+    value: string | MeasurementPlanStatus
+  ) => {
+    setEditForm((prev) => ({ ...prev, [field]: value }));
   };
 
   if (isLoadingPlan) {
@@ -167,7 +178,6 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
     );
   }
 
-
   return (
     <div className="space-y-6">
       {/* Header with responsive design */}
@@ -190,12 +200,22 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="text-red-400 mr-3">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                <svg
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </div>
               <div>
-                <h3 className="text-sm font-medium text-red-800">Operation Failed</h3>
+                <h3 className="text-sm font-medium text-red-800">
+                  Operation Failed
+                </h3>
                 <p className="text-sm text-red-700 mt-1">{operationError}</p>
               </div>
             </div>
@@ -203,8 +223,18 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
               onClick={clearError}
               className="text-red-400 hover:text-red-600 transition-colors"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -244,7 +274,7 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
 
         {/* Responsive Sidebar */}
         <div className="space-y-4 lg:space-y-6">
-          <PlanProgressCard progress={plan.progress} />
+          {/* <PlanProgressCard progress={plan.progress} /> */}
           <PlanStatisticsCard
             objectivesCount={plan.objectivesCount}
             questionsCount={plan.questionsCount}

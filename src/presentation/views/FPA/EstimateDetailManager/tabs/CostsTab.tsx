@@ -30,12 +30,14 @@ export const CostsTab = ({ estimateOverview }: CostsTabProps) => {
             </div>
             <div className="text-2xl font-bold text-green-800">
               {formatCurrency(
-                estimateOverview.costEstimation.estimatedTotalCost
+                (estimateOverview as any).costEstimation.totalCost
               )}
             </div>
             <div className="text-xs text-green-600 mt-1">
               {t("costs.forFunctionPoints", {
-                points: estimateOverview.functionPoints.adjusted,
+                points: (
+                  estimateOverview as any
+                ).functionPointsSummary.pfa.toFixed(2),
               })}
             </div>
           </div>
@@ -46,7 +48,7 @@ export const CostsTab = ({ estimateOverview }: CostsTabProps) => {
             </div>
             <div className="text-2xl font-bold text-blue-800">
               {formatCurrency(
-                estimateOverview.costEstimation.estimatedCostPerFunctionPoint
+                (estimateOverview as any).costEstimation.costPerFunctionPoint
               )}
             </div>
             <div className="text-xs text-blue-600 mt-1">
@@ -60,12 +62,12 @@ export const CostsTab = ({ estimateOverview }: CostsTabProps) => {
             </div>
             <div className="text-2xl font-bold text-purple-800">
               {formatCurrency(
-                estimateOverview.costEstimation.estimatedCostPerPerson
+                (estimateOverview as any).costEstimation.costPerPerson
               )}
             </div>
             <div className="text-xs text-purple-600 mt-1">
               {t("costs.forTeamMembers", {
-                count: estimateOverview.configuration.teamSize,
+                count: (estimateOverview as any).projectConfig.teamSize,
               })}
             </div>
           </div>
@@ -75,7 +77,9 @@ export const CostsTab = ({ estimateOverview }: CostsTabProps) => {
               {t("costs.hourlyRate")}
             </div>
             <div className="text-2xl font-bold text-amber-800">
-              {formatCurrency(estimateOverview.configuration.hourlyRateBRL)}
+              {formatCurrency(
+                (estimateOverview as any).projectConfig.hourlyRateBRL
+              )}
             </div>
             <div className="text-xs text-amber-600 mt-1">
               {t("costs.perHourPerPerson")}
@@ -94,7 +98,7 @@ export const CostsTab = ({ estimateOverview }: CostsTabProps) => {
               {t("costs.totalEffort")}
             </div>
             <div className="text-xl font-bold text-default">
-              {estimateOverview.effortEstimation.effort.estimatedEffortHours}
+              {(estimateOverview as any).effortEstimation.totalHours.toFixed(2)}
               {t("costs.hours")}
             </div>
           </div>
@@ -103,7 +107,10 @@ export const CostsTab = ({ estimateOverview }: CostsTabProps) => {
               {t("costs.duration")}
             </div>
             <div className="text-xl font-bold text-default">
-              {estimateOverview.effortEstimation.duration.estimatedDuration}
+              {Math.ceil(
+                (estimateOverview as any).effortEstimation.durationDays || 0
+              )}{" "}
+              {t("costs.days")}
             </div>
           </div>
           <div>
@@ -111,7 +118,9 @@ export const CostsTab = ({ estimateOverview }: CostsTabProps) => {
               {t("costs.hoursPerPerson")}
             </div>
             <div className="text-xl font-bold text-default">
-              {estimateOverview.effortEstimation.effort.hoursPerPerson}
+              {(
+                estimateOverview as any
+              ).effortEstimation.hoursPerPerson.toFixed(2)}
               {t("costs.hours")}
             </div>
           </div>

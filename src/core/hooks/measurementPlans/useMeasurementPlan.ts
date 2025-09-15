@@ -182,7 +182,7 @@ export const useMeasurementPlans = (params: UseMeasurementPlanParams = {}) => {
   };
 
   const formatDate = (date: Date | string): string => {
-    return new Date(date).toLocaleDateString();
+    return new Date(date).toLocaleDateString("pt-BR");
   };
 
   const refreshData = useCallback(async (): Promise<void> => {

@@ -7,12 +7,10 @@ import {
   CardTitle,
   Button,
 } from "@/presentation/components/primitives";
-import {
-  DocumentIcon,
-} from "@/presentation/assets/icons";
+import { DocumentIcon } from "@/presentation/assets/icons";
 import {
   MeasurementPlanSummaryDto,
-  MeasurementPlanStatus
+  MeasurementPlanStatus,
 } from "@/core/types/plans";
 
 interface CreatedPlansTabProps {
@@ -21,7 +19,7 @@ interface CreatedPlansTabProps {
   formatDate: (date: Date | string) => string;
   getStatusColor: (status: MeasurementPlanStatus) => string;
   onViewPlan: (planId: string) => void;
-  projects?: Array<{ _id: string; name: string; }>;
+  projects?: Array<{ _id: string; name: string }>;
   pagination?: {
     page: number;
     limit: number;
@@ -47,7 +45,7 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
   const router = useRouter();
 
   const getProjectName = (projectId: string): string => {
-    const project = projects.find(p => p._id === projectId);
+    const project = projects.find((p) => p._id === projectId);
     return project?.name || projectId;
   };
 
@@ -80,9 +78,7 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             {t("noPlan")}
           </h3>
-          <p className="text-gray-500 mb-6">
-            {t("createFirstPlan")}
-          </p>
+          <p className="text-gray-500 mb-6">{t("createFirstPlan")}</p>
           <Button onClick={() => router.push("/plans?tab=newPlan")}>
             {t("createPlan")}
           </Button>
@@ -101,11 +97,13 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
         >
           <CardHeader>
             <div>
-              <CardTitle className="text-xl mb-2">
-                {plan.planName}
-              </CardTitle>
+              <CardTitle className="text-xl mb-2">{plan.planName}</CardTitle>
               <div className="flex items-center space-x-4 text-sm text-gray-600">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(plan.status)}`}>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                    plan.status
+                  )}`}
+                >
                   {t(`status.${plan.status}`)}
                 </span>
                 <span>
@@ -119,7 +117,7 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-              <div>
+              {/* <div>
                 <span className="font-medium text-gray-900">
                   {t("progress")}
                 </span>
@@ -136,7 +134,7 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
                     </span>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div>
                 <span className="font-medium text-gray-900">
                   {t("workflow.objectives")}
@@ -175,7 +173,9 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
         <div className="flex items-center justify-between mt-6">
           <div className="flex items-center space-x-2 text-sm text-gray-600">
             <span>
-              {t("showing")} {((pagination.page - 1) * pagination.limit) + 1} - {Math.min(pagination.page * pagination.limit, pagination.total)} {t("of")} {pagination.total} {t("plans")}
+              {t("showing")} {(pagination.page - 1) * pagination.limit + 1} -{" "}
+              {Math.min(pagination.page * pagination.limit, pagination.total)}{" "}
+              {t("of")} {pagination.total} {t("plans")}
             </span>
             {onPageSizeChange && (
               <div className="flex items-center space-x-2 ml-4">
@@ -208,32 +208,37 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
 
               {/* Page numbers */}
               <div className="flex items-center space-x-1">
-                {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                  let pageNum = i + 1;
+                {Array.from(
+                  { length: Math.min(5, pagination.totalPages) },
+                  (_, i) => {
+                    let pageNum = i + 1;
 
-                  // Adjust page numbers if we're past the first few pages
-                  if (pagination.totalPages > 5) {
-                    if (pagination.page <= 3) {
-                      pageNum = i + 1;
-                    } else if (pagination.page >= pagination.totalPages - 2) {
-                      pageNum = pagination.totalPages - 4 + i;
-                    } else {
-                      pageNum = pagination.page - 2 + i;
+                    // Adjust page numbers if we're past the first few pages
+                    if (pagination.totalPages > 5) {
+                      if (pagination.page <= 3) {
+                        pageNum = i + 1;
+                      } else if (pagination.page >= pagination.totalPages - 2) {
+                        pageNum = pagination.totalPages - 4 + i;
+                      } else {
+                        pageNum = pagination.page - 2 + i;
+                      }
                     }
-                  }
 
-                  return (
-                    <Button
-                      key={pageNum}
-                      variant={pagination.page === pageNum ? "primary" : "ghost"}
-                      size="sm"
-                      onClick={() => onPageChange(pageNum)}
-                      className="px-3 py-1 min-w-[32px]"
-                    >
-                      {pageNum}
-                    </Button>
-                  );
-                })}
+                    return (
+                      <Button
+                        key={pageNum}
+                        variant={
+                          pagination.page === pageNum ? "primary" : "ghost"
+                        }
+                        size="sm"
+                        onClick={() => onPageChange(pageNum)}
+                        className="px-3 py-1 min-w-[32px]"
+                      >
+                        {pageNum}
+                      </Button>
+                    );
+                  }
+                )}
               </div>
 
               <Button

@@ -31,7 +31,7 @@ export const fpaComponentService = {
     estimateId: string;
   }): Promise<ComponentResponse[]> => {
     const response = await measuraApi.get(
-      `/estimates/${params.estimateId}/ilf`
+      `/estimates/${params.estimateId}/components/ilf`
     );
     return response.data;
   },
@@ -41,7 +41,7 @@ export const fpaComponentService = {
     id: string;
   }): Promise<ComponentResponse> => {
     const response = await measuraApi.get(
-      `/estimates/${params.estimateId}/ilf/${params.id}`
+      `/estimates/${params.estimateId}/components/ilf/${params.id}`
     );
     return response.data;
   },
@@ -51,7 +51,7 @@ export const fpaComponentService = {
     data: CreateALIData;
   }): Promise<ComponentResponse> => {
     const response = await measuraApi.post(
-      `/estimates/${params.estimateId}/ilf`,
+      `/estimates/${params.estimateId}/components/ilf`,
       params.data
     );
     return response.data;
@@ -63,7 +63,7 @@ export const fpaComponentService = {
     data: Partial<CreateALIData>;
   }): Promise<ComponentResponse> => {
     const response = await measuraApi.put(
-      `/estimates/${params.estimateId}/ilf/${params.id}`,
+      `/estimates/${params.estimateId}/components/ilf/${params.id}`,
       params.data
     );
     return response.data;
@@ -73,13 +73,13 @@ export const fpaComponentService = {
     estimateId: string;
     id: string;
   }): Promise<void> => {
-    await measuraApi.delete(`/estimates/${params.estimateId}/ilf/${params.id}`);
+    await measuraApi.delete(`/estimates/${params.estimateId}/components/ilf/${params.id}`);
   },
 
   getEIComponents: async (params: {
     estimateId: string;
   }): Promise<ComponentResponse[]> => {
-    const response = await measuraApi.get(`/estimates/${params.estimateId}/ei`);
+    const response = await measuraApi.get(`/estimates/${params.estimateId}/components/ei`);
     return response.data;
   },
 
@@ -88,7 +88,7 @@ export const fpaComponentService = {
     data: CreateEIData;
   }): Promise<ComponentResponse> => {
     const response = await measuraApi.post(
-      `/estimates/${params.estimateId}/ei`,
+      `/estimates/${params.estimateId}/components/ei`,
       params.data
     );
     return response.data;
@@ -100,7 +100,7 @@ export const fpaComponentService = {
     data: Partial<CreateEIData>;
   }): Promise<ComponentResponse> => {
     const response = await measuraApi.put(
-      `/estimates/${params.estimateId}/ei/${params.id}`,
+      `/estimates/${params.estimateId}/components/ei/${params.id}`,
       params.data
     );
     return response.data;
@@ -110,13 +110,13 @@ export const fpaComponentService = {
     estimateId: string;
     id: string;
   }): Promise<void> => {
-    await measuraApi.delete(`/estimates/${params.estimateId}/ei/${params.id}`);
+    await measuraApi.delete(`/estimates/${params.estimateId}/components/ei/${params.id}`);
   },
 
   getEOComponents: async (params: {
     estimateId: string;
   }): Promise<ComponentResponse[]> => {
-    const response = await measuraApi.get(`/estimates/${params.estimateId}/eo`);
+    const response = await measuraApi.get(`/estimates/${params.estimateId}/components/eo`);
     return response.data;
   },
 
@@ -125,7 +125,7 @@ export const fpaComponentService = {
     data: CreateEOData;
   }): Promise<ComponentResponse> => {
     const response = await measuraApi.post(
-      `/estimates/${params.estimateId}/eo`,
+      `/estimates/${params.estimateId}/components/eo`,
       params.data
     );
     return response.data;
@@ -137,7 +137,7 @@ export const fpaComponentService = {
     data: Partial<CreateEOData>;
   }): Promise<ComponentResponse> => {
     const response = await measuraApi.put(
-      `/estimates/${params.estimateId}/eo/${params.id}`,
+      `/estimates/${params.estimateId}/components/eo/${params.id}`,
       params.data
     );
     return response.data;
@@ -147,13 +147,13 @@ export const fpaComponentService = {
     estimateId: string;
     id: string;
   }): Promise<void> => {
-    await measuraApi.delete(`/estimates/${params.estimateId}/eo/${params.id}`);
+    await measuraApi.delete(`/estimates/${params.estimateId}/components/eo/${params.id}`);
   },
 
   getEQComponents: async (params: {
     estimateId: string;
   }): Promise<ComponentResponse[]> => {
-    const response = await measuraApi.get(`/estimates/${params.estimateId}/eq`);
+    const response = await measuraApi.get(`/estimates/${params.estimateId}/components/eq`);
     return response.data;
   },
 
@@ -161,9 +161,10 @@ export const fpaComponentService = {
     estimateId: string;
     data: CreateEQData;
   }): Promise<ComponentResponse> => {
+    const { useSpecialCalculation, ...backendData } = params.data;
     const response = await measuraApi.post(
-      `/estimates/${params.estimateId}/eq`,
-      params.data
+      `/estimates/${params.estimateId}/components/eq`,
+      backendData
     );
     return response.data;
   },
@@ -173,9 +174,10 @@ export const fpaComponentService = {
     id: string;
     data: Partial<CreateEQData>;
   }): Promise<ComponentResponse> => {
+    const { useSpecialCalculation, ...backendData } = params.data;
     const response = await measuraApi.put(
-      `/estimates/${params.estimateId}/eq/${params.id}`,
-      params.data
+      `/estimates/${params.estimateId}/components/eq/${params.id}`,
+      backendData
     );
     return response.data;
   },
@@ -184,14 +186,14 @@ export const fpaComponentService = {
     estimateId: string;
     id: string;
   }): Promise<void> => {
-    await measuraApi.delete(`/estimates/${params.estimateId}/eq/${params.id}`);
+    await measuraApi.delete(`/estimates/${params.estimateId}/components/eq/${params.id}`);
   },
 
   getAIEComponents: async (params: {
     estimateId: string;
   }): Promise<ComponentResponse[]> => {
     const response = await measuraApi.get(
-      `/estimates/${params.estimateId}/eif`
+      `/estimates/${params.estimateId}/components/eif`
     );
     return response.data;
   },
@@ -201,7 +203,7 @@ export const fpaComponentService = {
     data: CreateAIEData;
   }): Promise<ComponentResponse> => {
     const response = await measuraApi.post(
-      `/estimates/${params.estimateId}/eif`,
+      `/estimates/${params.estimateId}/components/eif`,
       params.data
     );
     return response.data;
@@ -213,7 +215,7 @@ export const fpaComponentService = {
     data: Partial<CreateAIEData>;
   }): Promise<ComponentResponse> => {
     const response = await measuraApi.put(
-      `/estimates/${params.estimateId}/eif/${params.id}`,
+      `/estimates/${params.estimateId}/components/eif/${params.id}`,
       params.data
     );
     return response.data;
@@ -223,6 +225,6 @@ export const fpaComponentService = {
     estimateId: string;
     id: string;
   }): Promise<void> => {
-    await measuraApi.delete(`/estimates/${params.estimateId}/eif/${params.id}`);
+    await measuraApi.delete(`/estimates/${params.estimateId}/components/eif/${params.id}`);
   },
 };

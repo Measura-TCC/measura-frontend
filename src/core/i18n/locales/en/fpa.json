@@ -378,6 +378,8 @@
     "ei": {
       "name": "EI Name",
       "primaryIntentPlaceholder": "Describe the primary purpose and intent of this EI component...",
+      "processingLogic": "Processing Logic",
+      "processingLogicPlaceholder": "Describe the processing logic and business rules applied to this input...",
       "fileTypesReferenced": "File Types Referenced (FTRs)",
       "dataElementTypes": "Data Element Types (DETs)",
       "submit": "Create EI",

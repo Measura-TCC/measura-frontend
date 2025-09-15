@@ -94,26 +94,31 @@ export const Step5: React.FC<Step5Props> = ({
         objectiveTitle: objective.objectiveTitle,
         questions: objective.questions.map((question) => ({
           questionText: question.questionText,
-          metrics: question.metrics.map((metric, mIndex) => ({
-            metricName: metric.metricName,
-            metricDescription: `Description for ${metric.metricName}`,
-            metricMnemonic: `M${mIndex + 1}`,
-            metricFormula: metric.metricName,
-            metricControlRange: [0, 100] as [number, number],
-            analysisProcedure: `Analysis procedure for ${metric.metricName}`,
-            analysisFrequency: "Monthly",
-            analysisResponsible: measurementPlanForm.planResponsible,
-            measurements: metric.measurements.map((measurement, measIndex) => ({
-              measurementEntity: `Entity ${measIndex + 1}`,
-              measurementAcronym: `M${measIndex + 1}`,
-              measurementProperties: `Properties for ${metric.metricName}`,
-              measurementUnit: measurement.measurementUnit,
-              measurementScale: "continuous",
-              measurementProcedure: `Procedure for ${metric.metricName}`,
-              measurementFrequency: "Daily",
-              measurementResponsible: measurementPlanForm.planResponsible,
-            }))
-          }))
+          metrics: question.metrics.map((metric, mIndex) => {
+            // Extract the metric name from the full key (e.g., "metrics.leadTimeForChanges" -> "leadTimeForChanges")
+            const metricKey = metric.metricName.replace(/^metrics\./, '');
+
+            return {
+              metricName: metric.metricName,
+              metricDescription: `metrics.descriptions.${metricKey}`,
+              metricMnemonic: `M${mIndex + 1}`,
+              metricFormula: metric.metricName,
+              metricControlRange: [0, 100] as [number, number],
+              analysisProcedure: `analysis.procedures.${metricKey}`,
+              analysisFrequency: "analysis.frequency.weekly",
+              analysisResponsible: measurementPlanForm.planResponsible,
+              measurements: metric.measurements.map((measurement, measIndex) => ({
+                measurementEntity: `Entity ${measIndex + 1}`,
+                measurementAcronym: `M${measIndex + 1}`,
+                measurementProperties: `measurements.properties.${metricKey}`,
+                measurementUnit: measurement.measurementUnit,
+                measurementScale: "scales.continuous",
+                measurementProcedure: `measurements.procedures.${metricKey}`,
+                measurementFrequency: metricKey === 'leadTimeForChanges' ? "measurements.frequency.perCommit" : "measurements.frequency.continuousIteration",
+                measurementResponsible: measurementPlanForm.planResponsible,
+              }))
+            };
+          })
         }))
       })),
     };

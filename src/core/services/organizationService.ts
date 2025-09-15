@@ -63,7 +63,7 @@ export const organizationService = {
 
   getObjectives: async (params: { organizationId: string }): Promise<OrganizationObjective[]> => {
     const response = await measuraApi.get(`/organizations/${params.organizationId}/objectives`);
-    return response.data;
+    return response.data.data || [];
   },
 
   getMeasurements: async (params: { organizationId: string }): Promise<PredefinedMeasurement[]> => {

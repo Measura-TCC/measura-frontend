@@ -140,7 +140,13 @@
     "finalizePlan": "Finalize Measurement Plan",
     "creating": "Creating...",
     "selectObjectivesTitle": "1. Select Objectives",
-    "chooseObjective": "Choose an organizational objective...",
+    "chooseObjective": "Choose a measurement objective...",
+    "chooseMeasurementObjective": "Choose a measurement objective...",
+    "planObjectives": "Measurement Objectives",
+    "projectObjectives": "Project Objectives",
+    "selectProject": "Select Project",
+    "noObjectivesFound": "No objectives found for this project",
+    "linkedTo": "Linked to:",
     "createNewObjective": "+ Create New Objective",
     "addCustomObjectivePlaceholder": "Enter a custom objective",
     "addCustomQuestionPlaceholder": "Enter a custom question",
@@ -446,7 +452,11 @@
       "incidentStart": "UTC timestamp when incident opened. One per incident_id. Maintain severity and impacted service.",
       "serviceRestoration": "UTC timestamp when service restored. One per incident_id.",
       "deployFailure": "One record per production deploy classified as failure (rollback or incident).",
-      "deployTotal": "One record per production deploy. Includes successes and failures."
+      "deployTotal": "One record per production deploy. Includes successes and failures.",
+      "productivityHhPF": "Total hours logged in project period and Function Points delivered. Exclude vacations/trainings. Consolidate per iteration/release.",
+      "leadTimeForChanges": "UTC timestamp of commit and UTC timestamp of production promotion. Unique per commit (SHA) and deploy.",
+      "meanTimeToRestore": "UTC timestamp when incident opened and UTC timestamp when service restored. One per incident_id.",
+      "changeFailureRate": "One record per production deploy classified as failure and one record per total deploy."
     },
     "procedures": {
       "worklog": "Integrate Timesheet/ERP with boards (Jira/Azure). Filter per project/epic/iteration; deduplicate; validate categories.",
@@ -456,7 +466,11 @@
       "incidentStart": "On incident creation in PagerDuty/Opsgenie/Jira, capture triggered timestamp. Persist incident_id, severity.",
       "serviceRestoration": "On incident resolution, capture resolved timestamp or StatusPage return to operational. Persist incident_id, severity.",
       "deployFailure": "Ingest deployment events and incidents. Link DPF=1 when rollback or incident tied to deploy.",
-      "deployTotal": "On each production promotion, log DPT=1 with deployment_id and repo."
+      "deployTotal": "On each production promotion, log DPT=1 with deployment_id and repo.",
+      "productivityHhPF": "Integrate Timesheet/ERP with boards and consolidate IFPUG/COSMIC sheet. Filter per project/iteration; map 'done/accepted' items; calculate Hh/PF ratio.",
+      "leadTimeForChanges": "On commit to main branch and each production deploy, capture timestamps via Git webhook and CI/CD; calculate time difference.",
+      "meanTimeToRestore": "On incident creation and resolution, capture timestamps via PagerDuty/Opsgenie/StatusPage; calculate restoration time.",
+      "changeFailureRate": "Ingest deployment events and incidents. Calculate ratio between failed deploys (rollback/incident) and total deploys."
     },
     "frequency": {
       "continuousIteration": "Continuous / aggregated per iteration or release",

@@ -375,19 +375,15 @@ export const estimateService = {
   calculateFunctionPoints: async (params: {
     estimateId: string;
   }): Promise<CalculationResponse> => {
-    const { activeOrganizationId } = getOrganizationState();
-    if (!activeOrganizationId) throw new Error('Organization access required');
     const response = await measuraApi.post(
-      `/estimates/${activeOrganizationId}/${params.estimateId}/calculate`
+      `/estimates/${params.estimateId}/calculate`
     );
     return response.data;
   },
 
   recalculate: async (params: { id: string }): Promise<EstimateResponse> => {
-    const { activeOrganizationId } = getOrganizationState();
-    if (!activeOrganizationId) throw new Error('Organization access required');
     const response = await measuraApi.post(
-      `/estimates/${activeOrganizationId}/${params.id}/recalculate`
+      `/estimates/${params.id}/recalculate`
     );
     return response.data;
   },

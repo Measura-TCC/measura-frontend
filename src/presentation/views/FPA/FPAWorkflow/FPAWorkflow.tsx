@@ -149,6 +149,7 @@ export const FPAWorkflow = () => {
     setCurrentStep(3);
   };
 
+
   const handleGSCCompleted = async (generalSystemCharacteristics: number[]) => {
     if (!state.createdEstimate) return;
 
@@ -434,8 +435,7 @@ export const FPAWorkflow = () => {
             <p className="text-secondary mb-6">
               {t("workflow.step3Description")}
             </p>
-
-            {currentEstimateData && (
+                {currentEstimateData && (
               <div className="mb-6 p-4 bg-background-secondary rounded-lg">
                 <h3 className="text-lg font-medium mb-3 text-default">
                   {t("workflow.addedComponents")}

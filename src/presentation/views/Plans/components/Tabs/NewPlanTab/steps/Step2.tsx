@@ -45,7 +45,7 @@ export const Step2: React.FC<Step2Props> = ({
         <div className="space-y-6">
           <div>
             <h4 className="font-medium mb-2">
-              Plan Objectives
+              {t("workflow.planObjectives")}
             </h4>
             <div className="space-y-2">
               <div className="relative">
@@ -64,7 +64,7 @@ export const Step2: React.FC<Step2Props> = ({
                     }
                   }}
                 >
-                  <option value="">{t("workflow.chooseObjective")}</option>
+                  <option value="">{t("workflow.chooseMeasurementObjective")}</option>
                   {availableObjectives
                     .filter(
                       (obj) =>
@@ -116,7 +116,7 @@ export const Step2: React.FC<Step2Props> = ({
 
           <div className="border-t pt-4">
             <h4 className="font-medium mb-2">
-              Project Objectives
+              {t("workflow.projectObjectives")}
             </h4>
             <div className="space-y-3">
               <div className="relative">
@@ -125,7 +125,7 @@ export const Step2: React.FC<Step2Props> = ({
                   value={selectedProjectId}
                   onChange={(e) => setSelectedProjectId(e.target.value)}
                 >
-                  <option value="">Select Project</option>
+                  <option value="">{t("workflow.selectProject")}</option>
                   {projects?.map((project) => (
                     <option key={project._id} value={project._id}>
                       {project.name}
@@ -150,7 +150,7 @@ export const Step2: React.FC<Step2Props> = ({
                       <div className="text-xs text-secondary mt-1">{projectObj.description}</div>
                       {projectObj.organizationalObjectiveIds && projectObj.organizationalObjectiveIds.length > 0 && (
                         <div className="text-xs text-primary mt-2">
-                          Linked to: {projectObj.organizationalObjectiveIds
+                          {t("workflow.linkedTo")} {projectObj.organizationalObjectiveIds
                             .map(id => organizationalObjectives.find(org => org._id === id)?.title)
                             .filter(Boolean)
                             .join(", ")}
@@ -163,7 +163,7 @@ export const Step2: React.FC<Step2Props> = ({
 
               {selectedProjectId && projectObjectives.length === 0 && (
                 <div className="text-sm text-secondary p-3 text-center">
-                  No objectives found for this project
+                  {t("workflow.noObjectivesFound")}
                 </div>
               )}
             </div>

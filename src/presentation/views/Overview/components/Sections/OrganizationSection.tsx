@@ -79,7 +79,7 @@ export const OrganizationSection: React.FC<OrganizationSectionProps> = ({
                   {t("created")}
                 </label>
                 <p className="text-secondary text-sm">
-                  {new Date(userOrganization.createdAt).toLocaleDateString()}
+                  {new Date(userOrganization.createdAt).toLocaleDateString('pt-BR')}
                 </p>
               </div>
 

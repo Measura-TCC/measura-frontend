@@ -219,10 +219,10 @@ export const EstimateDetailManager = ({
             />
             <span
               className={`px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(
-                currentData.status
+                currentData.status || 'DRAFT'
               )}`}
             >
-              {t(`status.${currentData.status.toLowerCase()}`)}
+              {t(`status.${(currentData.status || 'DRAFT').toLowerCase()}`)}
             </span>
             <span className="text-sm text-muted">v{currentData.version}</span>
           </div>
@@ -289,6 +289,7 @@ export const EstimateDetailManager = ({
       {activeTab === "gsc" && estimateOverview && (
         <GSCTab
           estimateOverview={estimateOverview}
+          estimate={estimate}
           onUpdate={() => {
             mutateEstimate();
             mutateEstimateOverview();

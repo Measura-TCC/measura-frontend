@@ -197,7 +197,7 @@ export const PlanVisualization: React.FC<PlanVisualizationProps> = ({
                             </div>
                             <div>
                               <strong>{t("metric.metricFormula")}:</strong>{" "}
-                              {metric.metricFormula}
+                              {t(metric.metricFormula)}
                             </div>
                           </div>
 
@@ -253,31 +253,31 @@ export const PlanVisualization: React.FC<PlanVisualizationProps> = ({
                                     <strong>
                                       {t("measurement.measurementProperties")}:
                                     </strong>{" "}
-                                    {measurement.measurementProperties}
+                                    {t(measurement.measurementProperties)}
                                   </div>
                                   <div>
                                     <strong>
                                       {t("measurement.measurementUnit")}:
                                     </strong>{" "}
-                                    {measurement.measurementUnit}
+                                    {t(measurement.measurementUnit)}
                                   </div>
                                   <div>
                                     <strong>
                                       {t("measurement.measurementScale")}:
                                     </strong>{" "}
-                                    {measurement.measurementScale}
+                                    {t(measurement.measurementScale)}
                                   </div>
                                   <div>
                                     <strong>
                                       {t("measurement.measurementProcedure")}:
                                     </strong>{" "}
-                                    {measurement.measurementProcedure}
+                                    {t(measurement.measurementProcedure)}
                                   </div>
                                   <div>
                                     <strong>
                                       {t("measurement.measurementFrequency")}:
                                     </strong>{" "}
-                                    {measurement.measurementFrequency}
+                                    {t(measurement.measurementFrequency)}
                                   </div>
                                   {measurement.measurementResponsible && (
                                     <div>

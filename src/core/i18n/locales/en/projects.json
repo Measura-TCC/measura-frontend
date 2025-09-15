@@ -53,5 +53,6 @@
     "nameMaxLength": "Name must not exceed 100 characters",
     "descriptionMinLength": "Description must be at least 10 characters",
     "descriptionMaxLength": "Description must not exceed 1000 characters"
-  }
+  },
+  "linkedTo": "Linked to:"
 }
