@@ -229,7 +229,7 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
             <div className="space-y-4">
               <PlanVisualization
                 plan={plan}
-                projects={projects}
+                projects={projects || []}
                 showNavigation={true}
               />
             </div>

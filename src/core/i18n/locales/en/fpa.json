@@ -19,6 +19,10 @@
   "organizationRequired": "Organization Required",
   "organizationRequiredDescription": "You need to create or join an organization to create FPA estimates and manage measurement activities.",
   "createOrganization": "Create Organization",
+  "noProjectsTitle": "No Projects Found",
+  "noProjectsDescription": "You need to create at least one project before creating FPA estimates.",
+  "goToProjects": "Go to Projects",
+  "createProject": "Create Project",
   "noEstimatesYet": "No Estimates Yet",
   "noEstimatesDescription": "Create your first FPA estimate to start measuring function points and tracking project complexity.",
   "createFirstEstimate": "Create Your First Estimate",
@@ -541,7 +545,10 @@
     "descending": "Descending",
     "ascending": "Ascending",
     "noEstimatesFound": "No estimates found",
-    "adjustFilters": "Try adjusting your search or filters"
+    "adjustFilters": "Try adjusting your search or filters",
+    "noEstimates": "No Estimates Yet",
+    "noEstimatesDescription": "Create your first FPA estimate to start measuring function points and tracking project complexity.",
+    "noEstimatesFoundDescription": "Try adjusting your search or filters to find the estimates you're looking for."
   },
   "exportDropdown": {
     "title": "Export & Reports",

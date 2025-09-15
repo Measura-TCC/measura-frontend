@@ -1,4 +1,5 @@
 import { measuraApi } from "./measuraApi";
+import { getOrganizationState } from "../utils/organizationUtils";
 import type {
   CreateEstimateData,
   UpdateEstimateData,
@@ -300,33 +301,43 @@ export const estimateService = {
   getEstimates: async (params?: {
     projectId?: string;
   }): Promise<EstimateResponse[]> => {
-    const response = await measuraApi.get("/estimates", { params });
+    const { activeOrganizationId } = getOrganizationState();
+    if (!activeOrganizationId) throw new Error('Organization access required');
+    const response = await measuraApi.get(`/estimates/${activeOrganizationId}`, { params });
     return response.data;
   },
 
   getEstimatesOverviews: async (params?: {
     projectId?: string;
   }): Promise<EstimateOverview[]> => {
-    const response = await measuraApi.get("/estimates", { params });
+    const { activeOrganizationId } = getOrganizationState();
+    if (!activeOrganizationId) throw new Error('Organization access required');
+    const response = await measuraApi.get(`/estimates/${activeOrganizationId}`, { params });
     return response.data.map(transformToEstimateOverview);
   },
 
   getEstimateOverview: async (params: {
     id: string;
   }): Promise<EstimateOverviewResponse> => {
-    const response = await measuraApi.get(`/estimates/${params.id}/overview`);
+    const { activeOrganizationId } = getOrganizationState();
+    if (!activeOrganizationId) throw new Error('Organization access required');
+    const response = await measuraApi.get(`/estimates/${activeOrganizationId}/${params.id}/overview`);
     return response.data;
   },
 
   getEstimate: async (params: { id: string }): Promise<EstimateResponse> => {
-    const response = await measuraApi.get(`/estimates/${params.id}`);
+    const { activeOrganizationId } = getOrganizationState();
+    if (!activeOrganizationId) throw new Error('Organization access required');
+    const response = await measuraApi.get(`/estimates/${activeOrganizationId}/${params.id}`);
     return response.data;
   },
 
   createEstimate: async (
     data: CreateEstimateData
   ): Promise<EstimateResponse> => {
-    const response = await measuraApi.post("/estimates", data);
+    const { activeOrganizationId } = getOrganizationState();
+    if (!activeOrganizationId) throw new Error('Organization access required');
+    const response = await measuraApi.post(`/estimates/${activeOrganizationId}`, data);
     return response.data;
   },
 
@@ -334,8 +345,10 @@ export const estimateService = {
     id: string;
     data: UpdateEstimateData;
   }): Promise<EstimateResponse> => {
+    const { activeOrganizationId } = getOrganizationState();
+    if (!activeOrganizationId) throw new Error('Organization access required');
     const response = await measuraApi.put(
-      `/estimates/${params.id}`,
+      `/estimates/${activeOrganizationId}/${params.id}`,
       params.data
     );
     return response.data;
@@ -344,29 +357,37 @@ export const estimateService = {
   deleteEstimate: async (params: {
     id: string;
   }): Promise<{ success: boolean }> => {
-    const response = await measuraApi.delete(`/estimates/${params.id}`);
+    const { activeOrganizationId } = getOrganizationState();
+    if (!activeOrganizationId) throw new Error('Organization access required');
+    const response = await measuraApi.delete(`/estimates/${activeOrganizationId}/${params.id}`);
     return response.data;
   },
 
   createNewVersion: async (params: {
     id: string;
   }): Promise<EstimateResponse> => {
-    const response = await measuraApi.post(`/estimates/${params.id}/version`);
+    const { activeOrganizationId } = getOrganizationState();
+    if (!activeOrganizationId) throw new Error('Organization access required');
+    const response = await measuraApi.post(`/estimates/${activeOrganizationId}/${params.id}/version`);
     return response.data;
   },
 
   calculateFunctionPoints: async (params: {
     estimateId: string;
   }): Promise<CalculationResponse> => {
+    const { activeOrganizationId } = getOrganizationState();
+    if (!activeOrganizationId) throw new Error('Organization access required');
     const response = await measuraApi.post(
-      `/estimates/${params.estimateId}/calculate`
+      `/estimates/${activeOrganizationId}/${params.estimateId}/calculate`
     );
     return response.data;
   },
 
   recalculate: async (params: { id: string }): Promise<EstimateResponse> => {
+    const { activeOrganizationId } = getOrganizationState();
+    if (!activeOrganizationId) throw new Error('Organization access required');
     const response = await measuraApi.post(
-      `/estimates/${params.id}/recalculate`
+      `/estimates/${activeOrganizationId}/${params.id}/recalculate`
     );
     return response.data;
   },

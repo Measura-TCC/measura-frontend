@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { useState, useRef, useEffect } from "react";
@@ -44,21 +44,51 @@ export const CreateOrganizationForm = ({
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm<CreateOrganizationData>({
     resolver: zodResolver(createOrganizationSchema),
+    defaultValues: {
+      objectives: [{
+        title: ""
+      }]
+    }
+  });
+
+  console.log("Form errors:", errors);
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "objectives"
   });
 
   const { createOrganization } = useOrganizationActions();
 
   const onSubmit = async (data: CreateOrganizationData) => {
+    console.log("Form submitted! Raw data:", data);
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const result = await createOrganization(data);
+      const transformedData = {
+        ...data,
+        objectives: data.objectives?.filter(obj => obj.title?.trim()).map(obj => ({
+          title: obj.title.trim(),
+          description: obj.title.trim(),
+          priority: "MEDIUM" as const,
+          status: "PLANNING" as const,
+          progress: 0,
+          targetDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+        })),
+        strategicObjectives: undefined
+      };
+
+      console.log("Sending organization data:", transformedData);
+      const result = await createOrganization(transformedData);
+      console.log("Organization created successfully:", result);
       reset();
       onSuccess?.(result as Organization);
     } catch (err) {
+      console.error("Organization creation failed:", err);
       if (isMountedRef.current) {
         setError(err instanceof Error ? err.message : t("form.failedToCreate"));
       }
@@ -169,22 +199,43 @@ export const CreateOrganizationForm = ({
       </div>
 
       <div>
-        <label
-          htmlFor="strategicObjectives"
-          className="block text-sm font-medium text-gray-700"
-        >
+        <label className="block text-sm font-medium text-gray-700 mb-2">
           {t("form.strategicObjectivesLabel")}
         </label>
-        <textarea
-          {...register("strategicObjectives")}
-          id="strategicObjectives"
-          rows={4}
-          placeholder={t("form.strategicObjectivesPlaceholder")}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-        />
-        {errors.strategicObjectives && (
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2 mb-2 pl-4">
+            <input
+              {...register(`objectives.${index}.title`)}
+              placeholder={t("form.strategicObjectivesPlaceholder")}
+              className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            />
+            {fields.length > 1 && (
+              <Button
+                type="button"
+                variant="danger"
+                size="sm"
+                onClick={() => remove(index)}
+              >
+                {t("form.removeButton")}
+              </Button>
+            )}
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={() => append({
+            title: ""
+          })}
+        >
+          {t("form.addObjectiveButton")}
+        </Button>
+        {errors.objectives && (
           <p className="mt-1 text-sm text-red-600">
-            {errors.strategicObjectives.message}
+            {Array.isArray(errors.objectives)
+              ? errors.objectives.find(obj => obj?.title)?.title?.message
+              : errors.objectives.message}
           </p>
         )}
       </div>
@@ -239,6 +290,7 @@ export const CreateOrganizationForm = ({
           disabled={isSubmitting}
           variant="primary"
           size="md"
+          onClick={() => console.log("Button clicked!")}
           className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? t("form.creating") : t("form.createButton")}

@@ -73,6 +73,8 @@
     "strategicObjectivesPlaceholder": "Liste os Objetivos Organizacionais...",
     "addObjectivePlaceholder": "Cadastre um objetivo personalizado",
     "selectObjectivePlaceholder": "Escolha um objetivo...",
+    "addObjectiveButton": "Adicionar Objetivo",
+    "removeButton": "Remover",
     "createButton": "Criar Organização",
     "creating": "Criando...",
     "failedToCreate": "Falha ao criar organização"

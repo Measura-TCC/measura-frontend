@@ -12,10 +12,19 @@ export const createOrganizationSchema = z.object({
   mission: z.string().min(3, "Mission is required").max(1000),
   vision: z.string().min(3, "Vision is required").max(1000),
   values: z.string().min(1, "Values are required").max(1000),
+  objectives: z.array(z.object({
+    title: z.string().min(1, "Objective title is required"),
+    description: z.string().optional(),
+    priority: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]).optional(),
+    status: z.enum(["PLANNING", "IN_PROGRESS", "COMPLETED", "ON_HOLD", "CANCELLED"]).optional(),
+    targetDate: z.string().optional(),
+    progress: z.number().min(0).max(100).optional(),
+  })).optional(),
   strategicObjectives: z
     .string()
     .min(1, "Strategic objectives are required")
-    .max(2000),
+    .max(2000)
+    .optional(),
 });
 
 export const updateOrganizationSchema = createOrganizationSchema.partial();

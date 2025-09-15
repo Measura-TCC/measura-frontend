@@ -158,10 +158,34 @@ export interface PaginatedResponse<T> {
 }
 
 export interface OrganizationObjective {
-  id: string;
+  _id: string;
   title: string;
   description: string;
-  order: number;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  status: 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD' | 'CANCELLED';
+  targetDate?: string;
+  completionDate?: string;
+  progress?: number;
+}
+
+export interface CreateOrganizationalObjectiveDto {
+  title: string;
+  description: string;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  status?: 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD' | 'CANCELLED';
+  targetDate?: string;
+  progress?: number;
+}
+
+export interface UpdateOrganizationalObjectiveDto {
+  _id?: string;
+  title?: string;
+  description?: string;
+  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  status?: 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD' | 'CANCELLED';
+  targetDate?: string;
+  completionDate?: string;
+  progress?: number;
 }
 
 export interface PredefinedMeasurement {

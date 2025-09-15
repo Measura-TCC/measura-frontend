@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
 import { useMeasurementPlans } from "@/core/hooks/measurementPlans";
 import { useProjects } from "@/core/hooks/projects/useProjects";
@@ -10,19 +11,27 @@ import {
   MeasurementPlanStatus,
 } from "@/core/types/plans";
 import { PlansTabs, PlansPageHeader, OrganizationAlert, PlansFilters } from "./components";
+import { DocumentIcon } from "@/presentation/assets/icons";
 import { NewPlanTab, CreatedPlansTab } from "./components/Tabs";
 
 export const PlansView = () => {
+  const { t } = useTranslation("plans");
   const router = useRouter();
   const searchParams = useSearchParams();
   const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
-  const { projects } = useProjects();
+  const { projects, isLoadingProjects } = useProjects();
   const [activeTab, setActiveTab] = useState<PlanTab>("newPlan");
 
   useEffect(() => {
     const tabParam = searchParams.get("tab") as PlanTab;
     if (tabParam && ["newPlan", "createdPlans"].includes(tabParam)) {
       setActiveTab(tabParam);
+    }
+
+    const projectParam = searchParams.get("project");
+    if (projectParam) {
+      setProjectFilter(projectParam);
+      setActiveTab("newPlan");
     }
   }, [searchParams]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,7 +59,6 @@ export const PlansView = () => {
     hasOrganization,
     formatDate,
     getStatusColor,
-    deletePlan,
     operationError,
     clearError,
   } = plansHook;
@@ -92,7 +100,7 @@ export const PlansView = () => {
         isLoadingPlans={isLoadingPlans}
         formatDate={formatDate}
         getStatusColor={getStatusColor}
-        projects={projects}
+        projects={projects || []}
         pagination={pagination}
         onViewPlan={(planId) => {
           router.push(`/plans/${planId}`);
@@ -156,6 +164,30 @@ export const PlansView = () => {
       />
 
       <OrganizationAlert hasOrganization={hasOrganization} />
+
+      {hasOrganization && !isLoadingProjects && (!projects || projects.length === 0) && (
+        <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+          <div className="text-center space-y-4">
+            <div className="text-blue-500 mb-4">
+              <DocumentIcon className="w-12 h-12 mx-auto" />
+            </div>
+            <div>
+              <h3 className="text-lg font-medium text-blue-900">
+                {t("noProjectsTitle")}
+              </h3>
+              <p className="text-blue-700 mt-1">
+                {t("noProjectsDescription")}
+              </p>
+            </div>
+            <button
+              onClick={() => router.push("/projects")}
+              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+            >
+              {t("goToProjects")}
+            </button>
+          </div>
+        </div>
+      )}
 
       {operationError && (
         <div className="bg-red-50 border border-red-200 rounded-md p-4">

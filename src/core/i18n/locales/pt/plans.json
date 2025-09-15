@@ -47,6 +47,10 @@
   "organizationRequired": "Organização Necessária",
   "organizationRequiredDescription": "Você precisa criar ou ingressar em uma organização para criar planos de medição e gerenciar atividades de planejamento",
   "createOrganization": "Criar Organização",
+  "noProjectsTitle": "Nenhum Projeto Encontrado",
+  "noProjectsDescription": "Você precisa criar pelo menos um projeto antes de criar planos de medição.",
+  "goToProjects": "Ir para Projetos",
+  "createProject": "Criar Projeto",
   "tabs": {
     "newPlan": "Criar Plano",
     "createdPlans": "Planos Criados",

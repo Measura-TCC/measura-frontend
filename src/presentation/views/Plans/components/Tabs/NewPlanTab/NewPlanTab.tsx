@@ -8,7 +8,7 @@ import {
   CardTitle,
   Button,
 } from "@/presentation/components/primitives";
-import { PlusIcon, ChartIcon } from "@/presentation/assets/icons";
+import { PlusIcon, ChartIcon, DocumentIcon } from "@/presentation/assets/icons";
 import type {
   PlansStatistics,
 } from "@/core/types/plans";
@@ -29,11 +29,6 @@ interface MeasurementPlanFormData {
   planResponsible: string;
 }
 
-import {
-  availableObjectives,
-  availableQuestions,
-  availableMetrics,
-} from "./utils/stepData";
 import { canNavigateToStep } from "./utils/stepValidation";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useMeasurementPlans } from "@/core/hooks/measurementPlans";
@@ -53,7 +48,7 @@ export const NewPlanTab: React.FC<NewPlanTabProps> = ({
 }) => {
   const { t } = useTranslation("plans");
   const router = useRouter();
-  const { projects } = useProjects();
+  const { projects, isLoadingProjects } = useProjects();
   const { createPlan: createMeasurementPlan } = useMeasurementPlans();
   const toast = useToast();
   const [currentStep, setCurrentStep] = useState<PlanStep>(1);
@@ -251,6 +246,35 @@ export const NewPlanTab: React.FC<NewPlanTabProps> = ({
         return null;
     }
   };
+
+  // Project validation - only show if we have organization access but no projects
+  if (!isLoadingProjects && canCreatePlan && (!projects || projects.length === 0)) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center space-y-4">
+              <div className="text-blue-500 mb-4">
+                <DocumentIcon className="w-12 h-12 mx-auto" />
+              </div>
+              <div>
+                <h3 className="font-medium text-blue-900">
+                  {t("noProjectsTitle")}
+                </h3>
+                <p className="text-sm text-blue-700 mt-1">
+                  {t("noProjectsDescription")}
+                </p>
+              </div>
+              <Button onClick={() => router.push("/projects")}>
+                <PlusIcon className="w-4 h-4 mr-2" />
+                {t("goToProjects")}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (showWorkflow) {
     return (

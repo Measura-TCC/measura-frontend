@@ -19,6 +19,10 @@
   "organizationRequired": "Organização Obrigatória",
   "organizationRequiredDescription": "Você precisa criar ou ingressar em uma organização para criar estimativas APF e gerenciar atividades de medição.",
   "createOrganization": "Criar Organização",
+  "noProjectsTitle": "Nenhum Projeto Encontrado",
+  "noProjectsDescription": "Você precisa criar pelo menos um projeto antes de criar estimativas APF.",
+  "goToProjects": "Ir para Projetos",
+  "createProject": "Criar Projeto",
   "noEstimatesYet": "Nenhuma Estimativa Ainda",
   "noEstimatesDescription": "Crie sua primeira estimativa APF para começar a medir pontos de função e acompanhar a complexidade do projeto.",
   "createFirstEstimate": "Criar Sua Primeira Estimativa",
@@ -548,7 +552,10 @@
     "descending": "Decrescente",
     "ascending": "Crescente",
     "noEstimatesFound": "Nenhuma estimativa encontrada",
-    "adjustFilters": "Tente ajustar sua busca ou filtros"
+    "adjustFilters": "Tente ajustar sua busca ou filtros",
+    "noEstimates": "Nenhuma Estimativa Ainda",
+    "noEstimatesDescription": "Crie sua primeira estimativa APF para começar a medir pontos de função e acompanhar a complexidade do projeto.",
+    "noEstimatesFoundDescription": "Tente ajustar sua busca ou filtros para encontrar as estimativas que procura."
   },
   "exportDropdown": {
     "title": "Exportar e Relatórios",

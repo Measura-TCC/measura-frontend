@@ -39,7 +39,14 @@
     "loadingText": "Carregando...",
     "organizationRequiredError": "Você precisa pertencer a uma organização para criar projetos.",
     "contactAdminMessage": "Entre em contato com seu administrador para ser adicionado a uma organização.",
-    "failedToCreateProject": "Falha ao criar projeto"
+    "failedToCreateProject": "Falha ao criar projeto",
+    "projectObjectives": "Objetivos do Projeto",
+    "objectiveTitle": "Título do objetivo",
+    "objectiveDescription": "Descrição do objetivo",
+    "linkToOrganizationalObjectives": "Vincular aos Objetivos Organizacionais",
+    "holdCtrlCmdToSelect": "Segure Ctrl/Cmd para selecionar múltiplos objetivos",
+    "addAnotherObjective": "Adicionar Outro Objetivo",
+    "remove": "Remover"
   },
   "validation": {
     "nameMinLength": "O nome deve ter pelo menos 3 caracteres",

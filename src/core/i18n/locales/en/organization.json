@@ -73,6 +73,8 @@
     "strategicObjectivesPlaceholder": "List the strategic objectives...",
     "addObjectivePlaceholder": "Register a custom objective",
     "selectObjectivePlaceholder": "Choose an objective...",
+    "addObjectiveButton": "Add Objective",
+    "removeButton": "Remove",
     "createButton": "Create Organization",
     "creating": "Creating...",
     "failedToCreate": "Failed to create organization"

@@ -3,7 +3,7 @@ import type {
   CreateOrganizationData,
   UpdateOrganizationData,
 } from "@/core/schemas/organizations";
-import type { OrganizationObjective, PredefinedMeasurement } from "@/core/types/plans";
+import type { OrganizationObjective, PredefinedMeasurement, CreateOrganizationalObjectiveDto, UpdateOrganizationalObjectiveDto } from "@/core/types/plans";
 
 export interface Organization {
   _id: string;
@@ -14,6 +14,7 @@ export interface Organization {
   mission?: string;
   vision?: string;
   values?: string;
+  objectives?: OrganizationObjective[];
   strategicObjectives?: string;
   createdBy: string;
   createdAt: string;
@@ -67,6 +68,26 @@ export const organizationService = {
 
   getMeasurements: async (params: { organizationId: string }): Promise<PredefinedMeasurement[]> => {
     const response = await measuraApi.get(`/organizations/${params.organizationId}/measurements`);
+    return response.data;
+  },
+
+  createObjective: async (params: { organizationId: string; data: CreateOrganizationalObjectiveDto }): Promise<Organization> => {
+    const response = await measuraApi.post(`/organizations/${params.organizationId}/objectives`, params.data);
+    return response.data;
+  },
+
+  updateObjective: async (params: { organizationId: string; objectiveId: string; data: UpdateOrganizationalObjectiveDto }): Promise<Organization> => {
+    const response = await measuraApi.put(`/organizations/${params.organizationId}/objectives/${params.objectiveId}`, params.data);
+    return response.data;
+  },
+
+  deleteObjective: async (params: { organizationId: string; objectiveId: string }): Promise<Organization> => {
+    const response = await measuraApi.delete(`/organizations/${params.organizationId}/objectives/${params.objectiveId}`);
+    return response.data;
+  },
+
+  getObjective: async (params: { organizationId: string; objectiveId: string }): Promise<OrganizationObjective> => {
+    const response = await measuraApi.get(`/organizations/${params.organizationId}/objectives/${params.objectiveId}`);
     return response.data;
   },
 };

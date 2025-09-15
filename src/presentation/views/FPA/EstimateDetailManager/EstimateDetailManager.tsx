@@ -7,6 +7,7 @@ import {
   useEstimate,
   useEstimateOverview,
 } from "@/core/hooks/fpa/estimates/useEstimate";
+import { OrganizationGuard } from "@/presentation/components/common/OrganizationGuard/OrganizationGuard";
 import {
   useALIComponents,
   useAIEComponents,
@@ -182,7 +183,8 @@ export const EstimateDetailManager = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <OrganizationGuard>
+      <div className="max-w-7xl mx-auto p-6">
       <div className="mb-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -254,7 +256,7 @@ export const EstimateDetailManager = ({
 
       {activeTab === "overview" && (
         <EstimateOverviewTab
-          estimateOverview={estimateOverview}
+          estimateOverview={estimateOverview || undefined}
           isLoadingEstimateOverview={isLoadingEstimateOverview}
           overviewError={overviewError}
         />
@@ -297,6 +299,7 @@ export const EstimateDetailManager = ({
       {activeTab === "calculations" && estimateOverview && (
         <CalculationsTab estimateOverview={estimateOverview} />
       )}
-    </div>
+      </div>
+    </OrganizationGuard>
   );
 };

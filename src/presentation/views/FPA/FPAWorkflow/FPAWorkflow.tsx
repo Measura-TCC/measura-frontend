@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganization } from "@/core/hooks/organizations/useOrganization";
 import { EstimatesDashboard } from "./EstimatesDashboard";
 import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
 import { CreateOrganizationForm } from "../../Organization/components/CreateOrganizationForm";
@@ -17,7 +18,7 @@ import { CreateEOForm } from "./components/CreateEOForm";
 import { CreateEQForm } from "./components/CreateEQForm";
 import { CreateAIEForm } from "./components/CreateAIEForm";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
-import { OfficeIcon, PlusIcon } from "@/presentation/assets/icons";
+import { OfficeIcon, PlusIcon, DocumentIcon } from "@/presentation/assets/icons";
 import { Button } from "@/presentation/components/primitives/Button/Button";
 import {
   useEstimateActions,
@@ -42,16 +43,10 @@ interface EstimateWithArrays {
 
 export const FPAWorkflow = () => {
   const { t } = useTranslation("fpa");
+  const { requireOrganization } = useOrganization();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("new");
-
-  // Check for tab query parameter on mount
-  useEffect(() => {
-    const tabParam = searchParams.get("tab") as Tab;
-    if (tabParam && ["new", "created"].includes(tabParam)) {
-      setActiveTab(tabParam);
-    }
-  }, [searchParams]);
 
   const {
     state,
@@ -71,6 +66,19 @@ export const FPAWorkflow = () => {
   const { estimate: currentEstimateData, mutateEstimate } = useEstimate({
     id: state.createdEstimate?._id || "",
   });
+
+  useEffect(() => {
+    const tabParam = searchParams.get("tab") as Tab;
+    if (tabParam && ["new", "created"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+
+    const projectParam = searchParams.get("project");
+    if (projectParam) {
+      setSelectedProjectId(projectParam);
+      setActiveTab("new");
+    }
+  }, [searchParams, setSelectedProjectId]);
 
   if (isLoadingUserOrganization) {
     return (
@@ -104,6 +112,32 @@ export const FPAWorkflow = () => {
     );
   }
 
+  if (!isLoadingProjects && userOrganization && (!projects || projects.length === 0)) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="text-center py-12">
+          <div className="text-blue-500 mb-4">
+            <DocumentIcon className="w-12 h-12 mx-auto" />
+          </div>
+          <h3 className="text-lg font-medium text-default mb-2">
+            {t("noProjectsTitle")}
+          </h3>
+          <p className="text-secondary mb-4">
+            {t("noProjectsDescription")}
+          </p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => router.push("/projects")}
+              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+            >
+              {t("goToProjects")}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const handleCancel = () => {
     resetWorkflow();
     setActiveTab("new");
@@ -119,6 +153,7 @@ export const FPAWorkflow = () => {
     if (!state.createdEstimate) return;
 
     try {
+      requireOrganization();
       await estimateService.updateEstimate({
         id: state.createdEstimate._id,
         data: { generalSystemCharacteristics },
@@ -202,7 +237,7 @@ export const FPAWorkflow = () => {
                   number: 6,
                   name: t("workflow.step6Title").replace("6. ", ""),
                 },
-              ].map((step, index) => (
+              ].map((step) => (
                 <div
                   key={step.number}
                   className="flex flex-col items-center"

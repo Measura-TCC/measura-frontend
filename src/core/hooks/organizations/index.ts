@@ -4,3 +4,4 @@ export {
   useUserOrganization,
   useOrganizationActions,
 } from "./useOrganizations";
+export { useOrganizationalObjectives } from "./useOrganizationalObjectives";
