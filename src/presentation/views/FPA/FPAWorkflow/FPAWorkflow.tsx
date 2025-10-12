@@ -17,6 +17,7 @@ import { CreateEIForm } from "./components/CreateEIForm";
 import { CreateEOForm } from "./components/CreateEOForm";
 import { CreateEQForm } from "./components/CreateEQForm";
 import { CreateAIEForm } from "./components/CreateAIEForm";
+import { RequirementImportView } from "./RequirementImport/RequirementImportView";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
 import { OfficeIcon, PlusIcon, DocumentIcon } from "@/presentation/assets/icons";
 import { Button } from "@/presentation/components/primitives/Button/Button";
@@ -25,11 +26,8 @@ import {
   useEstimate,
 } from "@/core/hooks/fpa/estimates/useEstimate";
 import { estimateService } from "@/core/services/estimateService";
-import {
-  useWorkflowState,
-  type ComponentType,
-  type Step,
-} from "@/core/hooks/fpa/useWorkflowState";
+import { useWorkflowState, type Step } from "@/core/hooks/fpa/useWorkflowState";
+import type { ComponentType } from "@/core/types/fpa";
 
 type Tab = "new" | "created";
 
@@ -428,189 +426,7 @@ export const FPAWorkflow = () => {
         )}
 
         {state.currentStep === 3 && state.createdEstimate && (
-          <div className="bg-background rounded-lg border border-border p-6">
-            <h2 className="text-xl font-semibold mb-4 text-default">
-              {t("workflow.step3Title")}
-            </h2>
-            <p className="text-secondary mb-6">
-              {t("workflow.step3Description")}
-            </p>
-                {currentEstimateData && (
-              <div className="mb-6 p-4 bg-background-secondary rounded-lg">
-                <h3 className="text-lg font-medium mb-3 text-default">
-                  {t("workflow.addedComponents")}
-                </h3>
-                <div className="grid grid-cols-5 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold text-primary">
-                      {(currentEstimateData as EstimateWithArrays)
-                        .internalLogicalFiles?.length || 0}
-                    </div>
-                    <div className="text-sm text-secondary">
-                      {t("workflow.components.aliLabel")}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-primary">
-                      {(currentEstimateData as EstimateWithArrays)
-                        .externalInterfaceFiles?.length || 0}
-                    </div>
-                    <div className="text-sm text-secondary">
-                      {t("workflow.components.aieLabel")}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-primary">
-                      {(currentEstimateData as EstimateWithArrays)
-                        .externalInputs?.length || 0}
-                    </div>
-                    <div className="text-sm text-secondary">
-                      {t("workflow.components.eiLabel")}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-primary">
-                      {(currentEstimateData as EstimateWithArrays)
-                        .externalOutputs?.length || 0}
-                    </div>
-                    <div className="text-sm text-secondary">
-                      {t("workflow.components.eoLabel")}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-primary">
-                      {(currentEstimateData as EstimateWithArrays)
-                        .externalQueries?.length || 0}
-                    </div>
-                    <div className="text-sm text-secondary">
-                      {t("workflow.components.eqLabel")}
-                    </div>
-                  </div>
-                </div>
-                {currentEstimateData && (
-                  <div className="mt-3 text-center text-sm text-secondary">
-                    {t("workflow.totalComponents", {
-                      count:
-                        ((currentEstimateData as EstimateWithArrays)
-                          .internalLogicalFiles?.length || 0) +
-                        ((currentEstimateData as EstimateWithArrays)
-                          .externalInterfaceFiles?.length || 0) +
-                        ((currentEstimateData as EstimateWithArrays)
-                          .externalInputs?.length || 0) +
-                        ((currentEstimateData as EstimateWithArrays)
-                          .externalOutputs?.length || 0) +
-                        ((currentEstimateData as EstimateWithArrays)
-                          .externalQueries?.length || 0),
-                    })}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {!state.selectedComponentType ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  {
-                    type: "ALI" as ComponentType,
-                    label: t("workflow.components.aliLabel"),
-                    desc: t("workflow.components.aliDescription"),
-                  },
-                  {
-                    type: "EI" as ComponentType,
-                    label: t("workflow.components.eiLabel"),
-                    desc: t("workflow.components.eiDescription"),
-                  },
-                  {
-                    type: "EO" as ComponentType,
-                    label: t("workflow.components.eoLabel"),
-                    desc: t("workflow.components.eoDescription"),
-                  },
-                  {
-                    type: "EQ" as ComponentType,
-                    label: t("workflow.components.eqLabel"),
-                    desc: t("workflow.components.eqDescription"),
-                  },
-                  {
-                    type: "AIE" as ComponentType,
-                    label: t("workflow.components.aieLabel"),
-                    desc: t("workflow.components.aieDescription"),
-                  },
-                ].map(({ type, label, desc }) => (
-                  <Button
-                    key={type}
-                    onClick={() => setSelectedComponentType(type)}
-                    variant="ghost"
-                    size="md"
-                    className="p-4 border border-border rounded-lg hover:border-primary/30 hover:shadow-sm transition-all text-center"
-                  >
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-medium text-default">{label}</h3>
-                        <PlusIcon className="w-4 h-4" />
-                      </div>
-                      <p className="text-sm text-secondary text-center">
-                        {desc}
-                      </p>
-                    </div>
-                  </Button>
-                ))}
-              </div>
-            ) : (
-              <div>
-                <div className="mb-4">
-                  <Button
-                    onClick={() => setSelectedComponentType(null)}
-                    variant="secondary"
-                    size="md"
-                    className="px-4 py-2 text-primary border border-primary rounded-md hover:bg-primary/5 transition-colors"
-                  >
-                    {t("workflow.backToComponentTypes")}
-                  </Button>
-                </div>
-                {state.selectedComponentType === "ALI" && (
-                  <CreateALIForm
-                    estimateId={state.createdEstimate._id}
-                    onSuccess={handleComponentAdded}
-                  />
-                )}
-                {state.selectedComponentType === "EI" && (
-                  <CreateEIForm
-                    estimateId={state.createdEstimate._id}
-                    onSuccess={handleComponentAdded}
-                  />
-                )}
-                {state.selectedComponentType === "EO" && (
-                  <CreateEOForm
-                    estimateId={state.createdEstimate._id}
-                    onSuccess={handleComponentAdded}
-                  />
-                )}
-                {state.selectedComponentType === "EQ" && (
-                  <CreateEQForm
-                    estimateId={state.createdEstimate._id}
-                    onSuccess={handleComponentAdded}
-                  />
-                )}
-                {state.selectedComponentType === "AIE" && (
-                  <CreateAIEForm
-                    estimateId={state.createdEstimate._id}
-                    onSuccess={handleComponentAdded}
-                  />
-                )}
-              </div>
-            )}
-
-            <div className="mt-6 pt-6 border-t border-border">
-              <Button
-                onClick={() => setCurrentStep(4)}
-                variant="primary"
-                size="md"
-                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
-              >
-                {t("workflow.nextGSC")}
-              </Button>
-            </div>
-          </div>
+          <RequirementImportView onProceed={() => setCurrentStep(4)} />
         )}
 
         {state.currentStep === 4 && state.createdEstimate && (

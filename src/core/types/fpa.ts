@@ -72,3 +72,22 @@ export const FPA_PERMISSIONS = {
   DELETE_ESTIMATE: "delete_estimate",
   VIEW_ESTIMATES: "view_estimates",
 } as const;
+
+export type RequirementSource =
+  | "manual"
+  | "csv"
+  | "jira"
+  | "github"
+  | "azure_devops"
+  | "clickup";
+
+export type ComponentType = "ALI" | "AIE" | "EI" | "EO" | "EQ";
+
+export interface Requirement {
+  id: string;
+  title: string;
+  description?: string;
+  source: RequirementSource;
+  componentType?: ComponentType;
+  fpaData?: Record<string, unknown>;
+}

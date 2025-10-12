@@ -571,5 +571,134 @@
     "pdf": "PDF",
     "excel": "Excel",
     "word": "Word"
+  },
+  "requirementImport": {
+    "title": "Importar Requisitos",
+    "subtitle": "Importe requisitos de diferentes fontes para começar sua análise APF",
+    "selectSource": "Selecione a Fonte de Importação",
+    "sources": {
+      "manual": "Manual",
+      "csv": "CSV",
+      "jira": "Jira",
+      "github": "GitHub",
+      "azure_devops": "Azure DevOps",
+      "clickup": "ClickUp"
+    },
+    "importSuccess": "{{count}} requisitos importados com sucesso!",
+    "importButton": "Importar Requisitos",
+    "importing": "Importando...",
+    "nextToClassification": "Próximo: Classificar Requisitos",
+    "requirementTitle": "Requisito",
+    "description": "Descrição",
+    "source": "Fonte",
+    "classification": "Classificação",
+    "unclassified": "Não Classificado",
+    "classifyAs": "Classificar como",
+    "searchPlaceholder": "Buscar requisitos...",
+    "noRequirements": "Nenhum requisito importado ainda",
+    "itemsPerPage": "itens por página",
+    "classifyTitle": "Classificar Requisitos",
+    "classifySubtitle": "Classifique cada requisito como ALI, AIE, EE, SE ou CE",
+    "proceedDescription": "Clique em \"Próximo\" para classificar os requisitos como ALI, AIE, EE, SE ou CE",
+    "backToImport": "← Voltar para Importação",
+    "nextToGSC": "Próximo: Características Gerais do Sistema →"
+  },
+  "requirementClassification": {
+    "title": "Classificação de Requisitos",
+    "subtitle": "Classifique os requisitos importados em componentes APF",
+    "requirementsClassified": "{{classified}} de {{total}} requisitos classificados",
+    "searchPlaceholder": "Buscar requisitos...",
+    "requirementTitle": "Requisito",
+    "requirementSource": "Fonte",
+    "componentType": "Tipo de Componente",
+    "actions": "Ações",
+    "unclassified": "Não classificado",
+    "editFields": "Editar Campos",
+    "fillFields": "Preencher Campos",
+    "edit": "Editar",
+    "fill": "Preencher",
+    "itemsPerPage": "Itens por página:",
+    "itemsPerPageShort": "Por página:",
+    "requirement": "requisito",
+    "requirements": "requisitos",
+    "showing": "Mostrando {{start}} a {{end}} de {{total}}",
+    "previousPage": "Página anterior",
+    "previous": "Anterior",
+    "nextPage": "Próxima página",
+    "next": "Próximo",
+    "requirementsNeedClassification": "{{count}} requisitos ainda precisam de classificação",
+    "requirementsNeedData": "{{count}} requisitos precisam ter os campos APF preenchidos",
+    "allClassified": "Todos os requisitos classificados!",
+    "allComplete": "Todos os requisitos classificados e preenchidos!",
+    "nextToSpecification": "Próximo: Especificação de Componentes"
+  },
+  "actions": {
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "backToImport": "Voltar para Importação"
+  },
+  "componentTypes": {
+    "ALI": "ALI - Arquivo Lógico Interno",
+    "AIE": "AIE - Arquivo de Interface Externa",
+    "EI": "EE - Entrada Externa",
+    "EO": "SE - Saída Externa",
+    "EQ": "CE - Consulta Externa",
+    "ALI_short": "ALI",
+    "AIE_short": "AIE",
+    "EI_short": "EE",
+    "EO_short": "SE",
+    "EQ_short": "CE"
+  },
+  "importForms": {
+    "manual": {
+      "title": "Adicionar Requisito Manualmente",
+      "requirementTitle": "Título do Requisito",
+      "titlePlaceholder": "ex.: Sistema deve permitir login de usuários",
+      "description": "Descrição",
+      "descriptionPlaceholder": "Descrição detalhada do requisito...",
+      "addAnother": "Adicionar Outro Requisito"
+    },
+    "csv": {
+      "uploadFile": "Upload de Arquivo CSV",
+      "dragDrop": "Arraste e solte o arquivo CSV aqui ou clique para selecionar",
+      "fileSelected": "Arquivo selecionado: {{name}}"
+    },
+    "jira": {
+      "domain": "Domínio Jira",
+      "domainPlaceholder": "ex.: suaempresa.atlassian.net",
+      "email": "Email",
+      "emailPlaceholder": "seu.email@empresa.com",
+      "apiToken": "Token da API",
+      "apiTokenPlaceholder": "Seu token de API do Jira",
+      "jql": "Consulta JQL",
+      "jqlPlaceholder": "project = PROJ AND type = Story",
+      "jqlHelp": "Use JQL para filtrar os issues que deseja importar"
+    },
+    "github": {
+      "token": "Token do GitHub",
+      "tokenPlaceholder": "ghp_...",
+      "owner": "Proprietário",
+      "ownerPlaceholder": "nome-do-usuario-ou-org",
+      "repo": "Repositório",
+      "repoPlaceholder": "nome-do-repositorio",
+      "projectNumber": "Número do Projeto",
+      "projectNumberPlaceholder": "1"
+    },
+    "azureDevops": {
+      "organization": "Organização",
+      "organizationPlaceholder": "nome-da-organizacao",
+      "project": "Projeto",
+      "projectPlaceholder": "nome-do-projeto",
+      "pat": "Personal Access Token",
+      "patPlaceholder": "Seu PAT do Azure DevOps",
+      "wiql": "Consulta WIQL",
+      "wiqlPlaceholder": "SELECT [System.Id] FROM WorkItems WHERE [System.WorkItemType] = 'User Story'"
+    },
+    "clickup": {
+      "token": "Token do ClickUp",
+      "tokenPlaceholder": "pk_...",
+      "listId": "ID da Lista",
+      "listIdPlaceholder": "123456789"
+    }
   }
 }

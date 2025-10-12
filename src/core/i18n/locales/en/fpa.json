@@ -563,5 +563,134 @@
     "pdf": "PDF",
     "excel": "Excel",
     "word": "Word"
+  },
+  "requirementImport": {
+    "title": "Import Requirements",
+    "subtitle": "Import requirements from different sources to start your FPA analysis",
+    "selectSource": "Select Import Source",
+    "sources": {
+      "manual": "Manual",
+      "csv": "CSV",
+      "jira": "Jira",
+      "github": "GitHub",
+      "azure_devops": "Azure DevOps",
+      "clickup": "ClickUp"
+    },
+    "importSuccess": "{{count}} requirements imported successfully!",
+    "importButton": "Import Requirements",
+    "importing": "Importing...",
+    "nextToClassification": "Next: Classify Requirements",
+    "requirementTitle": "Requirement",
+    "description": "Description",
+    "source": "Source",
+    "classification": "Classification",
+    "unclassified": "Unclassified",
+    "classifyAs": "Classify as",
+    "searchPlaceholder": "Search requirements...",
+    "noRequirements": "No requirements imported yet",
+    "itemsPerPage": "items per page",
+    "classifyTitle": "Classify Requirements",
+    "classifySubtitle": "Classify each requirement as ILF, EIF, EI, EO or EQ",
+    "proceedDescription": "Click \"Next\" to classify requirements as ILF, EIF, EI, EO or EQ",
+    "backToImport": "← Back to Import",
+    "nextToGSC": "Next: General System Characteristics →"
+  },
+  "requirementClassification": {
+    "title": "Requirement Classification",
+    "subtitle": "Classify imported requirements into FPA components",
+    "requirementsClassified": "{{classified}} of {{total}} requirements classified",
+    "searchPlaceholder": "Search requirements...",
+    "requirementTitle": "Requirement",
+    "requirementSource": "Source",
+    "componentType": "Component Type",
+    "actions": "Actions",
+    "unclassified": "Unclassified",
+    "editFields": "Edit Fields",
+    "fillFields": "Fill Fields",
+    "edit": "Edit",
+    "fill": "Fill",
+    "itemsPerPage": "Items per page:",
+    "itemsPerPageShort": "Per page:",
+    "requirement": "requirement",
+    "requirements": "requirements",
+    "showing": "Showing {{start}} to {{end}} of {{total}}",
+    "previousPage": "Previous page",
+    "previous": "Previous",
+    "nextPage": "Next page",
+    "next": "Next",
+    "requirementsNeedClassification": "{{count}} requirements still need classification",
+    "requirementsNeedData": "{{count}} requirements need FPA fields filled",
+    "allClassified": "All requirements classified!",
+    "allComplete": "All requirements classified and completed!",
+    "nextToSpecification": "Next: Component Specification"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "backToImport": "Back to Import"
+  },
+  "componentTypes": {
+    "ALI": "ILF - Internal Logical File",
+    "AIE": "EIF - External Interface File",
+    "EI": "EI - External Input",
+    "EO": "EO - External Output",
+    "EQ": "EQ - External Inquiry",
+    "ALI_short": "ILF",
+    "AIE_short": "EIF",
+    "EI_short": "EI",
+    "EO_short": "EO",
+    "EQ_short": "EQ"
+  },
+  "importForms": {
+    "manual": {
+      "title": "Add Requirement Manually",
+      "requirementTitle": "Requirement Title",
+      "titlePlaceholder": "e.g.: System must allow user login",
+      "description": "Description",
+      "descriptionPlaceholder": "Detailed requirement description...",
+      "addAnother": "Add Another Requirement"
+    },
+    "csv": {
+      "uploadFile": "CSV File Upload",
+      "dragDrop": "Drag and drop CSV file here or click to select",
+      "fileSelected": "File selected: {{name}}"
+    },
+    "jira": {
+      "domain": "Jira Domain",
+      "domainPlaceholder": "e.g.: yourcompany.atlassian.net",
+      "email": "Email",
+      "emailPlaceholder": "your.email@company.com",
+      "apiToken": "API Token",
+      "apiTokenPlaceholder": "Your Jira API token",
+      "jql": "JQL Query",
+      "jqlPlaceholder": "project = PROJ AND type = Story",
+      "jqlHelp": "Use JQL to filter the issues you want to import"
+    },
+    "github": {
+      "token": "GitHub Token",
+      "tokenPlaceholder": "ghp_...",
+      "owner": "Owner",
+      "ownerPlaceholder": "username-or-org",
+      "repo": "Repository",
+      "repoPlaceholder": "repository-name",
+      "projectNumber": "Project Number",
+      "projectNumberPlaceholder": "1"
+    },
+    "azureDevops": {
+      "organization": "Organization",
+      "organizationPlaceholder": "organization-name",
+      "project": "Project",
+      "projectPlaceholder": "project-name",
+      "pat": "Personal Access Token",
+      "patPlaceholder": "Your Azure DevOps PAT",
+      "wiql": "WIQL Query",
+      "wiqlPlaceholder": "SELECT [System.Id] FROM WorkItems WHERE [System.WorkItemType] = 'User Story'"
+    },
+    "clickup": {
+      "token": "ClickUp Token",
+      "tokenPlaceholder": "pk_...",
+      "listId": "List ID",
+      "listIdPlaceholder": "123456789"
+    }
   }
 }

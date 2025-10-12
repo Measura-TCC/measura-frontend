@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
+import type { ComponentType, Requirement } from "@/core/types/fpa";
 
 export type Step = 1 | 2 | 3 | 4 | 5 | 6;
-export type ComponentType = "ALI" | "EI" | "EO" | "EQ" | "AIE";
 
 export interface WorkflowState {
   currentStep: Step;
@@ -25,6 +25,12 @@ export interface WorkflowState {
     hourlyRateBRL?: number;
     productivityFactor?: number;
   };
+  step3Data: {
+    substep: "import" | "classification" | "specification";
+    requirements: Requirement[];
+    classifiedRequirements: Record<ComponentType, Requirement[]>;
+    completedComponents: ComponentType[];
+  };
   step4Data: {
     generalSystemCharacteristics?: number[];
     notes?: string;
@@ -43,6 +49,18 @@ const DEFAULT_STATE: WorkflowState = {
     teamSize: 4,
     hourlyRateBRL: 150,
     productivityFactor: 10,
+  },
+  step3Data: {
+    substep: "import",
+    requirements: [],
+    classifiedRequirements: {
+      ALI: [],
+      AIE: [],
+      EI: [],
+      EO: [],
+      EQ: [],
+    },
+    completedComponents: [],
   },
   step4Data: {},
 };
@@ -159,6 +177,15 @@ export const useWorkflowState = () => {
     [saveState, state.step2Data]
   );
 
+  const updateStep3Data = useCallback(
+    (data: Partial<WorkflowState["step3Data"]>) => {
+      saveState({
+        step3Data: { ...state.step3Data, ...data },
+      });
+    },
+    [saveState, state.step3Data]
+  );
+
   const updateStep4Data = useCallback(
     (data: Partial<WorkflowState["step4Data"]>) => {
       saveState({
@@ -185,6 +212,7 @@ export const useWorkflowState = () => {
     setCalculationComplete,
     setSelectedComponentType,
     updateStep2Data,
+    updateStep3Data,
     updateStep4Data,
     resetWorkflow,
     canNavigateToStep,
