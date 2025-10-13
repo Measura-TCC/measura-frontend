@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useProjects } from "@/core/hooks/projects/useProjects";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
-import { useOrganization } from "@/core/hooks/organizations/useOrganization";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { EstimatesDashboard } from "./EstimatesDashboard";
 import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
 import { CreateOrganizationForm } from "../../Organization/components/CreateOrganizationForm";
@@ -43,7 +42,7 @@ interface EstimateWithArrays {
 
 export const FPAWorkflow = () => {
   const { t } = useTranslation("fpa");
-  const { requireOrganization } = useOrganization();
+  const { requireOrganization, userOrganization, isLoadingUserOrganization } = useOrganizations({ fetchUserOrganization: true });
   const searchParams = useSearchParams();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("new");
@@ -58,8 +57,6 @@ export const FPAWorkflow = () => {
     resetWorkflow,
     canNavigateToStep,
   } = useWorkflowState();
-
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
   const { projects, isLoadingProjects } = useProjects();
   const { calculateFunctionPoints } = useEstimateActions();
 

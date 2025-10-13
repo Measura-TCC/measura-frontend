@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { EstimateOverviewCard } from "../common/EstimateOverviewCard";
 import { useEstimatesOverviews } from "@/core/hooks/fpa/estimates/useEstimate";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import {
   ExclamationIcon,
   OfficeIcon,
@@ -31,7 +31,7 @@ export const EstimatesDashboard = ({
   >("updated");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { userOrganization, isLoadingUserOrganization } = useOrganizations({ fetchUserOrganization: true });
   const { estimatesOverviews, isLoadingEstimatesOverviews, error } =
     useEstimatesOverviews(projectId ? { projectId } : undefined);
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { useMembers } from "@/core/hooks/organizations";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { Button } from "@/presentation/components/primitives";
 import { createPortal } from "react-dom";
 
@@ -23,7 +23,7 @@ export const LeaveOrganizationModal = ({
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const { leaveOrganization } = useMembers(null);
-  const { mutateUserOrganization } = useUserOrganization();
+  const { mutateUserOrganization } = useOrganizations({ fetchUserOrganization: true });
 
   useEffect(() => {
     setMounted(true);

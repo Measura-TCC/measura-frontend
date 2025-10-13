@@ -5,8 +5,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { useProjectActions } from "@/core/hooks/projects/useProjects";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
-import { useOrganization } from "@/core/hooks/organizations/useOrganization";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { useOrganizationalObjectives } from "@/core/hooks/organizations";
 import {
   CreateProjectRequest,
@@ -24,10 +23,8 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { userOrganization, isLoadingUserOrganization, activeOrganizationId, loadUserOrganizations, forceClearCache } = useOrganizations({ fetchUserOrganization: true });
   const { createProject } = useProjectActions();
-  const { activeOrganizationId, loadUserOrganizations, forceClearCache } =
-    useOrganization();
   const {
     objectives: organizationalObjectives,
     isLoadingObjectives,

@@ -25,6 +25,13 @@ export const handleApiError = (
   const validationErrors = data?.validationErrors;
 
   if (error.response?.status === 401) {
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname.replace(/\/$/, '') : '';
+    const isOnAuthPage = currentPath === '/login' || currentPath === '/register';
+
+    if (isOnAuthPage) {
+      return { message: 'Unauthorized', type: 'error' };
+    }
+
     try {
       localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
@@ -37,7 +44,7 @@ export const handleApiError = (
     } else if (typeof window !== 'undefined') {
       window.location.href = '/login';
     }
-    
+
     return { message: 'Unauthorized', type: 'error' };
   }
 

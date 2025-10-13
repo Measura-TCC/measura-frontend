@@ -13,9 +13,6 @@ export {
 
 export {
   useOrganizations,
-  useOrganization,
-  useUserOrganization,
-  useOrganizationActions,
 } from "./organizations/useOrganizations";
 
 export {

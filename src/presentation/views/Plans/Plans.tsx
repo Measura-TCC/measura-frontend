@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { useMeasurementPlans } from "@/core/hooks/measurementPlans";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import {
@@ -18,7 +18,7 @@ export const PlansView = () => {
   const { t } = useTranslation("plans");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { userOrganization, isLoadingUserOrganization } = useOrganizations({ fetchUserOrganization: true });
   const { projects, isLoadingProjects } = useProjects();
   const [activeTab, setActiveTab] = useState<PlanTab>("newPlan");
 

@@ -8,7 +8,7 @@ import {
   createOrganizationSchema,
   type CreateOrganizationData,
 } from "@/core/schemas/organizations";
-import { useOrganizationActions } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import {
   Card,
   CardContent,
@@ -48,7 +48,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
 }) => {
   const { t } = useTranslation("organization");
   const { createOrganization, updateOrganization, deleteOrganization } =
-    useOrganizationActions();
+    useOrganizations();
 
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { useOverview } from "@/core/hooks/overview/useOverview";
 import {
   OverviewPageHeader,
@@ -23,7 +23,7 @@ interface OverviewViewProps {
 
 export const OverviewView: React.FC<OverviewViewProps> = ({ user }) => {
   const router = useRouter();
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { userOrganization, isLoadingUserOrganization } = useOrganizations({ fetchUserOrganization: true });
   const overviewHook = useOverview();
 
   const {

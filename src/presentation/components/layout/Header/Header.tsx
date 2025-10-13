@@ -10,7 +10,7 @@ import {
   LogoutIcon,
   BuildingIcon,
 } from "@/presentation/assets/icons";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { InvitationBadge } from "./InvitationBadge";
 import Image from "next/image";
 import measuraLogo from "@/presentation/assets/images/measura-logo.png";
@@ -20,7 +20,7 @@ export const Header = () => {
   const { theme, setTheme } = useTheme();
   const { t } = useTranslation();
   const { user, logout } = useAuth();
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { userOrganization, isLoadingUserOrganization } = useOrganizations({ fetchUserOrganization: true });
 
   const handleLogout = () => {
     logout();

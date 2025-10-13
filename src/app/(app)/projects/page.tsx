@@ -15,10 +15,9 @@ import {
   PlusIcon,
   BuildingIcon,
 } from "@/presentation/assets/icons";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useOrganizationalObjectives } from "@/core/hooks/organizations";
-import { useOrganization } from "@/core/hooks/organizations/useOrganization";
 import { useOrganizationStore } from "@/core/hooks/organizations/useOrganizationStore";
 import { CreateProjectForm } from "@/presentation/views/Projects/components/CreateProjectForm";
 import { ProjectStatusSelector } from "@/presentation/views/Projects/components/ProjectStatusSelector";
@@ -27,9 +26,8 @@ export default function ProjectsPage() {
   const { t, i18n } = useTranslation("projects");
   const router = useRouter();
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
-  const { activeOrganizationId, loadUserOrganizations, forceClearCache } =
-    useOrganization();
+  const { userOrganization, isLoadingUserOrganization, activeOrganizationId, loadUserOrganizations, forceClearCache } =
+    useOrganizations({ fetchUserOrganization: true });
   const { projects, isLoadingProjects } = useProjects();
   const { objectives: organizationalObjectives } =
     useOrganizationalObjectives();

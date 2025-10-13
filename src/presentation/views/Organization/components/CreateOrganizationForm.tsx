@@ -8,7 +8,7 @@ import {
   createOrganizationSchema,
   type CreateOrganizationData,
 } from "@/core/schemas/organizations";
-import { useOrganizationActions } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { Button } from "@/presentation/components/primitives/Button/Button";
 
 interface Organization {
@@ -61,7 +61,7 @@ export const CreateOrganizationForm = ({
     name: "objectives",
   });
 
-  const { createOrganization } = useOrganizationActions();
+  const { createOrganization } = useOrganizations();
 
   const onSubmit = async (data: CreateOrganizationData) => {
     setIsSubmitting(true);
