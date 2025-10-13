@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardHeader, CardTitle, CardContent, Button } from "@/presentation/components/primitives";
-import { useOrganizationInvitations, useInvitationActions } from "@/core/hooks/organizations";
+import { useInvitations } from "@/core/hooks/organizations";
 import { InvitationStatus } from "@/core/types/organization-invitations";
 
 interface Props {
@@ -13,8 +13,11 @@ interface Props {
 export const OrganizationInvitationsSection = ({ organizationId }: Props) => {
   const { t } = useTranslation("organization");
   const [filter, setFilter] = useState<InvitationStatus | "ALL">("ALL");
-  const { invitations, isLoading } = useOrganizationInvitations(organizationId);
-  const { cancelInvitation } = useInvitationActions();
+  const {
+    orgInvitations: invitations,
+    isLoadingOrgInvitations: isLoading,
+    cancelInvitation
+  } = useInvitations({ fetchOrganization: organizationId });
   const [processing, setProcessing] = useState<string | null>(null);
 
   const filtered = filter === "ALL" ? invitations : invitations.filter(inv => inv.status === filter);

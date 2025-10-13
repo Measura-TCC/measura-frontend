@@ -2,7 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
-import { useMyInvitations, useInvitationActions } from "@/core/hooks/organizations";
+import { useInvitations } from "@/core/hooks/organizations";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
 import { Button } from "@/presentation/components/primitives";
 import { useState, useEffect } from "react";
@@ -16,8 +16,12 @@ interface InvitationsModalProps {
 export const InvitationsModal = ({ isOpen, onClose }: InvitationsModalProps) => {
   const { t } = useTranslation("organization");
   const router = useRouter();
-  const { invitations, isLoading } = useMyInvitations();
-  const { acceptInvitation, rejectInvitation } = useInvitationActions();
+  const {
+    myInvitations: invitations,
+    isLoadingMyInvitations: isLoading,
+    acceptInvitation,
+    rejectInvitation
+  } = useInvitations({ fetchMy: true });
   const { mutateUserOrganization } = useUserOrganization();
   const [processing, setProcessing] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);

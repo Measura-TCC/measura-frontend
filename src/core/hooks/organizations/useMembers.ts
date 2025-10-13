@@ -1,7 +1,7 @@
 import useSWR, { mutate } from "swr";
 import { organizationMemberService } from "@/core/services/organization";
 
-export const useOrganizationMembers = (organizationId: string | null) => {
+export const useMembers = (organizationId: string | null) => {
   const key = organizationId ? `/organizations/${organizationId}/members` : null;
 
   const { data, error, isLoading, mutate: mutateMembers } = useSWR(
@@ -9,28 +9,26 @@ export const useOrganizationMembers = (organizationId: string | null) => {
     () => organizationMemberService.getMembers(organizationId!)
   );
 
-  return {
-    members: data || [],
-    error,
-    isLoading,
-    mutateMembers,
-  };
-};
-
-export const useMemberActions = () => {
   const leaveOrganization = async () => {
     const result = await organizationMemberService.leaveOrganization();
     await mutate("/organizations/my-organization");
     return result;
   };
 
-  const removeMember = async (organizationId: string, userId: string) => {
+  const removeMember = async (userId: string) => {
+    if (!organizationId) {
+      throw new Error("Organization ID is required to remove a member");
+    }
     const result = await organizationMemberService.removeMember(organizationId, userId);
-    await mutate(`/organizations/${organizationId}/members`);
+    await mutateMembers();
     return result;
   };
 
   return {
+    members: data || [],
+    isLoading,
+    error,
+    refetchMembers: mutateMembers,
     leaveOrganization,
     removeMember,
   };

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardHeader, CardTitle, CardContent, Button } from "@/presentation/components/primitives";
-import { useOrganizationMembers, useMemberActions } from "@/core/hooks/organizations";
+import { useMembers } from "@/core/hooks/organizations";
 import { useAuthStore } from "@/core/hooks/auth/useAuth";
 import { useDecodeRole } from "@/core/hooks/common/useDecodeRole";
 import { UserRole } from "@/core/types";
@@ -39,8 +39,7 @@ const MemberRoleDisplay = ({ role }: { role: string }) => {
 export const OrganizationMembersSection = ({ organizationId, userRole, isOwner }: Props) => {
   const { t } = useTranslation("organization");
   const { user } = useAuthStore();
-  const { members, isLoading } = useOrganizationMembers(organizationId);
-  const { removeMember } = useMemberActions();
+  const { members, isLoading, removeMember } = useMembers(organizationId);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   const [memberToRemove, setMemberToRemove] = useState<{ id: string; name: string } | null>(null);
 
@@ -54,7 +53,7 @@ export const OrganizationMembersSection = ({ organizationId, userRole, isOwner }
   const handleConfirmRemove = async () => {
     if (!memberToRemove) return;
 
-    await removeMember(organizationId, memberToRemove.id);
+    await removeMember(memberToRemove.id);
     setMemberToRemove(null);
   };
 

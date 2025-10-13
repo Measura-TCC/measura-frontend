@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useInvitationActions } from "@/core/hooks/organizations";
+import { useInvitations } from "@/core/hooks/organizations";
 import { Button } from "@/presentation/components/primitives";
 import { createPortal } from "react-dom";
 
@@ -19,7 +19,7 @@ export const InviteUserModal = ({ isOpen, onClose, organizationId }: InviteUserM
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { inviteUser } = useInvitationActions();
+  const { inviteUser } = useInvitations();
 
   useEffect(() => {
     setMounted(true);

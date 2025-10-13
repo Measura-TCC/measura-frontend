@@ -3,15 +3,15 @@
 import { useState } from "react";
 import { Button } from "@/presentation/components/primitives";
 import { BellIcon } from "@/presentation/assets/icons";
-import { useMyInvitations } from "@/core/hooks/organizations";
+import { useInvitations } from "@/core/hooks/organizations";
 import { useAuthStore } from "@/core/hooks/auth/useAuth";
 import { InvitationsModal } from "@/presentation/components/modals/InvitationsModal";
 
 export const InvitationBadge = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { isAuthenticated } = useAuthStore();
-  const { invitations } = useMyInvitations(isAuthenticated);
-  const pendingCount = invitations.length;
+  const { myInvitations } = useInvitations({ fetchMy: isAuthenticated });
+  const pendingCount = myInvitations.length;
 
   return (
     <>
