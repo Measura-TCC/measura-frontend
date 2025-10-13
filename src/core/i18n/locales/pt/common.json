@@ -119,5 +119,16 @@
     "admin": "Administrador",
     "measurementAnalyst": "Analista de Medição",
     "projectManager": "Gerente de Projetos"
+  },
+
+  "errors": {
+    "emailAlreadyExists": "Este email já está registrado. Por favor, use um email diferente.",
+    "usernameAlreadyExists": "Este nome de usuário já está em uso. Por favor, escolha um diferente.",
+    "organizationAlreadyExists": "Uma organização com este nome já existe.",
+    "conflict": "Houve um conflito com sua solicitação. Por favor, tente novamente.",
+    "unauthorized": "Você não está autorizado a realizar esta ação.",
+    "forbidden": "Acesso negado. Você não tem permissão para acessar este recurso.",
+    "organizationAccessDenied": "Você deve pertencer a uma organização para acessar este recurso.",
+    "badRequest": "Requisição inválida. Por favor, verifique seus dados e tente novamente."
   }
 }

@@ -2,7 +2,8 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginFormData } from "@/core/schemas/auth";
+import { useTranslation } from "react-i18next";
+import { createLoginSchema, type LoginFormData } from "@/core/schemas/auth";
 import { useAuth } from "@/core/hooks/auth";
 import { useErrorHandler } from "@/core/hooks/common/useErrorHandler";
 
@@ -15,6 +16,7 @@ interface LoginState {
 
 export const useLogin = () => {
   const router = useRouter();
+  const { t } = useTranslation(["login", "validation"]);
   const { getFormattedError } = useErrorHandler();
   const { login, resendVerification } = useAuth();
 
@@ -26,7 +28,7 @@ export const useLogin = () => {
   });
 
   const loginForm = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(createLoginSchema(t)),
   });
 
   const {

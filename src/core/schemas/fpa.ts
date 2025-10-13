@@ -6,38 +6,73 @@ export const countTypeEnum = z.enum([
   "APPLICATION_PROJECT",
 ]);
 
-export const createEstimateSchema = z.object({
-  name: z.string().min(3, "Name must be at least 3 characters").max(100),
-  description: z
-    .string()
-    .min(10, "Description must be at least 10 characters")
-    .max(1000),
-  projectId: z.string().min(1, "Project ID is required"),
-  countType: countTypeEnum,
-  applicationBoundary: z
-    .string()
-    .min(10, "Application boundary must be at least 10 characters")
-    .max(2000),
-  countingScope: z
-    .string()
-    .min(10, "Counting scope must be at least 10 characters")
-    .max(2000),
-  averageDailyWorkingHours: z.number().min(1).max(24).optional(),
-  teamSize: z.number().int().min(1).max(100).optional(),
-  hourlyRateBRL: z.number().min(0.01).max(10000).optional(),
-  productivityFactor: z.number().min(1).max(50).optional(),
-  internalLogicalFiles: z.array(z.string()).optional(),
-  externalInterfaceFiles: z.array(z.string()).optional(),
-  externalInputs: z.array(z.string()).optional(),
-  externalOutputs: z.array(z.string()).optional(),
-  externalQueries: z.array(z.string()).optional(),
-  generalSystemCharacteristics: z
-    .array(z.number().min(0).max(5))
-    .length(14)
-    .optional(),
-});
+// FPA Estimate schema factory (matches API validation)
+export const createEstimateSchemaFactory = (t: (key: string) => string) =>
+  z.object({
+    name: z
+      .string()
+      .min(3, t("validation.project.name.minLength"))
+      .max(100, t("validation.project.name.maxLength")),
+    description: z
+      .string()
+      .min(10, t("validation.project.description.minLength"))
+      .max(1000, t("validation.project.description.maxLength")),
+    projectId: z.string().min(1, t("validation.common.required")),
+    countType: countTypeEnum,
+    applicationBoundary: z
+      .string()
+      .min(10, t("validation.project.description.minLength"))
+      .max(2000, t("validation.common.invalidFormat")),
+    countingScope: z
+      .string()
+      .min(10, t("validation.project.description.minLength"))
+      .max(2000, t("validation.common.invalidFormat")),
+    averageDailyWorkingHours: z.number().min(1).max(24).optional(),
+    teamSize: z
+      .number()
+      .int()
+      .min(1, t("validation.fpa.teamSize.min"))
+      .max(100, t("validation.fpa.teamSize.max"))
+      .optional(),
+    hourlyRateBRL: z
+      .number()
+      .min(0.01, t("validation.fpa.hourlyRate.min"))
+      .max(10000)
+      .optional(),
+    productivityFactor: z.number().min(1).max(100).optional(),
+    internalLogicalFiles: z
+      .array(z.string())
+      .max(100, t("validation.fpa.arrays.maxLength"))
+      .optional(),
+    externalInterfaceFiles: z
+      .array(z.string())
+      .max(100, t("validation.fpa.arrays.maxLength"))
+      .optional(),
+    externalInputs: z
+      .array(z.string())
+      .max(100, t("validation.fpa.arrays.maxLength"))
+      .optional(),
+    externalOutputs: z
+      .array(z.string())
+      .max(100, t("validation.fpa.arrays.maxLength"))
+      .optional(),
+    externalQueries: z
+      .array(z.string())
+      .max(100, t("validation.fpa.arrays.maxLength"))
+      .optional(),
+    generalSystemCharacteristics: z
+      .array(z.number().min(0).max(5))
+      .length(14, t("validation.fpa.gsc.length"))
+      .optional(),
+  });
 
-export const updateEstimateSchema = createEstimateSchema.partial();
+export const createUpdateEstimateSchemaFactory = (t: (key: string) => string) =>
+  createEstimateSchemaFactory(t).partial();
+
+// Default schemas with dummy translation function for types
+const dummyT = (key: string) => key;
+export const createEstimateSchema = createEstimateSchemaFactory(dummyT);
+export const updateEstimateSchema = createUpdateEstimateSchemaFactory(dummyT);
 
 export const createALISchema = z.object({
   name: z.string().min(1, "Name is required"),

@@ -10,61 +10,74 @@ export enum UserRole {
 export const createPasswordSchema = (t: (key: string) => string) =>
   z
     .string()
-    .min(8, t("validation.passwordMinLength"))
-    .regex(/[A-Z]/, t("validation.passwordUppercase"))
-    .regex(/[a-z]/, t("validation.passwordLowercase"))
-    .regex(/\d/, t("validation.passwordNumber"))
-    .regex(/[@$!%*?&]/, t("validation.passwordSpecial"));
+    .min(8, t("validation.password.minLength"))
+    .max(128, t("validation.password.maxLength"))
+    .regex(/[A-Z]/, t("validation.password.uppercase"))
+    .regex(/[a-z]/, t("validation.password.lowercase"))
+    .regex(/\d/, t("validation.password.number"))
+    .regex(/[@$!%*?&]/, t("validation.password.special"));
 
 export const createRegisterSchema = (t: (key: string) => string) =>
   z
     .object({
-      username: z.string().min(3, t("validation.usernameMinLength")),
-      email: z.string().email(t("validation.emailInvalid")),
+      username: z
+        .string()
+        .min(3, t("validation.username.minLength"))
+        .max(100, t("validation.username.maxLength"))
+        .regex(/^[a-zA-Z0-9_-]+$/, t("validation.username.pattern")),
+      email: z.string().email(t("validation.email.invalid")),
       password: createPasswordSchema(t),
       role: z.enum([UserRole.PROJECT_MANAGER, UserRole.MEASUREMENT_ANALYST]),
       confirmPassword: z
         .string()
-        .min(1, t("validation.confirmPasswordRequired")),
+        .min(1, t("validation.confirmPassword.required")),
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: t("validation.passwordsDontMatch"),
+      message: t("validation.confirmPassword.mismatch"),
       path: ["confirmPassword"],
     });
 
-export const loginSchema = z.object({
-  usernameOrEmail: z.string().min(1, "Username or email is required"),
-  password: z.string().min(1, "Senha é obrigatória"),
-});
+export const createLoginSchema = (t: (key: string) => string) =>
+  z.object({
+    usernameOrEmail: z.string().min(1, t("login.errors.emailRequired")),
+    password: z.string().min(1, t("login.errors.passwordRequired")),
+  });
 
-export const passwordResetRequestSchema = z.object({
-  email: z.string().email("Email inválido"),
-});
+export const createPasswordResetRequestSchema = (t: (key: string) => string) =>
+  z.object({
+    email: z.string().email(t("validation.email.invalid")),
+  });
 
 export const createPasswordResetSchema = (t: (key: string) => string) =>
   z
     .object({
-      token: z.string().min(1, "Token é obrigatório"),
+      token: z.string().min(1, t("validation.common.required")),
       password: createPasswordSchema(t),
       confirmPassword: z.string(),
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: t("validation.passwordsDontMatch"),
+      message: t("validation.confirmPassword.mismatch"),
       path: ["confirmPassword"],
     });
 
-export const firebaseLoginSchema = z.object({
-  idToken: z.string().min(1, "Firebase ID token is required"),
-});
+export const createFirebaseLoginSchema = (t: (key: string) => string) =>
+  z.object({
+    idToken: z.string().min(1, t("validation.common.required")),
+  });
 
-export const forgotPasswordSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-});
+export const createForgotPasswordSchema = (t: (key: string) => string) =>
+  z.object({
+    email: z.string().email(t("validation.email.invalid")),
+  });
 
 // Create default schemas with dummy translation function for types
 const dummyT = (key: string) => key;
 export const registerSchema = createRegisterSchema(dummyT);
+export const loginSchema = createLoginSchema(dummyT);
+export const passwordResetRequestSchema = createPasswordResetRequestSchema(dummyT);
 export const passwordResetSchema = createPasswordResetSchema(dummyT);
+export const firebaseLoginSchema = createFirebaseLoginSchema(dummyT);
+export const forgotPasswordSchema = createForgotPasswordSchema(dummyT);
 
 export type RegisterFormData = z.infer<typeof registerSchema>;
 export type LoginFormData = z.infer<typeof loginSchema>;
