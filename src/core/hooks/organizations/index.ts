@@ -10,3 +10,7 @@ export {
   useOrganizationInvitations,
   useInvitationActions,
 } from "./useOrganizationInvitations";
+export {
+  useOrganizationMembers,
+  useMemberActions,
+} from "./useOrganizationMembers";

@@ -87,7 +87,7 @@ export const OrganizationInvitationsSection = ({ organizationId }: Props) => {
                         invitation.status === "ACCEPTED" ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400" :
                         "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
                       }`}>
-                        {invitation.status}
+                        {t(`invitations.statusLabels.${invitation.status}`)}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm dark:text-gray-300">{invitation.invitedBy.username}</td>

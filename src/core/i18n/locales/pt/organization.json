@@ -1,7 +1,13 @@
 {
-  "title": "Gestão de Organização",
+  "title": "Gestão da Organização",
   "subtitle": "Gerencie as configurações e informações da sua organização",
   "loadingMessage": "Carregando informações da organização...",
+  "tabs": {
+    "overview": "Visão Geral",
+    "members": "Membros",
+    "invitations": "Convites",
+    "settings": "Configurações"
+  },
   "organizationDetails": "Detalhes da Organização",
   "organizationStatistics": "Estatísticas da Organização",
   "noOrganizationFound": "Nenhuma Organização Encontrada",
@@ -107,12 +113,48 @@
     "status": "Status",
     "date": "Data",
     "actions": "Ações",
+    "statusLabels": {
+      "PENDING": "Pendente",
+      "ACCEPTED": "Aceito",
+      "REJECTED": "Recusado"
+    },
     "errors": {
       "alreadyHasOrg": "Este usuário já pertence a uma organização",
       "notInOrg": "Você deve pertencer a uma organização para convidar usuários",
       "userNotFound": "Usuário não encontrado",
       "alreadyInvited": "Convite já enviado para este usuário",
       "failedToInvite": "Falha ao enviar convite"
+    }
+  },
+  "members": {
+    "title": "Membros da Organização",
+    "noMembers": "Nenhum membro encontrado",
+    "name": "Nome",
+    "username": "Nome de usuário",
+    "email": "Email",
+    "role": "Cargo",
+    "status": "Status",
+    "actions": "Ações",
+    "owner": "Proprietário",
+    "active": "Ativo",
+    "inactive": "Inativo",
+    "remove": "Remover",
+    "removing": "Removendo...",
+    "removeMember": "Remover Membro",
+    "removeConfirmation": "Tem certeza que deseja remover {{username}} da organização?",
+    "removeWarning": "Este usuário perderá acesso a todos os recursos e dados da organização.",
+    "yesRemove": "Sim, Remover",
+    "confirmRemove": "Tem certeza que deseja remover {{username}} da organização?",
+    "dangerZone": "Zona de Perigo",
+    "dangerZoneDescription": "Ao sair da organização, você perderá acesso a todos os recursos e dados.",
+    "leaveOrganization": "Sair da Organização",
+    "leaveConfirmation": "Tem certeza que deseja sair desta organização?",
+    "leaveWarning": "Aviso: Você perderá acesso a todos os recursos e dados da organização. Esta ação não pode ser desfeita.",
+    "yesLeave": "Sim, Sair",
+    "leaving": "Saindo...",
+    "errors": {
+      "failedToLeave": "Falha ao sair da organização",
+      "failedToRemove": "Falha ao remover membro"
     }
   }
 }

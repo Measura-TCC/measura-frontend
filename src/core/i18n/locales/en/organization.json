@@ -2,6 +2,12 @@
   "title": "Organization Management",
   "subtitle": "Manage your organization settings and information",
   "loadingMessage": "Loading organization information...",
+  "tabs": {
+    "overview": "Overview",
+    "members": "Members",
+    "invitations": "Invitations",
+    "settings": "Settings"
+  },
   "organizationDetails": "Organization Details",
   "organizationStatistics": "Organization Statistics",
   "noOrganizationFound": "No Organization Found",
@@ -107,12 +113,48 @@
     "status": "Status",
     "date": "Date",
     "actions": "Actions",
+    "statusLabels": {
+      "PENDING": "Pending",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Rejected"
+    },
     "errors": {
       "alreadyHasOrg": "This user already belongs to an organization",
       "notInOrg": "You must belong to an organization to invite users",
       "userNotFound": "User not found",
       "alreadyInvited": "Invitation already sent to this user",
       "failedToInvite": "Failed to send invitation"
+    }
+  },
+  "members": {
+    "title": "Organization Members",
+    "noMembers": "No members found",
+    "name": "Name",
+    "username": "Username",
+    "email": "Email",
+    "role": "Role",
+    "status": "Status",
+    "actions": "Actions",
+    "owner": "Owner",
+    "active": "Active",
+    "inactive": "Inactive",
+    "remove": "Remove",
+    "removing": "Removing...",
+    "removeMember": "Remove Member",
+    "removeConfirmation": "Are you sure you want to remove {{username}} from the organization?",
+    "removeWarning": "This user will lose access to all organization resources and data.",
+    "yesRemove": "Yes, Remove",
+    "confirmRemove": "Are you sure you want to remove {{username}} from the organization?",
+    "dangerZone": "Danger Zone",
+    "dangerZoneDescription": "Once you leave the organization, you will lose access to all resources and data.",
+    "leaveOrganization": "Leave Organization",
+    "leaveConfirmation": "Are you sure you want to leave this organization?",
+    "leaveWarning": "Warning: You will lose access to all organization resources and data. This action cannot be undone.",
+    "yesLeave": "Yes, Leave",
+    "leaving": "Leaving...",
+    "errors": {
+      "failedToLeave": "Failed to leave organization",
+      "failedToRemove": "Failed to remove member"
     }
   }
 }
