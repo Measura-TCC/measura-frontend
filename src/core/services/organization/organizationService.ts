@@ -1,4 +1,4 @@
-import { measuraApi } from "./measuraApi";
+import { measuraApi } from "../measuraApi";
 import type {
   CreateOrganizationData,
   UpdateOrganizationData,

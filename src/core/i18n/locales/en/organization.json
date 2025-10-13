@@ -78,6 +78,42 @@
     "createButton": "Create Organization",
     "creating": "Creating...",
     "failedToCreate": "Failed to create organization"
+  },
+  "invitations": {
+    "title": "Invitations",
+    "myInvitations": "My Invitations",
+    "noPending": "No pending invitations",
+    "inviteMember": "Invite Member",
+    "inviteUser": "Invite User to Organization",
+    "invitedBy": "Invited by",
+    "sentOn": "Sent on",
+    "accept": "Accept",
+    "reject": "Reject",
+    "cancel": "Cancel",
+    "emailOrUsername": "Email or Username",
+    "emailOrUsernamePlaceholder": "john.doe@example.com or johndoe",
+    "send": "Send Invitation",
+    "sending": "Sending...",
+    "close": "Close",
+    "invitationSent": "Invitation sent successfully!",
+    "organizationInvitations": "Organization Invitations",
+    "allInvitations": "All",
+    "pendingInvitations": "Pending",
+    "acceptedInvitations": "Accepted",
+    "rejectedInvitations": "Rejected",
+    "noInvitations": "No invitations sent yet",
+    "inviteFirstMember": "Invite your first team member to get started",
+    "user": "User",
+    "status": "Status",
+    "date": "Date",
+    "actions": "Actions",
+    "errors": {
+      "alreadyHasOrg": "This user already belongs to an organization",
+      "notInOrg": "You must belong to an organization to invite users",
+      "userNotFound": "User not found",
+      "alreadyInvited": "Invitation already sent to this user",
+      "failedToInvite": "Failed to send invitation"
+    }
   }
 }
 

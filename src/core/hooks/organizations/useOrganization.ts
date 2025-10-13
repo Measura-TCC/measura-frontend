@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useOrganizationStore } from "./useOrganizationStore";
-import { organizationService } from "@/core/services/organizationService";
+import { organizationService } from "@/core/services/organization";
 import type { Organization } from "./useOrganizationStore";
 
 export class OrganizationAccessError extends Error {

@@ -1,5 +1,5 @@
 import useSWR, { mutate } from "swr";
-import { organizationService } from "@/core/services/organizationService";
+import { organizationService } from "@/core/services/organization";
 import type {
   CreateOrganizationData,
   UpdateOrganizationData,

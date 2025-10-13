@@ -13,11 +13,14 @@ import { BuildingIcon, PlusIcon } from "@/presentation/assets/icons";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
 import { CreateOrganizationForm } from "@/presentation/views/Organization/components/CreateOrganizationForm";
 import { OrganizationWizard } from "@/presentation/views/Organization/components/OrganizationWizard";
+import { InviteUserModal } from "@/presentation/views/Organization/components/InviteUserModal";
+import { OrganizationInvitationsSection } from "@/presentation/views/Organization/components/OrganizationInvitationsSection";
 
 export const OrganizationView: React.FC = () => {
   const { t } = useTranslation("organization");
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showWizard, setShowWizard] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
   const {
     userOrganization,
     isLoadingUserOrganization,
@@ -211,6 +214,9 @@ export const OrganizationView: React.FC = () => {
                   <Button variant="primary" onClick={() => setShowWizard(true)}>
                     {t("manageOrganization")}
                   </Button>
+                  <Button variant="secondary" onClick={() => setShowInviteModal(true)}>
+                    {t("invitations.inviteMember")}
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -240,6 +246,10 @@ export const OrganizationView: React.FC = () => {
                 />
               </CardContent>
             </Card>
+          )}
+
+          {userOrganization && (
+            <OrganizationInvitationsSection organizationId={userOrganization._id} />
           )}
 
           <Card>
@@ -308,6 +318,14 @@ export const OrganizationView: React.FC = () => {
             <CreateOrganizationForm onSuccess={handleOrganizationCreated} />
           </CardContent>
         </Card>
+      )}
+
+      {showInviteModal && (
+        <InviteUserModal
+          isOpen={showInviteModal}
+          onClose={() => setShowInviteModal(false)}
+          organizationId={userOrganization?._id}
+        />
       )}
 
     </div>

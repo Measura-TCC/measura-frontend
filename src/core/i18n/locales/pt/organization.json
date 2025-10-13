@@ -78,5 +78,41 @@
     "createButton": "Criar Organização",
     "creating": "Criando...",
     "failedToCreate": "Falha ao criar organização"
+  },
+  "invitations": {
+    "title": "Convites",
+    "myInvitations": "Meus Convites",
+    "noPending": "Nenhum convite pendente",
+    "inviteMember": "Convidar Membro",
+    "inviteUser": "Convidar Usuário para Organização",
+    "invitedBy": "Convidado por",
+    "sentOn": "Enviado em",
+    "accept": "Aceitar",
+    "reject": "Recusar",
+    "cancel": "Cancelar",
+    "emailOrUsername": "Email ou Nome de Usuário",
+    "emailOrUsernamePlaceholder": "joao.silva@exemplo.com ou joaosilva",
+    "send": "Enviar Convite",
+    "sending": "Enviando...",
+    "close": "Fechar",
+    "invitationSent": "Convite enviado com sucesso!",
+    "organizationInvitations": "Convites da Organização",
+    "allInvitations": "Todos",
+    "pendingInvitations": "Pendentes",
+    "acceptedInvitations": "Aceitos",
+    "rejectedInvitations": "Recusados",
+    "noInvitations": "Nenhum convite enviado ainda",
+    "inviteFirstMember": "Convide seu primeiro membro para começar",
+    "user": "Usuário",
+    "status": "Status",
+    "date": "Data",
+    "actions": "Ações",
+    "errors": {
+      "alreadyHasOrg": "Este usuário já pertence a uma organização",
+      "notInOrg": "Você deve pertencer a uma organização para convidar usuários",
+      "userNotFound": "Usuário não encontrado",
+      "alreadyInvited": "Convite já enviado para este usuário",
+      "failedToInvite": "Falha ao enviar convite"
+    }
   }
 }
