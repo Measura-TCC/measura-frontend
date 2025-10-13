@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
-import { useMemberActions } from "@/core/hooks/organizations";
+import { useMembers } from "@/core/hooks/organizations";
 import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
 import { Button } from "@/presentation/components/primitives";
 import { createPortal } from "react-dom";
@@ -13,13 +13,16 @@ interface LeaveOrganizationModalProps {
   onClose: () => void;
 }
 
-export const LeaveOrganizationModal = ({ isOpen, onClose }: LeaveOrganizationModalProps) => {
+export const LeaveOrganizationModal = ({
+  isOpen,
+  onClose,
+}: LeaveOrganizationModalProps) => {
   const { t } = useTranslation("organization");
   const router = useRouter();
   const [isLeaving, setIsLeaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
-  const { leaveOrganization } = useMemberActions();
+  const { leaveOrganization } = useMembers(null);
   const { mutateUserOrganization } = useUserOrganization();
 
   useEffect(() => {
@@ -46,7 +49,8 @@ export const LeaveOrganizationModal = ({ isOpen, onClose }: LeaveOrganizationMod
         if (backendMessage) {
           const translationKey = `members.errors.${backendMessage}`;
           const translated = t(translationKey);
-          errorMessage = translated !== translationKey ? translated : backendMessage;
+          errorMessage =
+            translated !== translationKey ? translated : backendMessage;
         }
       }
 
@@ -59,10 +63,18 @@ export const LeaveOrganizationModal = ({ isOpen, onClose }: LeaveOrganizationMod
   if (!isOpen || !mounted) return null;
 
   return createPortal(
-    <div className="fixed inset-0 backdrop-blur-sm bg-black/50 dark:bg-black/70 flex items-center justify-center z-[100]" onClick={onClose}>
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 backdrop-blur-sm bg-black/50 dark:bg-black/70 flex items-center justify-center z-[100]"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="border-b dark:border-gray-700 px-6 py-4">
-          <h2 className="text-xl font-semibold dark:text-white">{t("members.leaveOrganization")}</h2>
+          <h2 className="text-xl font-semibold dark:text-white">
+            {t("members.leaveOrganization")}
+          </h2>
         </div>
 
         <div className="p-6 space-y-4">
@@ -89,11 +101,7 @@ export const LeaveOrganizationModal = ({ isOpen, onClose }: LeaveOrganizationMod
           >
             {isLeaving ? t("members.leaving") : t("members.yesLeave")}
           </Button>
-          <Button
-            variant="secondary"
-            onClick={onClose}
-            disabled={isLeaving}
-          >
+          <Button variant="secondary" onClick={onClose} disabled={isLeaving}>
             {t("cancel")}
           </Button>
         </div>
