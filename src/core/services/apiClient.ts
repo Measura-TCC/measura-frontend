@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import { STORAGE_KEYS } from "@/core/utils/constants";
 
 class ApiClient {
   private instance: AxiosInstance;
@@ -32,7 +33,8 @@ class ApiClient {
     this.instance.interceptors.response.use(
       (response) => response,
       (error) => {
-        if (error.response?.status === 401) {
+        const skipAutoLogout = error.config?.skipAutoLogout;
+        if (error.response?.status === 401 && !skipAutoLogout) {
           this.handleUnauthorized();
         }
         return Promise.reject(error);
@@ -42,12 +44,13 @@ class ApiClient {
 
   private getAuthToken(): string | null {
     if (typeof window === "undefined") return null;
-    return localStorage.getItem("auth_token");
+    return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
   }
 
   private handleUnauthorized() {
     if (typeof window === "undefined") return;
-    localStorage.removeItem("auth_token");
+    localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
     window.location.href = "/login";
   }
 

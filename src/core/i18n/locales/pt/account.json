@@ -34,7 +34,7 @@
     "passwordRequirements": "A senha deve ter pelo menos 6 caracteres"
   },
   "statistics": {
-    "title": "Estatísticas da Conta",
+    "title": "Status da Conta",
     "memberSince": "Membro desde",
     "currentRole": "Cargo Atual",
     "accountStatus": "Status da Conta",
