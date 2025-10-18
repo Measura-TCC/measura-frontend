@@ -8,6 +8,7 @@ import { useOrganizations } from "@/core/hooks/organizations";
 import { EstimatesDashboard } from "./EstimatesDashboard";
 import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
 import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
+import { NoProjectsAlert } from "@/presentation/components/shared/NoProjectsAlert";
 import { CreateEstimateForm } from "./components/CreateEstimateForm";
 import { CreateGSCForm } from "./components/CreateGSCForm";
 import { CreateProjectConfigurationForm } from "./components/CreateProjectConfigurationForm";
@@ -112,24 +113,12 @@ export const FPAWorkflow = () => {
     (!projects || projects.length === 0)
   ) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="text-center py-12">
-          <div className="text-blue-500 mb-4">
-            <DocumentIcon className="w-12 h-12 mx-auto" />
-          </div>
-          <h3 className="text-lg font-medium text-default mb-2">
-            {t("noProjectsTitle")}
-          </h3>
-          <p className="text-secondary mb-4">{t("noProjectsDescription")}</p>
-          <div className="flex gap-3 justify-center">
-            <button
-              onClick={() => router.push("/projects")}
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
-            >
-              {t("goToProjects")}
-            </button>
-          </div>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">{t("title")}</h1>
+          <p className="text-muted mt-1">{t("subtitle")}</p>
         </div>
+        <NoProjectsAlert translationNamespace="fpa" />
       </div>
     );
   }

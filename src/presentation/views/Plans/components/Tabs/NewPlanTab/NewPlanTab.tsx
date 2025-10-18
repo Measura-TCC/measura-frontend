@@ -11,6 +11,7 @@ import {
 import { PlusIcon, ChartIcon, DocumentIcon } from "@/presentation/assets/icons";
 import type { PlansStatistics } from "@/core/types/plans";
 import type { Objective } from "./utils/types";
+import { NoProjectsAlert } from "@/presentation/components/shared/NoProjectsAlert";
 
 import { Step1 } from "./steps/Step1";
 import { Step2 } from "./steps/Step2";
@@ -259,31 +260,7 @@ export const NewPlanTab: React.FC<NewPlanTabProps> = ({
     canCreatePlan &&
     (!projects || projects.length === 0)
   ) {
-    return (
-      <div className="space-y-6">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center space-y-4">
-              <div className="text-blue-500 mb-4">
-                <DocumentIcon className="w-12 h-12 mx-auto" />
-              </div>
-              <div>
-                <h3 className="font-medium text-blue-900">
-                  {t("noProjectsTitle")}
-                </h3>
-                <p className="text-sm text-blue-700 mt-1">
-                  {t("noProjectsDescription")}
-                </p>
-              </div>
-              <Button onClick={() => router.push("/projects")}>
-                <PlusIcon className="w-4 h-4 mr-2" />
-                {t("goToProjects")}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <NoProjectsAlert translationNamespace="plans" />;
   }
 
   if (showWorkflow) {

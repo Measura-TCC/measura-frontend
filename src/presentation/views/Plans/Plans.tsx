@@ -20,10 +20,12 @@ export const PlansView = () => {
   const searchParams = useSearchParams();
   const { userOrganization, isLoadingUserOrganization } = useOrganizations({ fetchUserOrganization: true });
   const { projects, isLoadingProjects } = useProjects();
+  const hasProjects = !!(projects && projects.length > 0);
   const [activeTab, setActiveTab] = useState<PlanTab>("newPlan");
 
   useEffect(() => {
     const tabParam = searchParams.get("tab") as PlanTab;
+
     if (tabParam && ["newPlan", "createdPlans"].includes(tabParam)) {
       setActiveTab(tabParam);
     }
@@ -165,30 +167,6 @@ export const PlansView = () => {
 
       <OrganizationAlert hasOrganization={hasOrganization} translationNamespace="plans" />
 
-      {hasOrganization && !isLoadingProjects && (!projects || projects.length === 0) && (
-        <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-          <div className="text-center space-y-4">
-            <div className="text-blue-500 mb-4">
-              <DocumentIcon className="w-12 h-12 mx-auto" />
-            </div>
-            <div>
-              <h3 className="text-lg font-medium text-blue-900">
-                {t("noProjectsTitle")}
-              </h3>
-              <p className="text-blue-700 mt-1">
-                {t("noProjectsDescription")}
-              </p>
-            </div>
-            <button
-              onClick={() => router.push("/projects")}
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
-            >
-              {t("goToProjects")}
-            </button>
-          </div>
-        </div>
-      )}
-
       {operationError && (
         <div className="bg-red-50 border border-red-200 rounded-md p-4">
           <div className="flex items-center justify-between">
@@ -219,6 +197,7 @@ export const PlansView = () => {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         hasOrganization={hasOrganization}
+        hasProjects={hasProjects}
       />
 
       {activeTab === "createdPlans" && hasOrganization && (

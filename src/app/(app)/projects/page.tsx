@@ -22,6 +22,7 @@ import { useOrganizationStore } from "@/core/hooks/organizations/useOrganization
 import { CreateProjectForm } from "@/presentation/views/Projects/components/CreateProjectForm";
 import { ProjectStatusSelector } from "@/presentation/views/Projects/components/ProjectStatusSelector";
 import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
+import { NoProjectsAlert } from "@/presentation/components/shared/NoProjectsAlert";
 
 export default function ProjectsPage() {
   const { t, i18n } = useTranslation("projects");
@@ -288,25 +289,10 @@ export default function ProjectsPage() {
           ))}
         </div>
       ) : (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center space-y-4">
-              <DocumentIcon className="w-12 h-12 text-gray-400 mx-auto" />
-              <div>
-                <h3 className="font-medium text-default">
-                  {t("noProjectsYet")}
-                </h3>
-                <p className="text-sm text-secondary mt-1">
-                  {t("noProjectsMessage")}
-                </p>
-              </div>
-              <Button onClick={() => setShowCreateForm(true)}>
-                <PlusIcon className="w-4 h-4 mr-2" />
-                {t("createFirstProject")}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <NoProjectsAlert
+          translationNamespace="projects"
+          onActionClick={() => setShowCreateForm(true)}
+        />
       )}
     </div>
   );

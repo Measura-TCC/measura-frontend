@@ -7,12 +7,14 @@ interface PlansTabsProps {
   activeTab: PlanTab;
   onTabChange: (tab: PlanTab) => void;
   hasOrganization: boolean;
+  hasProjects: boolean;
 }
 
 export const PlansTabs: React.FC<PlansTabsProps> = ({
   activeTab,
   onTabChange,
   hasOrganization,
+  hasProjects,
 }) => {
   const { t } = useTranslation("plans");
   const router = useRouter();
@@ -26,12 +28,12 @@ export const PlansTabs: React.FC<PlansTabsProps> = ({
     {
       id: "newPlan" as PlanTab,
       label: t("tabs.newPlan"),
-      disabled: false,
+      disabled: !hasOrganization || !hasProjects,
     },
     {
       id: "createdPlans" as PlanTab,
       label: t("tabs.createdPlans"),
-      disabled: !hasOrganization,
+      disabled: !hasOrganization || !hasProjects,
     },
   ];
 
