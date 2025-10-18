@@ -17,6 +17,7 @@ import {
   useComponentActions,
 } from "@/core/hooks/fpa/components/useComponents";
 import { ExportDropdown } from "@/presentation/views/FPA/common/ExportDropdown";
+import { Tabs } from "@/presentation/components/primitives";
 import {
   EstimateOverviewTab,
   ComponentsTab,
@@ -230,29 +231,17 @@ export const EstimateDetailManager = ({
         <p className="text-secondary mt-2">{currentData.description}</p>
       </div>
 
-      <div className="border-b border-border mb-6">
-        <nav className="-mb-px flex space-x-8">
-          {[
-            { id: "overview", label: t("detailTabs.overview") },
-            { id: "components", label: t("detailTabs.components") },
-            { id: "costs", label: t("detailTabs.costs") },
-            { id: "gsc", label: t("detailTabs.gsc") },
-            { id: "calculations", label: t("detailTabs.calculations") },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as Tab)}
-              className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors hover:cursor-pointer ${
-                activeTab === tab.id
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted hover:text-secondary hover:border-border"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
-      </div>
+      <Tabs
+        tabs={[
+          { id: "overview" as Tab, label: t("detailTabs.overview") },
+          { id: "components" as Tab, label: t("detailTabs.components") },
+          { id: "costs" as Tab, label: t("detailTabs.costs") },
+          { id: "gsc" as Tab, label: t("detailTabs.gsc") },
+          { id: "calculations" as Tab, label: t("detailTabs.calculations") },
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
 
       {activeTab === "overview" && (
         <EstimateOverviewTab

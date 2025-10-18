@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { PlanTab } from "@/core/types/plans";
-import { Button } from "@/presentation/components/primitives/Button/Button";
+import { Tabs } from "@/presentation/components/primitives";
 
 interface PlansTabsProps {
   activeTab: PlanTab;
@@ -22,7 +22,7 @@ export const PlansTabs: React.FC<PlansTabsProps> = ({
     router.push(`/plans?tab=${tab}`, { scroll: false });
   };
 
-  const tabConfig = [
+  const tabs = [
     {
       id: "newPlan" as PlanTab,
       label: t("tabs.newPlan"),
@@ -36,25 +36,6 @@ export const PlansTabs: React.FC<PlansTabsProps> = ({
   ];
 
   return (
-    <div className="border-b border-border mb-6">
-      <nav className="-mb-px flex space-x-8">
-        {tabConfig.map(({ id, label, disabled }) => (
-          <Button
-            key={id}
-            onClick={() => !disabled && handleTabChange(id)}
-            disabled={disabled}
-            variant="ghost"
-            size="sm"
-            className={`py-2 px-1 border-b-2 font-medium text-sm rounded-none ${
-              activeTab === id
-                ? "border-primary text-primary"
-                : "border-transparent text-muted hover:text-secondary hover:border-border"
-            } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            {label}
-          </Button>
-        ))}
-      </nav>
-    </div>
+    <Tabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
   );
 };

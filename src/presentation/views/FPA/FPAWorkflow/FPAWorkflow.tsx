@@ -18,7 +18,7 @@ import { CreateEQForm } from "./components/CreateEQForm";
 import { CreateAIEForm } from "./components/CreateAIEForm";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
 import { OfficeIcon, PlusIcon, DocumentIcon } from "@/presentation/assets/icons";
-import { Button } from "@/presentation/components/primitives/Button/Button";
+import { Button, Tabs } from "@/presentation/components/primitives";
 import {
   useEstimateActions,
   useEstimate,
@@ -713,34 +713,14 @@ export const FPAWorkflow = () => {
         <p className="text-secondary mt-1">{t("subtitle")}</p>
       </div>
 
-      <div className="border-b border-border mb-6">
-        <nav className="-mb-px flex space-x-8">
-          <Button
-            onClick={() => setActiveTab("new")}
-            variant="ghost"
-            size="sm"
-            className={`py-2 px-1 border-b-2 font-medium text-sm  rounded-none${
-              activeTab === "new"
-                ? "border-primary text-primary rounded-none"
-                : "border-transparent text-muted hover:text-secondary hover:border-border rounded-none"
-            }`}
-          >
-            {t("tabs.newEstimate")}
-          </Button>
-          <Button
-            onClick={() => setActiveTab("created")}
-            variant="ghost"
-            size="sm"
-            className={`py-2 px-1 border-b-2 font-medium text-sm rounded-none ${
-              activeTab === "created"
-                ? "border-primary text-primary rounded-none"
-                : "border-transparent text-muted hover:text-secondary hover:border-border rounded-none"
-            }`}
-          >
-            {t("tabs.createdEstimates")}
-          </Button>
-        </nav>
-      </div>
+      <Tabs
+        tabs={[
+          { id: "new" as Tab, label: t("tabs.newEstimate") },
+          { id: "created" as Tab, label: t("tabs.createdEstimates") },
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
 
       {renderTabContent()}
     </div>

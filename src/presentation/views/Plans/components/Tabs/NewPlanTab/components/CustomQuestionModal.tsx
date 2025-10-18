@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import {
   Button,
   Input,
+  Tabs,
 } from "@/presentation/components/primitives";
 import type { Question } from "../utils/types";
 import { availableQuestions } from "../utils/stepData";
@@ -68,20 +69,15 @@ export const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
           </div>
 
           <div className="mb-4">
-            <div className="flex border-b">
-              <button
-                className={`px-4 py-2 ${selectedTab === 'predefined' ? 'border-b-2 border-primary text-primary' : 'text-gray-600'}`}
-                onClick={() => setSelectedTab('predefined')}
-              >
-                {t("modals.customQuestion.predefinedTab")}
-              </button>
-              <button
-                className={`px-4 py-2 ${selectedTab === 'custom' ? 'border-b-2 border-primary text-primary' : 'text-gray-600'}`}
-                onClick={() => setSelectedTab('custom')}
-              >
-                {t("modals.customQuestion.customTab")}
-              </button>
-            </div>
+            <Tabs
+              tabs={[
+                { id: "predefined", label: t("modals.customQuestion.predefinedTab") },
+                { id: "custom", label: t("modals.customQuestion.customTab") },
+              ]}
+              activeTab={selectedTab}
+              onTabChange={setSelectedTab}
+              variant="modal"
+            />
           </div>
 
           {selectedTab === 'predefined' && (
