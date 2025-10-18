@@ -18,7 +18,7 @@ import { CreateEQForm } from "./components/CreateEQForm";
 import { CreateAIEForm } from "./components/CreateAIEForm";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
 import { OfficeIcon, PlusIcon, DocumentIcon } from "@/presentation/assets/icons";
-import { Button, Tabs } from "@/presentation/components/primitives";
+import { Button, Tabs, Stepper } from "@/presentation/components/primitives";
 import {
   useEstimateActions,
   useEstimate,
@@ -205,147 +205,34 @@ export const FPAWorkflow = () => {
       return <EstimatesDashboard onCreateNew={() => setActiveTab("new")} />;
     }
 
+    const steps = [
+      { number: 1, label: t("workflow.step1Title") },
+      { number: 2, label: t("workflow.step2Title") },
+      { number: 3, label: t("workflow.step3Title") },
+      { number: 4, label: t("workflow.step4Title") },
+      { number: 5, label: t("workflow.step5Title") },
+      { number: 6, label: t("workflow.step6Title") },
+    ];
+
     return (
       <div className="space-y-8">
-        <div className="block md:hidden">
-          <div className="px-4">
-            <div className="grid grid-cols-6 gap-1">
-              {[
-                {
-                  number: 1,
-                  name: t("workflow.step1Title").replace("1. ", ""),
-                },
-                {
-                  number: 2,
-                  name: t("workflow.step2Title").replace("2. ", ""),
-                },
-                {
-                  number: 3,
-                  name: t("workflow.step3Title").replace("3. ", ""),
-                },
-                {
-                  number: 4,
-                  name: t("workflow.step4Title").replace("4. ", ""),
-                },
-                {
-                  number: 5,
-                  name: t("workflow.step5Title").replace("5. ", ""),
-                },
-                {
-                  number: 6,
-                  name: t("workflow.step6Title").replace("6. ", ""),
-                },
-              ].map((step) => (
-                <div
-                  key={step.number}
-                  className="flex flex-col items-center"
-                >
-                  <div
-                    onClick={() => handleStepClick(step.number as Step)}
-                    className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all mb-1 ${
-                      state.currentStep >= step.number
-                        ? "bg-primary border-primary text-white"
-                        : canNavigateToStep(step.number as Step)
-                        ? "border-primary/50 text-primary/70 bg-primary/10"
-                        : "border-gray-300 text-gray-400 bg-gray-100"
-                    } ${
-                      state.currentStep === step.number
-                        ? "ring-2 ring-primary/20"
-                        : ""
-                    } ${
-                      canNavigateToStep(step.number as Step)
-                        ? "cursor-pointer hover:scale-105 hover:shadow-md"
-                        : "cursor-not-allowed opacity-60"
-                    }`}
-                    title={
-                      !canNavigateToStep(step.number as Step)
-                        ? "Complete a etapa anterior para desbloquear"
-                        : ""
-                    }
-                  >
-                    <span className="text-xs font-medium">{step.number}</span>
-                  </div>
-                  <p
-                    className={`text-[10px] font-medium text-center leading-tight ${
-                      state.currentStep === step.number
-                        ? "text-primary"
-                        : canNavigateToStep(step.number as Step)
-                        ? "text-primary/70"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    {step.name}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="block md:hidden px-4">
+          <Stepper
+            steps={steps}
+            currentStep={state.currentStep}
+            onStepClick={handleStepClick}
+            canNavigateTo={(step) => canNavigateToStep(step as Step)}
+            variant="compact"
+          />
         </div>
 
-        <div className="hidden md:flex items-center justify-between">
-          {[
-            { number: 1, name: t("workflow.step1Title").replace("1. ", "") },
-            { number: 2, name: t("workflow.step2Title").replace("2. ", "") },
-            { number: 3, name: t("workflow.step3Title").replace("3. ", "") },
-            { number: 4, name: t("workflow.step4Title").replace("4. ", "") },
-            { number: 5, name: t("workflow.step5Title").replace("5. ", "") },
-            { number: 6, name: t("workflow.step6Title").replace("6. ", "") },
-          ].map((step, index) => (
-            <div
-              key={step.number}
-              className="flex flex-col items-center flex-1"
-            >
-              <div className="flex items-center w-full">
-                <div
-                  onClick={() => handleStepClick(step.number as Step)}
-                  className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all ${
-                    state.currentStep >= step.number
-                      ? "bg-primary border-primary text-white"
-                      : canNavigateToStep(step.number as Step)
-                      ? "border-primary/50 text-primary/70 bg-primary/10"
-                      : "border-gray-300 text-gray-400 bg-gray-100"
-                  } ${
-                    state.currentStep === step.number
-                      ? "ring-4 ring-primary/20"
-                      : ""
-                  } ${
-                    canNavigateToStep(step.number as Step)
-                      ? "cursor-pointer hover:scale-110 hover:shadow-md"
-                      : "cursor-not-allowed opacity-60"
-                  }`}
-                  title={
-                    !canNavigateToStep(step.number as Step)
-                      ? "Complete a etapa anterior para desbloquear"
-                      : ""
-                  }
-                >
-                  {step.number}
-                </div>
-                {index < 5 && (
-                  <div
-                    className={`flex-1 h-0.5 mx-2 ${
-                      state.currentStep > step.number
-                        ? "bg-primary"
-                        : "bg-border"
-                    }`}
-                  />
-                )}
-              </div>
-              <div className="mt-2 text-center">
-                <p
-                  className={`text-xs font-medium ${
-                    state.currentStep === step.number
-                      ? "text-primary"
-                      : canNavigateToStep(step.number as Step)
-                      ? "text-primary/70"
-                      : "text-gray-400"
-                  }`}
-                >
-                  {step.name}
-                </p>
-              </div>
-            </div>
-          ))}
+        <div className="hidden md:block">
+          <Stepper
+            steps={steps}
+            currentStep={state.currentStep}
+            onStepClick={handleStepClick}
+            canNavigateTo={(step) => canNavigateToStep(step as Step)}
+          />
         </div>
 
         {state.currentStep === 1 && (

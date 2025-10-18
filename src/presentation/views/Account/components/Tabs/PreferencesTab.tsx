@@ -29,7 +29,7 @@ export const PreferencesTab: React.FC<PreferencesTabProps> = ({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-default">
+            <label className="text-sm font-medium text-default mr-2">
               {t("preferences.languageLabel")}
             </label>
             <LanguageSwitcher />

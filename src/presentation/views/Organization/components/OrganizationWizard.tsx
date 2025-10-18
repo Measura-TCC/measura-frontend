@@ -16,6 +16,7 @@ import {
   CardTitle,
   Button,
   Input,
+  Stepper,
 } from "@/presentation/components/primitives";
 
 export interface OrganizationWizardProps {
@@ -229,29 +230,18 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, isSubmitting, canGoNext, allValid, stepItems.length]);
 
+  const steps = stepItems.map(item => ({
+    number: item.number,
+    label: item.name
+  }));
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        {stepItems.map((step, index) => (
-          <div key={step.number} className="flex flex-col items-center flex-1">
-            <button
-              type="button"
-              onClick={() => setCurrentStep(step.number as Step)}
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-                currentStep === step.number
-                  ? "bg-primary text-white"
-                  : "bg-primary/20 text-primary hover:bg-primary/30"
-              }`}
-            >
-              {step.number}
-            </button>
-            <div className="text-xs text-center mt-1 max-w-24">{step.name}</div>
-            {index < stepItems.length - 1 && (
-              <div className="flex-1 h-px bg-gray-200 mt-4 mx-2" />
-            )}
-          </div>
-        ))}
-      </div>
+      <Stepper
+        steps={steps}
+        currentStep={currentStep}
+        onStepClick={(step) => setCurrentStep(step as Step)}
+      />
 
       <Card>
         <CardHeader>
