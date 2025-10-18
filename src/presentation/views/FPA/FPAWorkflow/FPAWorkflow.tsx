@@ -193,9 +193,9 @@ export const FPAWorkflow = () => {
     setCurrentStep(2);
   };
 
-  const handleStepClick = (step: Step) => {
-    if (canNavigateToStep(step)) {
-      setCurrentStep(step);
+  const handleStepClick = (step: number) => {
+    if (canNavigateToStep(step as Step)) {
+      setCurrentStep(step as Step);
       setSelectedComponentType(null);
     }
   };
@@ -216,24 +216,12 @@ export const FPAWorkflow = () => {
 
     return (
       <div className="space-y-8">
-        <div className="block md:hidden px-4">
-          <Stepper
-            steps={steps}
-            currentStep={state.currentStep}
-            onStepClick={handleStepClick}
-            canNavigateTo={(step) => canNavigateToStep(step as Step)}
-            variant="compact"
-          />
-        </div>
-
-        <div className="hidden md:block">
-          <Stepper
-            steps={steps}
-            currentStep={state.currentStep}
-            onStepClick={handleStepClick}
-            canNavigateTo={(step) => canNavigateToStep(step as Step)}
-          />
-        </div>
+        <Stepper
+          steps={steps}
+          currentStep={state.currentStep}
+          onStepClick={handleStepClick}
+          canNavigateTo={(step) => canNavigateToStep(step as Step)}
+        />
 
         {state.currentStep === 1 && (
           <div className="bg-background rounded-lg border border-border p-6">

@@ -9,4 +9,6 @@ export { Tabs } from './Tabs';
 export type { Tab, TabsProps, TabVariant } from './Tabs';
 export { Stepper } from './Stepper';
 export type { Step, StepperProps } from './Stepper';
+export { Table } from './Table';
+export type { Column, TableProps } from './Table';
  

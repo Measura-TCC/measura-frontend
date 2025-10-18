@@ -77,20 +77,12 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
     setError("");
 
     try {
-      const teamMembersArray = data.teamMembers
-        ? data.teamMembers
-            .split(",")
-            .map((id) => id.trim())
-            .filter((id) => id.length > 0)
-        : [];
-
       const projectData = {
         name: data.name,
         description: data.description,
         organizationId: userOrganization._id,
         startDate: data.startDate,
         endDate: data.endDate,
-        teamMembers: teamMembersArray,
         objectives: data.objectives?.filter(
           (obj) => obj.title.trim() && obj.description.trim()
         ),
@@ -237,30 +229,6 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
               </p>
             )}
           </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="teamMembers"
-            className="block text-sm font-medium text-gray-700"
-          >
-            {t("createProjectForm.teamMembersOptional")}
-          </label>
-          <textarea
-            {...register("teamMembers")}
-            id="teamMembers"
-            rows={2}
-            placeholder={t("createProjectForm.teamMembersPlaceholder")}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          />
-          <p className="mt-1 text-xs text-gray-500">
-            {t("createProjectForm.teamMembersHelp")}
-          </p>
-          {errors.teamMembers && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.teamMembers.message}
-            </p>
-          )}
         </div>
 
         <div>
