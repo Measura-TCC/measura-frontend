@@ -163,7 +163,7 @@ export const PlansView = () => {
         isLoadingOrganization={isLoadingUserOrganization}
       />
 
-      <OrganizationAlert hasOrganization={hasOrganization} />
+      <OrganizationAlert hasOrganization={hasOrganization} translationNamespace="plans" />
 
       {hasOrganization && !isLoadingProjects && (!projects || projects.length === 0) && (
         <div className="bg-blue-50 border border-blue-200 rounded-md p-4">

@@ -1,6 +1,6 @@
 {
   "title": "Projects",
-  "subtitle": "Manage your development projects",
+  "subtitle": "Manage your organization's projects",
   "subtitleWithOrg": "Projects for {{organizationName}}",
   "loading": "Loading projects...",
   "newProject": "New Project",

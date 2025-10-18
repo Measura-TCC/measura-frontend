@@ -21,6 +21,7 @@ import { useOrganizationalObjectives } from "@/core/hooks/organizations";
 import { useOrganizationStore } from "@/core/hooks/organizations/useOrganizationStore";
 import { CreateProjectForm } from "@/presentation/views/Projects/components/CreateProjectForm";
 import { ProjectStatusSelector } from "@/presentation/views/Projects/components/ProjectStatusSelector";
+import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
 
 export default function ProjectsPage() {
   const { t, i18n } = useTranslation("projects");
@@ -105,7 +106,7 @@ export default function ProjectsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-default">{t("title")}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">{t("title")}</h1>
           <p className="text-muted mt-1">{t("loading")}</p>
         </div>
         <div className="animate-pulse">
@@ -119,38 +120,23 @@ export default function ProjectsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-default">{t("title")}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">{t("title")}</h1>
           <p className="text-muted mt-1">{t("subtitle")}</p>
         </div>
 
-        <Card className="border-amber-200 bg-amber-50">
-          <CardContent className="pt-6">
-            <div className="text-center space-y-4">
-              <BuildingIcon className="w-12 h-12 text-amber-600 mx-auto" />
-              <div>
-                <h3 className="font-medium text-amber-900">
-                  {t("organizationRequired")}
-                </h3>
-                <p className="text-sm text-amber-700 mt-1">
-                  {t("organizationRequiredMessage")}
-                </p>
-              </div>
-              <Button onClick={() => (window.location.href = "/organization")}>
-                <PlusIcon className="w-4 h-4 mr-2" />
-                {t("createOrganization")}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <OrganizationAlert
+          hasOrganization={false}
+          translationNamespace="projects"
+        />
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-default">{t("title")}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">{t("title")}</h1>
           <p className="text-muted mt-1">
             {t("subtitleWithOrg", { organizationName: userOrganization.name })}
           </p>

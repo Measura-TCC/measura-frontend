@@ -64,7 +64,8 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ user }) => {
 
       <OrganizationAlert
         hasOrganization={!!userOrganization}
-        onCreateOrganization={handleCreateOrganization}
+        translationNamespace="organization"
+        onCreateClick={handleCreateOrganization}
       />
 
       <QuickActionsSection

@@ -7,7 +7,7 @@ import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useOrganizations } from "@/core/hooks/organizations";
 import { EstimatesDashboard } from "./EstimatesDashboard";
 import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
-import { CreateOrganizationForm } from "../../Organization/components/CreateOrganizationForm";
+import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
 import { CreateEstimateForm } from "./components/CreateEstimateForm";
 import { CreateGSCForm } from "./components/CreateGSCForm";
 import { CreateProjectConfigurationForm } from "./components/CreateProjectConfigurationForm";
@@ -18,7 +18,6 @@ import { CreateEQForm } from "./components/CreateEQForm";
 import { CreateAIEForm } from "./components/CreateAIEForm";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
 import {
-  OfficeIcon,
   PlusIcon,
   DocumentIcon,
 } from "@/presentation/assets/icons";
@@ -97,19 +96,12 @@ export const FPAWorkflow = () => {
 
   if (!userOrganization) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="text-center py-12">
-          <div className="text-amber-500 mb-4">
-            <OfficeIcon className="w-12 h-12 mx-auto" />
-          </div>
-          <h3 className="text-lg font-medium text-default mb-2">
-            {t("workflow.organizationRequiredTitle")}
-          </h3>
-          <p className="text-secondary mb-4">
-            {t("workflow.organizationRequiredText")}
-          </p>
-          <CreateOrganizationForm />
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">{t("title")}</h1>
+          <p className="text-muted mt-1">{t("subtitle")}</p>
         </div>
+        <OrganizationAlert hasOrganization={false} translationNamespace="fpa" />
       </div>
     );
   }

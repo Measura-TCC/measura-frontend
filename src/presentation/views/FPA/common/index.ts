@@ -5,7 +5,7 @@ export { ComponentList } from "./ComponentList";
 export { EstimateOverviewCard } from "./EstimateOverviewCard";
 export { ExportDropdown } from "./ExportDropdown";
 export { FPAPageHeader } from "./FPAPageHeader";
-export { OrganizationAlert } from "./OrganizationAlert";
+export { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
 export { FPATabs } from "./FPATabs";
 
 // Export tabs

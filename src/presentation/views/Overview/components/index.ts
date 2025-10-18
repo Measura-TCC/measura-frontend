@@ -1,3 +1,3 @@
 export { OverviewPageHeader } from "./OverviewPageHeader";
-export { OrganizationAlert } from "./OrganizationAlert";
+export { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
 export * from "./Sections";
