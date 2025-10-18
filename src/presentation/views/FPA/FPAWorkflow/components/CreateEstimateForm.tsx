@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -10,24 +10,26 @@ import { useEstimateActions } from "@/core/hooks/fpa/estimates/useEstimate";
 import { type CreateEstimateData } from "@/core/schemas/fpa";
 import { Button } from "@/presentation/components/primitives";
 
-const estimateSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100, "Name too long"),
-  description: z
-    .string()
-    .min(10, "Description must be at least 10 characters")
-    .max(500, "Description too long"),
-  applicationBoundary: z.string().min(1, "Application boundary is required"),
-  countingScope: z.string().min(1, "Counting scope is required"),
-  countType: z.enum([
-    "DEVELOPMENT_PROJECT",
-    "ENHANCEMENT_PROJECT",
-    "APPLICATION_PROJECT",
-  ]),
-  teamSize: z.number().min(1).max(100),
-  hourlyRateBRL: z.number().min(0.01),
-});
-
-type EstimateFormData = z.infer<typeof estimateSchema>;
+const createEstimateFormSchemaFactory = (t: (key: string) => string) =>
+  z.object({
+    name: z
+      .string()
+      .min(1, t("validation:fpa.name.required"))
+      .max(100, t("validation:fpa.name.maxLength")),
+    description: z
+      .string()
+      .min(10, t("validation:project.description.minLength"))
+      .max(500, t("validation:fpa.description.maxLength")),
+    applicationBoundary: z.string().min(1, t("validation:fpa.applicationBoundary.required")),
+    countingScope: z.string().min(1, t("validation:fpa.countingScope.required")),
+    countType: z.enum([
+      "DEVELOPMENT_PROJECT",
+      "ENHANCEMENT_PROJECT",
+      "APPLICATION_PROJECT",
+    ]),
+    teamSize: z.number().min(1).max(100),
+    hourlyRateBRL: z.number().min(0.01),
+  });
 
 interface CreateEstimateFormProps {
   projectId: string;
@@ -48,6 +50,13 @@ export const CreateEstimateForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const estimateSchema = useMemo(
+    () => createEstimateFormSchemaFactory(t),
+    [t]
+  );
+
+  type EstimateFormData = z.infer<typeof estimateSchema>;
+
   const {
     register,
     handleSubmit,
@@ -56,12 +65,16 @@ export const CreateEstimateForm = ({
     resolver: zodResolver(estimateSchema),
     defaultValues: {
       name: initialData?.name || "",
-      description: initialData?.description || "Default project description for FPA estimation",
-      countType: (initialData?.countType as "DEVELOPMENT_PROJECT" | "ENHANCEMENT_PROJECT" | "APPLICATION_PROJECT") || "DEVELOPMENT_PROJECT",
+      description: initialData?.description || "",
+      countType:
+        (initialData?.countType as
+          | "DEVELOPMENT_PROJECT"
+          | "ENHANCEMENT_PROJECT"
+          | "APPLICATION_PROJECT") || "DEVELOPMENT_PROJECT",
       applicationBoundary: "",
       countingScope: "",
-      teamSize: 1, // Minimum allowed value - will be updated in Step 5
-      hourlyRateBRL: 0.01, // Minimum allowed value - will be updated in Step 5
+      teamSize: 1,
+      hourlyRateBRL: 0.01
     },
   });
 
@@ -209,9 +222,11 @@ export const CreateEstimateForm = ({
         </div>
       </fieldset>
 
-      {/* Hidden fields for required backend validation - will be updated in Step 5 */}
       <input type="hidden" {...register("teamSize", { valueAsNumber: true })} />
-      <input type="hidden" {...register("hourlyRateBRL", { valueAsNumber: true })} />
+      <input
+        type="hidden"
+        {...register("hourlyRateBRL", { valueAsNumber: true })}
+      />
 
       <div className="flex justify-end space-x-3">
         <Button

@@ -17,7 +17,11 @@ import { CreateEOForm } from "./components/CreateEOForm";
 import { CreateEQForm } from "./components/CreateEQForm";
 import { CreateAIEForm } from "./components/CreateAIEForm";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
-import { OfficeIcon, PlusIcon, DocumentIcon } from "@/presentation/assets/icons";
+import {
+  OfficeIcon,
+  PlusIcon,
+  DocumentIcon,
+} from "@/presentation/assets/icons";
 import { Button, Tabs, Stepper } from "@/presentation/components/primitives";
 import {
   useEstimateActions,
@@ -42,7 +46,8 @@ interface EstimateWithArrays {
 
 export const FPAWorkflow = () => {
   const { t } = useTranslation("fpa");
-  const { requireOrganization, userOrganization, isLoadingUserOrganization } = useOrganizations({ fetchUserOrganization: true });
+  const { requireOrganization, userOrganization, isLoadingUserOrganization } =
+    useOrganizations({ fetchUserOrganization: true });
   const searchParams = useSearchParams();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("new");
@@ -109,7 +114,11 @@ export const FPAWorkflow = () => {
     );
   }
 
-  if (!isLoadingProjects && userOrganization && (!projects || projects.length === 0)) {
+  if (
+    !isLoadingProjects &&
+    userOrganization &&
+    (!projects || projects.length === 0)
+  ) {
     return (
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-center py-12">
@@ -119,9 +128,7 @@ export const FPAWorkflow = () => {
           <h3 className="text-lg font-medium text-default mb-2">
             {t("noProjectsTitle")}
           </h3>
-          <p className="text-secondary mb-4">
-            {t("noProjectsDescription")}
-          </p>
+          <p className="text-secondary mb-4">{t("noProjectsDescription")}</p>
           <div className="flex gap-3 justify-center">
             <button
               onClick={() => router.push("/projects")}
@@ -145,7 +152,6 @@ export const FPAWorkflow = () => {
     setCreatedEstimate(estimateResponse);
     setCurrentStep(3);
   };
-
 
   const handleGSCCompleted = async (generalSystemCharacteristics: number[]) => {
     if (!state.createdEstimate) return;
@@ -307,7 +313,7 @@ export const FPAWorkflow = () => {
             <p className="text-secondary mb-6">
               {t("workflow.step3Description")}
             </p>
-                {currentEstimateData && (
+            {currentEstimateData && (
               <div className="mb-6 p-4 bg-background-secondary rounded-lg">
                 <h3 className="text-lg font-medium mb-3 text-default">
                   {t("workflow.addedComponents")}
@@ -582,9 +588,9 @@ export const FPAWorkflow = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto pb-[20px]">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-default">{t("title")}</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-default">{t("title")}</h1>
         <p className="text-secondary mt-1">{t("subtitle")}</p>
       </div>
 

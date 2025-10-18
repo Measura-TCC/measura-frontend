@@ -91,7 +91,7 @@ export const EstimateDetailManager = ({
 
   if (error || overviewError) {
     return (
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto pb-[20px]">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
           <h2 className="text-lg font-semibold text-red-800 mb-2">
             {t("errors.loadingTitle")}
@@ -113,7 +113,7 @@ export const EstimateDetailManager = ({
     (isLoadingEstimateOverview || !estimateOverview)
   ) {
     return (
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto pb-[20px]">
         <div className="space-y-6">
           <div className="animate-pulse">
             <div className="h-8 bg-background-secondary rounded w-1/3 mb-4"></div>
@@ -185,110 +185,110 @@ export const EstimateDetailManager = ({
 
   return (
     <OrganizationGuard>
-      <div className="max-w-7xl mx-auto p-6">
-      <div className="mb-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => router.push("/fpa?tab=created")}
-              className="p-2 text-muted hover:text-secondary transition-colors hover:cursor-pointer"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+      <div className="max-w-7xl mx-auto pb-[20px]">
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => router.push("/fpa?tab=created")}
+                className="p-2 text-muted hover:text-secondary transition-colors hover:cursor-pointer"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
-            <div>
-              <h1 className="text-2xl font-bold text-default">
-                {currentData.name}
-              </h1>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold text-default">
+                  {currentData.name}
+                </h1>
+              </div>
+            </div>
+            <div className="flex items-center flex-wrap gap-3">
+              <ExportDropdown
+                estimateId={estimateId}
+                estimateName={currentData.name}
+              />
+              <span
+                className={`px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(
+                  currentData.status || "DRAFT"
+                )}`}
+              >
+                {t(`status.${(currentData.status || "DRAFT").toLowerCase()}`)}
+              </span>
+              <span className="text-sm text-muted">v{currentData.version}</span>
             </div>
           </div>
-          <div className="flex items-center space-x-3">
-            <ExportDropdown
-              estimateId={estimateId}
-              estimateName={currentData.name}
-            />
-            <span
-              className={`px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(
-                currentData.status || 'DRAFT'
-              )}`}
-            >
-              {t(`status.${(currentData.status || 'DRAFT').toLowerCase()}`)}
-            </span>
-            <span className="text-sm text-muted">v{currentData.version}</span>
-          </div>
+          <p className="text-secondary mt-2">{currentData.description}</p>
         </div>
-        <p className="text-secondary mt-2">{currentData.description}</p>
-      </div>
 
-      <Tabs
-        tabs={[
-          { id: "overview" as Tab, label: t("detailTabs.overview") },
-          { id: "components" as Tab, label: t("detailTabs.components") },
-          { id: "costs" as Tab, label: t("detailTabs.costs") },
-          { id: "gsc" as Tab, label: t("detailTabs.gsc") },
-          { id: "calculations" as Tab, label: t("detailTabs.calculations") },
-        ]}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
-
-      {activeTab === "overview" && (
-        <EstimateOverviewTab
-          estimateOverview={estimateOverview || undefined}
-          isLoadingEstimateOverview={isLoadingEstimateOverview}
-          overviewError={overviewError}
+        <Tabs
+          tabs={[
+            { id: "overview" as Tab, label: t("detailTabs.overview") },
+            { id: "components" as Tab, label: t("detailTabs.components") },
+            { id: "costs" as Tab, label: t("detailTabs.costs") },
+            { id: "gsc" as Tab, label: t("detailTabs.gsc") },
+            { id: "calculations" as Tab, label: t("detailTabs.calculations") },
+          ]}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
         />
-      )}
 
-      {activeTab === "components" && (
-        <ComponentsTab
-          estimateId={estimateId}
-          selectedComponentType={selectedComponentType}
-          setSelectedComponentType={setSelectedComponentType}
-          aliComponents={aliComponents || []}
-          aieComponents={aieComponents || []}
-          eiComponents={eiComponents || []}
-          eoComponents={eoComponents || []}
-          eqComponents={eqComponents || []}
-          isLoadingALI={isLoadingALI}
-          isLoadingAIE={isLoadingAIE}
-          isLoadingEI={isLoadingEI}
-          isLoadingEO={isLoadingEO}
-          isLoadingEQ={isLoadingEQ}
-          onDeleteComponent={handleDeleteComponent}
-          onComponentAdded={handleComponentAdded}
-        />
-      )}
+        {activeTab === "overview" && (
+          <EstimateOverviewTab
+            estimateOverview={estimateOverview || undefined}
+            isLoadingEstimateOverview={isLoadingEstimateOverview}
+            overviewError={overviewError}
+          />
+        )}
 
-      {activeTab === "costs" && estimateOverview && (
-        <CostsTab estimateOverview={estimateOverview} />
-      )}
+        {activeTab === "components" && (
+          <ComponentsTab
+            estimateId={estimateId}
+            selectedComponentType={selectedComponentType}
+            setSelectedComponentType={setSelectedComponentType}
+            aliComponents={aliComponents || []}
+            aieComponents={aieComponents || []}
+            eiComponents={eiComponents || []}
+            eoComponents={eoComponents || []}
+            eqComponents={eqComponents || []}
+            isLoadingALI={isLoadingALI}
+            isLoadingAIE={isLoadingAIE}
+            isLoadingEI={isLoadingEI}
+            isLoadingEO={isLoadingEO}
+            isLoadingEQ={isLoadingEQ}
+            onDeleteComponent={handleDeleteComponent}
+            onComponentAdded={handleComponentAdded}
+          />
+        )}
 
-      {activeTab === "gsc" && estimateOverview && (
-        <GSCTab
-          estimateOverview={estimateOverview}
-          estimate={estimate}
-          onUpdate={() => {
-            mutateEstimate();
-            mutateEstimateOverview();
-          }}
-        />
-      )}
+        {activeTab === "costs" && estimateOverview && (
+          <CostsTab estimateOverview={estimateOverview} />
+        )}
 
-      {activeTab === "calculations" && estimateOverview && (
-        <CalculationsTab estimateOverview={estimateOverview} />
-      )}
+        {activeTab === "gsc" && estimateOverview && (
+          <GSCTab
+            estimateOverview={estimateOverview}
+            estimate={estimate}
+            onUpdate={() => {
+              mutateEstimate();
+              mutateEstimateOverview();
+            }}
+          />
+        )}
+
+        {activeTab === "calculations" && estimateOverview && (
+          <CalculationsTab estimateOverview={estimateOverview} />
+        )}
       </div>
     </OrganizationGuard>
   );

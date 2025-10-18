@@ -98,7 +98,7 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
           <CardHeader>
             <div>
               <CardTitle className="text-xl mb-2">{plan.planName}</CardTitle>
-              <div className="flex items-center space-x-4 text-sm text-gray-600">
+              <div className="flex items-center flex-wrap gap-2 md:gap-4 text-sm text-gray-600">
                 <span
                   className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
                     plan.status

@@ -74,101 +74,114 @@ const dummyT = (key: string) => key;
 export const createEstimateSchema = createEstimateSchemaFactory(dummyT);
 export const updateEstimateSchema = createUpdateEstimateSchemaFactory(dummyT);
 
-export const createALISchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().min(1, "Description is required"),
-  primaryIntent: z
-    .string()
-    .min(10, "Primary intent must be at least 10 characters")
-    .max(500),
-  recordElementTypes: z
-    .number()
-    .min(1, "Must have at least 1 record element type"),
-  dataElementTypes: z.number().min(1, "Must have at least 1 data element type"),
-  notes: z.string().max(2000).optional(),
-});
+export const createALISchemaFactory = (t: (key: string) => string) =>
+  z.object({
+    name: z.string().min(1, t("validation.fpa.name.required")),
+    description: z.string().min(1, t("validation.fpa.description.required")),
+    primaryIntent: z
+      .string()
+      .min(10, t("validation.fpa.primaryIntent.minLength"))
+      .max(500, t("validation.fpa.primaryIntent.maxLength")),
+    recordElementTypes: z
+      .number()
+      .min(1, t("validation.fpa.recordElementTypes.min")),
+    dataElementTypes: z.number().min(1, t("validation.fpa.dataElementTypes.min")),
+    notes: z.string().max(2000).optional(),
+  });
 
-export const createEISchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().optional(),
-  primaryIntent: z
-    .string()
-    .min(10, "Primary intent must be at least 10 characters")
-    .max(500),
-  processingLogic: z
-    .string()
-    .min(10, "Processing logic must be at least 10 characters")
-    .max(1000),
-  fileTypesReferenced: z.number().min(0),
-  dataElementTypes: z.number().min(0),
-  notes: z.string().max(2000).optional(),
-});
-
-export const createEOSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().optional(),
-  primaryIntent: z
-    .string()
-    .min(10, "Primary intent must be at least 10 characters")
-    .max(500),
-  derivedData: z.boolean().optional(),
-  outputFormat: z.string().optional(),
-  fileTypesReferenced: z.number().min(0),
-  dataElementTypes: z.number().min(0),
-  notes: z.string().max(2000).optional(),
-});
-
-export const createEQSchema = z
-  .object({
-    name: z.string().min(1, "Name is required"),
+export const createEISchemaFactory = (t: (key: string) => string) =>
+  z.object({
+    name: z.string().min(1, t("validation.fpa.name.required")),
     description: z.string().optional(),
     primaryIntent: z
       .string()
-      .min(10, "Primary intent must be at least 10 characters")
-      .max(500),
-    retrievalLogic: z.string().optional(),
-    useSpecialCalculation: z.boolean(),
-    fileTypesReferenced: z.number().min(0).optional(),
-    dataElementTypes: z.number().min(0).optional(),
-    inputFtr: z.number().min(0).optional(),
-    inputDet: z.number().min(1).optional(),
-    outputFtr: z.number().min(0).optional(),
-    outputDet: z.number().min(1).optional(),
+      .min(10, t("validation.fpa.primaryIntent.minLength"))
+      .max(500, t("validation.fpa.primaryIntent.maxLength")),
+    processingLogic: z
+      .string()
+      .min(10, t("validation.fpa.processingLogic.minLength"))
+      .max(1000, t("validation.fpa.processingLogic.maxLength")),
+    fileTypesReferenced: z.number().min(0),
+    dataElementTypes: z.number().min(0),
     notes: z.string().max(2000).optional(),
-  })
-  .refine(
-    (data) => {
-      if (!data.useSpecialCalculation) {
-        return (
-          data.fileTypesReferenced !== undefined &&
-          data.dataElementTypes !== undefined
-        );
-      }
-      return (
-        data.inputFtr !== undefined &&
-        data.inputDet !== undefined &&
-        data.outputFtr !== undefined &&
-        data.outputDet !== undefined
-      );
-    },
-    {
-      message:
-        "For EQ, provide either standard FTR/DET or input/output separately",
-    }
-  );
+  });
 
-export const createAIESchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().min(1, "Description is required"),
-  primaryIntent: z
-    .string()
-    .min(10, "Primary intent must be at least 10 characters")
-    .max(500),
-  recordElementTypes: z.number().min(1),
-  dataElementTypes: z.number().min(1),
-  externalSystem: z.string().min(1, "External system is required"),
-  notes: z.string().optional(),
-});
+export const createALISchema = createALISchemaFactory(dummyT);
+export const createEISchema = createEISchemaFactory(dummyT);
+
+export const createEOSchemaFactory = (t: (key: string) => string) =>
+  z.object({
+    name: z.string().min(1, t("validation.fpa.name.required")),
+    description: z.string().optional(),
+    primaryIntent: z
+      .string()
+      .min(10, t("validation.fpa.primaryIntent.minLength"))
+      .max(500, t("validation.fpa.primaryIntent.maxLength")),
+    derivedData: z.boolean().optional(),
+    outputFormat: z.string().optional(),
+    fileTypesReferenced: z.number().min(0),
+    dataElementTypes: z.number().min(0),
+    notes: z.string().max(2000).optional(),
+  });
+
+export const createEOSchema = createEOSchemaFactory(dummyT);
+
+export const createEQSchemaFactory = (t: (key: string) => string) =>
+  z
+    .object({
+      name: z.string().min(1, t("validation.fpa.name.required")),
+      description: z.string().optional(),
+      primaryIntent: z
+        .string()
+        .min(10, t("validation.fpa.primaryIntent.minLength"))
+        .max(500, t("validation.fpa.primaryIntent.maxLength")),
+      retrievalLogic: z.string().optional(),
+      useSpecialCalculation: z.boolean(),
+      fileTypesReferenced: z.number().min(0).optional(),
+      dataElementTypes: z.number().min(0).optional(),
+      inputFtr: z.number().min(0).optional(),
+      inputDet: z.number().min(1).optional(),
+      outputFtr: z.number().min(0).optional(),
+      outputDet: z.number().min(1).optional(),
+      notes: z.string().max(2000).optional(),
+    })
+    .refine(
+      (data) => {
+        if (!data.useSpecialCalculation) {
+          return (
+            data.fileTypesReferenced !== undefined &&
+            data.dataElementTypes !== undefined
+          );
+        }
+        return (
+          data.inputFtr !== undefined &&
+          data.inputDet !== undefined &&
+          data.outputFtr !== undefined &&
+          data.outputDet !== undefined
+        );
+      },
+      {
+        message: t("validation.fpa.eqValidation"),
+      }
+    );
+
+export const createEQSchema = createEQSchemaFactory(dummyT);
+
+export const createAIESchemaFactory = (t: (key: string) => string) =>
+  z.object({
+    name: z.string().min(1, t("validation.fpa.name.required")),
+    description: z.string().min(1, t("validation.fpa.description.required")),
+    primaryIntent: z
+      .string()
+      .min(10, t("validation.fpa.primaryIntent.minLength"))
+      .max(500, t("validation.fpa.primaryIntent.maxLength")),
+    recordElementTypes: z.number().min(1, t("validation.fpa.recordElementTypes.min")),
+    dataElementTypes: z.number().min(1, t("validation.fpa.dataElementTypes.min")),
+    externalSystem: z.string().min(1, t("validation.fpa.externalSystem.required")),
+    notes: z.string().optional(),
+  });
+
+export const createAIESchema = createAIESchemaFactory(dummyT);
 
 export const createGSCSchema = z.object({
   dataProcessing: z.number().min(0).max(5),

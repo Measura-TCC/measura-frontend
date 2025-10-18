@@ -5,7 +5,7 @@ import { useForm, type Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import {
-  createOrganizationSchema,
+  createOrganizationSchemaFactory,
   type CreateOrganizationData,
 } from "@/core/schemas/organizations";
 import { useOrganizations } from "@/core/hooks/organizations";
@@ -55,10 +55,15 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const valueInputRef = useRef<HTMLInputElement>(null);
-  const objectiveInputRef = useRef<HTMLInputElement>(null);
+  const objectiveInputRef = useRef<HTMLTextAreaElement>(null);
+
+  const organizationSchema = useMemo(
+    () => createOrganizationSchemaFactory(t),
+    [t]
+  );
 
   const form = useForm<CreateOrganizationData>({
-    resolver: zodResolver(createOrganizationSchema),
+    resolver: zodResolver(organizationSchema),
     defaultValues: useMemo(
       () => ({
         name: initialData?.name || "",
@@ -469,34 +474,32 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   </svg>
                 </div>
               </div>
-              <div className="flex gap-2">
-                <div className="flex-1">
-                  <Input
-                    ref={objectiveInputRef}
-                    placeholder={t("form.addObjectivePlaceholder")}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        const target = e.target as HTMLInputElement;
-                        addObjectiveItem(target.value);
-                        target.value = "";
-                      }
-                    }}
-                  />
-                </div>
-                <Button
-                  type="button"
-                  onClick={() => {
-                    if (objectiveInputRef.current) {
-                      addObjectiveItem(objectiveInputRef.current.value);
-                      objectiveInputRef.current.value = "";
-                    }
-                  }}
-                  className="h-[2.25rem]"
-                >
-                  {t("add")}
-                </Button>
-              </div>
+              <textarea
+                ref={objectiveInputRef}
+                placeholder={t("form.addObjectivePlaceholder")}
+                rows={3}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    const target = e.target as HTMLTextAreaElement;
+                    addObjectiveItem(target.value);
+                    target.value = "";
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                onClick={() => {
+                  if (objectiveInputRef.current) {
+                    addObjectiveItem(objectiveInputRef.current.value);
+                    objectiveInputRef.current.value = "";
+                  }
+                }}
+                className="w-full mt-2"
+              >
+                {t("add")}
+              </Button>
               {objectivesList.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">
                   {objectivesList.map((o, idx) => (

@@ -62,6 +62,37 @@
     }
   },
   "fpa": {
+    "name": {
+      "required": "Name is required",
+      "maxLength": "Name must not exceed 100 characters"
+    },
+    "description": {
+      "required": "Description is required",
+      "maxLength": "Description must not exceed 500 characters"
+    },
+    "applicationBoundary": {
+      "required": "Application boundary is required"
+    },
+    "countingScope": {
+      "required": "Counting scope is required"
+    },
+    "primaryIntent": {
+      "minLength": "Primary intent must be at least 10 characters",
+      "maxLength": "Primary intent must not exceed 500 characters"
+    },
+    "processingLogic": {
+      "minLength": "Processing logic must be at least 10 characters",
+      "maxLength": "Processing logic must not exceed 1000 characters"
+    },
+    "externalSystem": {
+      "required": "External system is required"
+    },
+    "recordElementTypes": {
+      "min": "Must have at least 1 record element type"
+    },
+    "dataElementTypes": {
+      "min": "Must have at least 1 data element type"
+    },
     "teamSize": {
       "min": "Team size must be at least 1",
       "max": "Team size must not exceed 100"
@@ -74,7 +105,8 @@
     },
     "arrays": {
       "maxLength": "Maximum 100 items allowed"
-    }
+    },
+    "eqValidation": "For EQ, provide either standard FTR/DET or input/output separately"
   },
   "fields": {
     "name": "Name",

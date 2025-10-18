@@ -4,34 +4,40 @@ export const createOrganizationSchemaFactory = (t: (key: string) => string) =>
   z.object({
     name: z
       .string()
-      .min(3, t("validation.organization.name.minLength"))
-      .max(100, t("validation.organization.name.maxLength")),
+      .min(3, t("validation:organization.name.minLength"))
+      .max(100, t("validation:organization.name.maxLength")),
     description: z
       .string()
-      .min(10, t("validation.organization.description.minLength"))
-      .max(500, t("validation.organization.description.maxLength")),
-    website: z.string().url(t("validation.organization.website.invalid")),
+      .min(10, t("validation:organization.description.minLength"))
+      .max(500, t("validation:organization.description.maxLength")),
+    website: z
+      .string()
+      .min(1, t("validation:common.required"))
+      .regex(
+        /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/,
+        t("validation:organization.website.invalid")
+      ),
     industry: z
       .string()
-      .min(2, t("validation.common.required"))
-      .max(100, t("validation.organization.industry.maxLength")),
+      .min(2, t("validation:common.required"))
+      .max(100, t("validation:organization.industry.maxLength")),
     // Additional descriptive fields (stored in backend with English keys)
     mission: z
       .string()
-      .min(3, t("validation.common.required"))
-      .max(1000, t("validation.common.invalidFormat")),
+      .min(3, t("validation:common.required"))
+      .max(1000, t("validation:common.invalidFormat")),
     vision: z
       .string()
-      .min(3, t("validation.common.required"))
-      .max(1000, t("validation.common.invalidFormat")),
+      .min(3, t("validation:common.required"))
+      .max(1000, t("validation:common.invalidFormat")),
     values: z
       .string()
-      .min(1, t("validation.common.required"))
-      .max(1000, t("validation.common.invalidFormat")),
+      .min(1, t("validation:common.required"))
+      .max(1000, t("validation:common.invalidFormat")),
     objectives: z
       .array(
         z.object({
-          title: z.string().min(1, t("validation.common.required")),
+          title: z.string().min(1, t("validation:common.required")),
           description: z.string().optional(),
           priority: z
             .enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"])
@@ -52,8 +58,8 @@ export const createOrganizationSchemaFactory = (t: (key: string) => string) =>
       .optional(),
     strategicObjectives: z
       .string()
-      .min(1, t("validation.common.required"))
-      .max(2000, t("validation.common.invalidFormat"))
+      .min(1, t("validation:common.required"))
+      .max(2000, t("validation:common.invalidFormat"))
       .optional(),
   });
 

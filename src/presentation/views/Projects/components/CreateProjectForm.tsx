@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -9,7 +9,7 @@ import { useOrganizations } from "@/core/hooks/organizations";
 import { useOrganizationalObjectives } from "@/core/hooks/organizations";
 import {
   CreateProjectRequest,
-  createProjectSchema,
+  createProjectSchemaFactory,
 } from "@/core/schemas/projects";
 import { InfoIcon } from "@/presentation/assets/icons";
 import { Button } from "@/presentation/components/primitives/Button/Button";
@@ -47,6 +47,11 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
     userOrganization,
   ]);
 
+  const projectSchema = useMemo(
+    () => createProjectSchemaFactory(t),
+    [t]
+  );
+
   const {
     register,
     handleSubmit,
@@ -54,7 +59,7 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
     reset,
     control,
   } = useForm<CreateProjectRequest>({
-    resolver: zodResolver(createProjectSchema),
+    resolver: zodResolver(projectSchema),
     defaultValues: {
       objectives: [
         { title: "", description: "", organizationalObjectiveIds: [] },

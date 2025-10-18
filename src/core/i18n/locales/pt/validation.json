@@ -62,6 +62,37 @@
     }
   },
   "fpa": {
+    "name": {
+      "required": "Nome é obrigatório",
+      "maxLength": "Nome não pode exceder 100 caracteres"
+    },
+    "description": {
+      "required": "Descrição é obrigatória",
+      "maxLength": "Descrição não pode exceder 500 caracteres"
+    },
+    "applicationBoundary": {
+      "required": "Fronteira da aplicação é obrigatória"
+    },
+    "countingScope": {
+      "required": "Escopo da contagem é obrigatório"
+    },
+    "primaryIntent": {
+      "minLength": "Intenção primária deve ter pelo menos 10 caracteres",
+      "maxLength": "Intenção primária não pode exceder 500 caracteres"
+    },
+    "processingLogic": {
+      "minLength": "Lógica de processamento deve ter pelo menos 10 caracteres",
+      "maxLength": "Lógica de processamento não pode exceder 1000 caracteres"
+    },
+    "externalSystem": {
+      "required": "Sistema externo é obrigatório"
+    },
+    "recordElementTypes": {
+      "min": "Deve ter pelo menos 1 tipo de elemento de registro"
+    },
+    "dataElementTypes": {
+      "min": "Deve ter pelo menos 1 tipo de elemento de dados"
+    },
     "teamSize": {
       "min": "Tamanho da equipe deve ser pelo menos 1",
       "max": "Tamanho da equipe não pode exceder 100"
@@ -74,7 +105,8 @@
     },
     "arrays": {
       "maxLength": "Máximo de 100 itens permitidos"
-    }
+    },
+    "eqValidation": "Para CE, forneça FTR/DET padrão ou entrada/saída separadamente"
   },
   "fields": {
     "name": "Nome",
