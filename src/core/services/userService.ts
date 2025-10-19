@@ -6,6 +6,7 @@ export interface UserProfile {
   username: string;
   role: string;
   isEmailVerified: boolean;
+  hasCompletedOnboarding?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -23,6 +24,7 @@ export interface UpdateUserData {
   email?: string;
   role?: string;
   isActive?: boolean;
+  hasCompletedOnboarding?: boolean;
 }
 
 export const userService = {
@@ -61,5 +63,10 @@ export const userService = {
 
   deleteUser: async (params: { id: string }): Promise<void> => {
     await measuraApi.delete(`/users/${params.id}`);
+  },
+
+  updateMyProfile: async (data: UpdateUserData): Promise<UserProfile> => {
+    const response = await measuraApi.patch('/users/me', data);
+    return response.data;
   },
 }; 

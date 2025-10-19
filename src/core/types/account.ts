@@ -7,6 +7,7 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   organizationId?: string;
+  hasCompletedOnboarding?: boolean;
 }
 
 export interface UpdateProfileRequest {

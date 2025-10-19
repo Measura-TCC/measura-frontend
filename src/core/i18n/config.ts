@@ -19,6 +19,7 @@ import ptProjects from "./locales/pt/projects.json";
 import ptAccount from "./locales/pt/account.json";
 import ptHome from "./locales/pt/home.json";
 import ptValidation from "./locales/pt/validation.json";
+import ptOnboarding from "./locales/pt/onboarding.json";
 
 // Import English resources
 import enLayout from "./locales/en/layout.json";
@@ -35,6 +36,7 @@ import enProjects from "./locales/en/projects.json";
 import enAccount from "./locales/en/account.json";
 import enHome from "./locales/en/home.json";
 import enValidation from "./locales/en/validation.json";
+import enOnboarding from "./locales/en/onboarding.json";
 
 const resources = {
   pt: {
@@ -52,6 +54,7 @@ const resources = {
     account: ptAccount,
     home: ptHome,
     validation: ptValidation,
+    onboarding: ptOnboarding,
   },
   en: {
     layout: enLayout,
@@ -68,6 +71,7 @@ const resources = {
     account: enAccount,
     home: enHome,
     validation: enValidation,
+    onboarding: enOnboarding,
   },
 };
 

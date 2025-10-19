@@ -45,3 +45,5 @@ export {
   useMeasurementPlanExport,
   useMeasurementPlanOperations,
 } from "./measurementPlans";
+
+export { useWelcomeTour } from "./onboarding";
