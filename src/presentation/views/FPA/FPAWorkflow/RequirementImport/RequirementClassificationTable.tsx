@@ -17,12 +17,15 @@ export const RequirementClassificationTable = ({
   onBack,
 }: RequirementClassificationTableProps = {}) => {
   const { t } = useTranslation("fpa");
-  const {
-    requirements,
-    classifyRequirement,
-    getUnclassified,
-    updateRequirementFpaData,
-  } = useRequirements();
+  // TODO: Implement requirements classification - stored locally until estimate creation
+  const requirements: Requirement[] = [];
+  const classifyRequirement = (requirementId: string, componentType: ComponentType) => {
+    console.log("TODO: Classify requirement", requirementId, componentType);
+  };
+  const getUnclassified = () => requirements.filter((r) => !r.componentType);
+  const updateRequirementFpaData = (requirementId: string, fpaData: Record<string, unknown>) => {
+    console.log("TODO: Update requirement FPA data", requirementId, fpaData);
+  };
 
   const [modalRequirement, setModalRequirement] = useState<Requirement | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -111,7 +114,7 @@ export const RequirementClassificationTable = ({
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {paginatedRequirements.map((req) => (
-                <tr key={req.id}>
+                <tr key={req._id}>
                   <td className="px-3 sm:px-6 py-3">
                     <div>
                       <p className="text-sm font-medium text-gray-900">
@@ -135,7 +138,7 @@ export const RequirementClassificationTable = ({
                       value={req.componentType || ""}
                       onChange={(e) =>
                         classifyRequirement(
-                          req.id,
+                          req._id,
                           e.target.value as ComponentType
                         )
                       }
@@ -155,11 +158,11 @@ export const RequirementClassificationTable = ({
                     {req.componentType && (
                       <Button
                         onClick={() => setModalRequirement(req)}
-                        variant={req.fpaData ? "secondary" : "primary"}
+                        variant={req.componentId ? "secondary" : "primary"}
                         size="sm"
-                        className={`${req.fpaData ? "bg-green-100 text-green-700 hover:bg-green-200 border-green-300" : ""} whitespace-nowrap`}
+                        className={`${req.componentId ? "bg-green-100 text-green-700 hover:bg-green-200 border-green-300" : ""} whitespace-nowrap`}
                       >
-                        {req.fpaData ? (
+                        {req.componentId ? (
                           <>
                             <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />

@@ -11,7 +11,6 @@ import { GitHubImportForm } from "./forms/GitHubImportForm";
 import { AzureDevOpsImportForm } from "./forms/AzureDevOpsImportForm";
 import { ClickUpImportForm } from "./forms/ClickUpImportForm";
 import { RequirementClassificationTable } from "./RequirementClassificationTable";
-import { useRequirements } from "@/core/hooks/fpa";
 import { Button } from "@/presentation/components/primitives";
 
 interface RequirementImportViewProps {
@@ -22,7 +21,8 @@ export const RequirementImportView = ({
   onProceed,
 }: RequirementImportViewProps) => {
   const { t } = useTranslation("fpa");
-  const { requirements } = useRequirements();
+  // TODO: Requirements are stored locally until estimate creation
+  const requirements: Array<{ componentType?: string }> = [];
   const [selectedSource, setSelectedSource] =
     useState<RequirementSource | null>("manual");
   const [substep, setSubstep] = useState<"import" | "classification">("import");

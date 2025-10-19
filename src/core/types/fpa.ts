@@ -83,11 +83,100 @@ export type RequirementSource =
 
 export type ComponentType = "ALI" | "AIE" | "EI" | "EO" | "EQ";
 
-export interface Requirement {
-  id: string;
+export interface ALIFpaData {
+  name: string;
+  description: string;
+  recordElementTypes?: number;
+  dataElementTypes?: number;
+  primaryIntent: string;
+  dataGroups?: string[];
+  notes?: string;
+}
+
+export interface AIEFpaData {
+  name: string;
+  description: string;
+  recordElementTypes?: number;
+  dataElementTypes?: number;
+  primaryIntent: string;
+  externalSystem: string;  // Backend uses 'externalSystem' not 'externalSystemName'
+  dataGroups?: string[];
+  notes?: string;
+}
+
+export interface EIFpaData {
+  name: string;
+  description: string;
+  fileTypesReferenced?: number;
+  dataElementTypes?: number;
+  primaryIntent: string;
+  processingLogic?: string;
+  validationRules?: string[];
+  notes?: string;
+}
+
+export interface EOFpaData {
+  name: string;
+  description: string;
+  fileTypesReferenced?: number;
+  dataElementTypes?: number;
+  primaryIntent: string;
+  processingLogic?: string;
+  outputFormat?: string;
+  calculationFormulas?: string[];
+  notes?: string;
+}
+
+export interface EQFpaData {
+  name: string;
+  description: string;
+  fileTypesReferenced?: number;
+  dataElementTypes?: number;
+  primaryIntent: string;
+  retrievalLogic?: string;
+  outputFormat?: string;
+  notes?: string;
+}
+
+export type FpaData = ALIFpaData | AIEFpaData | EIFpaData | EOFpaData | EQFpaData;
+
+export interface RequirementWithFpaData {
   title: string;
   description?: string;
   source: RequirementSource;
-  componentType?: ComponentType;
-  fpaData?: Record<string, unknown>;
+  sourceReference?: string;
+  componentType: ComponentType;
+  fpaData: FpaData;
+}
+
+export interface Requirement {
+  _id: string;
+  title: string;
+  description?: string;
+  source: RequirementSource;
+  sourceReference?: string;
+  componentType: ComponentType;
+  componentId?: string;
+  estimateId: string;
+  organizationId: string;
+  projectId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdjustmentFactors {
+  dataCommunications: number;
+  distributedDataProcessing: number;
+  performance: number;
+  heavilyUsedConfiguration: number;
+  transactionRate: number;
+  onlineDataEntry: number;
+  endUserEfficiency: number;
+  onlineUpdate: number;
+  complexProcessing: number;
+  reusability: number;
+  installationEase: number;
+  operationalEase: number;
+  multipleSites: number;
+  facilitateChange: number;
 }

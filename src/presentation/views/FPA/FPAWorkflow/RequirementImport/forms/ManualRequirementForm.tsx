@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useRequirements } from "@/core/hooks/fpa";
 import { Button } from "@/presentation/components/primitives";
 
 export const ManualRequirementForm = () => {
   const { t } = useTranslation("fpa");
-  const { addRequirement, requirements } = useRequirements();
+  // TODO: Implement addRequirement - requirements are created with estimate
+  const requirements: Array<{ id: string; title: string; description?: string }> = [];
+  const addRequirement = (requirement: unknown) => {
+    console.log("TODO: Add requirement to estimate creation payload", requirement);
+  };
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 

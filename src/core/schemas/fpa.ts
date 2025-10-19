@@ -6,6 +6,104 @@ export const countTypeEnum = z.enum([
   "APPLICATION_PROJECT",
 ]);
 
+export const requirementSourceEnum = z.enum([
+  "manual",
+  "csv",
+  "jira",
+  "github",
+  "azure_devops",
+  "clickup",
+]);
+
+export const componentTypeEnum = z.enum([
+  "ALI",
+  "AIE",
+  "EI",
+  "EO",
+  "EQ",
+]);
+
+export const aliDataSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().min(1),
+  recordElementTypes: z.number().min(1).optional(),
+  dataElementTypes: z.number().min(1).optional(),
+  primaryIntent: z.string().min(1),
+  dataGroups: z.array(z.string()).optional(),
+  notes: z.string().max(2000).optional(),
+});
+
+export const aieDataSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().min(1),
+  recordElementTypes: z.number().min(1).optional(),
+  dataElementTypes: z.number().min(1).optional(),
+  primaryIntent: z.string().min(1),
+  externalSystem: z.string().min(1),  // Backend uses 'externalSystem'
+  dataGroups: z.array(z.string()).optional(),
+  notes: z.string().max(2000).optional(),
+});
+
+export const eiDataSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().min(1),
+  fileTypesReferenced: z.number().min(0).optional(),
+  dataElementTypes: z.number().min(1).optional(),
+  primaryIntent: z.string().min(1),
+  processingLogic: z.string().optional(),
+  validationRules: z.array(z.string()).optional(),
+  notes: z.string().max(2000).optional(),
+});
+
+export const eoDataSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().min(1),
+  fileTypesReferenced: z.number().min(0).optional(),
+  dataElementTypes: z.number().min(1).optional(),
+  primaryIntent: z.string().min(1),
+  processingLogic: z.string().optional(),
+  outputFormat: z.string().optional(),
+  calculationFormulas: z.array(z.string()).optional(),
+  notes: z.string().max(2000).optional(),
+});
+
+export const eqDataSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().min(1),
+  fileTypesReferenced: z.number().min(0).optional(),
+  dataElementTypes: z.number().min(1).optional(),
+  primaryIntent: z.string().min(1),
+  retrievalLogic: z.string().optional(),
+  outputFormat: z.string().optional(),
+  notes: z.string().max(2000).optional(),
+});
+
+export const requirementWithFpaDataSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().optional(),
+  source: requirementSourceEnum,
+  sourceReference: z.string().optional(),
+  componentType: componentTypeEnum,
+  fpaData: z.union([aliDataSchema, aieDataSchema, eiDataSchema, eoDataSchema, eqDataSchema]),
+});
+
+export const adjustmentFactorsSchema = z.object({
+  dataCommunications: z.number().min(0).max(5),
+  distributedDataProcessing: z.number().min(0).max(5),
+  performance: z.number().min(0).max(5),
+  heavilyUsedConfiguration: z.number().min(0).max(5),
+  transactionRate: z.number().min(0).max(5),
+  onlineDataEntry: z.number().min(0).max(5),
+  endUserEfficiency: z.number().min(0).max(5),
+  onlineUpdate: z.number().min(0).max(5),
+  complexProcessing: z.number().min(0).max(5),
+  reusability: z.number().min(0).max(5),
+  installationEase: z.number().min(0).max(5),
+  operationalEase: z.number().min(0).max(5),
+  multipleSites: z.number().min(0).max(5),
+  facilitateChange: z.number().min(0).max(5),
+});
+
 // FPA Estimate schema factory (matches API validation)
 export const createEstimateSchemaFactory = (t: (key: string) => string) =>
   z.object({
@@ -64,6 +162,8 @@ export const createEstimateSchemaFactory = (t: (key: string) => string) =>
       .array(z.number().min(0).max(5))
       .length(14, t("validation.fpa.gsc.length"))
       .optional(),
+    requirements: z.array(requirementWithFpaDataSchema).optional(),
+    adjustmentFactors: adjustmentFactorsSchema.optional(),
   });
 
 export const createUpdateEstimateSchemaFactory = (t: (key: string) => string) =>
@@ -210,3 +310,10 @@ export type CreateEOData = z.infer<typeof createEOSchema>;
 export type CreateEQData = z.infer<typeof createEQSchema>;
 export type CreateAIEData = z.infer<typeof createAIESchema>;
 export type CreateGSCData = z.infer<typeof createGSCSchema>;
+export type RequirementWithFpaDataInput = z.infer<typeof requirementWithFpaDataSchema>;
+export type AdjustmentFactorsInput = z.infer<typeof adjustmentFactorsSchema>;
+export type ALIDataInput = z.infer<typeof aliDataSchema>;
+export type AIEDataInput = z.infer<typeof aieDataSchema>;
+export type EIDataInput = z.infer<typeof eiDataSchema>;
+export type EODataInput = z.infer<typeof eoDataSchema>;
+export type EQDataInput = z.infer<typeof eqDataSchema>;

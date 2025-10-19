@@ -50,10 +50,10 @@ export const RequirementFPAModal = ({
 }: RequirementFPAModalProps) => {
   const { t } = useTranslation("fpa");
 
-  if (!isOpen || !requirement.componentType) return null;
-
-  const schema = getSchemaForType(requirement.componentType);
-  const componentType = requirement.componentType;
+  const schema = requirement.componentType
+    ? getSchemaForType(requirement.componentType)
+    : createALISchema;
+  const componentType = requirement.componentType || "ALI";
 
   const {
     register,
@@ -71,6 +71,8 @@ export const RequirementFPAModal = ({
       notes: "",
     },
   });
+
+  if (!isOpen || !requirement.componentType) return null;
 
   const onSubmit = (data: FormData) => {
     console.log("Form submitted with data:", data);

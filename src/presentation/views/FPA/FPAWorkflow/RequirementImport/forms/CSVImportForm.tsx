@@ -2,12 +2,14 @@
 
 import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useRequirements } from "@/core/hooks/fpa";
 import { Button } from "@/presentation/components/primitives";
 
 export const CSVImportForm = () => {
   const { t } = useTranslation("fpa");
-  const { addMultipleRequirements } = useRequirements();
+  // TODO: Implement addMultipleRequirements - requirements are created with estimate
+  const addMultipleRequirements = (requirements: unknown[]) => {
+    console.log("TODO: Add requirements to estimate creation payload", requirements);
+  };
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isImporting, setIsImporting] = useState(false);

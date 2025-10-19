@@ -4,6 +4,10 @@ import type {
   CreateEstimateData,
   UpdateEstimateData,
 } from "@/core/schemas/fpa";
+import type {
+  Requirement,
+  RequirementWithFpaData,
+} from "@/core/types/fpa";
 
 export interface EstimateResponse {
   _id: string;
@@ -386,5 +390,46 @@ export const estimateService = {
       `/estimates/${params.id}/recalculate`
     );
     return response.data;
+  },
+
+  // Requirements management
+  getRequirements: async (params: {
+    estimateId: string;
+  }): Promise<Requirement[]> => {
+    const response = await measuraApi.get(
+      `/estimates/${params.estimateId}/requirements`
+    );
+    return response.data;
+  },
+
+  getRequirement: async (params: {
+    estimateId: string;
+    requirementId: string;
+  }): Promise<Requirement> => {
+    const response = await measuraApi.get(
+      `/estimates/${params.estimateId}/requirements/${params.requirementId}`
+    );
+    return response.data;
+  },
+
+  updateRequirement: async (params: {
+    estimateId: string;
+    requirementId: string;
+    data: Partial<RequirementWithFpaData>;
+  }): Promise<Requirement> => {
+    const response = await measuraApi.put(
+      `/estimates/${params.estimateId}/requirements/${params.requirementId}`,
+      params.data
+    );
+    return response.data;
+  },
+
+  deleteRequirement: async (params: {
+    estimateId: string;
+    requirementId: string;
+  }): Promise<void> => {
+    await measuraApi.delete(
+      `/estimates/${params.estimateId}/requirements/${params.requirementId}`
+    );
   },
 };

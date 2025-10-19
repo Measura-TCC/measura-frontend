@@ -15,4 +15,8 @@ export {
   useAllComponents,
 } from "./components/useFpaComponents";
 
-export { useRequirements } from "./requirements/useRequirements";
+export {
+  useRequirements,
+  useRequirement,
+  useRequirementActions,
+} from "./requirements/useRequirements";
