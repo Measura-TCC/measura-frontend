@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Card, CardHeader, CardTitle, CardContent, Button } from "@/presentation/components/primitives";
+import { Card, CardHeader, CardTitle, CardContent, Button, Table, type Column } from "@/presentation/components/primitives";
 import { useMembers } from "@/core/hooks/organizations";
 import { useAuthStore } from "@/core/hooks/auth/useAuth";
 import { useDecodeRole } from "@/core/hooks/common/useDecodeRole";
@@ -57,6 +57,66 @@ export const OrganizationMembersSection = ({ organizationId, userRole, isOwner }
     setMemberToRemove(null);
   };
 
+  const columns: Column[] = [
+    {
+      key: "username",
+      label: t("members.username"),
+      render: (member) => (
+        <>
+          {member.username}
+          {member.isOwner && (
+            <span className="ml-2 px-2 py-1 rounded text-xs bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400">
+              {t("members.owner")}
+            </span>
+          )}
+        </>
+      ),
+    },
+    {
+      key: "email",
+      label: t("members.email"),
+      render: (member) => member.email,
+      hideOnMobile: true,
+    },
+    {
+      key: "role",
+      label: t("members.role"),
+      render: (member) => <MemberRoleDisplay role={member.role} />,
+    },
+    {
+      key: "status",
+      label: t("members.status"),
+      render: (member) => (
+        <span
+          className={`px-2 py-1 rounded text-xs ${
+            member.isActive
+              ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400"
+              : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
+          }`}
+        >
+          {member.isActive ? t("members.active") : t("members.inactive")}
+        </span>
+      ),
+    },
+  ];
+
+  if (canRemoveMembers) {
+    columns.push({
+      key: "actions",
+      label: t("members.actions"),
+      render: (member) =>
+        member._id !== user?.id ? (
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => handleRemoveClick(member._id, member.username)}
+          >
+            {t("members.remove")}
+          </Button>
+        ) : null,
+    });
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -69,66 +129,13 @@ export const OrganizationMembersSection = ({ organizationId, userRole, isOwner }
               <div key={i} className="animate-pulse bg-gray-200 dark:bg-gray-700 h-16 rounded" />
             ))}
           </div>
-        ) : members.length === 0 ? (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            <p>{t("members.noMembers")}</p>
-          </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">{t("members.username")}</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">{t("members.email")}</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">{t("members.role")}</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">{t("members.status")}</th>
-                  {canRemoveMembers && (
-                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-300">{t("members.actions")}</th>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {members.map((member) => (
-                  <tr key={member._id} className="border-t dark:border-gray-700">
-                    <td className="px-4 py-3 text-sm dark:text-gray-300">
-                      {member.username}
-                      {member.isOwner && (
-                        <span className="ml-2 px-2 py-1 rounded text-xs bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-400">
-                          {t("members.owner")}
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-sm dark:text-gray-300">{member.email}</td>
-                    <td className="px-4 py-3 text-sm dark:text-gray-300">
-                      <MemberRoleDisplay role={member.role} />
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      <span className={`px-2 py-1 rounded text-xs ${
-                        member.isActive
-                          ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400"
-                          : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
-                      }`}>
-                        {member.isActive ? t("members.active") : t("members.inactive")}
-                      </span>
-                    </td>
-                    {canRemoveMembers && (
-                      <td className="px-4 py-3 text-sm">
-                        {member._id !== user?.id && (
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => handleRemoveClick(member._id, member.username)}
-                          >
-                            {t("members.remove")}
-                          </Button>
-                        )}
-                      </td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Table
+            columns={columns}
+            data={members}
+            getRowKey={(member) => member._id}
+            emptyMessage={t("members.noMembers")}
+          />
         )}
       </CardContent>
 

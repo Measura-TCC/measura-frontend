@@ -12,6 +12,12 @@ interface ErrorData {
   errorType?: string;
 }
 
+/**
+ * Smart error handling strategy:
+ * - Toast: Critical/system errors user can't immediately fix (403, 404, 500+, network)
+ * - Inline: User-fixable validation errors (400, 401, 409) - returned as string
+ * - Never show both together
+ */
 export const useErrorHandler = () => {
   const router = useRouter();
   const { t } = useTranslation();
@@ -22,42 +28,38 @@ export const useErrorHandler = () => {
       console.error("Error occurred:", error, "Context:", context);
 
       if (axios.isAxiosError(error)) {
-        if (error.response?.status === 409) {
-          const message = error.response.data?.message;
-          if (message?.includes("email")) {
-            toast.error({ message: t("errors.emailAlreadyExists") });
-            return;
-          }
-          if (message?.includes("username")) {
-            toast.error({ message: t("errors.usernameAlreadyExists") });
-            return;
-          }
+        const status = error.response?.status;
+        const message = error.response?.data?.message;
+
+        // INLINE ERRORS (400, 401, 409) - Don't show toast, return string for inline display
+        if (status === 400 || status === 401 || status === 409) {
+          // These are handled by getFormattedError for inline display
+          return;
+        }
+
+        // TOAST ERRORS (403, 404, 500+, network)
+        if (status === 403) {
           if (message?.includes("organization")) {
-            toast.error({ message: t("errors.organizationAlreadyExists") });
+            toast.error({ message: t("common:errors.organizationAccessDenied") });
             return;
           }
-          toast.error({ message: message || t("errors.conflict") });
+          toast.error({ message: t("common:errors.forbidden") });
           return;
         }
 
-        if (error.response?.status === 401) {
-          toast.error({ message: t("errors.unauthorized") });
+        if (status === 404) {
+          toast.error({ message: t("login:errors.userNotFound") });
           return;
         }
 
-        if (error.response?.status === 403) {
-          const message = error.response.data?.message;
-          if (message?.includes("organization")) {
-            toast.error({ message: t("errors.organizationAccessDenied") });
-            return;
-          }
-          toast.error({ message: t("errors.forbidden") });
+        if (status && status >= 500) {
+          toast.error({ message: t("login:errors.serverError") });
           return;
         }
 
-        if (error.response?.status === 400) {
-          const message = error.response.data?.message;
-          toast.error({ message: message || t("errors.badRequest") });
+        // Network/connection errors
+        if (!status) {
+          toast.error({ message: t("login:errors.networkError") });
           return;
         }
 
@@ -69,47 +71,52 @@ export const useErrorHandler = () => {
         return error.message;
       }
 
-      return "An unexpected error occurred.";
+      return t("login:errors.serverError");
     },
     [router, t, toast]
   );
 
   const getFormattedError = (error: AxiosError<ErrorData> | Error): string => {
     if (error instanceof AxiosError) {
-      const apiError = handleApiError(error);
+      const status = error.response?.status;
+      const message = error.response?.data?.message;
 
-      if (error.response?.status === 409) {
-        const message = error.response.data?.message;
+      // 409 Conflict - Inline errors for duplicate data
+      if (status === 409) {
         if (typeof message === "string") {
-          if (
-            message.includes("Username already exists") ||
-            message.includes("username")
-          ) {
-            return "This username is already taken. Please choose a different one.";
+          if (message.includes("username")) {
+            return t("common:errors.usernameAlreadyExists");
           }
-          if (
-            message.includes("Email already exists") ||
-            message.includes("email")
-          ) {
-            return "This email is already registered. Please use a different email or try logging in.";
+          if (message.includes("email")) {
+            return t("common:errors.emailAlreadyExists");
+          }
+          if (message.includes("organization")) {
+            return t("common:errors.organizationAlreadyExists");
           }
         }
-        return "This information is already in use. Please try different values.";
+        return t("common:errors.conflict");
       }
 
-      if (error.response?.status === 401) {
-        return "Invalid credentials. Please check your username/email and password.";
+      // 401 Unauthorized - Inline error for invalid credentials
+      if (status === 401) {
+        return t("login:errors.invalidCredentials");
       }
 
-      if (error.response?.status === 400) {
-        const message = error.response.data?.message;
-        return message || "Please check your input and try again.";
+      // 400 Bad Request - Inline error for validation
+      if (status === 400) {
+        return message || t("common:errors.badRequest");
       }
 
-      return apiError.message || "An unexpected error occurred.";
+      // Network/connection errors
+      if (!status) {
+        return t("login:errors.networkError");
+      }
+
+      const apiError = handleApiError(error);
+      return apiError.message || t("login:errors.serverError");
     }
 
-    return error.message || "An unexpected error occurred.";
+    return error.message || t("login:errors.serverError");
   };
 
   return { handleError, getFormattedError };

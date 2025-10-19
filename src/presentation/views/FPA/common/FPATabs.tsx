@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
+import { Tabs } from "@/presentation/components/primitives";
 
 export type FPATab = "overview" | "estimates" | "reference";
 
@@ -17,7 +18,7 @@ export const FPATabs: React.FC<FPATabsProps> = ({
 }) => {
   const { t } = useTranslation("fpa");
 
-  const tabConfig = [
+  const tabs = [
     {
       id: "overview" as FPATab,
       label: t("tabs.overview"),
@@ -35,26 +36,5 @@ export const FPATabs: React.FC<FPATabsProps> = ({
     },
   ];
 
-  return (
-    <div className="border-b border-gray-200 dark:border-dark-border mb-6">
-      <nav className="-mb-px flex space-x-8">
-        {tabConfig.map(({ id, label, disabled }) => (
-          <button
-            key={id}
-            onClick={() => !disabled && onTabChange(id)}
-            disabled={disabled}
-            className={`${
-              activeTab === id
-                ? "border-theme-dark text-theme-dark dark:border-theme-medium dark:text-theme-medium"
-                : "border-transparent text-gray-500 hover:text-gray-700 dark:text-dark-secondary dark:hover:text-dark-primary hover:border-gray-300 dark:hover:border-theme-medium"
-            } ${
-              disabled ? "opacity-50 cursor-not-allowed" : ""
-            } whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm`}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
-    </div>
-  );
+  return <Tabs tabs={tabs} activeTab={activeTab} onTabChange={onTabChange} />;
 };

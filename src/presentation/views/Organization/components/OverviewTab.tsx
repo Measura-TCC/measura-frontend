@@ -1,7 +1,12 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { Card, CardContent, CardHeader, CardTitle } from "@/presentation/components/primitives";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/presentation/components/primitives";
 import { BuildingIcon } from "@/presentation/assets/icons";
 
 interface Organization {
@@ -29,7 +34,8 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
   const vision = organization.vision ?? t("mock.vision");
   const values = organization.values ?? t("mock.values");
   const objectives = organization.objectives || [];
-  const strategicObjectives = organization.strategicObjectives ?? t("mock.strategicObjectives");
+  const strategicObjectives =
+    organization.strategicObjectives ?? t("mock.strategicObjectives");
 
   return (
     <div className="space-y-6">
@@ -54,7 +60,9 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
                 <label className="text-md font-medium text-gray-700">
                   {t("industry")}
                 </label>
-                <p className="text-secondary text-sm">{organization.industry}</p>
+                <p className="text-secondary text-sm">
+                  {organization.industry}
+                </p>
               </div>
             )}
 
@@ -63,7 +71,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
                 {t("created")}
               </label>
               <p className="text-secondary text-sm">
-                {new Date(organization.createdAt).toLocaleDateString('pt-BR')}
+                {new Date(organization.createdAt).toLocaleDateString("pt-BR")}
               </p>
             </div>
 
@@ -84,14 +92,15 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
             )}
           </div>
 
-          {/* Full-width text sections */}
           <div className="space-y-4">
             {organization.description && (
               <div>
                 <label className="text-md font-medium text-gray-700">
                   {t("description")}
                 </label>
-                <p className="text-secondary text-sm">{organization.description}</p>
+                <p className="text-secondary text-sm">
+                  {organization.description}
+                </p>
               </div>
             )}
 
@@ -99,33 +108,44 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
               <label className="text-md font-medium text-gray-700">
                 {t("mission")}
               </label>
-              <p className="text-secondary text-sm whitespace-pre-line">{mission}</p>
+              <p className="text-secondary text-sm whitespace-pre-line">
+                {mission}
+              </p>
             </div>
 
             <div>
               <label className="text-md font-medium text-gray-700">
                 {t("vision")}
               </label>
-              <p className="text-secondary text-sm whitespace-pre-line">{vision}</p>
+              <p className="text-secondary text-sm whitespace-pre-line">
+                {vision}
+              </p>
             </div>
 
             <div>
               <label className="text-md font-medium text-gray-700">
                 {t("values")}
               </label>
-              <p className="text-secondary text-sm whitespace-pre-line">{values}</p>
+              <p className="text-secondary text-sm whitespace-pre-line">
+                {values}
+              </p>
             </div>
 
             <div>
               <label className="text-md font-medium text-gray-700">
                 {t("strategicObjectives")}
               </label>
-              <div className="text-secondary text-sm">
+              <div className="text-secondary text-sm  mt-2">
                 {objectives.length > 0 ? (
                   <div className="space-y-2">
                     {objectives.map((objective, index) => (
-                      <div key={objective._id || index} className="flex items-start gap-2">
-                        <span className="text-primary font-semibold">{index + 1})</span>
+                      <div
+                        key={objective._id || index}
+                        className="flex items-start gap-2"
+                      >
+                        <span className="text-primary font-semibold">
+                          {index + 1})
+                        </span>
                         <span>{objective.title}</span>
                       </div>
                     ))}
@@ -196,9 +216,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
             </label>
             <p className="text-secondary text-sm">-</p>
           </div>
-          <div className="text-xs text-muted mt-4">
-            {t("statisticsNote")}
-          </div>
+          <div className="text-xs text-muted mt-4">{t("statisticsNote")}</div>
         </CardContent>
       </Card>
     </div>

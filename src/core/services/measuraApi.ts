@@ -29,10 +29,13 @@ const clearTokensAndRedirect = (navigate?: (path: string) => void): void => {
       console.error('Failed to clear tokens:', error);
     }
 
-    if (navigate) {
-      navigate('/login');
-    } else {
-      window.location.href = '/login';
+    const currentPath = window.location.pathname.replace(/\/$/, '');
+    if (currentPath !== '/login' && currentPath !== '/register') {
+      if (navigate) {
+        navigate('/login');
+      } else {
+        window.location.href = '/login';
+      }
     }
   }
 };
@@ -44,7 +47,7 @@ const refreshAccessToken = async (): Promise<AuthResponse> => {
     });
 
     const { accessToken, refreshToken } = response.data;
-    
+
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
@@ -55,6 +58,7 @@ const refreshAccessToken = async (): Promise<AuthResponse> => {
 
     return { accessToken, refreshToken };
   } catch (error) {
+    console.debug('Token refresh failed:', error);
     throw error;
   }
 };
@@ -81,7 +85,11 @@ measuraApi.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as AxiosError['config'] & { _retry?: boolean };
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const isAuthEndpoint = originalRequest?.url?.includes('/auth/login') ||
+                           originalRequest?.url?.includes('/auth/register') ||
+                           originalRequest?.url?.includes('/auth/refresh');
+
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       originalRequest._retry = true;
 
       if (isRefreshing) {

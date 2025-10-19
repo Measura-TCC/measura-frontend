@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { EstimateOverviewCard } from "../common/EstimateOverviewCard";
 import { useEstimatesOverviews } from "@/core/hooks/fpa/estimates/useEstimate";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import {
   ExclamationIcon,
   OfficeIcon,
@@ -31,7 +31,9 @@ export const EstimatesDashboard = ({
   >("updated");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { userOrganization, isLoadingUserOrganization } = useOrganizations({
+    fetchUserOrganization: true,
+  });
   const { estimatesOverviews, isLoadingEstimatesOverviews, error } =
     useEstimatesOverviews(projectId ? { projectId } : undefined);
 
@@ -116,7 +118,7 @@ export const EstimatesDashboard = ({
 
   if (isLoadingUserOrganization || isLoadingEstimatesOverviews) {
     return (
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto pb-[20px]">
         <div className="animate-pulse">
           <div className="h-8 bg-background-secondary rounded-md w-64 mb-6"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -134,7 +136,7 @@ export const EstimatesDashboard = ({
 
   if (error) {
     return (
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto pb-[20px]">
         <div className="text-center py-12">
           <div className="text-red-500 mb-4">
             <ExclamationIcon className="w-12 h-12 mx-auto" />
@@ -152,7 +154,7 @@ export const EstimatesDashboard = ({
 
   if (!userOrganization) {
     return (
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto pb-[20px]">
         <div className="text-center py-12">
           <div className="text-amber-500 mb-4">
             <OfficeIcon className="w-12 h-12 mx-auto" />
@@ -175,10 +177,10 @@ export const EstimatesDashboard = ({
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto pb-[20px]">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-default">{t("title")}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">{t("title")}</h1>
           <p className="text-secondary mt-1">{t("subtitle")}</p>
         </div>
         <button
@@ -190,7 +192,7 @@ export const EstimatesDashboard = ({
         </button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mb-6">
         <div className="bg-background p-4 rounded-lg border border-border">
           <p className="text-sm text-secondary">{t("totalEstimates")}</p>
           <p className="text-2xl font-bold text-default">{statistics.total}</p>

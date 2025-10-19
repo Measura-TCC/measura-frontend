@@ -1,13 +1,13 @@
 import useSWR, { mutate } from "swr";
 import { estimateService } from "@/core/services/estimateService";
-import { useOrganization } from "@/core/hooks/organizations/useOrganization";
+import { useOrganizations } from "@/core/hooks/organizations";
 import type {
   CreateEstimateData,
   UpdateEstimateData,
 } from "@/core/schemas/fpa";
 
 export const useEstimates = (params?: { projectId?: string }) => {
-  const { activeOrganizationId } = useOrganization();
+  const { activeOrganizationId } = useOrganizations();
 
   const key = activeOrganizationId
     ? (params?.projectId
@@ -33,7 +33,7 @@ export const useEstimates = (params?: { projectId?: string }) => {
 };
 
 export const useEstimate = (params: { id: string }) => {
-  const { activeOrganizationId } = useOrganization();
+  const { activeOrganizationId } = useOrganizations();
 
   const key = params.id && activeOrganizationId ? `/estimates/${activeOrganizationId}/${params.id}` : null;
 
@@ -55,7 +55,7 @@ export const useEstimate = (params: { id: string }) => {
 };
 
 export const useEstimateActions = () => {
-  const { requireOrganization } = useOrganization();
+  const { requireOrganization } = useOrganizations();
 
   const createEstimate = async (data: CreateEstimateData) => {
     try {
@@ -155,7 +155,7 @@ export const useEstimateActions = () => {
 };
 
 export const useEstimatesOverviews = (params?: { projectId?: string }) => {
-  const { activeOrganizationId } = useOrganization();
+  const { activeOrganizationId } = useOrganizations();
 
   const key = activeOrganizationId
     ? (params?.projectId
@@ -181,7 +181,7 @@ export const useEstimatesOverviews = (params?: { projectId?: string }) => {
 };
 
 export const useEstimateOverview = (params: { id: string }) => {
-  const { activeOrganizationId } = useOrganization();
+  const { activeOrganizationId } = useOrganizations();
 
   const key = params.id && activeOrganizationId ? `/estimates/${activeOrganizationId}/${params.id}/overview` : null;
 

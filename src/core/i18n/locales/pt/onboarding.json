@@ -1,0 +1,26 @@
+{
+  "tour": {
+    "welcome": {
+      "title": "Bem-vindo ao Measura!",
+      "description": "Vamos guiá-lo através dos primeiros passos para começar a usar a plataforma."
+    },
+    "step1": {
+      "title": "1. Crie sua Organização",
+      "description": "Primeiro, você precisa criar ou ingressar em uma organização. Ela agrupa seus projetos e equipe."
+    },
+    "step2": {
+      "title": "2. Adicione um Projeto",
+      "description": "Depois de ter uma organização, crie projetos para organizar seu trabalho. Projetos são necessários para estimativas APF e planos de medição."
+    },
+    "step3": {
+      "title": "3. Use APF e Planos de Medição",
+      "description": "Com projetos criados, você pode criar estimativas de Análise de Pontos de Função e Planos de Medição!"
+    },
+    "buttons": {
+      "previous": "Anterior",
+      "next": "Próximo",
+      "start": "Começar",
+      "skip": "Pular Tour"
+    }
+  }
+}

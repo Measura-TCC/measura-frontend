@@ -27,7 +27,7 @@ export const FPAPageHeader: React.FC<FPAPageHeaderProps> = ({
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-default">{t("title")}</h1>
+      <h1 className="text-2xl md:text-3xl font-bold text-default">{t("title")}</h1>
       <p className="text-muted mt-1">{t("subtitle")}</p>
       {hasOrganization && organizationName && (
         <p className="text-sm text-secondary mt-1 flex items-center gap-2">

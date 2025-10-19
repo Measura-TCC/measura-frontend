@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import useSWR, { mutate } from "swr";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import {
   Estimate,
   EstimateFormData,
@@ -55,7 +55,7 @@ export type UseFPAReturn = {
 export const useFPA = (): UseFPAReturn => {
   const { t } = useTranslation("fpa");
   const router = useRouter();
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { userOrganization, isLoadingUserOrganization } = useOrganizations({ fetchUserOrganization: true });
 
   const [isCreatingEstimate, setIsCreatingEstimate] = useState(false);
   const [isUpdatingEstimate, setIsUpdatingEstimate] = useState(false);

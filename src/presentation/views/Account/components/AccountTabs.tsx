@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { AccountTab } from "@/core/types/account";
+import { Tabs } from "@/presentation/components/primitives";
 
 interface AccountTabsProps {
   activeTab: AccountTab;
@@ -14,7 +15,7 @@ export const AccountTabs: React.FC<AccountTabsProps> = ({
 }) => {
   const { t } = useTranslation("account");
 
-  const tabConfig = [
+  const tabs = [
     {
       id: "profile" as AccountTab,
       label: t("tabs.profile"),
@@ -32,26 +33,5 @@ export const AccountTabs: React.FC<AccountTabsProps> = ({
     },
   ];
 
-  return (
-    <div className="border-b border-gray-200 dark:border-dark-border mb-6">
-      <nav className="-mb-px flex space-x-8">
-        {tabConfig.map(({ id, label, disabled }) => (
-          <button
-            key={id}
-            onClick={() => !disabled && onTabChange(id)}
-            disabled={disabled}
-            className={` hover:cursor-pointer ${
-              activeTab === id
-                ? "border-primary text-primary"
-                : "border-transparent text-muted hover:text-secondary hover:border-border"
-            } ${
-              disabled ? "opacity-50 cursor-not-allowed" : ""
-            } whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-sm transition-colors`}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
-    </div>
-  );
+  return <Tabs tabs={tabs} activeTab={activeTab} onTabChange={onTabChange} />;
 };

@@ -79,7 +79,9 @@ export const OrganizationSection: React.FC<OrganizationSectionProps> = ({
                   {t("created")}
                 </label>
                 <p className="text-secondary text-sm">
-                  {new Date(userOrganization.createdAt).toLocaleDateString('pt-BR')}
+                  {new Date(userOrganization.createdAt).toLocaleDateString(
+                    "pt-BR"
+                  )}
                 </p>
               </div>
 
@@ -140,7 +142,7 @@ export const OrganizationSection: React.FC<OrganizationSectionProps> = ({
               </div>
 
               <div>
-                <label className="text-md font-medium text-gray-700">
+                <label className="text-md font-medium text-gray-700 ">
                   {t("strategicObjectives")}
                 </label>
                 <div className="text-secondary text-sm whitespace-pre-line">

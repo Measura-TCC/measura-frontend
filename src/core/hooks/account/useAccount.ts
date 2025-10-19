@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/core/hooks/auth";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { userService } from "@/core/services";
 import type { User } from "@/core/types";
 import type {
@@ -60,7 +60,7 @@ export type UseAccountReturn = {
 export const useAccount = (): UseAccountReturn => {
   const { t, i18n } = useTranslation("account");
   const { user: authUser, updateUser } = useAuth(); // eslint-disable-line @typescript-eslint/no-unused-vars
-  const { userOrganization } = useUserOrganization();
+  const { userOrganization } = useOrganizations({ fetchUserOrganization: true });
 
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);

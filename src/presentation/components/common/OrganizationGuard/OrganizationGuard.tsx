@@ -1,5 +1,5 @@
 import React from "react";
-import { useOrganization } from "@/core/hooks/organizations/useOrganization";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { InfoBox } from "@/presentation/components/common/InfoBox/InfoBox";
 
 interface OrganizationGuardProps {
@@ -11,7 +11,7 @@ export const OrganizationGuard: React.FC<OrganizationGuardProps> = ({
   children,
   fallback,
 }) => {
-  const { hasAccess } = useOrganization();
+  const { hasAccess } = useOrganizations();
 
   if (!hasAccess) {
     if (fallback) {

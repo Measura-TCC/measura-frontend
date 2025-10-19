@@ -10,7 +10,7 @@ import {
   Button,
 } from "@/presentation/components/primitives";
 import { BuildingIcon, PlusIcon } from "@/presentation/assets/icons";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { CreateOrganizationForm } from "@/presentation/views/Organization/components/CreateOrganizationForm";
 import { InviteUserModal } from "@/presentation/views/Organization/components/InviteUserModal";
 import { OrganizationInvitationsSection } from "@/presentation/views/Organization/components/OrganizationInvitationsSection";
@@ -33,7 +33,7 @@ export const OrganizationView: React.FC = () => {
     userOrganization,
     isLoadingUserOrganization,
     mutateUserOrganization,
-  } = useUserOrganization();
+  } = useOrganizations({ fetchUserOrganization: true });
 
   const handleOrganizationCreated = async () => {
     setShowCreateForm(false);
