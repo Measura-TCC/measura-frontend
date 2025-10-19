@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { measurementPlanService } from "@/core/services/measurementPlanService";
 import { ExportFormat } from "@/core/types/plans";
 import type {
@@ -12,7 +12,7 @@ interface UseMeasurementPlanExportParams {
 }
 
 export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams) => {
-  const { userOrganization } = useUserOrganization();
+  const { userOrganization } = useOrganizations({ fetchUserOrganization: true });
   const { planId } = params;
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<Error | null>(null);

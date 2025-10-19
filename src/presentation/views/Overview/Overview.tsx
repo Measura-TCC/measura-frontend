@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { useOverview } from "@/core/hooks/overview/useOverview";
+import { useWelcomeTour } from "@/core/hooks/onboarding";
+import { WelcomeTourModal } from "@/presentation/components/modals/WelcomeTourModal";
 import {
   OverviewPageHeader,
   OrganizationAlert,
@@ -23,8 +26,10 @@ interface OverviewViewProps {
 
 export const OverviewView: React.FC<OverviewViewProps> = ({ user }) => {
   const router = useRouter();
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { userOrganization, isLoadingUserOrganization } = useOrganizations({ fetchUserOrganization: true });
   const overviewHook = useOverview();
+  const { shouldShowTour, completeTour } = useWelcomeTour();
+  const [showTour, setShowTour] = useState(shouldShowTour);
 
   const {
     // activities,
@@ -35,6 +40,15 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ user }) => {
     handleNewFPAEstimate,
     handleNewMeasurementPlan,
   } = overviewHook;
+
+  const handleTourComplete = async () => {
+    try {
+      await completeTour();
+      setShowTour(false);
+    } catch (error) {
+      console.error("Failed to complete tour:", error);
+    }
+  };
 
   if (isLoadingUserOrganization) {
     return (
@@ -53,18 +67,26 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ user }) => {
   }
 
   return (
-    <div className="space-y-6">
-      <OverviewPageHeader
-        user={user}
-        organizationName={userOrganization?.name}
-        organizationDescription={userOrganization?.description}
-        hasOrganization={!!userOrganization}
-        isLoadingOrganization={isLoadingUserOrganization}
+    <>
+      <WelcomeTourModal
+        isOpen={showTour}
+        onComplete={handleTourComplete}
+        onSkip={handleTourComplete}
       />
+
+      <div className="space-y-6">
+        <OverviewPageHeader
+          user={user}
+          organizationName={userOrganization?.name}
+          organizationDescription={userOrganization?.description}
+          hasOrganization={!!userOrganization}
+          isLoadingOrganization={isLoadingUserOrganization}
+        />
 
       <OrganizationAlert
         hasOrganization={!!userOrganization}
-        onCreateOrganization={handleCreateOrganization}
+        translationNamespace="organization"
+        onCreateClick={handleCreateOrganization}
       />
 
       <QuickActionsSection
@@ -93,6 +115,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ user }) => {
         activities={activities}
         isLoadingActivities={isLoadingActivities}
       /> */}
-    </div>
+      </div>
+    </>
   );
 };

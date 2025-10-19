@@ -1,6 +1,6 @@
 import useSWR, { mutate } from "swr";
 import { projectService } from "@/core/services/projectService";
-import { useOrganization } from "@/core/hooks/organizations/useOrganization";
+import { useOrganizations } from "@/core/hooks/organizations";
 import type { UpdateProjectRequest } from "@/core/schemas/projects";
 import type { CreateProjectObjectiveDto } from "@/core/services/projectService";
 
@@ -14,7 +14,7 @@ interface CreateProjectApiRequest {
 }
 
 export const useProjects = () => {
-  const { activeOrganizationId } = useOrganization();
+  const { activeOrganizationId } = useOrganizations();
 
   const key = activeOrganizationId ? `/projects/${activeOrganizationId}` : null;
 
@@ -34,7 +34,7 @@ export const useProjects = () => {
 };
 
 export const useProject = (params: { id: string }) => {
-  const { activeOrganizationId } = useOrganization();
+  const { activeOrganizationId } = useOrganizations();
 
   const key = params.id && activeOrganizationId ? `/projects/${activeOrganizationId}/${params.id}` : null;
 
@@ -56,7 +56,7 @@ export const useProject = (params: { id: string }) => {
 };
 
 export const useProjectVersions = (params: { id: string }) => {
-  const { activeOrganizationId } = useOrganization();
+  const { activeOrganizationId } = useOrganizations();
 
   const key = params.id && activeOrganizationId ? `/projects/${activeOrganizationId}/${params.id}/versions` : null;
 
@@ -78,7 +78,7 @@ export const useProjectVersions = (params: { id: string }) => {
 };
 
 export const useProjectActions = () => {
-  const { requireOrganization } = useOrganization();
+  const { requireOrganization } = useOrganizations();
 
   const createProject = async (data: CreateProjectApiRequest) => {
     try {

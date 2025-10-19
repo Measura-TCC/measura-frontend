@@ -91,6 +91,7 @@ export const useAuth = () => {
     email: "demo@measura.com",
     role: "measurement-analyst",
     isEmailVerified: true,
+    hasCompletedOnboarding: false,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };

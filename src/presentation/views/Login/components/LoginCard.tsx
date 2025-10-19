@@ -55,13 +55,13 @@ export const LoginCard: React.FC<LoginCardProps> = ({
                 htmlFor="usernameOrEmail"
                 className="text-sm font-medium text-default"
               >
-                {t("email")}
+                {t("emailOrUsername")}
               </label>
               <Input
                 {...register("usernameOrEmail")}
                 id="usernameOrEmail"
                 type="text"
-                placeholder={t("enterYourEmail")}
+                placeholder={t("enterEmailOrUsername")}
                 disabled={isLoading}
               />
               {formErrors.usernameOrEmail && (

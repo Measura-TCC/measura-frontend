@@ -50,7 +50,7 @@ export const PlanHeader: React.FC<PlanHeaderProps> = ({
           {t("planDetails.back")}
         </Button>
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
             {planName}
           </h1>
           <p className="text-gray-600 text-sm md:text-base">

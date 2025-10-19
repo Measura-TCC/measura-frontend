@@ -10,7 +10,8 @@ import {
   LogoutIcon,
   BuildingIcon,
 } from "@/presentation/assets/icons";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
+import { InvitationBadge } from "./InvitationBadge";
 import Image from "next/image";
 import measuraLogo from "@/presentation/assets/images/measura-logo.png";
 import measura from "@/presentation/assets/icons/measura.png";
@@ -19,7 +20,7 @@ export const Header = () => {
   const { theme, setTheme } = useTheme();
   const { t } = useTranslation();
   const { user, logout } = useAuth();
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { userOrganization, isLoadingUserOrganization } = useOrganizations({ fetchUserOrganization: true });
 
   const handleLogout = () => {
     logout();
@@ -68,15 +69,8 @@ export const Header = () => {
                 <MoonIcon className="w-4 h-4" />
               )}
             </Button>
-            {/* 
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="w-9 h-9 p-0"
-              title={t('notifications')}
-            >
-              <BellIcon className="w-4 h-4" />
-            </Button> */}
+
+            <InvitationBadge />
 
             <div className="flex items-center space-x-2 border-l border-border pl-4">
               {userOrganization && (

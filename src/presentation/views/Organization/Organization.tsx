@@ -10,32 +10,36 @@ import {
   Button,
 } from "@/presentation/components/primitives";
 import { BuildingIcon, PlusIcon } from "@/presentation/assets/icons";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { CreateOrganizationForm } from "@/presentation/views/Organization/components/CreateOrganizationForm";
-import { OrganizationWizard } from "@/presentation/views/Organization/components/OrganizationWizard";
+import { InviteUserModal } from "@/presentation/views/Organization/components/InviteUserModal";
+import { OrganizationInvitationsSection } from "@/presentation/views/Organization/components/OrganizationInvitationsSection";
+import { OrganizationMembersSection } from "@/presentation/views/Organization/components/OrganizationMembersSection";
+import { LeaveOrganizationModal } from "@/presentation/views/Organization/components/LeaveOrganizationModal";
+import { OrganizationTabs } from "@/presentation/views/Organization/components/OrganizationTabs";
+import { OverviewTab } from "@/presentation/views/Organization/components/OverviewTab";
+import { SettingsTab } from "@/presentation/views/Organization/components/SettingsTab";
+import { useAuthStore } from "@/core/hooks/auth/useAuth";
+import type { OrganizationTab } from "@/core/types/organization";
 
 export const OrganizationView: React.FC = () => {
   const { t } = useTranslation("organization");
+  const { user } = useAuthStore();
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [showWizard, setShowWizard] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<OrganizationTab>("overview");
   const {
     userOrganization,
     isLoadingUserOrganization,
     mutateUserOrganization,
-  } = useUserOrganization();
-  const mission = userOrganization?.mission ?? t("mock.mission");
-  const vision = userOrganization?.vision ?? t("mock.vision");
-  const values = userOrganization?.values ?? t("mock.values");
-  const objectives = userOrganization?.objectives || [];
-  const strategicObjectives =
-    userOrganization?.strategicObjectives ?? t("mock.strategicObjectives");
+  } = useOrganizations({ fetchUserOrganization: true });
 
   const handleOrganizationCreated = async () => {
     setShowCreateForm(false);
     await mutateUserOrganization();
   };
   const handleWizardSuccess = async () => {
-    setShowWizard(false);
     await mutateUserOrganization();
   };
 
@@ -62,217 +66,40 @@ export const OrganizationView: React.FC = () => {
 
       {userOrganization ? (
         <div className="space-y-6">
-          {!showWizard ? (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BuildingIcon className="w-5 h-5 text-primary" />
-                  {t("organizationDetails")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div>
-                    <label className="text-md font-medium text-gray-700">
-                      {t("name")}
-                    </label>
-                    <p className="text-secondary text-sm">{userOrganization.name}</p>
-                  </div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex-1">
+              <OrganizationTabs activeTab={activeTab} onTabChange={setActiveTab} />
+            </div>
+            <Button variant="primary" onClick={() => setShowInviteModal(true)} size="sm">
+              {t("invitations.inviteMember")}
+            </Button>
+          </div>
 
-                  {userOrganization.industry && (
-                    <div>
-                      <label className="text-md font-medium text-gray-700">
-                        {t("industry")}
-                      </label>
-                      <p className="text-secondary text-sm">
-                        {userOrganization.industry}
-                      </p>
-                    </div>
-                  )}
-
-                  <div>
-                    <label className="text-md font-medium text-gray-700">
-                      {t("created")}
-                    </label>
-                    <p className="text-secondary text-sm">
-                      {new Date(userOrganization.createdAt).toLocaleDateString('pt-BR')}
-                    </p>
-                  </div>
-
-                  {userOrganization.website && (
-                    <div className="sm:col-span-2 lg:col-span-1">
-                      <label className="text-md font-medium text-gray-700">
-                        {t("website")}
-                      </label>
-                      <a
-                        href={userOrganization.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline block truncate text-sm"
-                      >
-                        {userOrganization.website}
-                      </a>
-                    </div>
-                  )}
-                </div>
-
-                {/* Full-width text sections */}
-                <div className="space-y-4">
-                  {userOrganization.description && (
-                    <div>
-                      <label className="text-md font-medium text-gray-700">
-                        {t("description")}
-                      </label>
-                      <p className="text-secondary text-sm">
-                        {userOrganization.description}
-                      </p>
-                    </div>
-                  )}
-
-                  <div>
-                    <label className="text-md font-medium text-gray-700">
-                      {t("mission")}
-                    </label>
-                    <p className="text-secondary text-sm whitespace-pre-line">
-                      {mission}
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="text-md font-medium text-gray-700">
-                      {t("vision")}
-                    </label>
-                    <p className="text-secondary text-sm whitespace-pre-line">{vision}</p>
-                  </div>
-
-                  <div>
-                    <label className="text-md font-medium text-gray-700">
-                      {t("values")}
-                    </label>
-                    <p className="text-secondary text-sm whitespace-pre-line">{values}</p>
-                  </div>
-
-                  <div>
-                    <label className="text-md font-medium text-gray-700">
-                      {t("strategicObjectives")}
-                    </label>
-                    <div className="text-secondary text-sm">
-                      {objectives.length > 0 ? (
-                        <div className="space-y-2">
-                          {objectives.map((objective, index) => (
-                            <div key={objective._id || index} className="flex items-start gap-2">
-                              <span className="text-primary font-semibold">{index + 1})</span>
-                              <span>{objective.title}</span>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="whitespace-pre-line">
-                          <style jsx>{`
-                            .strategic-objectives {
-                              counter-reset: objective-counter;
-                            }
-                            .strategic-objectives p {
-                              margin: 0;
-                              padding: 0;
-                            }
-                            .strategic-objectives .objective-item {
-                              counter-increment: objective-counter;
-                              position: relative;
-                              padding-left: 1.5rem;
-                              margin-bottom: 0.5rem;
-                              display: block;
-                            }
-                            .strategic-objectives .objective-item::before {
-                              content: counter(objective-counter) ")";
-                              position: absolute;
-                              left: 0;
-                              font-weight: 600;
-                              color: #8b5cf6;
-                            }
-                          `}</style>
-                          <div className="strategic-objectives">
-                            {strategicObjectives.split("\n").map(
-                              (objective, index) =>
-                                objective.trim() && (
-                                  <span key={index} className="objective-item">
-                                    {objective.replace(/^\d+\)\s*/, "")}
-                                  </span>
-                                )
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex gap-2 pt-2">
-                  <Button variant="primary" onClick={() => setShowWizard(true)}>
-                    {t("manageOrganization")}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  {t("manageOrganization")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <OrganizationWizard
-                  mode="edit"
-                  initialData={{
-                    id: userOrganization._id,
-                    name: userOrganization.name,
-                    description: userOrganization.description,
-                    website: userOrganization.website,
-                    industry: userOrganization.industry,
-                    mission: userOrganization.mission,
-                    vision: userOrganization.vision,
-                    values: userOrganization.values,
-                    strategicObjectives: userOrganization.strategicObjectives,
-                  }}
-                  onCancel={() => setShowWizard(false)}
-                  onSuccess={handleWizardSuccess}
-                />
-              </CardContent>
-            </Card>
+          {activeTab === "overview" && (
+            <OverviewTab organization={userOrganization} />
           )}
 
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("organizationStatistics")}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="text-md font-medium text-gray-700">
-                  {t("totalProjects")}
-                </label>
-                <p className="text-secondary text-sm">-</p>
-              </div>
-              <div>
-                <label className="text-md font-medium text-gray-700">
-                  {t("activeEstimates")}
-                </label>
-                <p className="text-secondary text-sm">-</p>
-              </div>
-              <div>
-                <label className="text-md font-medium text-gray-700">
-                  {t("teamMembers")}
-                </label>
-                <p className="text-secondary text-sm">-</p>
-              </div>
-              <div className="text-xs text-muted mt-4">
-                {t("statisticsNote")}
-              </div>
-            </CardContent>
-          </Card>
+          {activeTab === "members" && user && (
+            <OrganizationMembersSection
+              organizationId={userOrganization._id}
+              userRole={user.role || "user"}
+              isOwner={userOrganization.createdBy === user.id}
+            />
+          )}
+
+          {activeTab === "invitations" && (
+            <OrganizationInvitationsSection organizationId={userOrganization._id} />
+          )}
+
+          {activeTab === "settings" && (
+            <SettingsTab
+              organization={userOrganization}
+              onWizardSuccess={handleWizardSuccess}
+              onLeaveOrganization={() => setShowLeaveModal(true)}
+            />
+          )}
         </div>
       ) : (
-        !showWizard &&
         !showCreateForm && (
           <Card>
             <CardHeader>
@@ -283,12 +110,7 @@ export const OrganizationView: React.FC = () => {
             </CardHeader>
             <CardContent className="text-center space-y-4">
               <p className="text-secondary">{t("noOrganizationMessage")}</p>
-              <Button
-                onClick={() => {
-                  setShowCreateForm(true);
-                  setShowWizard(true);
-                }}
-              >
+              <Button onClick={() => setShowCreateForm(true)}>
                 <PlusIcon className="w-4 h-4 mr-2" />
                 {t("createOrganization")}
               </Button>
@@ -300,14 +122,27 @@ export const OrganizationView: React.FC = () => {
       {showCreateForm && !userOrganization && (
         <Card>
           <CardHeader>
-            <CardTitle>
-              {t("createNewOrganization")}
-            </CardTitle>
+            <CardTitle>{t("createNewOrganization")}</CardTitle>
           </CardHeader>
           <CardContent>
             <CreateOrganizationForm onSuccess={handleOrganizationCreated} />
           </CardContent>
         </Card>
+      )}
+
+      {showInviteModal && (
+        <InviteUserModal
+          isOpen={showInviteModal}
+          onClose={() => setShowInviteModal(false)}
+          organizationId={userOrganization?._id}
+        />
+      )}
+
+      {showLeaveModal && (
+        <LeaveOrganizationModal
+          isOpen={showLeaveModal}
+          onClose={() => setShowLeaveModal(false)}
+        />
       )}
 
     </div>

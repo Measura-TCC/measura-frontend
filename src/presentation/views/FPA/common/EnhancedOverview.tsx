@@ -117,7 +117,7 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
                   </div>
                 </div>
               )}
-              <h1 className="text-2xl font-bold text-default mb-2">
+              <h1 className="text-2xl md:text-3xl font-bold text-default mb-2">
                 {estimateOverview.name}
               </h1>
               {estimateOverview.description && (

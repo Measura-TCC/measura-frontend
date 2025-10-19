@@ -103,17 +103,15 @@ export const FPAView: React.FC = () => {
         isLoadingOrganization={false}
       />
 
-      <OrganizationAlert hasOrganization={hasOrganization} />
+      <OrganizationAlert hasOrganization={hasOrganization} translationNamespace="fpa" />
 
-      <div className="space-y-6">
-        <FPATabs
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-          hasOrganization={hasOrganization}
-        />
+      <FPATabs
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        hasOrganization={hasOrganization}
+      />
 
-        {renderTabContent()}
-      </div>
+      {renderTabContent()}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { mutate } from "swr";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { measurementPlanService } from "@/core/services/measurementPlanService";
 import type {
   CreateObjectiveDto,
@@ -15,7 +15,7 @@ interface UseMeasurementPlanOperationsParams {
 }
 
 export const useMeasurementPlanOperations = (params: UseMeasurementPlanOperationsParams) => {
-  const { userOrganization } = useUserOrganization();
+  const { userOrganization } = useOrganizations({ fetchUserOrganization: true });
   const { planId } = params;
 
   const [isAddingObjective, setIsAddingObjective] = useState(false);

@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import useSWR, { mutate } from "swr";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { measurementPlanService } from "@/core/services/measurementPlanService";
 import {
   MeasurementPlanStatus,
@@ -25,7 +25,7 @@ interface UseSingleMeasurementPlanParams {
 }
 
 export const useMeasurementPlans = (params: UseMeasurementPlanParams = {}) => {
-  const { userOrganization } = useUserOrganization();
+  const { userOrganization } = useOrganizations({ fetchUserOrganization: true });
   const [isCreatingPlan, setIsCreatingPlan] = useState(false);
   const [isUpdatingPlan, setIsUpdatingPlan] = useState(false);
   const [isDeletingPlan, setIsDeletingPlan] = useState(false);
@@ -216,7 +216,7 @@ export const useMeasurementPlans = (params: UseMeasurementPlanParams = {}) => {
 };
 
 export const useMeasurementPlan = (params: UseSingleMeasurementPlanParams) => {
-  const { userOrganization } = useUserOrganization();
+  const { userOrganization } = useOrganizations({ fetchUserOrganization: true });
   const { planId } = params;
 
   const swrKey = userOrganization && planId

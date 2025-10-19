@@ -13,9 +13,6 @@ export {
 
 export {
   useOrganizations,
-  useOrganization,
-  useUserOrganization,
-  useOrganizationActions,
 } from "./organizations/useOrganizations";
 
 export {
@@ -48,3 +45,5 @@ export {
   useMeasurementPlanExport,
   useMeasurementPlanOperations,
 } from "./measurementPlans";
+
+export { useWelcomeTour } from "./onboarding";

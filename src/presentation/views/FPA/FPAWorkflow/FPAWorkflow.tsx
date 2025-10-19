@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useProjects } from "@/core/hooks/projects/useProjects";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
-import { useOrganization } from "@/core/hooks/organizations/useOrganization";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { EstimatesDashboard } from "./EstimatesDashboard";
 import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
-import { CreateOrganizationForm } from "../../Organization/components/CreateOrganizationForm";
+import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
+import { NoProjectsAlert } from "@/presentation/components/shared/NoProjectsAlert";
 import { CreateEstimateForm } from "./components/CreateEstimateForm";
 import { CreateGSCForm } from "./components/CreateGSCForm";
 import { CreateProjectConfigurationForm } from "./components/CreateProjectConfigurationForm";
@@ -19,8 +19,8 @@ import { CreateEQForm } from "./components/CreateEQForm";
 import { CreateAIEForm } from "./components/CreateAIEForm";
 import { RequirementImportView } from "./RequirementImport/RequirementImportView";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
-import { OfficeIcon, PlusIcon, DocumentIcon } from "@/presentation/assets/icons";
-import { Button } from "@/presentation/components/primitives/Button/Button";
+import { PlusIcon, DocumentIcon } from "@/presentation/assets/icons";
+import { Button, Tabs, Stepper } from "@/presentation/components/primitives";
 import {
   useEstimateActions,
   useEstimate,
@@ -41,7 +41,8 @@ interface EstimateWithArrays {
 
 export const FPAWorkflow = () => {
   const { t } = useTranslation("fpa");
-  const { requireOrganization } = useOrganization();
+  const { requireOrganization, userOrganization, isLoadingUserOrganization } =
+    useOrganizations({ fetchUserOrganization: true });
   const searchParams = useSearchParams();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("new");
@@ -56,8 +57,6 @@ export const FPAWorkflow = () => {
     resetWorkflow,
     canNavigateToStep,
   } = useWorkflowState();
-
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
   const { projects, isLoadingProjects } = useProjects();
   const { calculateFunctionPoints } = useEstimateActions();
 
@@ -93,45 +92,32 @@ export const FPAWorkflow = () => {
 
   if (!userOrganization) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="text-center py-12">
-          <div className="text-amber-500 mb-4">
-            <OfficeIcon className="w-12 h-12 mx-auto" />
-          </div>
-          <h3 className="text-lg font-medium text-default mb-2">
-            {t("workflow.organizationRequiredTitle")}
-          </h3>
-          <p className="text-secondary mb-4">
-            {t("workflow.organizationRequiredText")}
-          </p>
-          <CreateOrganizationForm />
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">
+            {t("title")}
+          </h1>
+          <p className="text-muted mt-1">{t("subtitle")}</p>
         </div>
+        <OrganizationAlert hasOrganization={false} translationNamespace="fpa" />
       </div>
     );
   }
 
-  if (!isLoadingProjects && userOrganization && (!projects || projects.length === 0)) {
+  if (
+    !isLoadingProjects &&
+    userOrganization &&
+    (!projects || projects.length === 0)
+  ) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="text-center py-12">
-          <div className="text-blue-500 mb-4">
-            <DocumentIcon className="w-12 h-12 mx-auto" />
-          </div>
-          <h3 className="text-lg font-medium text-default mb-2">
-            {t("noProjectsTitle")}
-          </h3>
-          <p className="text-secondary mb-4">
-            {t("noProjectsDescription")}
-          </p>
-          <div className="flex gap-3 justify-center">
-            <button
-              onClick={() => router.push("/projects")}
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
-            >
-              {t("goToProjects")}
-            </button>
-          </div>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">
+            {t("title")}
+          </h1>
+          <p className="text-muted mt-1">{t("subtitle")}</p>
         </div>
+        <NoProjectsAlert translationNamespace="fpa" />
       </div>
     );
   }
@@ -146,7 +132,6 @@ export const FPAWorkflow = () => {
     setCreatedEstimate(estimateResponse);
     setCurrentStep(3);
   };
-
 
   const handleGSCCompleted = async (generalSystemCharacteristics: number[]) => {
     if (!state.createdEstimate) return;
@@ -194,9 +179,9 @@ export const FPAWorkflow = () => {
     setCurrentStep(2);
   };
 
-  const handleStepClick = (step: Step) => {
-    if (canNavigateToStep(step)) {
-      setCurrentStep(step);
+  const handleStepClick = (step: number) => {
+    if (canNavigateToStep(step as Step)) {
+      setCurrentStep(step as Step);
       setSelectedComponentType(null);
     }
   };
@@ -206,148 +191,23 @@ export const FPAWorkflow = () => {
       return <EstimatesDashboard onCreateNew={() => setActiveTab("new")} />;
     }
 
+    const steps = [
+      { number: 1, label: t("workflow.step1Title") },
+      { number: 2, label: t("workflow.step2Title") },
+      { number: 3, label: t("workflow.step3Title") },
+      { number: 4, label: t("workflow.step4Title") },
+      { number: 5, label: t("workflow.step5Title") },
+      { number: 6, label: t("workflow.step6Title") },
+    ];
+
     return (
       <div className="space-y-8">
-        <div className="block md:hidden">
-          <div className="px-4">
-            <div className="grid grid-cols-6 gap-1">
-              {[
-                {
-                  number: 1,
-                  name: t("workflow.step1Title").replace("1. ", ""),
-                },
-                {
-                  number: 2,
-                  name: t("workflow.step2Title").replace("2. ", ""),
-                },
-                {
-                  number: 3,
-                  name: t("workflow.step3Title").replace("3. ", ""),
-                },
-                {
-                  number: 4,
-                  name: t("workflow.step4Title").replace("4. ", ""),
-                },
-                {
-                  number: 5,
-                  name: t("workflow.step5Title").replace("5. ", ""),
-                },
-                {
-                  number: 6,
-                  name: t("workflow.step6Title").replace("6. ", ""),
-                },
-              ].map((step) => (
-                <div
-                  key={step.number}
-                  className="flex flex-col items-center"
-                >
-                  <div
-                    onClick={() => handleStepClick(step.number as Step)}
-                    className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all mb-1 ${
-                      state.currentStep >= step.number
-                        ? "bg-primary border-primary text-white"
-                        : canNavigateToStep(step.number as Step)
-                        ? "border-primary/50 text-primary/70 bg-primary/10"
-                        : "border-gray-300 text-gray-400 bg-gray-100"
-                    } ${
-                      state.currentStep === step.number
-                        ? "ring-2 ring-primary/20"
-                        : ""
-                    } ${
-                      canNavigateToStep(step.number as Step)
-                        ? "cursor-pointer hover:scale-105 hover:shadow-md"
-                        : "cursor-not-allowed opacity-60"
-                    }`}
-                    title={
-                      !canNavigateToStep(step.number as Step)
-                        ? "Complete a etapa anterior para desbloquear"
-                        : ""
-                    }
-                  >
-                    <span className="text-xs font-medium">{step.number}</span>
-                  </div>
-                  <p
-                    className={`text-[10px] font-medium text-center leading-tight ${
-                      state.currentStep === step.number
-                        ? "text-primary"
-                        : canNavigateToStep(step.number as Step)
-                        ? "text-primary/70"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    {step.name}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="hidden md:flex items-center justify-between">
-          {[
-            { number: 1, name: t("workflow.step1Title").replace("1. ", "") },
-            { number: 2, name: t("workflow.step2Title").replace("2. ", "") },
-            { number: 3, name: t("workflow.step3Title").replace("3. ", "") },
-            { number: 4, name: t("workflow.step4Title").replace("4. ", "") },
-            { number: 5, name: t("workflow.step5Title").replace("5. ", "") },
-            { number: 6, name: t("workflow.step6Title").replace("6. ", "") },
-          ].map((step, index) => (
-            <div
-              key={step.number}
-              className="flex flex-col items-center flex-1"
-            >
-              <div className="flex items-center w-full">
-                <div
-                  onClick={() => handleStepClick(step.number as Step)}
-                  className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all ${
-                    state.currentStep >= step.number
-                      ? "bg-primary border-primary text-white"
-                      : canNavigateToStep(step.number as Step)
-                      ? "border-primary/50 text-primary/70 bg-primary/10"
-                      : "border-gray-300 text-gray-400 bg-gray-100"
-                  } ${
-                    state.currentStep === step.number
-                      ? "ring-4 ring-primary/20"
-                      : ""
-                  } ${
-                    canNavigateToStep(step.number as Step)
-                      ? "cursor-pointer hover:scale-110 hover:shadow-md"
-                      : "cursor-not-allowed opacity-60"
-                  }`}
-                  title={
-                    !canNavigateToStep(step.number as Step)
-                      ? "Complete a etapa anterior para desbloquear"
-                      : ""
-                  }
-                >
-                  {step.number}
-                </div>
-                {index < 5 && (
-                  <div
-                    className={`flex-1 h-0.5 mx-2 ${
-                      state.currentStep > step.number
-                        ? "bg-primary"
-                        : "bg-border"
-                    }`}
-                  />
-                )}
-              </div>
-              <div className="mt-2 text-center">
-                <p
-                  className={`text-xs font-medium ${
-                    state.currentStep === step.number
-                      ? "text-primary"
-                      : canNavigateToStep(step.number as Step)
-                      ? "text-primary/70"
-                      : "text-gray-400"
-                  }`}
-                >
-                  {step.name}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <Stepper
+          steps={steps}
+          currentStep={state.currentStep}
+          onStepClick={handleStepClick}
+          canNavigateTo={(step) => canNavigateToStep(step as Step)}
+        />
 
         {state.currentStep === 1 && (
           <div className="bg-background rounded-lg border border-border p-6">
@@ -526,40 +386,22 @@ export const FPAWorkflow = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto pb-[20px]">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-default">{t("title")}</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-default">
+          {t("title")}
+        </h1>
         <p className="text-secondary mt-1">{t("subtitle")}</p>
       </div>
 
-      <div className="border-b border-border mb-6">
-        <nav className="-mb-px flex space-x-8">
-          <Button
-            onClick={() => setActiveTab("new")}
-            variant="ghost"
-            size="sm"
-            className={`py-2 px-1 border-b-2 font-medium text-sm  rounded-none${
-              activeTab === "new"
-                ? "border-primary text-primary rounded-none"
-                : "border-transparent text-muted hover:text-secondary hover:border-border rounded-none"
-            }`}
-          >
-            {t("tabs.newEstimate")}
-          </Button>
-          <Button
-            onClick={() => setActiveTab("created")}
-            variant="ghost"
-            size="sm"
-            className={`py-2 px-1 border-b-2 font-medium text-sm rounded-none ${
-              activeTab === "created"
-                ? "border-primary text-primary rounded-none"
-                : "border-transparent text-muted hover:text-secondary hover:border-border rounded-none"
-            }`}
-          >
-            {t("tabs.createdEstimates")}
-          </Button>
-        </nav>
-      </div>
+      <Tabs
+        tabs={[
+          { id: "new" as Tab, label: t("tabs.newEstimate") },
+          { id: "created" as Tab, label: t("tabs.createdEstimates") },
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
 
       {renderTabContent()}
     </div>

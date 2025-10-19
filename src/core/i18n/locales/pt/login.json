@@ -2,8 +2,10 @@
   "title": "Login",
   "subtitle": "Entre na sua conta",
   "email": "Email",
+  "emailOrUsername": "Email ou Username",
   "password": "Senha",
   "enterYourEmail": "Digite seu email",
+  "enterEmailOrUsername": "Digite seu email ou nome de usuário",
   "enterYourPassword": "Digite sua senha",
   "signingIn": "Entrando...",
   "signInButton": "Entrar",
@@ -11,5 +13,17 @@
   "signUp": "Cadastre-se",
   "fillAllFields": "Por favor, preencha todos os campos",
   "invalidCredentials": "Email ou senha inválidos",
-  "demoCredentials": "Credenciais de demonstração: admin@measura.com / password"
-} 
+  "demoCredentials": "Credenciais de demonstração: admin@measura.com / password",
+  "errors": {
+    "invalidCredentials": "Nome de usuário/email ou senha inválidos",
+    "userNotFound": "Usuário não encontrado. Verifique suas credenciais ou cadastre-se.",
+    "accountLocked": "Sua conta foi bloqueada. Entre em contato com o suporte.",
+    "sessionExpired": "Sua sessão expirou. Por favor, entre novamente.",
+    "tooManyAttempts": "Muitas tentativas de login. Tente novamente mais tarde.",
+    "networkError": "Não foi possível conectar ao servidor. Verifique sua conexão com a internet.",
+    "serverError": "Ocorreu um erro no servidor. Tente novamente mais tarde.",
+    "unauthorized": "Acesso não autorizado. Por favor, faça login.",
+    "emailRequired": "Email ou nome de usuário é obrigatório",
+    "passwordRequired": "Senha é obrigatória"
+  }
+}
