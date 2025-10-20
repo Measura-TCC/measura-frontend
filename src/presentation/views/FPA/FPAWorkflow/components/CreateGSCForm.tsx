@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { createGSCSchema, type CreateGSCData } from "@/core/schemas/fpa";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/presentation/components/primitives/Button/Button";
 
 interface CreateGSCFormProps {
@@ -65,7 +65,6 @@ export const CreateGSCForm = ({
     },
   });
 
-  // Watch all GSC fields to check if at least one has been filled
   const formValues = watch();
   const hasFilledGSC =
     formValues.dataProcessing > 0 ||
@@ -82,6 +81,41 @@ export const CreateGSCForm = ({
     formValues.multipleSites > 0 ||
     formValues.facilitateChange > 0 ||
     formValues.distributedFunctions > 0;
+
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      const generalSystemCharacteristics = [
+        formValues.dataProcessing || 0,
+        formValues.performanceRequirements || 0,
+        formValues.heavilyUsedConfiguration || 0,
+        formValues.transactionRate || 0,
+        formValues.onlineDataEntry || 0,
+        formValues.endUserEfficiency || 0,
+        formValues.onlineUpdate || 0,
+        formValues.complexProcessing || 0,
+        formValues.reusability || 0,
+        formValues.installationEase || 0,
+        formValues.operationalEase || 0,
+        formValues.multipleSites || 0,
+        formValues.facilitateChange || 0,
+        formValues.distributedFunctions || 0,
+      ];
+
+      onSuccess?.(generalSystemCharacteristics);
+    }, 500);
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [formValues, onSuccess]);
 
   const onSubmit = async (data: CreateGSCData) => {
     setIsSubmitting(true);

@@ -72,8 +72,7 @@ export const ManualRequirementForm = ({ requirements, addRequirement, addRequire
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder={t("importForms.manual.titlePlaceholder")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:invalid:border-red-500"
           />
         </div>
 

@@ -140,7 +140,10 @@ export const FPAWorkflow = () => {
   const handleCancel = () => {
     resetWorkflow();
     resetRequirements();
-    setActiveTab("new");
+    setSummaryPage(1);
+    setTimeout(() => {
+      setActiveTab("new");
+    }, 50);
   };
 
   const handleEstimateFormSubmit = (data: EstimateFormData) => {
@@ -389,6 +392,26 @@ export const FPAWorkflow = () => {
             <CreateGSCForm
               onSuccess={handleGSCCompleted}
               onBack={() => setCurrentStep(3)}
+              initialValues={
+                generalSystemCharacteristics
+                  ? {
+                      dataProcessing: generalSystemCharacteristics[0],
+                      performanceRequirements: generalSystemCharacteristics[1],
+                      heavilyUsedConfiguration: generalSystemCharacteristics[2],
+                      transactionRate: generalSystemCharacteristics[3],
+                      onlineDataEntry: generalSystemCharacteristics[4],
+                      endUserEfficiency: generalSystemCharacteristics[5],
+                      onlineUpdate: generalSystemCharacteristics[6],
+                      complexProcessing: generalSystemCharacteristics[7],
+                      reusability: generalSystemCharacteristics[8],
+                      installationEase: generalSystemCharacteristics[9],
+                      operationalEase: generalSystemCharacteristics[10],
+                      multipleSites: generalSystemCharacteristics[11],
+                      facilitateChange: generalSystemCharacteristics[12],
+                      distributedFunctions: generalSystemCharacteristics[13],
+                    }
+                  : undefined
+              }
             />
           </div>
         )}

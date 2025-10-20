@@ -157,7 +157,7 @@ export const BulkRequirementModal = ({ isOpen, onClose, onSubmit }: BulkRequirem
           )}
         </div>
 
-        <div className="px-6 py-4 border-t border-border flex justify-end gap-3 bg-gray-50">
+        <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
           <Button
             type="button"
             onClick={handleCancel}
