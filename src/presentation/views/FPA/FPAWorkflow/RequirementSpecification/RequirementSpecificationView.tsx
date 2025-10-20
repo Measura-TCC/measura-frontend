@@ -2,29 +2,36 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useRequirements } from "@/core/hooks/fpa";
+import { useRequirements, useRequirementActions } from "@/core/hooks/fpa";
 import { Button } from "@/presentation/components/primitives";
 import { DynamicFPAForm } from "./DynamicFPAForm";
 
 interface RequirementSpecificationViewProps {
   onProceed: () => void;
   onBack: () => void;
+  estimateId: string;
 }
 
 export const RequirementSpecificationView = ({
   onProceed,
   onBack,
+  estimateId,
 }: RequirementSpecificationViewProps) => {
   const { t } = useTranslation("fpa");
-  const { requirements, updateRequirementFpaData } = useRequirements();
+  const { requirements } = useRequirements({ estimateId });
+  const { updateRequirement } = useRequirementActions();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const classifiedRequirements = requirements.filter((r) => r.componentType);
+  const classifiedRequirements = requirements?.filter((r) => r.componentType) || [];
   const currentRequirement = classifiedRequirements[currentIndex];
 
-  const handleSave = (data: Record<string, unknown>) => {
+  const handleSave = async (data: Record<string, unknown>) => {
     if (currentRequirement) {
-      updateRequirementFpaData(currentRequirement.id, data);
+      await updateRequirement({
+        estimateId,
+        requirementId: currentRequirement._id,
+        data: data as any,
+      });
 
       if (currentIndex < classifiedRequirements.length - 1) {
         setCurrentIndex(currentIndex + 1);
@@ -92,7 +99,7 @@ export const RequirementSpecificationView = ({
           </h4>
           <DynamicFPAForm
             componentType={currentRequirement.componentType!}
-            initialData={currentRequirement.fpaData}
+            initialData={undefined}
             onSubmit={handleSave}
             onCancel={onBack}
           />

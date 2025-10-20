@@ -2,8 +2,14 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import type { Requirement } from "@/core/types/fpa";
 
-export const ClickUpImportForm = () => {
+interface ClickUpImportFormProps {
+  requirements: Requirement[];
+  addRequirements: (requirements: Array<{ title: string; description?: string; source: 'clickup' }>) => void;
+}
+
+export const ClickUpImportForm = ({ requirements, addRequirements }: ClickUpImportFormProps) => {
   const { t } = useTranslation("fpa");
   const [token, setToken] = useState("");
   const [listId, setListId] = useState("");

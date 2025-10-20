@@ -176,31 +176,31 @@ export const updateEstimateSchema = createUpdateEstimateSchemaFactory(dummyT);
 
 export const createALISchemaFactory = (t: (key: string) => string) =>
   z.object({
-    name: z.string().min(1, t("validation.fpa.name.required")),
-    description: z.string().min(1, t("validation.fpa.description.required")),
+    name: z.string().min(1, t("fpa.name.required")),
+    description: z.string().min(1, t("fpa.description.required")),
     primaryIntent: z
       .string()
-      .min(10, t("validation.fpa.primaryIntent.minLength"))
-      .max(500, t("validation.fpa.primaryIntent.maxLength")),
+      .min(10, t("fpa.primaryIntent.minLength"))
+      .max(500, t("fpa.primaryIntent.maxLength")),
     recordElementTypes: z
       .number()
-      .min(1, t("validation.fpa.recordElementTypes.min")),
-    dataElementTypes: z.number().min(1, t("validation.fpa.dataElementTypes.min")),
+      .min(1, t("fpa.recordElementTypes.min")),
+    dataElementTypes: z.number().min(1, t("fpa.dataElementTypes.min")),
     notes: z.string().max(2000).optional(),
   });
 
 export const createEISchemaFactory = (t: (key: string) => string) =>
   z.object({
-    name: z.string().min(1, t("validation.fpa.name.required")),
+    name: z.string().min(1, t("fpa.name.required")),
     description: z.string().optional(),
     primaryIntent: z
       .string()
-      .min(10, t("validation.fpa.primaryIntent.minLength"))
-      .max(500, t("validation.fpa.primaryIntent.maxLength")),
+      .min(10, t("fpa.primaryIntent.minLength"))
+      .max(500, t("fpa.primaryIntent.maxLength")),
     processingLogic: z
       .string()
-      .min(10, t("validation.fpa.processingLogic.minLength"))
-      .max(1000, t("validation.fpa.processingLogic.maxLength")),
+      .min(10, t("fpa.processingLogic.minLength"))
+      .max(1000, t("fpa.processingLogic.maxLength")),
     fileTypesReferenced: z.number().min(0),
     dataElementTypes: z.number().min(0),
     notes: z.string().max(2000).optional(),
@@ -211,12 +211,12 @@ export const createEISchema = createEISchemaFactory(dummyT);
 
 export const createEOSchemaFactory = (t: (key: string) => string) =>
   z.object({
-    name: z.string().min(1, t("validation.fpa.name.required")),
+    name: z.string().min(1, t("fpa.name.required")),
     description: z.string().optional(),
     primaryIntent: z
       .string()
-      .min(10, t("validation.fpa.primaryIntent.minLength"))
-      .max(500, t("validation.fpa.primaryIntent.maxLength")),
+      .min(10, t("fpa.primaryIntent.minLength"))
+      .max(500, t("fpa.primaryIntent.maxLength")),
     derivedData: z.boolean().optional(),
     outputFormat: z.string().optional(),
     fileTypesReferenced: z.number().min(0),
@@ -229,12 +229,12 @@ export const createEOSchema = createEOSchemaFactory(dummyT);
 export const createEQSchemaFactory = (t: (key: string) => string) =>
   z
     .object({
-      name: z.string().min(1, t("validation.fpa.name.required")),
+      name: z.string().min(1, t("fpa.name.required")),
       description: z.string().optional(),
       primaryIntent: z
         .string()
-        .min(10, t("validation.fpa.primaryIntent.minLength"))
-        .max(500, t("validation.fpa.primaryIntent.maxLength")),
+        .min(10, t("fpa.primaryIntent.minLength"))
+        .max(500, t("fpa.primaryIntent.maxLength")),
       retrievalLogic: z.string().optional(),
       useSpecialCalculation: z.boolean(),
       fileTypesReferenced: z.number().min(0).optional(),
@@ -261,7 +261,7 @@ export const createEQSchemaFactory = (t: (key: string) => string) =>
         );
       },
       {
-        message: t("validation.fpa.eqValidation"),
+        message: t("fpa.eqValidation"),
       }
     );
 
@@ -269,15 +269,15 @@ export const createEQSchema = createEQSchemaFactory(dummyT);
 
 export const createAIESchemaFactory = (t: (key: string) => string) =>
   z.object({
-    name: z.string().min(1, t("validation.fpa.name.required")),
-    description: z.string().min(1, t("validation.fpa.description.required")),
+    name: z.string().min(1, t("fpa.name.required")),
+    description: z.string().min(1, t("fpa.description.required")),
     primaryIntent: z
       .string()
-      .min(10, t("validation.fpa.primaryIntent.minLength"))
-      .max(500, t("validation.fpa.primaryIntent.maxLength")),
-    recordElementTypes: z.number().min(1, t("validation.fpa.recordElementTypes.min")),
-    dataElementTypes: z.number().min(1, t("validation.fpa.dataElementTypes.min")),
-    externalSystem: z.string().min(1, t("validation.fpa.externalSystem.required")),
+      .min(10, t("fpa.primaryIntent.minLength"))
+      .max(500, t("fpa.primaryIntent.maxLength")),
+    recordElementTypes: z.number().min(1, t("fpa.recordElementTypes.min")),
+    dataElementTypes: z.number().min(1, t("fpa.dataElementTypes.min")),
+    externalSystem: z.string().min(1, t("fpa.externalSystem.required")),
     notes: z.string().optional(),
   });
 

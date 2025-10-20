@@ -2,8 +2,14 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import type { Requirement } from "@/core/types/fpa";
 
-export const GitHubImportForm = () => {
+interface GitHubImportFormProps {
+  requirements: Requirement[];
+  addRequirements: (requirements: Array<{ title: string; description?: string; source: 'github' }>) => void;
+}
+
+export const GitHubImportForm = ({ requirements, addRequirements }: GitHubImportFormProps) => {
   const { t } = useTranslation("fpa");
   const [token, setToken] = useState("");
   const [owner, setOwner] = useState("");

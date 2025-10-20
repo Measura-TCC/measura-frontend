@@ -2,8 +2,14 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import type { Requirement } from "@/core/types/fpa";
 
-export const JiraImportForm = () => {
+interface JiraImportFormProps {
+  requirements: Requirement[];
+  addRequirements: (requirements: Array<{ title: string; description?: string; source: 'jira' }>) => void;
+}
+
+export const JiraImportForm = ({ requirements, addRequirements }: JiraImportFormProps) => {
   const { t } = useTranslation("fpa");
   const [domain, setDomain] = useState("");
   const [email, setEmail] = useState("");

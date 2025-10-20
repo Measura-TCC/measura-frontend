@@ -2,8 +2,14 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import type { Requirement } from "@/core/types/fpa";
 
-export const AzureDevOpsImportForm = () => {
+interface AzureDevOpsImportFormProps {
+  requirements: Requirement[];
+  addRequirements: (requirements: Array<{ title: string; description?: string; source: 'azure_devops' }>) => void;
+}
+
+export const AzureDevOpsImportForm = ({ requirements, addRequirements }: AzureDevOpsImportFormProps) => {
   const { t } = useTranslation("fpa");
   const [organization, setOrganization] = useState("");
   const [project, setProject] = useState("");

@@ -78,12 +78,15 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
     ];
   };
 
-  const formatDate = (date: string) => {
+  const formatDate = (date: string | undefined) => {
+    if (!date) return '-';
+    const dateObj = new Date(date);
+    if (isNaN(dateObj.getTime())) return '-';
     return new Intl.DateTimeFormat("pt-BR", {
       year: "numeric",
       month: "short",
       day: "numeric",
-    }).format(new Date(date));
+    }).format(dateObj);
   };
 
   const getStatusColor = (status: string) => {

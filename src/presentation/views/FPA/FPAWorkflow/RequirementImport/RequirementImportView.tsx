@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { RequirementSource } from "@/core/types/fpa";
+import { useRequirementsStore } from "@/core/hooks/fpa/useRequirementsStore";
 import { ImportSourceSelector } from "./ImportSourceSelector";
 import { ManualRequirementForm } from "./forms/ManualRequirementForm";
 import { CSVImportForm } from "./forms/CSVImportForm";
@@ -21,11 +22,14 @@ export const RequirementImportView = ({
   onProceed,
 }: RequirementImportViewProps) => {
   const { t } = useTranslation("fpa");
-  // TODO: Requirements are stored locally until estimate creation
-  const requirements: Array<{ componentType?: string }> = [];
-  const [selectedSource, setSelectedSource] =
-    useState<RequirementSource | null>("manual");
-  const [substep, setSubstep] = useState<"import" | "classification">("import");
+  const requirements = useRequirementsStore((state) => state.requirements);
+  const substep = useRequirementsStore((state) => state.substep);
+  const setSubstep = useRequirementsStore((state) => state.setSubstep);
+  const addRequirement = useRequirementsStore((state) => state.addRequirement);
+  const addRequirements = useRequirementsStore((state) => state.addRequirements);
+  const removeRequirement = useRequirementsStore((state) => state.removeRequirement);
+
+  const [selectedSource, setSelectedSource] = useState<RequirementSource | null>("manual");
 
   const handleProceedToClassification = () => {
     setSubstep("classification");
@@ -38,17 +42,17 @@ export const RequirementImportView = ({
   const renderImportForm = () => {
     switch (selectedSource) {
       case "manual":
-        return <ManualRequirementForm />;
+        return <ManualRequirementForm requirements={requirements} addRequirement={addRequirement} addRequirements={addRequirements} removeRequirement={removeRequirement} />;
       case "csv":
-        return <CSVImportForm />;
+        return <CSVImportForm requirements={requirements} addRequirements={addRequirements} />;
       case "jira":
-        return <JiraImportForm />;
+        return <JiraImportForm requirements={requirements} addRequirements={addRequirements} />;
       case "github":
-        return <GitHubImportForm />;
+        return <GitHubImportForm requirements={requirements} addRequirements={addRequirements} />;
       case "azure_devops":
-        return <AzureDevOpsImportForm />;
+        return <AzureDevOpsImportForm requirements={requirements} addRequirements={addRequirements} />;
       case "clickup":
-        return <ClickUpImportForm />;
+        return <ClickUpImportForm requirements={requirements} addRequirements={addRequirements} />;
       default:
         return null;
     }
@@ -78,8 +82,8 @@ export const RequirementImportView = ({
 
         {requirements.length > 0 && (
           <div className="mt-6 p-6 bg-indigo-50 border-2 border-indigo-300 rounded-lg shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+              <div className="flex-1">
                 <p className="text-base font-semibold text-indigo-900">
                   {t("requirementImport.importSuccess", {
                     count: requirements.length,
@@ -92,7 +96,7 @@ export const RequirementImportView = ({
               <Button
                 onClick={handleProceedToClassification}
                 variant="primary"
-                className="ml-4 px-6 py-3 text-base font-semibold"
+                className="px-6 py-3 text-base font-semibold whitespace-normal text-center shrink-0"
               >
                 {t("requirementImport.nextToClassification")}
               </Button>
@@ -109,8 +113,8 @@ export const RequirementImportView = ({
 
     return (
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+          <div className="flex-1">
             <h2 className="text-2xl font-bold text-gray-900">
               {t("requirementImport.classifyTitle")}
             </h2>
@@ -127,7 +131,7 @@ export const RequirementImportView = ({
           <Button
             onClick={handleBackToImport}
             variant="secondary"
-            className="px-4 py-2"
+            className="px-4 py-2 whitespace-normal text-center shrink-0"
           >
             {t("requirementImport.backToImport")}
           </Button>

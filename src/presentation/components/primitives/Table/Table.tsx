@@ -66,20 +66,20 @@ export function Table<T = any>({
         </table>
       </div>
 
-      <div className={`md:hidden space-y-4 ${className}`}>
+      <div className={`md:hidden space-y-4 w-full ${className}`}>
         {data.map((item) => (
           <div
             key={getRowKey(item)}
-            className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 space-y-3"
+            className="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 space-y-3"
           >
             {columns
               .filter((column) => !column.hideOnMobile)
               .map((column) => (
-                <div key={column.key}>
+                <div key={column.key} className="w-full">
                   <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                     {column.label}
                   </div>
-                  <div className="text-sm dark:text-gray-300">
+                  <div className="text-sm dark:text-gray-300 w-full">
                     {column.render(item)}
                   </div>
                 </div>

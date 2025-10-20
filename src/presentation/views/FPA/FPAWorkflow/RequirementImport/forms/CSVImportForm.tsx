@@ -3,13 +3,15 @@
 import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/presentation/components/primitives";
+import type { Requirement } from "@/core/types/fpa";
 
-export const CSVImportForm = () => {
+interface CSVImportFormProps {
+  requirements: Requirement[];
+  addRequirements: (requirements: Array<{ title: string; description?: string; source: 'csv' }>) => void;
+}
+
+export const CSVImportForm = ({ requirements, addRequirements }: CSVImportFormProps) => {
   const { t } = useTranslation("fpa");
-  // TODO: Implement addMultipleRequirements - requirements are created with estimate
-  const addMultipleRequirements = (requirements: unknown[]) => {
-    console.log("TODO: Add requirements to estimate creation payload", requirements);
-  };
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isImporting, setIsImporting] = useState(false);
@@ -61,8 +63,8 @@ export const CSVImportForm = () => {
 
     setIsImporting(true);
     try {
-      const requirements = await parseCSV(selectedFile);
-      addMultipleRequirements(requirements);
+      const parsedRequirements = await parseCSV(selectedFile);
+      addRequirements(parsedRequirements);
       setSelectedFile(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";

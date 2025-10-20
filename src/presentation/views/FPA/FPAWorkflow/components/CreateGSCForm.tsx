@@ -119,9 +119,6 @@ export const CreateGSCForm = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-4">
-        <h3 className="text-lg font-medium text-gray-900">
-          {t("forms.generalSystemCharacteristics")}
-        </h3>
         <p className="text-sm text-gray-600 mb-4">
           {t("forms.gscDescription")}
         </p>

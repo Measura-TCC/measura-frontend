@@ -3,14 +3,15 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 import type { Requirement, ComponentType } from "@/core/types/fpa";
 import { Button } from "@/presentation/components/primitives";
 import {
-  createALISchema,
-  createAIESchema,
-  createEISchema,
-  createEOSchema,
-  createEQSchema,
+  createALISchemaFactory,
+  createAIESchemaFactory,
+  createEISchemaFactory,
+  createEOSchemaFactory,
+  createEQSchemaFactory,
   type CreateALIData,
   type CreateAIEData,
   type CreateEIData,
@@ -27,21 +28,6 @@ interface RequirementFPAModalProps {
 
 type FormData = CreateALIData | CreateAIEData | CreateEIData | CreateEOData | CreateEQData;
 
-const getSchemaForType = (type: ComponentType) => {
-  switch (type) {
-    case "ALI":
-      return createALISchema;
-    case "AIE":
-      return createAIESchema;
-    case "EI":
-      return createEISchema;
-    case "EO":
-      return createEOSchema;
-    case "EQ":
-      return createEQSchema;
-  }
-};
-
 export const RequirementFPAModal = ({
   requirement,
   isOpen,
@@ -49,34 +35,100 @@ export const RequirementFPAModal = ({
   onSave,
 }: RequirementFPAModalProps) => {
   const { t } = useTranslation("fpa");
+  const { t: tValidation } = useTranslation("validation");
+
+  const getSchemaForType = (type: ComponentType) => {
+    switch (type) {
+      case "ALI":
+        return createALISchemaFactory(tValidation);
+      case "AIE":
+        return createAIESchemaFactory(tValidation);
+      case "EI":
+        return createEISchemaFactory(tValidation);
+      case "EO":
+        return createEOSchemaFactory(tValidation);
+      case "EQ":
+        return createEQSchemaFactory(tValidation);
+    }
+  };
 
   const schema = requirement.componentType
     ? getSchemaForType(requirement.componentType)
-    : createALISchema;
+    : createALISchemaFactory(tValidation);
   const componentType = requirement.componentType || "ALI";
+
+  const getDefaultValues = () => {
+    const base = {
+      name: (requirement as any).name || requirement.title,
+      description: (requirement as any).description || requirement.description || "",
+      primaryIntent: (requirement as any).primaryIntent || "",
+      notes: (requirement as any).notes || "",
+    };
+
+    if (componentType === "ALI" || componentType === "AIE") {
+      return {
+        ...base,
+        recordElementTypes: (requirement as any).recordElementTypes || 1,
+        dataElementTypes: (requirement as any).dataElementTypes || 1,
+        ...(componentType === "AIE" && {
+          externalSystem: (requirement as any).externalSystem || "",
+        }),
+      };
+    }
+
+    if (componentType === "EI") {
+      return {
+        ...base,
+        processingLogic: (requirement as any).processingLogic || "",
+        fileTypesReferenced: (requirement as any).fileTypesReferenced || 0,
+        dataElementTypes: (requirement as any).dataElementTypes || 0,
+      };
+    }
+
+    if (componentType === "EO") {
+      return {
+        ...base,
+        derivedData: (requirement as any).derivedData || false,
+        outputFormat: (requirement as any).outputFormat || "",
+        fileTypesReferenced: (requirement as any).fileTypesReferenced || 0,
+        dataElementTypes: (requirement as any).dataElementTypes || 0,
+      };
+    }
+
+    if (componentType === "EQ") {
+      return {
+        ...base,
+        retrievalLogic: (requirement as any).retrievalLogic || "",
+        fileTypesReferenced: (requirement as any).fileTypesReferenced || 0,
+        dataElementTypes: (requirement as any).dataElementTypes || 0,
+      };
+    }
+
+    return base;
+  };
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    defaultValues: requirement.fpaData || {
-      name: requirement.title,
-      description: requirement.description || "",
-      primaryIntent: "",
-      recordElementTypes: 1,
-      dataElementTypes: 1,
-      fileTypesReferenced: 0,
-      notes: "",
-    },
+    reset,
+  } = useForm({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(schema as any),
+    defaultValues: getDefaultValues(),
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      reset(getDefaultValues());
+    }
+  }, [requirement._id, isOpen]);
 
   if (!isOpen || !requirement.componentType) return null;
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: unknown) => {
     console.log("Form submitted with data:", data);
-    onSave(requirement.id, data as Record<string, unknown>);
+    onSave(requirement._id, data as Record<string, unknown>);
     onClose();
   };
 
@@ -116,8 +168,8 @@ export const RequirementFPAModal = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1">
-          <div className="p-6 overflow-y-auto flex-1 space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1 overflow-hidden">
+          <div className="p-6 overflow-y-auto flex-1 space-y-4 custom-scrollbar">
             {/* Name field - ALL components */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -130,7 +182,7 @@ export const RequirementFPAModal = ({
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
               {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+                <p className="mt-1 text-sm text-red-600">{String(errors.name.message || '')}</p>
               )}
             </div>
 
@@ -146,7 +198,7 @@ export const RequirementFPAModal = ({
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
               {errors.description && (
-                <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+                <p className="mt-1 text-sm text-red-600">{String(errors.description?.message || '')}</p>
               )}
             </div>
 
@@ -163,7 +215,7 @@ export const RequirementFPAModal = ({
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
               {errors.primaryIntent && (
-                <p className="mt-1 text-sm text-red-600">{errors.primaryIntent.message}</p>
+                <p className="mt-1 text-sm text-red-600">{String(errors.primaryIntent?.message || '')}</p>
               )}
             </div>
 
@@ -182,7 +234,7 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.recordElementTypes && (
-                    <p className="mt-1 text-sm text-red-600">{errors.recordElementTypes.message}</p>
+                    <p className="mt-1 text-sm text-red-600">{String(errors.recordElementTypes?.message || '')}</p>
                   )}
                 </div>
 
@@ -198,7 +250,7 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.dataElementTypes && (
-                    <p className="mt-1 text-sm text-red-600">{errors.dataElementTypes.message}</p>
+                    <p className="mt-1 text-sm text-red-600">{String(errors.dataElementTypes?.message || '')}</p>
                   )}
                 </div>
               </>
@@ -217,7 +269,7 @@ export const RequirementFPAModal = ({
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.externalSystem && (
-                  <p className="mt-1 text-sm text-red-600">{errors.externalSystem.message}</p>
+                  <p className="mt-1 text-sm text-red-600">{String(errors.externalSystem?.message || '')}</p>
                 )}
               </div>
             )}
@@ -237,7 +289,7 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.processingLogic && (
-                    <p className="mt-1 text-sm text-red-600">{errors.processingLogic.message}</p>
+                    <p className="mt-1 text-sm text-red-600">{String(errors.processingLogic?.message || '')}</p>
                   )}
                 </div>
 
@@ -253,7 +305,7 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.fileTypesReferenced && (
-                    <p className="mt-1 text-sm text-red-600">{errors.fileTypesReferenced.message}</p>
+                    <p className="mt-1 text-sm text-red-600">{String(errors.fileTypesReferenced?.message || '')}</p>
                   )}
                 </div>
 
@@ -269,7 +321,7 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.dataElementTypes && (
-                    <p className="mt-1 text-sm text-red-600">{errors.dataElementTypes.message}</p>
+                    <p className="mt-1 text-sm text-red-600">{String(errors.dataElementTypes?.message || '')}</p>
                   )}
                 </div>
               </>
@@ -302,7 +354,7 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.outputFormat && (
-                    <p className="mt-1 text-sm text-red-600">{errors.outputFormat.message}</p>
+                    <p className="mt-1 text-sm text-red-600">{String(errors.outputFormat?.message || '')}</p>
                   )}
                 </div>
 
@@ -318,7 +370,7 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.fileTypesReferenced && (
-                    <p className="mt-1 text-sm text-red-600">{errors.fileTypesReferenced.message}</p>
+                    <p className="mt-1 text-sm text-red-600">{String(errors.fileTypesReferenced?.message || '')}</p>
                   )}
                 </div>
 
@@ -334,7 +386,7 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.dataElementTypes && (
-                    <p className="mt-1 text-sm text-red-600">{errors.dataElementTypes.message}</p>
+                    <p className="mt-1 text-sm text-red-600">{String(errors.dataElementTypes?.message || '')}</p>
                   )}
                 </div>
               </>
@@ -354,7 +406,7 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.retrievalLogic && (
-                    <p className="mt-1 text-sm text-red-600">{errors.retrievalLogic.message}</p>
+                    <p className="mt-1 text-sm text-red-600">{String(errors.retrievalLogic?.message || '')}</p>
                   )}
                 </div>
 
@@ -370,7 +422,7 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.fileTypesReferenced && (
-                    <p className="mt-1 text-sm text-red-600">{errors.fileTypesReferenced.message}</p>
+                    <p className="mt-1 text-sm text-red-600">{String(errors.fileTypesReferenced?.message || '')}</p>
                   )}
                 </div>
 
@@ -386,7 +438,7 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.dataElementTypes && (
-                    <p className="mt-1 text-sm text-red-600">{errors.dataElementTypes.message}</p>
+                    <p className="mt-1 text-sm text-red-600">{String(errors.dataElementTypes?.message || '')}</p>
                   )}
                 </div>
               </>
@@ -404,7 +456,7 @@ export const RequirementFPAModal = ({
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
               {errors.notes && (
-                <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>
+                <p className="mt-1 text-sm text-red-600">{String(errors.notes?.message || '')}</p>
               )}
             </div>
           </div>

@@ -249,13 +249,16 @@ export interface EstimateOverview {
 }
 
 export const transformToEstimateOverview = (
-  estimate: EstimateResponse
+  estimate: EstimateResponse | any
 ): EstimateOverview => {
-  const internalLogicalFiles = estimate.internalLogicalFiles || [];
-  const externalInterfaceFiles = estimate.externalInterfaceFiles || [];
-  const externalInputs = estimate.externalInputs || [];
-  const externalOutputs = estimate.externalOutputs || [];
-  const externalQueries = estimate.externalQueries || [];
+  // Handle Mongoose documents with nested _doc
+  const data = estimate._doc || estimate;
+
+  const internalLogicalFiles = data.internalLogicalFiles || [];
+  const externalInterfaceFiles = data.externalInterfaceFiles || [];
+  const externalInputs = data.externalInputs || [];
+  const externalOutputs = data.externalOutputs || [];
+  const externalQueries = data.externalQueries || [];
 
   const componentCounts = {
     ilf: internalLogicalFiles.length,
@@ -271,16 +274,16 @@ export const transformToEstimateOverview = (
   );
 
   return {
-    _id: estimate._id,
-    name: estimate.name,
-    description: estimate.description,
-    project: estimate.project,
-    countType: estimate.countType,
-    status: estimate.status,
-    unadjustedFunctionPoints: estimate.unadjustedFunctionPoints,
-    adjustedFunctionPoints: estimate.adjustedFunctionPoints,
-    valueAdjustmentFactor: estimate.valueAdjustmentFactor,
-    estimatedEffortHours: estimate.estimatedEffortHours,
+    _id: data._id,
+    name: data.name,
+    description: data.description,
+    project: data.project,
+    countType: data.countType,
+    status: data.status,
+    unadjustedFunctionPoints: data.unadjustedFunctionPoints,
+    adjustedFunctionPoints: data.adjustedFunctionPoints,
+    valueAdjustmentFactor: data.valueAdjustmentFactor,
+    estimatedEffortHours: data.estimatedEffortHours,
     internalLogicalFiles,
     externalInterfaceFiles,
     externalInputs,
@@ -291,13 +294,13 @@ export const transformToEstimateOverview = (
     completionPercentage: totalComponents > 0 ? 80 : 20,
     hasComponents: totalComponents > 0,
     hasGSC:
-      estimate.generalSystemCharacteristics &&
-      estimate.generalSystemCharacteristics.values &&
-      estimate.generalSystemCharacteristics.values.length > 0,
-    isCalculated: estimate.adjustedFunctionPoints > 0,
-    createdAt: estimate.createdAt,
-    updatedAt: estimate.updatedAt,
-    version: estimate.version,
+      data.generalSystemCharacteristics &&
+      data.generalSystemCharacteristics.values &&
+      data.generalSystemCharacteristics.values.length > 0,
+    isCalculated: data.adjustedFunctionPoints > 0,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt,
+    version: data.version,
   };
 };
 
