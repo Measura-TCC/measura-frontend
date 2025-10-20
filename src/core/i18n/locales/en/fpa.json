@@ -688,7 +688,18 @@
     "csv": {
       "uploadFile": "CSV File Upload",
       "dragDrop": "Drag and drop CSV file here or click to select",
-      "fileSelected": "File selected: {{name}}"
+      "fileSelected": "File selected: {{name}}",
+      "mapColumns": "Map Your CSV Columns",
+      "mapColumnsDescription": "Select which columns from your CSV correspond to the requirement fields.",
+      "nameColumn": "Name Column",
+      "descriptionColumn": "Description Column",
+      "optional": "optional",
+      "selectColumn": "Select a column...",
+      "detectedColumns": "Detected Columns",
+      "preview": "Preview",
+      "nextPreview": "Next: Preview",
+      "previewDescription": "Showing {{count}} of {{total}} requirements",
+      "importItems": "Import {{count}} Items"
     },
     "jira": {
       "domain": "Jira Domain",
