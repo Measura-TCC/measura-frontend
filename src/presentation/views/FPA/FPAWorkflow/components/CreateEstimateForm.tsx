@@ -31,12 +31,14 @@ interface CreateEstimateFormProps {
   projectId: string;
   initialData?: Partial<EstimateFormData>;
   onSuccess: (data: EstimateFormData) => void;
+  onBack: () => void;
 }
 
 export const CreateEstimateForm = ({
   projectId,
   initialData,
   onSuccess,
+  onBack,
 }: CreateEstimateFormProps) => {
   const { t } = useTranslation("validation");
   const { t: tFpa } = useTranslation("fpa");
@@ -197,13 +199,21 @@ export const CreateEstimateForm = ({
         </div>
       </fieldset>
 
-      <div className="flex justify-end space-x-3">
+      <div className="flex justify-end gap-3">
+        <Button
+          type="button"
+          onClick={onBack}
+          variant="secondary"
+          size="md"
+        >
+          Voltar
+        </Button>
         <Button
           type="submit"
           variant="primary"
-          size="lg"
+          size="md"
         >
-          {tFpa("actions.continue")}
+          Próximo
         </Button>
       </div>
     </form>

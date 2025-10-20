@@ -369,6 +369,7 @@ export const FPAWorkflow = () => {
               projectId={selectedProjectId}
               initialData={estimateFormData || undefined}
               onSuccess={handleEstimateFormSubmit}
+              onBack={() => setCurrentStep(1)}
             />
           </div>
         )}
@@ -385,7 +386,10 @@ export const FPAWorkflow = () => {
             <p className="text-secondary mb-6">
               {t("workflow.step4Description")}
             </p>
-            <CreateGSCForm onSuccess={handleGSCCompleted} />
+            <CreateGSCForm
+              onSuccess={handleGSCCompleted}
+              onBack={() => setCurrentStep(3)}
+            />
           </div>
         )}
 
@@ -761,6 +765,7 @@ export const FPAWorkflow = () => {
                   <Button
                     onClick={() => setCurrentStep(5)}
                     variant="secondary"
+                    size="md"
                   >
                     Voltar
                   </Button>
@@ -768,7 +773,7 @@ export const FPAWorkflow = () => {
                   <Button
                     onClick={handleCreateAndCalculate}
                     variant="primary"
-                    size="lg"
+                    size="md"
                     disabled={
                       isSubmitting ||
                       requirements.filter(
@@ -777,8 +782,8 @@ export const FPAWorkflow = () => {
                     }
                   >
                     {isSubmitting
-                      ? t("workflow.calculating")
-                      : t("workflow.calculateFP")}
+                      ? "Calculando..."
+                      : "Calcular PF"}
                   </Button>
                 </div>
               </>

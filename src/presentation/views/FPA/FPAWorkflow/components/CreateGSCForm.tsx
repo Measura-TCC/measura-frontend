@@ -9,6 +9,7 @@ import { Button } from "@/presentation/components/primitives/Button/Button";
 
 interface CreateGSCFormProps {
   onSuccess?: (gsc: number[]) => void;
+  onBack: () => void;
   initialValues?: {
     dataProcessing?: number;
     performanceRequirements?: number;
@@ -30,6 +31,7 @@ interface CreateGSCFormProps {
 
 export const CreateGSCForm = ({
   onSuccess,
+  onBack,
   initialValues,
 }: CreateGSCFormProps) => {
   const { t } = useTranslation("fpa");
@@ -41,6 +43,7 @@ export const CreateGSCForm = ({
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<CreateGSCData>({
     resolver: zodResolver(createGSCSchema),
     defaultValues: {
@@ -61,6 +64,24 @@ export const CreateGSCForm = ({
       notes: initialValues?.notes || "",
     },
   });
+
+  // Watch all GSC fields to check if at least one has been filled
+  const formValues = watch();
+  const hasFilledGSC =
+    formValues.dataProcessing > 0 ||
+    formValues.performanceRequirements > 0 ||
+    formValues.heavilyUsedConfiguration > 0 ||
+    formValues.transactionRate > 0 ||
+    formValues.onlineDataEntry > 0 ||
+    formValues.endUserEfficiency > 0 ||
+    formValues.onlineUpdate > 0 ||
+    formValues.complexProcessing > 0 ||
+    formValues.reusability > 0 ||
+    formValues.installationEase > 0 ||
+    formValues.operationalEase > 0 ||
+    formValues.multipleSites > 0 ||
+    formValues.facilitateChange > 0 ||
+    formValues.distributedFunctions > 0;
 
   const onSubmit = async (data: CreateGSCData) => {
     setIsSubmitting(true);
@@ -182,9 +203,17 @@ export const CreateGSCForm = ({
         </div>
       )}
 
-      <div className="flex justify-end">
-        <Button type="submit" disabled={isSubmitting} variant="primary">
-          {isSubmitting ? t("estimateForm.saving") : t("estimateForm.saveGSC")}
+      <div className="flex justify-end gap-3">
+        <Button type="button" onClick={onBack} variant="secondary" size="md">
+          Voltar
+        </Button>
+        <Button
+          type="submit"
+          disabled={isSubmitting || !hasFilledGSC}
+          variant="primary"
+          size="md"
+        >
+          {isSubmitting ? t("estimateForm.saving") : "Próximo"}
         </Button>
       </div>
     </form>

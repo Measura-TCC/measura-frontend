@@ -251,8 +251,8 @@ export interface EstimateOverview {
 export const transformToEstimateOverview = (
   estimate: EstimateResponse | any
 ): EstimateOverview => {
-  // Handle Mongoose documents with nested _doc
-  const data = estimate._doc || estimate;
+  // Extract data from estimate response
+  const data = estimate;
 
   const internalLogicalFiles = data.internalLogicalFiles || [];
   const externalInterfaceFiles = data.externalInterfaceFiles || [];

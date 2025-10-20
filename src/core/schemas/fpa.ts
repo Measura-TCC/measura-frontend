@@ -218,7 +218,7 @@ export const createEOSchemaFactory = (t: (key: string) => string) =>
       .min(10, t("fpa.primaryIntent.minLength"))
       .max(500, t("fpa.primaryIntent.maxLength")),
     derivedData: z.boolean().optional(),
-    outputFormat: z.string().optional(),
+    outputFormat: z.string().min(1, t("fpa.outputFormat.required")),
     fileTypesReferenced: z.number().min(0),
     dataElementTypes: z.number().min(0),
     notes: z.string().max(2000).optional(),

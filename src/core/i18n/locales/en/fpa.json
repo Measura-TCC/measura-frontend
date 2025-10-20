@@ -42,6 +42,7 @@
   "actions": {
     "cancel": "Cancel",
     "continue": "Continue",
+    "next": "Next",
     "back": "Back",
     "backToComponentTypes": "Back to Component Types"
   },
@@ -419,7 +420,7 @@
       "name": "EO Name",
       "primaryIntentPlaceholder": "Describe the primary purpose and intent of this EO component...",
       "derivedData": "Contains derived data",
-      "outputFormat": "Output Format (optional)",
+      "outputFormat": "Output Format",
       "outputFormatPlaceholder": "e.g., PDF, Excel, HTML, JSON",
       "fileTypesReferenced": "File Types Referenced (FTRs)",
       "dataElementTypes": "Data Element Types (DETs)",

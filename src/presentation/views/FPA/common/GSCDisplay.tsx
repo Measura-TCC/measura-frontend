@@ -153,6 +153,7 @@ export const GSCDisplay = ({ estimate, onUpdate }: GSCDisplayProps) => {
         )}
         <CreateGSCForm
           onSuccess={handleUpdateSuccess}
+          onBack={() => setIsEditing(false)}
           initialValues={getInitialValues()}
         />
       </div>

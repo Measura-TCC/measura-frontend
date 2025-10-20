@@ -87,6 +87,9 @@
     "externalSystem": {
       "required": "External system is required"
     },
+    "outputFormat": {
+      "required": "Output format is required"
+    },
     "recordElementTypes": {
       "min": "Must have at least 1 record element type"
     },

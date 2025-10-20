@@ -42,6 +42,7 @@
   "actions": {
     "cancel": "Cancelar",
     "continue": "Continuar",
+    "next": "Próximo",
     "back": "Voltar",
     "backToComponentTypes": "Voltar aos Tipos de Componentes"
   },
@@ -425,7 +426,7 @@
       "name": "Nome da SE",
       "primaryIntentPlaceholder": "Descreva o propósito principal e a intenção deste componente SE...",
       "derivedData": "Contém dados derivados",
-      "outputFormat": "Formato de Saída (opcional)",
+      "outputFormat": "Formato de Saída",
       "outputFormatPlaceholder": "ex: PDF, Excel, HTML, JSON",
       "fileTypesReferenced": "Tipos de Registro (TR)",
       "dataElementTypes": "Tipos de Dados (TD)",

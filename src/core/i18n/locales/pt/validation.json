@@ -87,6 +87,9 @@
     "externalSystem": {
       "required": "Sistema externo é obrigatório"
     },
+    "outputFormat": {
+      "required": "Formato de saída é obrigatório"
+    },
     "recordElementTypes": {
       "min": "Deve ter pelo menos 1 tipo de elemento de registro"
     },

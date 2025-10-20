@@ -154,11 +154,11 @@ export const ProjectConfigurationForm = ({
       </div>
 
       <div className="flex justify-end gap-3">
-        <Button type="button" onClick={onBack} variant="secondary">
+        <Button type="button" onClick={onBack} variant="secondary" size="md">
           Voltar
         </Button>
-        <Button type="submit" variant="primary">
-          Continuar
+        <Button type="submit" variant="primary" size="md">
+          Próximo
         </Button>
       </div>
     </form>
