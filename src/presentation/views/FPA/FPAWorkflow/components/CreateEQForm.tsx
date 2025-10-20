@@ -99,14 +99,19 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
       : null;
 
   const onSubmit = async (data: CreateEQData) => {
+    console.log("EQ Form onSubmit called with data:", data);
+    console.log("Form errors:", errors);
     setIsSubmitting(true);
     setError(null);
 
     try {
+      console.log("Creating EQ component...");
       await createEQComponent({ estimateId, data });
+      console.log("EQ component created successfully");
       reset();
       onSuccess?.();
     } catch (err) {
+      console.error("Error creating EQ component:", err);
       setError(
         err instanceof Error
           ? err.message
@@ -118,7 +123,13 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form
+      onSubmit={(e) => {
+        console.log("Form submit event triggered");
+        handleSubmit(onSubmit)(e);
+      }}
+      className="space-y-6"
+    >
       <div className="grid grid-cols-1 gap-4">
         <div>
           <label
@@ -401,6 +412,12 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
       {error && (
         <div className="rounded-md bg-red-50 p-4">
           <p className="text-sm text-red-700">{error}</p>
+        </div>
+      )}
+
+      {errors.root && (
+        <div className="rounded-md bg-red-50 p-4">
+          <p className="text-sm text-red-700">{errors.root.message}</p>
         </div>
       )}
 

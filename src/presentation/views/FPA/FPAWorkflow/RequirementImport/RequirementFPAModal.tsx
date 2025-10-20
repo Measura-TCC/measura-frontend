@@ -99,6 +99,7 @@ export const RequirementFPAModal = ({
       return {
         ...base,
         retrievalLogic: (requirement as any).retrievalLogic || "",
+        useSpecialCalculation: (requirement as any).useSpecialCalculation || false,
         fileTypesReferenced: (requirement as any).fileTypesReferenced || 0,
         dataElementTypes: (requirement as any).dataElementTypes || 0,
       };
@@ -127,7 +128,10 @@ export const RequirementFPAModal = ({
   if (!isOpen || !requirement.componentType) return null;
 
   const onSubmit = (data: unknown) => {
-    console.log("Form submitted with data:", data);
+    console.log("RequirementFPAModal onSubmit called");
+    console.log("Component type:", componentType);
+    console.log("Form data:", data);
+    console.log("Form errors:", errors);
     onSave(requirement._id, data as Record<string, unknown>);
     onClose();
   };
@@ -168,7 +172,22 @@ export const RequirementFPAModal = ({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1 overflow-hidden">
+        <form
+          onSubmit={(e) => {
+            console.log("RequirementFPAModal form submit event");
+            console.log("Current errors:", errors);
+            handleSubmit(
+              (data) => {
+                console.log("Validation passed, calling onSubmit");
+                onSubmit(data);
+              },
+              (errors) => {
+                console.log("Validation failed with errors:", errors);
+              }
+            )(e);
+          }}
+          className="flex flex-col flex-1 overflow-hidden"
+        >
           <div className="p-6 overflow-y-auto flex-1 space-y-4 custom-scrollbar">
             {/* Name field - ALL components */}
             <div>
@@ -395,6 +414,12 @@ export const RequirementFPAModal = ({
             {/* EQ specific fields */}
             {componentType === "EQ" && (
               <>
+                <input
+                  {...register("useSpecialCalculation")}
+                  type="hidden"
+                  value="false"
+                />
+
                 <div>
                   <label htmlFor="retrievalLogic" className="block text-sm font-medium text-gray-700">
                     {t("componentForms.eq.retrievalLogic")}
@@ -460,6 +485,12 @@ export const RequirementFPAModal = ({
               )}
             </div>
           </div>
+
+          {errors.root && (
+            <div className="mx-6 mb-4 rounded-md bg-red-50 p-4">
+              <p className="text-sm text-red-700">{String(errors.root.message || 'Validation error')}</p>
+            </div>
+          )}
 
           <div className="bg-gray-50 px-6 py-4 border-t flex justify-end gap-3 rounded-b-lg">
             <Button
