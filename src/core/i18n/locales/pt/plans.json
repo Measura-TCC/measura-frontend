@@ -15,6 +15,7 @@
   "enterPlanOwner": "Digite o responsável pelo plano",
   "createPlan": "Criar Plano",
   "creating": "Criando...",
+  "loading": "Carregando...",
   "yourPlans": "Seus Planos",
   "noPlansYet": "Nenhum Plano Ainda",
   "noPlansDescription": "Crie seu primeiro plano de medição para organizar e acompanhar suas atividades de medição de software",
@@ -167,6 +168,7 @@
     "startWorkflow": "Iniciar Criação do Plano",
     "finalizePlan": "Finalizar Plano de Medição",
     "creating": "Criando...",
+  "loading": "Carregando...",
     "selectObjectivesTitle": "1. Selecionar Objetivos",
     "chooseObjective": "Escolha o objetivo de medição...",
     "chooseMeasurementObjective": "Escolha o objetivo de medição...",
@@ -491,7 +493,8 @@
     "editingMode": "Modo de edição",
     "confirmDelete": "Tem certeza que deseja excluir o plano '{{planName}}'?",
     "planLoadError": "Erro ao carregar o plano",
-    "planNotFound": "Plano não encontrado"
+    "planNotFound": "Plano não encontrado",
+    "detailsTab": "Detalhes do Plano"
   },
   "measurements": {
     "properties": {
@@ -598,5 +601,47 @@
   "procedure": "Procedimento",
   "formula": "Fórmula",
   "controlRange": "Intervalo de Controle",
-  "analysisFreq": "Frequência de Análise"
+  "analysisFreq": "Frequência de Análise",
+  "monitoring": {
+    "title": "Acompanhamento de medições",
+    "createCycle": "Criar Ciclo",
+    "editCycle": "Editar Ciclo",
+    "deleteCycle": "Excluir Ciclo",
+    "addMeasurement": "Adicionar medição",
+    "cycleName": "Nome do Ciclo",
+    "startDate": "Data de Início",
+    "endDate": "Data de Término",
+    "duration": "Duração (dias)",
+    "selectCycle": "Selecionar Ciclo",
+    "noCycles": "Nenhum ciclo criado ainda",
+    "noCyclesDescription": "Crie um ciclo de medição para começar a acompanhar os dados",
+    "createFirstCycle": "Crie seu primeiro ciclo",
+    "dateOutsideCycleRange": "Data está fora do intervalo do ciclo",
+    "cycleDeleteWarning": "Este ciclo possui {count} medições. Tem certeza?",
+    "measurementsInCycle": "medições",
+    "confirmDelete": "Confirmar Exclusão",
+    "selectMeasurement": "Selecionar medida",
+    "measurementValue": "Valor da medição",
+    "measurementDate": "Data da medição",
+    "notes": "Observações",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "value": "Valor",
+    "noMeasurementsInCycle": "Nenhuma medição neste ciclo ainda",
+    "editMeasurement": "Editar Medição",
+    "addMeasurementToCycle": "Adicionar medição ao ciclo",
+    "endDateMustBeAfterStart": "A data de término deve ser posterior à data de início",
+    "required": "é obrigatório"
+  },
+  "optional": "opcional",
+  "saving": "Salvando...",
+  "deleting": "Excluindo...",
+  "indicatorStatus": {
+    "title": "Condição dos indicadores",
+    "ok": "OK",
+    "needsAttention": "Necessita atenção",
+    "allOk": "Todos os indicadores dentro do esperado",
+    "someNeedAttention": "Alguns indicadores precisam de atenção"
+  }
 }

@@ -135,6 +135,74 @@ interface DeleteMeasurementParams {
   measurementId: string;
 }
 
+interface CreateCycleParams {
+  organizationId: string;
+  planId: string;
+  data: import("@/core/types/plans").CreateCycleDto;
+}
+
+interface GetCyclesParams {
+  organizationId: string;
+  planId: string;
+}
+
+interface UpdateCycleParams {
+  organizationId: string;
+  planId: string;
+  cycleId: string;
+  data: import("@/core/types/plans").UpdateCycleDto;
+}
+
+interface DeleteCycleParams {
+  organizationId: string;
+  planId: string;
+  cycleId: string;
+}
+
+interface GetCycleWithMeasurementsParams {
+  organizationId: string;
+  planId: string;
+  cycleId: string;
+}
+
+interface GetAllCyclesWithMeasurementsParams {
+  organizationId: string;
+  planId: string;
+}
+
+interface AddMeasurementDataParams {
+  organizationId: string;
+  planId: string;
+  objectiveId: string;
+  questionId: string;
+  metricId: string;
+  data: import("@/core/types/plans").CreateMeasurementDataDto;
+}
+
+interface UpdateMeasurementDataParams {
+  organizationId: string;
+  planId: string;
+  measurementDataId: string;
+  data: import("@/core/types/plans").UpdateMeasurementDataDto;
+}
+
+interface DeleteMeasurementDataParams {
+  organizationId: string;
+  planId: string;
+  measurementDataId: string;
+}
+
+interface GetMetricStatusParams {
+  organizationId: string;
+  planId: string;
+  metricId: string;
+}
+
+interface GetPlanStatusParams {
+  organizationId: string;
+  planId: string;
+}
+
 
 export const measurementPlanService = {
   getAll: async (params: GetMeasurementPlansParams): Promise<PaginatedResponse<MeasurementPlanSummaryDto>> => {
@@ -275,5 +343,84 @@ export const measurementPlanService = {
     await measuraApi.delete(
       `/measurement-plans/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurements/${params.measurementId}`
     );
+  },
+
+  createCycle: async (params: CreateCycleParams): Promise<import("@/core/types/plans").MeasurementCycle> => {
+    const response = await measuraApi.post(
+      `/measurement-plans/${params.organizationId}/${params.planId}/cycles`,
+      params.data
+    );
+    return response.data;
+  },
+
+  getCycles: async (params: GetCyclesParams): Promise<import("@/core/types/plans").MeasurementCycle[]> => {
+    const response = await measuraApi.get(
+      `/measurement-plans/${params.organizationId}/${params.planId}/cycles`
+    );
+    return response.data;
+  },
+
+  updateCycle: async (params: UpdateCycleParams): Promise<import("@/core/types/plans").MeasurementCycle> => {
+    const response = await measuraApi.put(
+      `/measurement-plans/${params.organizationId}/${params.planId}/cycles/${params.cycleId}`,
+      params.data
+    );
+    return response.data;
+  },
+
+  deleteCycle: async (params: DeleteCycleParams): Promise<void> => {
+    await measuraApi.delete(
+      `/measurement-plans/${params.organizationId}/${params.planId}/cycles/${params.cycleId}`
+    );
+  },
+
+  getCycleWithMeasurements: async (params: GetCycleWithMeasurementsParams): Promise<import("@/core/types/plans").CycleWithData> => {
+    const response = await measuraApi.get(
+      `/measurement-plans/${params.organizationId}/${params.planId}/cycles/${params.cycleId}/measurements`
+    );
+    return response.data;
+  },
+
+  getAllCyclesWithMeasurements: async (params: GetAllCyclesWithMeasurementsParams): Promise<import("@/core/types/plans").CycleWithData[]> => {
+    const response = await measuraApi.get(
+      `/measurement-plans/${params.organizationId}/${params.planId}/cycles-with-measurements`
+    );
+    return response.data;
+  },
+
+  addMeasurementData: async (params: AddMeasurementDataParams): Promise<import("@/core/types/plans").MeasurementData> => {
+    const response = await measuraApi.post(
+      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurements`,
+      params.data
+    );
+    return response.data;
+  },
+
+  updateMeasurementData: async (params: UpdateMeasurementDataParams): Promise<import("@/core/types/plans").MeasurementData> => {
+    const response = await measuraApi.put(
+      `/measurement-plans/${params.organizationId}/${params.planId}/measurement-data/${params.measurementDataId}`,
+      params.data
+    );
+    return response.data;
+  },
+
+  deleteMeasurementData: async (params: DeleteMeasurementDataParams): Promise<void> => {
+    await measuraApi.delete(
+      `/measurement-plans/${params.organizationId}/${params.planId}/measurement-data/${params.measurementDataId}`
+    );
+  },
+
+  getMetricStatus: async (params: GetMetricStatusParams): Promise<import("@/core/types/plans").MetricStatus> => {
+    const response = await measuraApi.get(
+      `/measurement-plans/${params.organizationId}/${params.planId}/metrics/${params.metricId}/status`
+    );
+    return response.data;
+  },
+
+  getPlanStatus: async (params: GetPlanStatusParams): Promise<import("@/core/types/plans").PlanStatus> => {
+    const response = await measuraApi.get(
+      `/measurement-plans/${params.organizationId}/${params.planId}/status`
+    );
+    return response.data;
   },
 };
