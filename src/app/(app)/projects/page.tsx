@@ -21,13 +21,19 @@ import { useOrganizationalObjectives } from "@/core/hooks/organizations";
 import { useOrganizationStore } from "@/core/hooks/organizations/useOrganizationStore";
 import { CreateProjectForm } from "@/presentation/views/Projects/components/CreateProjectForm";
 import { ProjectStatusSelector } from "@/presentation/views/Projects/components/ProjectStatusSelector";
+import { EstimatesModal } from "@/presentation/views/Projects/components/EstimatesModal";
+import { PlansModal } from "@/presentation/views/Projects/components/PlansModal";
 import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
 import { NoProjectsAlert } from "@/presentation/components/shared/NoProjectsAlert";
+import type { Project } from "@/core/schemas/projects";
 
 export default function ProjectsPage() {
   const { t, i18n } = useTranslation("projects");
   const router = useRouter();
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showEstimatesModal, setShowEstimatesModal] = useState(false);
+  const [showPlansModal, setShowPlansModal] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const { userOrganization, isLoadingUserOrganization, activeOrganizationId, loadUserOrganizations, forceClearCache } =
     useOrganizations({ fetchUserOrganization: true });
   const { projects, isLoadingProjects } = useProjects();
@@ -212,17 +218,25 @@ export default function ProjectsPage() {
                 <div className="flex gap-2 mt-3">
                   <Button
                     size="sm"
-                    variant="secondary"
-                    onClick={() => router.push(`/plans?project=${project._id}`)}
+                    variant="primary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedProject(project);
+                      setShowPlansModal(true);
+                    }}
                   >
-                    View Plans
+                    {t("viewPlans")} ({project.measurementPlans?.length || 0})
                   </Button>
                   <Button
                     size="sm"
-                    variant="secondary"
-                    onClick={() => router.push(`/fpa?project=${project._id}`)}
+                    variant="primary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedProject(project);
+                      setShowEstimatesModal(true);
+                    }}
                   >
-                    View Estimates
+                    {t("viewEstimates")} ({project.estimates?.length || 0})
                   </Button>
                 </div>
                 {project.objectives && project.objectives.length > 0 && (
@@ -292,6 +306,30 @@ export default function ProjectsPage() {
         <NoProjectsAlert
           translationNamespace="projects"
           onActionClick={() => setShowCreateForm(true)}
+        />
+      )}
+
+      {showEstimatesModal && selectedProject && (
+        <EstimatesModal
+          isOpen={showEstimatesModal}
+          onClose={() => {
+            setShowEstimatesModal(false);
+            setSelectedProject(null);
+          }}
+          estimates={selectedProject.estimates || []}
+          organizationId={selectedProject.organizationId}
+        />
+      )}
+
+      {showPlansModal && selectedProject && (
+        <PlansModal
+          isOpen={showPlansModal}
+          onClose={() => {
+            setShowPlansModal(false);
+            setSelectedProject(null);
+          }}
+          plans={selectedProject.measurementPlans || []}
+          organizationId={selectedProject.organizationId}
         />
       )}
     </div>

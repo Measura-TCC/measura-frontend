@@ -54,5 +54,23 @@
     "descriptionMinLength": "A descrição deve ter pelo menos 10 caracteres",
     "descriptionMaxLength": "A descrição não deve exceder 1000 caracteres"
   },
-  "linkedTo": "Vinculado a:"
+  "linkedTo": "Vinculado a:",
+  "viewPlans": "Ver Planos",
+  "viewEstimates": "Ver Estimativas",
+  "plansModal": {
+    "title": "Planos de Medição Associados",
+    "noPlans": "Nenhum plano de medição associado a este projeto.",
+    "responsible": "Responsável:",
+    "objectives": "Objetivos:",
+    "created": "Criado:",
+    "close": "Fechar"
+  },
+  "estimatesModal": {
+    "title": "Estimativas APF Associadas",
+    "noEstimates": "Nenhuma estimativa APF associada a este projeto.",
+    "functionPoints": "Function Points (Ajustados):",
+    "estimatedEffort": "Esforço Estimado:",
+    "created": "Criado:",
+    "close": "Fechar"
+  }
 }

@@ -83,6 +83,35 @@ export interface CreateProjectObjectiveDto {
   organizationalObjectiveIds?: string[];
 }
 
+export interface MeasurementPlanSummary {
+  _id: string;
+  planName: string;
+  associatedProject: string;
+  planResponsible: string;
+  organizationId: string;
+  status: string;
+  createdBy: string;
+  objectives?: any[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface EstimateSummary {
+  _id: string;
+  name: string;
+  description: string;
+  projectId: string;
+  organizationId: string;
+  status: string;
+  countType: string;
+  unadjustedFunctionPoints: number;
+  adjustedFunctionPoints: number;
+  estimatedEffortHours: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Project {
   _id: string;
   name: string;
@@ -95,6 +124,8 @@ export interface Project {
   objectives: ProjectObjective[];
   measurementPlanId?: string | null;
   estimateId?: string | null;
+  measurementPlans?: MeasurementPlanSummary[];
+  estimates?: EstimateSummary[];
   createdBy: string;
   createdAt: string;
   updatedAt: string;

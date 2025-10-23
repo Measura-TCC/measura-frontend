@@ -146,14 +146,14 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
         >
           <div className="p-2 border-b border-border">
             <div className="relative">
-              <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
               <input
                 ref={searchInputRef}
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={searchPlaceholder}
-                className="w-full pl-8 pr-3 py-1.5 text-sm border border-border rounded bg-background text-default placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full pl-10 pr-3 py-1.5 text-sm border border-border rounded bg-background text-default placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
           </div>
