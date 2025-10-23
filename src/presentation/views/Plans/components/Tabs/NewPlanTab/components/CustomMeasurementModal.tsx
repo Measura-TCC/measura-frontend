@@ -90,7 +90,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">{t("modals.customMeasurement.title")}</h2>
-            <button onClick={handleClose} className="text-gray-500 hover:text-gray-700">
+            <button onClick={handleClose} className="text-gray-500 hover:text-gray-700 cursor-pointer">
               ×
             </button>
           </div>
@@ -103,7 +103,6 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
               ]}
               activeTab={selectedTab}
               onTabChange={setSelectedTab}
-              variant="modal"
             />
           </div>
 

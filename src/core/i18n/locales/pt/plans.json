@@ -632,7 +632,8 @@
     "editMeasurement": "Editar Medição",
     "addMeasurementToCycle": "Adicionar medição ao ciclo",
     "endDateMustBeAfterStart": "A data de término deve ser posterior à data de início",
-    "required": "é obrigatório"
+    "required": "é obrigatório",
+    "noCyclesAvailable": "Nenhum ciclo disponível. Crie um ciclo primeiro."
   },
   "optional": "opcional",
   "saving": "Salvando...",

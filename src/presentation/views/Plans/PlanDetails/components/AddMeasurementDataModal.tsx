@@ -165,7 +165,11 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
   return (
     <div
       className="fixed inset-0 backdrop-blur-sm bg-white/20 flex items-center justify-center z-50"
-      onClick={handleClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          handleClose();
+        }
+      }}
     >
       <div
         className="bg-white rounded-lg max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border"
@@ -189,24 +193,30 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
               <label className="block text-sm font-medium text-default mb-1">
                 {t("monitoring.selectCycle")}
               </label>
-              <select
-                value={formData.cycleId}
-                onChange={(e) =>
-                  setFormData({ ...formData, cycleId: e.target.value })
-                }
-                disabled={!!preSelectedCycleId}
-                className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 ${
-                  preSelectedCycleId ? 'bg-gray-100 cursor-not-allowed' : ''
-                }`}
-              >
-                <option value="">{t("monitoring.selectCycle")}</option>
-                {cycles.map((cycle) => (
-                  <option key={cycle._id} value={cycle._id}>
-                    {cycle.cycleName} ({new Date(cycle.startDate).toLocaleDateString('pt-BR')} -{" "}
-                    {new Date(cycle.endDate).toLocaleDateString('pt-BR')})
-                  </option>
-                ))}
-              </select>
+              {cycles.length === 0 ? (
+                <div className="w-full border border-yellow-300 bg-yellow-50 rounded-md px-3 py-2 text-sm text-yellow-800">
+                  {t("monitoring.noCyclesAvailable")}
+                </div>
+              ) : (
+                <select
+                  value={formData.cycleId}
+                  onChange={(e) => {
+                    setFormData({ ...formData, cycleId: e.target.value });
+                  }}
+                  disabled={!!preSelectedCycleId}
+                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+                    preSelectedCycleId ? 'bg-gray-100 cursor-not-allowed' : ''
+                  }`}
+                >
+                  <option value="">{t("monitoring.selectCycle")}</option>
+                  {cycles.map((cycle) => (
+                    <option key={cycle._id} value={cycle._id}>
+                      {cycle.cycleName} ({new Date(cycle.startDate).toLocaleDateString('pt-BR')} -{" "}
+                      {new Date(cycle.endDate).toLocaleDateString('pt-BR')})
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div>

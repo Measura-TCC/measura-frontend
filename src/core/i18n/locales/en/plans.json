@@ -535,7 +535,8 @@
     "editMeasurement": "Edit Measurement",
     "addMeasurementToCycle": "Add measurement to cycle",
     "endDateMustBeAfterStart": "End date must be after start date",
-    "required": "is required"
+    "required": "is required",
+    "noCyclesAvailable": "No cycles available. Create a cycle first."
   },
   "optional": "optional",
   "saving": "Saving...",

@@ -11,6 +11,7 @@ import { useMeasurementPlanExport } from "@/core/hooks/measurementPlans";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { ExportFormat, MeasurementPlanStatus } from "@/core/types/plans";
 import { PlanVisualization } from "../components/PlanVisualization";
+import { PlanGQMStructure } from "../components/PlanGQMStructure";
 import {
   PlanContentManager,
   PlanHeader,
@@ -298,6 +299,14 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
               metricsCount={plan.metricsCount}
               measurementsCount={plan.measurementsCount}
             />
+
+            {!isEditing && (
+              <Card>
+                <CardContent className="pt-6">
+                  <PlanGQMStructure plan={plan} />
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       ) : (
