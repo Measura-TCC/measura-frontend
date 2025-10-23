@@ -59,6 +59,16 @@
     },
     "teamMembers": {
       "maxLength": "Maximum 50 team members allowed"
+    },
+    "objective": {
+      "title": {
+        "minLength": "Objective title must be at least 3 characters",
+        "maxLength": "Objective title must not exceed 200 characters"
+      },
+      "description": {
+        "minLength": "Objective description must be at least 10 characters",
+        "maxLength": "Objective description must not exceed 1000 characters"
+      }
     }
   },
   "fpa": {

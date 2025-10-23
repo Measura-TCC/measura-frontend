@@ -1,6 +1,8 @@
 export { Button } from './Button/Button';
 export { Card, CardHeader, CardContent, CardTitle } from './Card/Card';
 export { Input } from './Input/Input';
+export { DateInput } from './DateInput/DateInput';
+export type { DateInputProps } from './DateInput/DateInput';
 export { Dropdown } from './Dropdown/Dropdown';
 export type { DropdownItem, DropdownProps } from './Dropdown/Dropdown';
 export { SearchableDropdown } from './SearchableDropdown/SearchableDropdown';

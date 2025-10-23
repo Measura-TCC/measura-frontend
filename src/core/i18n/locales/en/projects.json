@@ -55,6 +55,7 @@
     "descriptionMaxLength": "Description must not exceed 1000 characters"
   },
   "linkedTo": "Linked to:",
+  "projectObjectives": "Project Objectives:",
   "viewPlans": "View Plans",
   "viewEstimates": "View Estimates",
   "plansModal": {

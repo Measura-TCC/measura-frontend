@@ -5,12 +5,12 @@ export const createProjectObjectiveSchemaFactory = (t: (key: string) => string) 
   z.object({
     title: z
       .string()
-      .min(3, t("validation:project.name.minLength"))
-      .max(200, t("validation:project.name.maxLength")),
+      .min(3, t("validation:project.objective.title.minLength"))
+      .max(200, t("validation:project.objective.title.maxLength")),
     description: z
       .string()
-      .min(10, t("validation:project.description.minLength"))
-      .max(1000, t("validation:project.description.maxLength")),
+      .min(10, t("validation:project.objective.description.minLength"))
+      .max(1000, t("validation:project.objective.description.maxLength")),
     organizationalObjectiveIds: z.array(z.string()).optional(),
   });
 
@@ -25,8 +25,8 @@ export const createProjectSchemaFactory = (t: (key: string) => string) =>
       .string()
       .min(10, t("validation:project.description.minLength"))
       .max(1000, t("validation:project.description.maxLength")),
-    startDate: z.string().datetime().optional(),
-    endDate: z.string().datetime().optional(),
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
     teamMembers: z
       .array(z.string())
       .max(50, t("validation:project.teamMembers.maxLength"))
@@ -50,8 +50,8 @@ export const createUpdateProjectSchemaFactory = (t: (key: string) => string) =>
     status: z
       .enum(["PLANNING", "IN_PROGRESS", "COMPLETED", "ARCHIVED"])
       .optional(),
-    startDate: z.string().datetime().optional(),
-    endDate: z.string().datetime().optional(),
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
     teamMembers: z
       .array(z.string())
       .max(50, t("validation:project.teamMembers.maxLength"))

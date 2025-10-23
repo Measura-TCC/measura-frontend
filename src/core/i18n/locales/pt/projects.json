@@ -55,6 +55,7 @@
     "descriptionMaxLength": "A descrição não deve exceder 1000 caracteres"
   },
   "linkedTo": "Vinculado a:",
+  "projectObjectives": "Objetivos do Projeto:",
   "viewPlans": "Ver Planos",
   "viewEstimates": "Ver Estimativas",
   "plansModal": {

@@ -13,12 +13,14 @@ import {
 } from "@/core/schemas/projects";
 import { InfoIcon } from "@/presentation/assets/icons";
 import { Button } from "@/presentation/components/primitives/Button/Button";
+import { DateInput } from "@/presentation/components/primitives";
 
 interface CreateProjectFormProps {
   onSuccess?: (project: unknown) => void;
+  onCancel?: () => void;
 }
 
-export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
+export const CreateProjectForm = ({ onSuccess, onCancel }: CreateProjectFormProps) => {
   const { t } = useTranslation(["projects", "common"]);
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,6 +60,8 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
     formState: { errors },
     reset,
     control,
+    setValue,
+    watch,
   } = useForm<CreateProjectRequest>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
@@ -202,11 +206,11 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
             >
               {t("startDate")}
             </label>
-            <input
-              {...register("startDate")}
+            <DateInput
               id="startDate"
-              type="date"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              value={watch("startDate")}
+              onChange={(value) => setValue("startDate", value)}
+              error={!!errors.startDate}
             />
             {errors.startDate && (
               <p className="mt-1 text-sm text-red-600">
@@ -222,11 +226,11 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
             >
               {t("endDate")}
             </label>
-            <input
-              {...register("endDate")}
+            <DateInput
               id="endDate"
-              type="date"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              value={watch("endDate")}
+              onChange={(value) => setValue("endDate", value)}
+              error={!!errors.endDate}
             />
             {errors.endDate && (
               <p className="mt-1 text-sm text-red-600">
@@ -249,8 +253,9 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
                 <div>
                   <input
                     {...register(`objectives.${index}.title`)}
+                    type="text"
                     placeholder={t("createProjectForm.objectiveTitle")}
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.objectives?.[index]?.title && (
                     <p className="mt-1 text-sm text-red-600">
@@ -342,7 +347,17 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
           </div>
         )}
 
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-3">
+          {onCancel && (
+            <Button
+              type="button"
+              onClick={onCancel}
+              variant="secondary"
+              size="md"
+            >
+              {t("cancel", { ns: "projects" })}
+            </Button>
+          )}
           <Button
             type="submit"
             disabled={isSubmitting}

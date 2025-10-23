@@ -59,6 +59,16 @@
     },
     "teamMembers": {
       "maxLength": "Máximo de 50 membros de equipe permitidos"
+    },
+    "objective": {
+      "title": {
+        "minLength": "Título do objetivo deve ter pelo menos 3 caracteres",
+        "maxLength": "Título do objetivo não pode exceder 200 caracteres"
+      },
+      "description": {
+        "minLength": "Descrição do objetivo deve ter pelo menos 10 caracteres",
+        "maxLength": "Descrição do objetivo não pode exceder 1000 caracteres"
+      }
     }
   },
   "fpa": {

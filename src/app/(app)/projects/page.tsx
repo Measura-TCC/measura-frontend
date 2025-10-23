@@ -164,12 +164,10 @@ export default function ProjectsPage() {
             <CardTitle>{t("createNewProject")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <CreateProjectForm onSuccess={handleProjectCreated} />
-            <div className="mt-4">
-              <Button variant="ghost" onClick={() => setShowCreateForm(false)}>
-                {t("cancel")}
-              </Button>
-            </div>
+            <CreateProjectForm
+              onSuccess={handleProjectCreated}
+              onCancel={() => setShowCreateForm(false)}
+            />
           </CardContent>
         </Card>
       )}
@@ -242,7 +240,7 @@ export default function ProjectsPage() {
                 {project.objectives && project.objectives.length > 0 && (
                   <div className="border-t border-border pt-3 mt-3">
                     <h4 className="text-sm font-medium mb-2">
-                      Project Objectives:
+                      {t("projectObjectives")}
                     </h4>
                     {project.objectives.slice(0, 2).map((obj) => (
                       <div
