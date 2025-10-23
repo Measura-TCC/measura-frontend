@@ -26,7 +26,12 @@ interface RequirementFPAModalProps {
   onSave: (requirementId: string, fpaData: Record<string, unknown>) => void;
 }
 
-type FormData = CreateALIData | CreateAIEData | CreateEIData | CreateEOData | CreateEQData;
+type FormData =
+  | CreateALIData
+  | CreateAIEData
+  | CreateEIData
+  | CreateEOData
+  | CreateEQData;
 
 export const RequirementFPAModal = ({
   requirement,
@@ -60,7 +65,8 @@ export const RequirementFPAModal = ({
   const getDefaultValues = () => {
     const base = {
       name: (requirement as any).name || requirement.title,
-      description: (requirement as any).description || requirement.description || "",
+      description:
+        (requirement as any).description || requirement.description || "",
       primaryIntent: (requirement as any).primaryIntent || "",
       notes: (requirement as any).notes || "",
     };
@@ -99,7 +105,8 @@ export const RequirementFPAModal = ({
       return {
         ...base,
         retrievalLogic: (requirement as any).retrievalLogic || "",
-        useSpecialCalculation: (requirement as any).useSpecialCalculation || false,
+        useSpecialCalculation:
+          (requirement as any).useSpecialCalculation || false,
         fileTypesReferenced: (requirement as any).fileTypesReferenced || 0,
         dataElementTypes: (requirement as any).dataElementTypes || 0,
       };
@@ -128,10 +135,6 @@ export const RequirementFPAModal = ({
   if (!isOpen || !requirement.componentType) return null;
 
   const onSubmit = (data: unknown) => {
-    console.log("RequirementFPAModal onSubmit called");
-    console.log("Component type:", componentType);
-    console.log("Form data:", data);
-    console.log("Form errors:", errors);
     onSave(requirement._id, data as Record<string, unknown>);
     onClose();
   };
@@ -174,11 +177,8 @@ export const RequirementFPAModal = ({
 
         <form
           onSubmit={(e) => {
-            console.log("RequirementFPAModal form submit event");
-            console.log("Current errors:", errors);
             handleSubmit(
               (data) => {
-                console.log("Validation passed, calling onSubmit");
                 onSubmit(data);
               },
               (errors) => {
@@ -191,7 +191,10 @@ export const RequirementFPAModal = ({
           <div className="p-6 overflow-y-auto flex-1 space-y-4 custom-scrollbar">
             {/* Name field - ALL components */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
                 {t(`componentForms.${componentType.toLowerCase()}.name`)}
               </label>
               <input
@@ -201,13 +204,18 @@ export const RequirementFPAModal = ({
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
               {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{String(errors.name.message || '')}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  {String(errors.name.message || "")}
+                </p>
               )}
             </div>
 
             {/* Description field - ALL components */}
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700"
+              >
                 {t("componentForms.descriptionOptional")}
               </label>
               <textarea
@@ -217,24 +225,33 @@ export const RequirementFPAModal = ({
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
               {errors.description && (
-                <p className="mt-1 text-sm text-red-600">{String(errors.description?.message || '')}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  {String(errors.description?.message || "")}
+                </p>
               )}
             </div>
 
             {/* Primary Intent - ALL components */}
             <div>
-              <label htmlFor="primaryIntent" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="primaryIntent"
+                className="block text-sm font-medium text-gray-700"
+              >
                 {t("componentForms.primaryIntent")}
               </label>
               <textarea
                 {...register("primaryIntent")}
                 id="primaryIntent"
                 rows={3}
-                placeholder={t(`componentForms.${componentType.toLowerCase()}.primaryIntentPlaceholder`)}
+                placeholder={t(
+                  `componentForms.${componentType.toLowerCase()}.primaryIntentPlaceholder`
+                )}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
               {errors.primaryIntent && (
-                <p className="mt-1 text-sm text-red-600">{String(errors.primaryIntent?.message || '')}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  {String(errors.primaryIntent?.message || "")}
+                </p>
               )}
             </div>
 
@@ -242,8 +259,13 @@ export const RequirementFPAModal = ({
             {(componentType === "ALI" || componentType === "AIE") && (
               <>
                 <div>
-                  <label htmlFor="recordElementTypes" className="block text-sm font-medium text-gray-700">
-                    {t(`componentForms.${componentType.toLowerCase()}.recordElementTypes`)}
+                  <label
+                    htmlFor="recordElementTypes"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    {t(
+                      `componentForms.${componentType.toLowerCase()}.recordElementTypes`
+                    )}
                   </label>
                   <input
                     {...register("recordElementTypes", { valueAsNumber: true })}
@@ -253,13 +275,20 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.recordElementTypes && (
-                    <p className="mt-1 text-sm text-red-600">{String(errors.recordElementTypes?.message || '')}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {String(errors.recordElementTypes?.message || "")}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="dataElementTypes" className="block text-sm font-medium text-gray-700">
-                    {t(`componentForms.${componentType.toLowerCase()}.dataElementTypes`)}
+                  <label
+                    htmlFor="dataElementTypes"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    {t(
+                      `componentForms.${componentType.toLowerCase()}.dataElementTypes`
+                    )}
                   </label>
                   <input
                     {...register("dataElementTypes", { valueAsNumber: true })}
@@ -269,7 +298,9 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.dataElementTypes && (
-                    <p className="mt-1 text-sm text-red-600">{String(errors.dataElementTypes?.message || '')}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {String(errors.dataElementTypes?.message || "")}
+                    </p>
                   )}
                 </div>
               </>
@@ -278,7 +309,10 @@ export const RequirementFPAModal = ({
             {/* AIE specific field */}
             {componentType === "AIE" && (
               <div>
-                <label htmlFor="externalSystem" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="externalSystem"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   {t("componentForms.aie.externalSystem")}
                 </label>
                 <input
@@ -288,7 +322,9 @@ export const RequirementFPAModal = ({
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.externalSystem && (
-                  <p className="mt-1 text-sm text-red-600">{String(errors.externalSystem?.message || '')}</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    {String(errors.externalSystem?.message || "")}
+                  </p>
                 )}
               </div>
             )}
@@ -297,39 +333,56 @@ export const RequirementFPAModal = ({
             {componentType === "EI" && (
               <>
                 <div>
-                  <label htmlFor="processingLogic" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="processingLogic"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     {t("componentForms.ei.processingLogic")}
                   </label>
                   <textarea
                     {...register("processingLogic")}
                     id="processingLogic"
                     rows={3}
-                    placeholder={t("componentForms.ei.processingLogicPlaceholder")}
+                    placeholder={t(
+                      "componentForms.ei.processingLogicPlaceholder"
+                    )}
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.processingLogic && (
-                    <p className="mt-1 text-sm text-red-600">{String(errors.processingLogic?.message || '')}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {String(errors.processingLogic?.message || "")}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="fileTypesReferenced" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="fileTypesReferenced"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     {t("componentForms.ei.fileTypesReferenced")}
                   </label>
                   <input
-                    {...register("fileTypesReferenced", { valueAsNumber: true })}
+                    {...register("fileTypesReferenced", {
+                      valueAsNumber: true,
+                    })}
                     id="fileTypesReferenced"
                     type="number"
                     min="1"
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.fileTypesReferenced && (
-                    <p className="mt-1 text-sm text-red-600">{String(errors.fileTypesReferenced?.message || '')}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {String(errors.fileTypesReferenced?.message || "")}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="dataElementTypes" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="dataElementTypes"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     {t("componentForms.ei.dataElementTypes")}
                   </label>
                   <input
@@ -340,7 +393,9 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.dataElementTypes && (
-                    <p className="mt-1 text-sm text-red-600">{String(errors.dataElementTypes?.message || '')}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {String(errors.dataElementTypes?.message || "")}
+                    </p>
                   )}
                 </div>
               </>
@@ -356,13 +411,19 @@ export const RequirementFPAModal = ({
                     type="checkbox"
                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="derivedData" className="ml-2 block text-sm text-gray-900">
+                  <label
+                    htmlFor="derivedData"
+                    className="ml-2 block text-sm text-gray-900"
+                  >
                     {t("componentForms.eo.derivedData")}
                   </label>
                 </div>
 
                 <div>
-                  <label htmlFor="outputFormat" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="outputFormat"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     {t("componentForms.eo.outputFormat")}
                   </label>
                   <input
@@ -373,28 +434,40 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.outputFormat && (
-                    <p className="mt-1 text-sm text-red-600">{String(errors.outputFormat?.message || '')}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {String(errors.outputFormat?.message || "")}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="fileTypesReferenced" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="fileTypesReferenced"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     {t("componentForms.eo.fileTypesReferenced")}
                   </label>
                   <input
-                    {...register("fileTypesReferenced", { valueAsNumber: true })}
+                    {...register("fileTypesReferenced", {
+                      valueAsNumber: true,
+                    })}
                     id="fileTypesReferenced"
                     type="number"
                     min="0"
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.fileTypesReferenced && (
-                    <p className="mt-1 text-sm text-red-600">{String(errors.fileTypesReferenced?.message || '')}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {String(errors.fileTypesReferenced?.message || "")}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="dataElementTypes" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="dataElementTypes"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     {t("componentForms.eo.dataElementTypes")}
                   </label>
                   <input
@@ -405,7 +478,9 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.dataElementTypes && (
-                    <p className="mt-1 text-sm text-red-600">{String(errors.dataElementTypes?.message || '')}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {String(errors.dataElementTypes?.message || "")}
+                    </p>
                   )}
                 </div>
               </>
@@ -421,7 +496,10 @@ export const RequirementFPAModal = ({
                 />
 
                 <div>
-                  <label htmlFor="retrievalLogic" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="retrievalLogic"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     {t("componentForms.eq.retrievalLogic")}
                   </label>
                   <textarea
@@ -431,28 +509,40 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.retrievalLogic && (
-                    <p className="mt-1 text-sm text-red-600">{String(errors.retrievalLogic?.message || '')}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {String(errors.retrievalLogic?.message || "")}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="fileTypesReferenced" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="fileTypesReferenced"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     {t("componentForms.eq.ftrReferencedFiles")}
                   </label>
                   <input
-                    {...register("fileTypesReferenced", { valueAsNumber: true })}
+                    {...register("fileTypesReferenced", {
+                      valueAsNumber: true,
+                    })}
                     id="fileTypesReferenced"
                     type="number"
                     min="0"
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.fileTypesReferenced && (
-                    <p className="mt-1 text-sm text-red-600">{String(errors.fileTypesReferenced?.message || '')}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {String(errors.fileTypesReferenced?.message || "")}
+                    </p>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="dataElementTypes" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="dataElementTypes"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     {t("componentForms.eq.detDataElements")}
                   </label>
                   <input
@@ -463,7 +553,9 @@ export const RequirementFPAModal = ({
                     className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.dataElementTypes && (
-                    <p className="mt-1 text-sm text-red-600">{String(errors.dataElementTypes?.message || '')}</p>
+                    <p className="mt-1 text-sm text-red-600">
+                      {String(errors.dataElementTypes?.message || "")}
+                    </p>
                   )}
                 </div>
               </>
@@ -471,7 +563,10 @@ export const RequirementFPAModal = ({
 
             {/* Notes field - ALL components */}
             <div>
-              <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="notes"
+                className="block text-sm font-medium text-gray-700"
+              >
                 {t("componentForms.notesOptional")}
               </label>
               <textarea
@@ -481,29 +576,26 @@ export const RequirementFPAModal = ({
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
               {errors.notes && (
-                <p className="mt-1 text-sm text-red-600">{String(errors.notes?.message || '')}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  {String(errors.notes?.message || "")}
+                </p>
               )}
             </div>
           </div>
 
           {errors.root && (
             <div className="mx-6 mb-4 rounded-md bg-red-50 p-4">
-              <p className="text-sm text-red-700">{String(errors.root.message || 'Validation error')}</p>
+              <p className="text-sm text-red-700">
+                {String(errors.root.message || "Validation error")}
+              </p>
             </div>
           )}
 
           <div className="bg-gray-50 px-6 py-4 border-t flex justify-end gap-3 rounded-b-lg">
-            <Button
-              type="button"
-              onClick={onClose}
-              variant="secondary"
-            >
+            <Button type="button" onClick={onClose} variant="secondary">
               {t("actions.cancel")}
             </Button>
-            <Button
-              type="submit"
-              variant="primary"
-            >
+            <Button type="submit" variant="primary">
               {t("actions.save")}
             </Button>
           </div>

@@ -17,7 +17,10 @@ import {
   TrashIcon,
 } from "@/presentation/assets/icons";
 import { useOrganizations } from "@/core/hooks/organizations";
-import { useProjects, useProjectActions } from "@/core/hooks/projects/useProjects";
+import {
+  useProjects,
+  useProjectActions,
+} from "@/core/hooks/projects/useProjects";
 import { useOrganizationalObjectives } from "@/core/hooks/organizations";
 import { useOrganizationStore } from "@/core/hooks/organizations/useOrganizationStore";
 import { CreateProjectForm } from "@/presentation/views/Projects/components/CreateProjectForm";
@@ -38,8 +41,13 @@ export default function ProjectsPage() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const { userOrganization, isLoadingUserOrganization, activeOrganizationId, loadUserOrganizations, forceClearCache } =
-    useOrganizations({ fetchUserOrganization: true });
+  const {
+    userOrganization,
+    isLoadingUserOrganization,
+    activeOrganizationId,
+    loadUserOrganizations,
+    forceClearCache,
+  } = useOrganizations({ fetchUserOrganization: true });
   const { projects, isLoadingProjects } = useProjects();
   const { deleteProject } = useProjectActions();
   const { objectives: organizationalObjectives } =
@@ -54,10 +62,6 @@ export default function ProjectsPage() {
 
     // Directly set the active organization ID if we have userOrganization but no activeOrganizationId
     if (!activeOrganizationId && userOrganization?._id) {
-      console.log(
-        "ProjectsPage - Setting active organization ID directly:",
-        userOrganization._id
-      );
       const { setActiveOrganization } = useOrganizationStore.getState();
       setActiveOrganization(userOrganization._id);
     }
@@ -137,7 +141,9 @@ export default function ProjectsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-default">{t("title")}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">
+            {t("title")}
+          </h1>
           <p className="text-muted mt-1">{t("loading")}</p>
         </div>
         <div className="animate-pulse">
@@ -151,7 +157,9 @@ export default function ProjectsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-default">{t("title")}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">
+            {t("title")}
+          </h1>
           <p className="text-muted mt-1">{t("subtitle")}</p>
         </div>
 
@@ -167,7 +175,9 @@ export default function ProjectsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-default">{t("title")}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">
+            {t("title")}
+          </h1>
           <p className="text-muted mt-1">
             {t("subtitleWithOrg", { organizationName: userOrganization.name })}
           </p>

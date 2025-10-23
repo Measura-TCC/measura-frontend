@@ -99,15 +99,12 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
       : null;
 
   const onSubmit = async (data: CreateEQData) => {
-    console.log("EQ Form onSubmit called with data:", data);
-    console.log("Form errors:", errors);
     setIsSubmitting(true);
     setError(null);
 
     try {
-      console.log("Creating EQ component...");
       await createEQComponent({ estimateId, data });
-      console.log("EQ component created successfully");
+
       reset();
       onSuccess?.();
     } catch (err) {
@@ -125,7 +122,6 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
   return (
     <form
       onSubmit={(e) => {
-        console.log("Form submit event triggered");
         handleSubmit(onSubmit)(e);
       }}
       className="space-y-6"
