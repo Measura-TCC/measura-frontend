@@ -48,6 +48,17 @@
     "addAnotherObjective": "Add Another Objective",
     "remove": "Remove"
   },
+  "editProjectForm": {
+    "updateProject": "Update Project",
+    "updating": "Updating...",
+    "failedToUpdateProject": "Failed to update project"
+  },
+  "edit": "Edit",
+  "delete": "Delete",
+  "deleteProject": "Delete Project",
+  "deleteConfirmation": "Are you sure you want to delete this project? This action cannot be undone.",
+  "deleting": "Deleting...",
+  "editProject": "Edit Project",
   "validation": {
     "nameMinLength": "Name must be at least 3 characters",
     "nameMaxLength": "Name must not exceed 100 characters",

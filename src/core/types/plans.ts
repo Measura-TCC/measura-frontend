@@ -247,12 +247,7 @@ export interface MeasurementDataEnriched {
 }
 
 export interface CycleWithData {
-  cycle: {
-    _id: string;
-    cycleName: string;
-    startDate: string; // ISO-8601
-    endDate: string; // ISO-8601
-  };
+  cycle: MeasurementCycle;
   measurements: MeasurementDataEnriched[];
   measurementCount: number;
 }

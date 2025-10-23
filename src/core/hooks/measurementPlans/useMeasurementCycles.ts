@@ -33,7 +33,7 @@ export const useMeasurementCycles = (params: UseMeasurementCyclesParams) => {
     error,
     isLoading,
     mutate: mutateCycles,
-  } = useSWR<MeasurementCycle[] | CycleWithData[]>(
+  } = useSWR<MeasurementCycle[] | CycleWithData[] | null>(
     swrKey,
     async () => {
       if (!organizationId || !planId) return null;

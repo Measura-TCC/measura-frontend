@@ -22,7 +22,7 @@ export const useCycleWithMeasurements = (params: UseCycleWithMeasurementsParams)
     error,
     isLoading,
     mutate: mutateCycleData,
-  } = useSWR<CycleWithData>(
+  } = useSWR<CycleWithData | null>(
     swrKey,
     async () => {
       if (!organizationId || !planId || !cycleId) return null;

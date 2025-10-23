@@ -48,6 +48,17 @@
     "addAnotherObjective": "Adicionar Outro Objetivo",
     "remove": "Remover"
   },
+  "editProjectForm": {
+    "updateProject": "Atualizar Projeto",
+    "updating": "Atualizando...",
+    "failedToUpdateProject": "Falha ao atualizar projeto"
+  },
+  "edit": "Editar",
+  "delete": "Excluir",
+  "deleteProject": "Excluir Projeto",
+  "deleteConfirmation": "Tem certeza que deseja excluir este projeto? Esta ação não pode ser desfeita.",
+  "deleting": "Excluindo...",
+  "editProject": "Editar Projeto",
   "validation": {
     "nameMinLength": "O nome deve ter pelo menos 3 caracteres",
     "nameMaxLength": "O nome não deve exceder 100 caracteres",

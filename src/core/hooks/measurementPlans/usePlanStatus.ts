@@ -19,7 +19,7 @@ export const usePlanStatus = (params: UsePlanStatusParams) => {
     error,
     isLoading,
     mutate: mutateStatus,
-  } = useSWR<PlanStatus>(
+  } = useSWR<PlanStatus | null>(
     swrKey,
     async () => {
       if (!organizationId || !planId) return null;

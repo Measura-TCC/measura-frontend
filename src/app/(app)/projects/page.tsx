@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -14,12 +13,15 @@ import {
   DocumentIcon,
   PlusIcon,
   BuildingIcon,
+  PencilIcon,
+  TrashIcon,
 } from "@/presentation/assets/icons";
 import { useOrganizations } from "@/core/hooks/organizations";
-import { useProjects } from "@/core/hooks/projects/useProjects";
+import { useProjects, useProjectActions } from "@/core/hooks/projects/useProjects";
 import { useOrganizationalObjectives } from "@/core/hooks/organizations";
 import { useOrganizationStore } from "@/core/hooks/organizations/useOrganizationStore";
 import { CreateProjectForm } from "@/presentation/views/Projects/components/CreateProjectForm";
+import { EditProjectForm } from "@/presentation/views/Projects/components/EditProjectForm";
 import { ProjectStatusSelector } from "@/presentation/views/Projects/components/ProjectStatusSelector";
 import { EstimatesModal } from "@/presentation/views/Projects/components/EstimatesModal";
 import { PlansModal } from "@/presentation/views/Projects/components/PlansModal";
@@ -29,14 +31,17 @@ import type { Project } from "@/core/schemas/projects";
 
 export default function ProjectsPage() {
   const { t, i18n } = useTranslation("projects");
-  const router = useRouter();
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
   const [showEstimatesModal, setShowEstimatesModal] = useState(false);
   const [showPlansModal, setShowPlansModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { userOrganization, isLoadingUserOrganization, activeOrganizationId, loadUserOrganizations, forceClearCache } =
     useOrganizations({ fetchUserOrganization: true });
   const { projects, isLoadingProjects } = useProjects();
+  const { deleteProject } = useProjectActions();
   const { objectives: organizationalObjectives } =
     useOrganizationalObjectives();
 
@@ -68,6 +73,25 @@ export default function ProjectsPage() {
 
   const handleProjectCreated = () => {
     setShowCreateForm(false);
+  };
+
+  const handleProjectUpdated = () => {
+    setShowEditForm(false);
+    setSelectedProject(null);
+  };
+
+  const handleDeleteProject = async () => {
+    if (!projectToDelete) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteProject({ id: projectToDelete._id });
+      setProjectToDelete(null);
+    } catch (error) {
+      console.error("Failed to delete project:", error);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -172,6 +196,24 @@ export default function ProjectsPage() {
         </Card>
       )}
 
+      {showEditForm && selectedProject && (
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("editProject")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <EditProjectForm
+              project={selectedProject}
+              onSuccess={handleProjectUpdated}
+              onCancel={() => {
+                setShowEditForm(false);
+                setSelectedProject(null);
+              }}
+            />
+          </CardContent>
+        </Card>
+      )}
+
       {isLoadingProjects ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
@@ -194,17 +236,44 @@ export default function ProjectsPage() {
               className="hover:shadow-md transition-shadow cursor-pointer"
             >
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <DocumentIcon className="w-5 h-5 text-primary" />
-                  {project.name}
-                </CardTitle>
-                <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                    project.status
-                  )} w-fit`}
-                >
-                  {getStatusLabel(project.status)}
-                </span>
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <CardTitle className="flex items-center gap-2">
+                      <DocumentIcon className="w-5 h-5 text-primary" />
+                      {project.name}
+                    </CardTitle>
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                        project.status
+                      )} w-fit mt-2`}
+                    >
+                      {getStatusLabel(project.status)}
+                    </span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedProject(project);
+                        setShowEditForm(true);
+                      }}
+                    >
+                      <PencilIcon className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setProjectToDelete(project);
+                      }}
+                    >
+                      <TrashIcon className="w-4 h-4 text-red-600" />
+                    </Button>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-sm text-secondary line-clamp-2">
@@ -329,6 +398,37 @@ export default function ProjectsPage() {
           plans={selectedProject.measurementPlans || []}
           organizationId={selectedProject.organizationId}
         />
+      )}
+
+      {projectToDelete && (
+        <div
+          className="fixed inset-0 backdrop-blur-sm bg-white/20 flex items-center justify-center z-50"
+          onClick={() => setProjectToDelete(null)}
+        >
+          <div
+            className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl border"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-4">{t("deleteProject")}</h3>
+            <p className="text-gray-600 mb-6">{t("deleteConfirmation")}</p>
+            <div className="flex justify-end gap-3">
+              <Button
+                variant="secondary"
+                onClick={() => setProjectToDelete(null)}
+                disabled={isDeleting}
+              >
+                {t("cancel")}
+              </Button>
+              <Button
+                variant="danger"
+                onClick={handleDeleteProject}
+                disabled={isDeleting}
+              >
+                {isDeleting ? t("deleting") : t("delete")}
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
