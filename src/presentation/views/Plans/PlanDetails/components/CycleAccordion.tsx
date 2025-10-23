@@ -24,11 +24,11 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
   const [editingMeasurement, setEditingMeasurement] = useState<CycleWithData["measurements"][0] | null>(null);
 
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString();
+    return new Date(date).toLocaleDateString('pt-BR');
   };
 
   const formatDateTime = (date: string) => {
-    return new Date(date).toLocaleString();
+    return new Date(date).toLocaleString('pt-BR');
   };
 
   return (
@@ -57,7 +57,7 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
                 e.stopPropagation();
                 setIsEditCycleModalOpen(true);
               }}
-              className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-md transition-colors cursor-pointer"
               title={t("monitoring.editCycle")}
             >
               <svg
@@ -138,7 +138,7 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
 
                           <button
                             onClick={() => setEditingMeasurement(measurement)}
-                            className="p-1 hover:bg-gray-100 rounded transition-colors"
+                            className="p-1 hover:bg-gray-100 rounded transition-colors cursor-pointer"
                             title={t("monitoring.editMeasurement")}
                           >
                             <svg

@@ -75,7 +75,7 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
                 {t("created")}
               </label>
               <p className="text-gray-900">
-                {new Date(plan.createdAt).toLocaleDateString()}
+                {new Date(plan.createdAt).toLocaleDateString('pt-BR')}
               </p>
             </div>
             <div>
@@ -83,7 +83,7 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
                 {t("updated")}
               </label>
               <p className="text-gray-900">
-                {new Date(plan.updatedAt).toLocaleDateString()}
+                {new Date(plan.updatedAt).toLocaleDateString('pt-BR')}
               </p>
             </div>
           </div>
@@ -156,7 +156,7 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
                   {t("created")}
                 </label>
                 <p className="text-gray-900">
-                  {new Date(plan.createdAt).toLocaleDateString()}
+                  {new Date(plan.createdAt).toLocaleDateString('pt-BR')}
                 </p>
               </div>
               <div>
@@ -164,7 +164,7 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
                   {t("updated")}
                 </label>
                 <p className="text-gray-900">
-                  {new Date(plan.updatedAt).toLocaleDateString()}
+                  {new Date(plan.updatedAt).toLocaleDateString('pt-BR')}
                 </p>
               </div>
             </div>

@@ -113,7 +113,7 @@ export const EditCycleModal: React.FC<EditCycleModalProps> = ({
             </h2>
             <button
               onClick={handleClose}
-              className="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+              className="text-gray-500 hover:text-gray-700 text-2xl leading-none cursor-pointer"
             >
               ×
             </button>

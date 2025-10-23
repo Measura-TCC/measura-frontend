@@ -178,7 +178,7 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
             </h2>
             <button
               onClick={handleClose}
-              className="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+              className="text-gray-500 hover:text-gray-700 text-2xl leading-none cursor-pointer"
             >
               ×
             </button>
@@ -202,8 +202,8 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
                 <option value="">{t("monitoring.selectCycle")}</option>
                 {cycles.map((cycle) => (
                   <option key={cycle._id} value={cycle._id}>
-                    {cycle.cycleName} ({new Date(cycle.startDate).toLocaleDateString()} -{" "}
-                    {new Date(cycle.endDate).toLocaleDateString()})
+                    {cycle.cycleName} ({new Date(cycle.startDate).toLocaleDateString('pt-BR')} -{" "}
+                    {new Date(cycle.endDate).toLocaleDateString('pt-BR')})
                   </option>
                 ))}
               </select>
@@ -268,8 +268,8 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
               />
               {selectedCycle && (
                 <p className="text-xs text-gray-500 mt-1">
-                  {t("monitoring.selectCycle")}: {new Date(selectedCycle.startDate).toLocaleDateString()} -{" "}
-                  {new Date(selectedCycle.endDate).toLocaleDateString()}
+                  {t("monitoring.selectCycle")}: {new Date(selectedCycle.startDate).toLocaleDateString('pt-BR')} -{" "}
+                  {new Date(selectedCycle.endDate).toLocaleDateString('pt-BR')}
                 </p>
               )}
             </div>

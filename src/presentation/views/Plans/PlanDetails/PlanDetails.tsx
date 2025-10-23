@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/presentation/components/primitives";
+import { Tabs } from "@/presentation/components/primitives/Tabs";
 import {
   useMeasurementPlan,
   useMeasurementPlans,
@@ -246,30 +247,14 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
       )}
 
       {/* Tab Navigation */}
-      <div className="border-b border-gray-200 mb-6">
-        <nav className="flex gap-8">
-          <button
-            onClick={() => setActiveTab('details')}
-            className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-              activeTab === 'details'
-                ? 'border-purple-600 text-purple-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            }`}
-          >
-            {t("planDetails.detailsTab")}
-          </button>
-          <button
-            onClick={() => setActiveTab('monitoring')}
-            className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-              activeTab === 'monitoring'
-                ? 'border-purple-600 text-purple-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            }`}
-          >
-            {t("monitoring.title")}
-          </button>
-        </nav>
-      </div>
+      <Tabs
+        tabs={[
+          { id: 'details', label: t("planDetails.detailsTab") },
+          { id: 'monitoring', label: t("monitoring.title") }
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
 
       {/* Main Content with responsive grid */}
       {activeTab === 'details' ? (

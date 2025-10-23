@@ -146,7 +146,7 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
         >
           <div className="p-2 border-b border-border">
             <div className="relative">
-              <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted" />
+              <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
               <input
                 ref={searchInputRef}
                 type="text"
