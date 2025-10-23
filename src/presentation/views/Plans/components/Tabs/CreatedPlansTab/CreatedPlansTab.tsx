@@ -12,6 +12,27 @@ import {
   MeasurementPlanSummaryDto,
   MeasurementPlanStatus,
 } from "@/core/types/plans";
+import { usePlanStatus } from "@/core/hooks/measurementPlans";
+import { MetricStatusBadge } from "../../MetricStatusBadge";
+
+interface PlanStatusDisplayProps {
+  planId: string;
+}
+
+const PlanStatusDisplay: React.FC<PlanStatusDisplayProps> = ({ planId }) => {
+  const { t } = useTranslation("plans");
+  const { status, isLoading } = usePlanStatus({ planId });
+
+  if (isLoading) {
+    return <span className="text-xs text-gray-400">{t("loading")}</span>;
+  }
+
+  if (!status) {
+    return <span className="text-xs text-gray-400">-</span>;
+  }
+
+  return <MetricStatusBadge status={status.overallStatus} size="sm" />;
+};
 
 interface CreatedPlansTabProps {
   plans: MeasurementPlanSummaryDto[] | undefined;
@@ -152,6 +173,14 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
                   {t("workflow.metrics")}
                 </span>
                 <p className="text-gray-600">{plan.metricsCount}</p>
+              </div>
+              <div>
+                <span className="font-medium text-gray-900">
+                  {t("indicatorStatus.title")}
+                </span>
+                <div className="mt-1">
+                  <PlanStatusDisplay planId={plan.id} />
+                </div>
               </div>
             </div>
             <div className="mt-4 text-xs text-gray-500 border-t pt-4">

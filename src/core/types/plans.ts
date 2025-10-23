@@ -206,3 +206,93 @@ export const PLAN_PERMISSIONS = {
   VIEW_PLANS: "view_plans",
   EXPORT_PLAN: "export_plan",
 } as const;
+
+export interface MeasurementCycle {
+  _id: string;
+  planId: string;
+  cycleName: string;
+  startDate: string; // ISO-8601
+  endDate: string; // ISO-8601
+  createdBy: string;
+  createdAt: string; // ISO-8601
+  updatedAt: string; // ISO-8601
+}
+
+export interface MeasurementData {
+  _id: string;
+  planId: string;
+  cycleId: string;
+  measurementDefinitionId: string;
+  metricId: string;
+  objectiveId: string;
+  questionId: string;
+  value: number;
+  date: string; // ISO-8601
+  notes?: string;
+  createdBy: string;
+  createdAt: string; // ISO-8601
+  updatedAt: string; // ISO-8601
+}
+
+export interface MeasurementDataEnriched {
+  _id: string;
+  measurementDefinitionName: string;
+  measurementAcronym: string;
+  metricName: string;
+  objectiveTitle: string;
+  questionText: string;
+  value: number;
+  date: string; // ISO-8601
+  notes?: string;
+}
+
+export interface CycleWithData {
+  cycle: MeasurementCycle;
+  measurements: MeasurementDataEnriched[];
+  measurementCount: number;
+}
+
+// Type alias for consistency with backend docs
+export type CycleWithMeasurements = CycleWithData;
+
+export interface CreateCycleDto {
+  cycleName: string;
+  startDate: string; // ISO-8601
+  endDate: string; // ISO-8601
+}
+
+export interface UpdateCycleDto {
+  cycleName?: string;
+  startDate?: string; // ISO-8601
+  endDate?: string; // ISO-8601
+}
+
+export interface CreateMeasurementDataDto {
+  cycleId: string;
+  measurementDefinitionId: string;
+  value: number;
+  date: string; // ISO-8601
+  notes?: string;
+}
+
+export interface UpdateMeasurementDataDto {
+  value?: number;
+  date?: string; // ISO-8601
+  notes?: string;
+}
+
+export interface MetricStatus {
+  status: 'OK' | 'NEEDS_ATTENTION';
+  withinRange: number;
+  outOfRange: number;
+  totalMeasurements: number;
+  controlRange: [number, number];
+  latestValue?: number;
+}
+
+export interface PlanStatus {
+  overallStatus: 'OK' | 'NEEDS_ATTENTION';
+  metricsOk: number;
+  metricsNeedAttention: number;
+  totalMetrics: number;
+}

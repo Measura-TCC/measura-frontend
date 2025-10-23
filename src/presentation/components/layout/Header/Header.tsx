@@ -74,22 +74,31 @@ export const Header = () => {
 
             <div className="flex items-center space-x-2 border-l border-border pl-4">
               {userOrganization && (
-                <div className="hidden md:flex items-center space-x-2 bg-gray-50 dark:bg-gray-800 px-3 py-1 rounded-md">
-                  <BuildingIcon className="w-4 h-4 text-muted" />
-                  <span className="text-sm font-medium text-default">
+                <div className="hidden md:flex items-center space-x-2 bg-gray-50 dark:bg-gray-800 px-3 py-1 rounded-md max-w-[200px]">
+                  <BuildingIcon className="w-4 h-4 text-muted shrink-0" />
+                  <span
+                    className="text-sm font-medium text-default truncate"
+                    title={userOrganization.name}
+                  >
                     {userOrganization.name}
                   </span>
                 </div>
               )}
-              <div className="flex flex-col items-end">
-                <div className="flex items-center space-x-2">
-                  <UserIcon className="w-5 h-5 text-muted" />
-                  <span className="text-sm font-medium text-default">
+              <div className="flex flex-col items-end max-w-[200px]">
+                <div className="flex items-center space-x-2 w-full">
+                  <UserIcon className="w-5 h-5 text-muted shrink-0" />
+                  <span
+                    className="text-sm font-medium text-default truncate"
+                    title={user?.username || t("user")}
+                  >
                     {user?.username || t("user")}
                   </span>
                 </div>
                 {userOrganization && (
-                  <span className="md:hidden text-xs text-muted">
+                  <span
+                    className="md:hidden text-xs text-muted truncate w-full text-right"
+                    title={userOrganization.name}
+                  >
                     {userOrganization.name}
                   </span>
                 )}

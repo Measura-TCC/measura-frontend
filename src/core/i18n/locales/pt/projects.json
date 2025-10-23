@@ -48,11 +48,41 @@
     "addAnotherObjective": "Adicionar Outro Objetivo",
     "remove": "Remover"
   },
+  "editProjectForm": {
+    "updateProject": "Atualizar Projeto",
+    "updating": "Atualizando...",
+    "failedToUpdateProject": "Falha ao atualizar projeto"
+  },
+  "edit": "Editar",
+  "delete": "Excluir",
+  "deleteProject": "Excluir Projeto",
+  "deleteConfirmation": "Tem certeza que deseja excluir este projeto? Esta ação não pode ser desfeita.",
+  "deleting": "Excluindo...",
+  "editProject": "Editar Projeto",
   "validation": {
     "nameMinLength": "O nome deve ter pelo menos 3 caracteres",
     "nameMaxLength": "O nome não deve exceder 100 caracteres",
     "descriptionMinLength": "A descrição deve ter pelo menos 10 caracteres",
     "descriptionMaxLength": "A descrição não deve exceder 1000 caracteres"
   },
-  "linkedTo": "Vinculado a:"
+  "linkedTo": "Vinculado a:",
+  "projectObjectives": "Objetivos do Projeto:",
+  "viewPlans": "Ver Planos",
+  "viewEstimates": "Ver Estimativas",
+  "plansModal": {
+    "title": "Planos de Medição Associados",
+    "noPlans": "Nenhum plano de medição associado a este projeto.",
+    "responsible": "Responsável:",
+    "objectives": "Objetivos:",
+    "created": "Criado:",
+    "close": "Fechar"
+  },
+  "estimatesModal": {
+    "title": "Estimativas APF Associadas",
+    "noEstimates": "Nenhuma estimativa APF associada a este projeto.",
+    "functionPoints": "Function Points (Ajustados):",
+    "estimatedEffort": "Esforço Estimado:",
+    "created": "Criado:",
+    "close": "Fechar"
+  }
 }

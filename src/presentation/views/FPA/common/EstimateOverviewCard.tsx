@@ -44,9 +44,12 @@ export const EstimateOverviewCard = ({
     }
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return '-';
+    const dateObj = new Date(dateString);
+    if (isNaN(dateObj.getTime())) return '-';
     const locale = i18n.language === "pt" ? "pt-BR" : "en-US";
-    return new Date(dateString).toLocaleDateString(locale, {
+    return dateObj.toLocaleDateString(locale, {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -93,7 +96,7 @@ export const EstimateOverviewCard = ({
               estimate.status
             )}`}
           >
-            {t(`status.${estimate.status.toLowerCase()}`)}
+            {t(`status.${estimate.status?.toLowerCase() || 'draft'}`)}
           </span>
           <span className="text-xs text-gray-500">v{estimate.version}</span>
         </div>

@@ -84,7 +84,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">{t("modals.customMetric.title")}</h2>
-            <button onClick={handleClose} className="text-gray-500 hover:text-gray-700">
+            <button onClick={handleClose} className="text-gray-500 hover:text-gray-700 cursor-pointer">
               ×
             </button>
           </div>
@@ -97,7 +97,6 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
               ]}
               activeTab={selectedTab}
               onTabChange={setSelectedTab}
-              variant="modal"
             />
           </div>
 

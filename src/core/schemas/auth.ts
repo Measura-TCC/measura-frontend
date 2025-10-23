@@ -39,8 +39,8 @@ export const createRegisterSchema = (t: (key: string) => string) =>
 
 export const createLoginSchema = (t: (key: string) => string) =>
   z.object({
-    usernameOrEmail: z.string().min(1, t("login.errors.emailRequired")),
-    password: z.string().min(1, t("login.errors.passwordRequired")),
+    usernameOrEmail: z.string().min(1, t("login:errors.emailRequired")),
+    password: z.string().min(1, t("login:errors.passwordRequired")),
   });
 
 export const createPasswordResetRequestSchema = (t: (key: string) => string) =>

@@ -5,8 +5,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/presentation/components/primitives";
+import { usePlanStatus } from "@/core/hooks/measurementPlans";
+import { MetricStatusBadge } from "../../components/MetricStatusBadge";
 
 interface PlanStatisticsCardProps {
+  planId: string;
   objectivesCount: number;
   questionsCount: number;
   metricsCount: number;
@@ -14,12 +17,14 @@ interface PlanStatisticsCardProps {
 }
 
 export const PlanStatisticsCard: React.FC<PlanStatisticsCardProps> = ({
+  planId,
   objectivesCount,
   questionsCount,
   metricsCount,
   measurementsCount,
 }) => {
   const { t } = useTranslation("plans");
+  const { status, isLoading } = usePlanStatus({ planId });
 
   return (
     <Card>
@@ -42,6 +47,25 @@ export const PlanStatisticsCard: React.FC<PlanStatisticsCardProps> = ({
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-600">{t("workflow.measurements")}</span>
           <span className="font-semibold">{measurementsCount}</span>
+        </div>
+
+        {/* Indicator Status */}
+        <div className="pt-4 border-t border-gray-200">
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-600">{t("indicatorStatus.title")}</span>
+            {isLoading ? (
+              <span className="text-xs text-gray-400">{t("loading")}</span>
+            ) : status ? (
+              <MetricStatusBadge status={status.overallStatus} size="sm" />
+            ) : (
+              <span className="text-xs text-gray-400">-</span>
+            )}
+          </div>
+          {status && status.overallStatus === 'NEEDS_ATTENTION' && (
+            <p className="text-xs text-gray-500 mt-2">
+              {status.metricsNeedAttention} de {status.totalMetrics} {t("workflow.metrics").toLowerCase()} {t("indicatorStatus.someNeedAttention").toLowerCase()}
+            </p>
+          )}
         </div>
       </CardContent>
     </Card>

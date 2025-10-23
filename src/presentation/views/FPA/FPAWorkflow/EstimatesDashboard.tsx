@@ -42,12 +42,13 @@ export const EstimatesDashboard = ({
 
     const filtered = estimatesOverviews.filter((estimate) => {
       const matchesSearch =
-        estimate.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        !searchQuery ||
+        estimate.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         estimate.description
           ?.toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
         estimate.project?.name
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchQuery.toLowerCase());
 
       const matchesStatus =

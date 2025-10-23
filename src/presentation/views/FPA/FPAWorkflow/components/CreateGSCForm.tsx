@@ -4,11 +4,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { createGSCSchema, type CreateGSCData } from "@/core/schemas/fpa";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/presentation/components/primitives/Button/Button";
 
 interface CreateGSCFormProps {
   onSuccess?: (gsc: number[]) => void;
+  onBack: () => void;
   initialValues?: {
     dataProcessing?: number;
     performanceRequirements?: number;
@@ -30,6 +31,7 @@ interface CreateGSCFormProps {
 
 export const CreateGSCForm = ({
   onSuccess,
+  onBack,
   initialValues,
 }: CreateGSCFormProps) => {
   const { t } = useTranslation("fpa");
@@ -41,6 +43,7 @@ export const CreateGSCForm = ({
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<CreateGSCData>({
     resolver: zodResolver(createGSCSchema),
     defaultValues: {
@@ -61,6 +64,58 @@ export const CreateGSCForm = ({
       notes: initialValues?.notes || "",
     },
   });
+
+  const formValues = watch();
+  const hasFilledGSC =
+    formValues.dataProcessing > 0 ||
+    formValues.performanceRequirements > 0 ||
+    formValues.heavilyUsedConfiguration > 0 ||
+    formValues.transactionRate > 0 ||
+    formValues.onlineDataEntry > 0 ||
+    formValues.endUserEfficiency > 0 ||
+    formValues.onlineUpdate > 0 ||
+    formValues.complexProcessing > 0 ||
+    formValues.reusability > 0 ||
+    formValues.installationEase > 0 ||
+    formValues.operationalEase > 0 ||
+    formValues.multipleSites > 0 ||
+    formValues.facilitateChange > 0 ||
+    formValues.distributedFunctions > 0;
+
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      const generalSystemCharacteristics = [
+        formValues.dataProcessing || 0,
+        formValues.performanceRequirements || 0,
+        formValues.heavilyUsedConfiguration || 0,
+        formValues.transactionRate || 0,
+        formValues.onlineDataEntry || 0,
+        formValues.endUserEfficiency || 0,
+        formValues.onlineUpdate || 0,
+        formValues.complexProcessing || 0,
+        formValues.reusability || 0,
+        formValues.installationEase || 0,
+        formValues.operationalEase || 0,
+        formValues.multipleSites || 0,
+        formValues.facilitateChange || 0,
+        formValues.distributedFunctions || 0,
+      ];
+
+      onSuccess?.(generalSystemCharacteristics);
+    }, 500);
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [formValues, onSuccess]);
 
   const onSubmit = async (data: CreateGSCData) => {
     setIsSubmitting(true);
@@ -119,9 +174,6 @@ export const CreateGSCForm = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-4">
-        <h3 className="text-lg font-medium text-gray-900">
-          {t("forms.generalSystemCharacteristics")}
-        </h3>
         <p className="text-sm text-gray-600 mb-4">
           {t("forms.gscDescription")}
         </p>
@@ -185,9 +237,17 @@ export const CreateGSCForm = ({
         </div>
       )}
 
-      <div className="flex justify-end">
-        <Button type="submit" disabled={isSubmitting} variant="primary">
-          {isSubmitting ? t("estimateForm.saving") : t("estimateForm.saveGSC")}
+      <div className="flex justify-end gap-3">
+        <Button type="button" onClick={onBack} variant="secondary" size="md">
+          Voltar
+        </Button>
+        <Button
+          type="submit"
+          disabled={isSubmitting || !hasFilledGSC}
+          variant="primary"
+          size="md"
+        >
+          {isSubmitting ? t("estimateForm.saving") : "Próximo"}
         </Button>
       </div>
     </form>

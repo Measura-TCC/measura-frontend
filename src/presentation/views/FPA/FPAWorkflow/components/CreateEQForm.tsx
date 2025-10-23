@@ -104,9 +104,11 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
 
     try {
       await createEQComponent({ estimateId, data });
+
       reset();
       onSuccess?.();
     } catch (err) {
+      console.error("Error creating EQ component:", err);
       setError(
         err instanceof Error
           ? err.message
@@ -118,7 +120,12 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form
+      onSubmit={(e) => {
+        handleSubmit(onSubmit)(e);
+      }}
+      className="space-y-6"
+    >
       <div className="grid grid-cols-1 gap-4">
         <div>
           <label
@@ -401,6 +408,12 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
       {error && (
         <div className="rounded-md bg-red-50 p-4">
           <p className="text-sm text-red-700">{error}</p>
+        </div>
+      )}
+
+      {errors.root && (
+        <div className="rounded-md bg-red-50 p-4">
+          <p className="text-sm text-red-700">{errors.root.message}</p>
         </div>
       )}
 

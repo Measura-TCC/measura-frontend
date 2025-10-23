@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/presentation/components/primitives";
+import { Tabs } from "@/presentation/components/primitives/Tabs";
 import {
   useMeasurementPlan,
   useMeasurementPlans,
@@ -10,23 +11,28 @@ import { useMeasurementPlanExport } from "@/core/hooks/measurementPlans";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { ExportFormat, MeasurementPlanStatus } from "@/core/types/plans";
 import { PlanVisualization } from "../components/PlanVisualization";
+import { PlanGQMStructure } from "../components/PlanGQMStructure";
 import {
   PlanContentManager,
   PlanHeader,
   PlanDetailsCard,
   PlanProgressCard,
   PlanStatisticsCard,
+  MeasurementMonitoringTab,
 } from "./components";
 
 interface PlanDetailsProps {
   planId: string;
 }
 
+type ActiveTab = 'details' | 'monitoring';
+
 export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
   const { t } = useTranslation("plans");
   const router = useRouter();
   const [isExporting, setIsExporting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState<ActiveTab>('details');
   const [editForm, setEditForm] = useState({
     planName: "",
     associatedProject: "",
@@ -241,48 +247,71 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
         </div>
       )}
 
+      {/* Tab Navigation */}
+      <Tabs
+        tabs={[
+          { id: 'details', label: t("planDetails.detailsTab") },
+          { id: 'monitoring', label: t("monitoring.title") }
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
+
       {/* Main Content with responsive grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-        <div className="lg:col-span-2 space-y-4 lg:space-y-6">
-          {/* Plan Details Card */}
-          <PlanDetailsCard
-            plan={plan}
-            isEditing={isEditing}
-            editForm={editForm}
-            onEditFormChange={handleEditFormChange}
-            getProjectName={getProjectName}
-            projects={projects || []}
-          />
-
-          {/* Dual Mode Content: Visualization vs Edit */}
-          {!isEditing ? (
-            <div className="space-y-4">
-              <PlanVisualization
-                plan={plan}
-                projects={projects || []}
-                showNavigation={true}
-              />
-            </div>
-          ) : (
-            <PlanContentManager
+      {activeTab === 'details' ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+          <div className="lg:col-span-2 space-y-4 lg:space-y-6">
+            {/* Plan Details Card */}
+            <PlanDetailsCard
               plan={plan}
-              onUpdatePlan={updatePlan}
-              isReadOnly={false}
+              isEditing={isEditing}
+              editForm={editForm}
+              onEditFormChange={handleEditFormChange}
+              getProjectName={getProjectName}
+              projects={projects || []}
             />
-          )}
-        </div>
 
-        {/* Responsive Sidebar */}
-        <div className="space-y-4 lg:space-y-6">
-          {/* <PlanProgressCard progress={plan.progress} /> */}
-          <PlanStatisticsCard
-            objectivesCount={plan.objectivesCount}
-            questionsCount={plan.questionsCount}
-            metricsCount={plan.metricsCount}
-            measurementsCount={plan.measurementsCount}
-          />
+            {/* Dual Mode Content: Visualization vs Edit */}
+            {!isEditing ? (
+              <div className="space-y-4">
+                <PlanVisualization
+                  plan={plan}
+                  projects={projects || []}
+                  showNavigation={true}
+                />
+              </div>
+            ) : (
+              <PlanContentManager
+                plan={plan}
+                onUpdatePlan={updatePlan}
+                isReadOnly={false}
+              />
+            )}
+          </div>
+
+          {/* Responsive Sidebar */}
+          <div className="space-y-4 lg:space-y-6">
+            {/* <PlanProgressCard progress={plan.progress} /> */}
+            <PlanStatisticsCard
+              planId={planId}
+              objectivesCount={plan.objectivesCount}
+              questionsCount={plan.questionsCount}
+              metricsCount={plan.metricsCount}
+              measurementsCount={plan.measurementsCount}
+            />
+
+            {!isEditing && (
+              <Card>
+                <CardContent className="pt-6">
+                  <PlanGQMStructure plan={plan} />
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
-      </div>
+      ) : (
+        <MeasurementMonitoringTab planId={planId} plan={plan} />
+      )}
     </div>
   );
 };
