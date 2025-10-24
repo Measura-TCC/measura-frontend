@@ -6,24 +6,33 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/presentation/components/primitives";
 import { integrationService } from "@/core/services/integrationService";
 import { useIntegrationStatus } from "../hooks/useIntegrationStatus";
+import { ImportedRequirementsPreview } from "../components/ImportedRequirementsPreview";
 import type { Requirement } from "@/core/types/fpa";
-import type { JiraProject } from "@/core/types/integrations";
+import type { JiraProject, ImportResultResponse } from "@/core/types/integrations";
 
 interface JiraImportFormProps {
   requirements: Requirement[];
-  addRequirements: (requirements: Array<{ title: string; description?: string; source: 'jira' }>) => void;
+  addRequirements: (requirements: Array<{ title: string; description?: string; source: 'jira'; sourceReference?: string }>) => void;
+  organizationId?: string;
+  projectId?: string;
+  estimateId?: string;
 }
 
-export const JiraImportForm = ({ requirements, addRequirements }: JiraImportFormProps) => {
+type ViewMode = 'form' | 'preview';
+
+export const JiraImportForm = ({ requirements, addRequirements, organizationId, projectId, estimateId }: JiraImportFormProps) => {
   const { t } = useTranslation("fpa");
   const router = useRouter();
   const { isJiraConfigured, organization } = useIntegrationStatus();
+  const [viewMode, setViewMode] = useState<ViewMode>('form');
   const [projects, setProjects] = useState<JiraProject[]>([]);
   const [selectedProject, setSelectedProject] = useState<string>("");
   const [jql, setJql] = useState<string>("");
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [importResult, setImportResult] = useState<ImportResultResponse | null>(null);
 
   useEffect(() => {
     if (isJiraConfigured && organization) {
@@ -55,30 +64,62 @@ export const JiraImportForm = ({ requirements, addRequirements }: JiraImportForm
   };
 
   const handleImport = async () => {
+    if (!organization || !projectId) {
+      setError("Missing organization or project information");
+      return;
+    }
+
     setIsImporting(true);
     setError(null);
 
     try {
-      const mockRequirements = [
-        {
-          title: `[${selectedProject}] Sample requirement from JQL: ${jql}`,
-          description: "This is a preview. Full Jira import will be available after estimate creation.",
-          source: "jira" as const,
-        },
-      ];
-
-      addRequirements(mockRequirements);
+      // Always call the real API with preview mode
+      const result = await integrationService.importFromJira({
+        organizationId: organization._id,
+        projectId,
+        estimateId, // Optional - can be undefined
+        jql,
+        preview: true, // Preview mode - fetch without saving
+      });
+      setImportResult(result);
+      setViewMode('preview');
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to import requirements");
+      setError(err.response?.data?.message || "Failed to import requirements from Jira");
     } finally {
       setIsImporting(false);
     }
   };
 
+  const handleConfirmImport = (selectedRequirements: any[]) => {
+    setIsAdding(true);
+    try {
+      const formattedRequirements = selectedRequirements.map(req => ({
+        title: req.title,
+        description: req.description,
+        source: 'jira' as const,
+        sourceReference: req.sourceReference,
+      }));
+      addRequirements(formattedRequirements);
+
+      // Reset to form view
+      setViewMode('form');
+      setImportResult(null);
+    } catch (err: any) {
+      setError("Failed to add requirements");
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleCancelImport = () => {
+    setViewMode('form');
+    setImportResult(null);
+  };
+
   if (!isJiraConfigured) {
     return (
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Jira Cloud Import</h3>
+        <h3 className="text-lg font-semibold text-default">Jira Cloud Import</h3>
         <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 text-yellow-700 dark:text-yellow-300 p-4 rounded-md">
           <p className="font-medium">{t("requirementImport.integrationNotConfigured")}</p>
           <p className="text-sm mt-1">
@@ -95,22 +136,39 @@ export const JiraImportForm = ({ requirements, addRequirements }: JiraImportForm
     );
   }
 
+  if (viewMode === 'preview' && importResult) {
+    return (
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-default">Jira Cloud Import - Review</h3>
+        <ImportedRequirementsPreview
+          requirements={importResult.data.requirements}
+          imported={importResult.data.imported}
+          skipped={importResult.data.skipped}
+          failed={importResult.data.failed}
+          onConfirm={handleConfirmImport}
+          onCancel={handleCancelImport}
+          isAdding={isAdding}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Jira Cloud Import</h3>
+      <h3 className="text-lg font-semibold text-default">Jira Cloud Import</h3>
 
       {isLoadingProjects ? (
-        <div className="text-sm text-gray-600 dark:text-gray-400">Loading Jira projects...</div>
+        <div className="text-sm text-secondary">Loading Jira projects...</div>
       ) : (
         <>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-default mb-1">
               {t("importForms.jira.selectProject")}
             </label>
             <select
               value={selectedProject}
               onChange={(e) => handleProjectChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md"
+              className="w-full px-3 py-2 border border-border bg-background text-default rounded-md"
               disabled={isImporting}
             >
               {projects.map((project) => (
@@ -122,7 +180,7 @@ export const JiraImportForm = ({ requirements, addRequirements }: JiraImportForm
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-default mb-1">
               {t("importForms.jira.jql")}
             </label>
             <textarea
@@ -130,32 +188,35 @@ export const JiraImportForm = ({ requirements, addRequirements }: JiraImportForm
               value={jql}
               onChange={(e) => setJql(e.target.value)}
               placeholder="project = PROJ AND status = 'To Do'"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md"
+              className="w-full px-3 py-2 border border-border bg-background text-default rounded-md"
               disabled={isImporting}
             />
             <div className="mt-2 space-y-1">
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-secondary">
                 {t("importForms.jira.commonFilters")}:
               </p>
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => setJql(`project = ${selectedProject}`)}
-                  className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                  className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                  disabled={isImporting}
                 >
                   All issues
                 </button>
                 <button
                   type="button"
                   onClick={() => setJql(`project = ${selectedProject} AND status = 'To Do'`)}
-                  className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                  className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                  disabled={isImporting}
                 >
                   Open issues
                 </button>
                 <button
                   type="button"
                   onClick={() => setJql(`project = ${selectedProject} AND type = Story`)}
-                  className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                  className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                  disabled={isImporting}
                 >
                   Stories only
                 </button>
@@ -169,15 +230,10 @@ export const JiraImportForm = ({ requirements, addRequirements }: JiraImportForm
             </div>
           )}
 
-          <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 p-3 rounded-md text-sm">
-            <p className="font-medium">Preview Mode</p>
-            <p className="mt-1">During estimate creation, requirements are stored temporarily. Full import from Jira will be available after the estimate is created.</p>
-          </div>
-
           <Button
             onClick={handleImport}
             variant="primary"
-            disabled={isImporting || !jql}
+            disabled={isImporting || !jql || !projectId}
           >
             {isImporting ? t("requirementImport.importing") : t("requirementImport.addPreview")}
           </Button>

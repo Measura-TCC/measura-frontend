@@ -630,7 +630,9 @@
     },
     "importSuccess": "{{count}} requirements imported successfully!",
     "importButton": "Import Requirements",
+    "import": "Import from {{source}}",
     "importing": "Importing...",
+    "addPreview": "Add to Visualization",
     "nextToClassification": "Next: Classify Requirements",
     "requirementTitle": "Name",
     "description": "Description",
@@ -802,6 +804,17 @@
       "list": "List",
       "previewMode": "Preview Mode",
       "previewModeDescription": "During estimate creation, requirements are added as preview items. Full import will be available after the estimate is saved."
+    },
+    "preview": {
+      "successfullyImported": "Successfully imported {{count}} requirement(s)",
+      "skipped": "{{count}} requirement(s) skipped (already exist)",
+      "failed": "{{count}} requirement(s) failed to import",
+      "reviewRequirements": "Review Imported Requirements",
+      "selectedCount": "{{count}} of {{total}} selected",
+      "reference": "Reference",
+      "metadata": "Metadata",
+      "cancel": "Cancel",
+      "addSelected": "Add {{count}} Selected"
     },
     "importResult": {
       "title": "Import Complete",

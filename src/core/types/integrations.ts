@@ -50,32 +50,36 @@ export interface OrganizationIntegrations {
 export interface ImportJiraRequirementsDto {
   organizationId: string;
   projectId: string;
-  estimateId: string;
+  estimateId?: string; // Optional when preview=true
   jql: string;
+  preview?: boolean; // Preview mode flag
 }
 
 export interface ImportGitHubRequirementsDto {
   organizationId: string;
   projectId: string;
-  estimateId: string;
+  estimateId?: string; // Optional when preview=true
   owner: string;
   repo: string;
   state: "open" | "closed" | "all";
+  preview?: boolean; // Preview mode flag
 }
 
 export interface ImportClickUpRequirementsDto {
   organizationId: string;
   projectId: string;
-  estimateId: string;
+  estimateId?: string; // Optional when preview=true
   listId: string;
+  preview?: boolean; // Preview mode flag
 }
 
 export interface ImportAzureDevOpsRequirementsDto {
   organizationId: string;
   projectId: string;
-  estimateId: string;
+  estimateId?: string; // Optional when preview=true
   project: string;
   wiql: string;
+  preview?: boolean; // Preview mode flag
 }
 
 export interface ImportResultResponse {

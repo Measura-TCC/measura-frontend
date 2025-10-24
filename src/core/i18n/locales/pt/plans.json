@@ -665,7 +665,15 @@
     "addMeasurementToCycle": "Adicionar medição ao ciclo",
     "endDateMustBeAfterStart": "A data de término deve ser posterior à data de início",
     "required": "é obrigatório",
-    "noCyclesAvailable": "Nenhum ciclo disponível. Crie um ciclo primeiro."
+    "noCyclesAvailable": "Nenhum ciclo disponível. Crie um ciclo primeiro.",
+    "measurementTrends": "Tendências de Medições ao Longo do Tempo",
+    "metricsLegend": "Visão Geral das Métricas",
+    "latestValue": "Último",
+    "filterByCycle": "Filtrar por Ciclo",
+    "allCycles": "Todos os Ciclos",
+    "noDataForMetric": "Nenhum Dado Disponível",
+    "noDataForMetricDescription": "Nenhuma medição foi registrada para esta métrica ainda. Adicione medições para visualizar tendências.",
+    "noDataForMetricInCycle": "Nenhuma medição para esta métrica no ciclo selecionado. Tente selecionar um ciclo diferente ou adicione novas medições."
   },
   "optional": "opcional",
   "saving": "Salvando...",

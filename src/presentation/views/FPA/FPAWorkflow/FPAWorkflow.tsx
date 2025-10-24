@@ -378,7 +378,11 @@ export const FPAWorkflow = () => {
         )}
 
         {currentStep === 3 && estimateFormData && (
-          <RequirementImportView onProceed={() => setCurrentStep(4)} />
+          <RequirementImportView
+            onProceed={() => setCurrentStep(4)}
+            organizationId={userOrganization?._id}
+            projectId={selectedProjectId || undefined}
+          />
         )}
 
         {currentStep === 4 && estimateFormData && (

@@ -6,24 +6,33 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/presentation/components/primitives";
 import { integrationService } from "@/core/services/integrationService";
 import { useIntegrationStatus } from "../hooks/useIntegrationStatus";
+import { ImportedRequirementsPreview } from "../components/ImportedRequirementsPreview";
 import type { Requirement } from "@/core/types/fpa";
-import type { GitHubRepository } from "@/core/types/integrations";
+import type { GitHubRepository, ImportResultResponse } from "@/core/types/integrations";
 
 interface GitHubImportFormProps {
   requirements: Requirement[];
-  addRequirements: (requirements: Array<{ title: string; description?: string; source: 'github' }>) => void;
+  addRequirements: (requirements: Array<{ title: string; description?: string; source: 'github'; sourceReference?: string }>) => void;
+  organizationId?: string;
+  projectId?: string;
+  estimateId?: string;
 }
 
-export const GitHubImportForm = ({ requirements, addRequirements }: GitHubImportFormProps) => {
+type ViewMode = 'form' | 'preview';
+
+export const GitHubImportForm = ({ requirements, addRequirements, organizationId, projectId, estimateId }: GitHubImportFormProps) => {
   const { t } = useTranslation("fpa");
   const router = useRouter();
   const { isGitHubConfigured, organization } = useIntegrationStatus();
+  const [viewMode, setViewMode] = useState<ViewMode>('form');
   const [repositories, setRepositories] = useState<GitHubRepository[]>([]);
   const [selectedRepo, setSelectedRepo] = useState<string>("");
   const [state, setState] = useState<"open" | "closed" | "all">("open");
   const [isLoadingRepos, setIsLoadingRepos] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [importResult, setImportResult] = useState<ImportResultResponse | null>(null);
 
   useEffect(() => {
     if (isGitHubConfigured && organization) {
@@ -49,31 +58,71 @@ export const GitHubImportForm = ({ requirements, addRequirements }: GitHubImport
   };
 
   const handleImport = async () => {
+    if (!organization || !projectId) {
+      setError("Missing organization or project information");
+      return;
+    }
+
+    const repo = repositories.find(r => r.fullName === selectedRepo);
+    if (!repo) {
+      setError("Please select a repository");
+      return;
+    }
+
+    const [owner, repoName] = selectedRepo.split('/');
+
     setIsImporting(true);
     setError(null);
 
     try {
-      const repo = repositories.find(r => r.fullName === selectedRepo);
-      const mockRequirements = [
-        {
-          title: `[GitHub] Sample issue from ${repo?.name || selectedRepo}`,
-          description: `State: ${state}. This is a preview. Full GitHub import will be available after estimate creation.`,
-          source: "github" as const,
-        },
-      ];
-
-      addRequirements(mockRequirements);
+      // Always call the real API with preview mode
+      const result = await integrationService.importFromGitHub({
+        organizationId: organization._id,
+        projectId,
+        estimateId, // Optional - can be undefined
+        owner,
+        repo: repoName,
+        state,
+        preview: true, // Preview mode - fetch without saving
+      });
+      setImportResult(result);
+      setViewMode('preview');
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to import requirements");
+      setError(err.response?.data?.message || "Failed to import requirements from GitHub");
     } finally {
       setIsImporting(false);
     }
   };
 
+  const handleConfirmImport = (selectedRequirements: any[]) => {
+    setIsAdding(true);
+    try {
+      const formattedRequirements = selectedRequirements.map(req => ({
+        title: req.title,
+        description: req.description,
+        source: 'github' as const,
+        sourceReference: req.sourceReference,
+      }));
+      addRequirements(formattedRequirements);
+
+      setViewMode('form');
+      setImportResult(null);
+    } catch (err: any) {
+      setError("Failed to add requirements");
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleCancelImport = () => {
+    setViewMode('form');
+    setImportResult(null);
+  };
+
   if (!isGitHubConfigured) {
     return (
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">GitHub Issues Import</h3>
+        <h3 className="text-lg font-semibold text-default">GitHub Issues Import</h3>
         <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 text-yellow-700 dark:text-yellow-300 p-4 rounded-md">
           <p className="font-medium">{t("requirementImport.integrationNotConfigured")}</p>
           <p className="text-sm mt-1">
@@ -90,22 +139,39 @@ export const GitHubImportForm = ({ requirements, addRequirements }: GitHubImport
     );
   }
 
+  if (viewMode === 'preview' && importResult) {
+    return (
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-default">GitHub Issues Import - Review</h3>
+        <ImportedRequirementsPreview
+          requirements={importResult.data.requirements}
+          imported={importResult.data.imported}
+          skipped={importResult.data.skipped}
+          failed={importResult.data.failed}
+          onConfirm={handleConfirmImport}
+          onCancel={handleCancelImport}
+          isAdding={isAdding}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">GitHub Issues Import</h3>
+      <h3 className="text-lg font-semibold text-default">GitHub Issues Import</h3>
 
       {isLoadingRepos ? (
-        <div className="text-sm text-gray-600 dark:text-gray-400">Loading GitHub repositories...</div>
+        <div className="text-sm text-secondary">Loading GitHub repositories...</div>
       ) : (
         <>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-default mb-1">
               {t("importForms.github.selectRepository")}
             </label>
             <select
               value={selectedRepo}
               onChange={(e) => setSelectedRepo(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md"
+              className="w-full px-3 py-2 border border-border bg-background text-default rounded-md"
               disabled={isImporting}
             >
               {repositories.map((repo) => (
@@ -115,14 +181,14 @@ export const GitHubImportForm = ({ requirements, addRequirements }: GitHubImport
               ))}
             </select>
             {repositories.length === 0 && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-xs text-secondary mt-1">
                 No repositories found. Check your GitHub token permissions.
               </p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-default mb-1">
               {t("importForms.github.issueState")}
             </label>
             <div className="flex gap-2">
@@ -131,8 +197,8 @@ export const GitHubImportForm = ({ requirements, addRequirements }: GitHubImport
                 onClick={() => setState("open")}
                 className={`px-4 py-2 rounded-md text-sm font-medium ${
                   state === "open"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    ? "bg-primary text-white"
+                    : "bg-gray-100 dark:bg-gray-700 text-default hover:bg-gray-200 dark:hover:bg-gray-600"
                 }`}
                 disabled={isImporting}
               >
@@ -143,8 +209,8 @@ export const GitHubImportForm = ({ requirements, addRequirements }: GitHubImport
                 onClick={() => setState("closed")}
                 className={`px-4 py-2 rounded-md text-sm font-medium ${
                   state === "closed"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    ? "bg-primary text-white"
+                    : "bg-gray-100 dark:bg-gray-700 text-default hover:bg-gray-200 dark:hover:bg-gray-600"
                 }`}
                 disabled={isImporting}
               >
@@ -155,8 +221,8 @@ export const GitHubImportForm = ({ requirements, addRequirements }: GitHubImport
                 onClick={() => setState("all")}
                 className={`px-4 py-2 rounded-md text-sm font-medium ${
                   state === "all"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    ? "bg-primary text-white"
+                    : "bg-gray-100 dark:bg-gray-700 text-default hover:bg-gray-200 dark:hover:bg-gray-600"
                 }`}
                 disabled={isImporting}
               >
@@ -171,15 +237,10 @@ export const GitHubImportForm = ({ requirements, addRequirements }: GitHubImport
             </div>
           )}
 
-          <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 p-3 rounded-md text-sm">
-            <p className="font-medium">Preview Mode</p>
-            <p className="mt-1">During estimate creation, requirements are stored temporarily. Full import from GitHub will be available after the estimate is created.</p>
-          </div>
-
           <Button
             onClick={handleImport}
             variant="primary"
-            disabled={isImporting || !selectedRepo}
+            disabled={isImporting || !selectedRepo || !projectId}
           >
             {isImporting ? t("requirementImport.importing") : t("requirementImport.addPreview")}
           </Button>

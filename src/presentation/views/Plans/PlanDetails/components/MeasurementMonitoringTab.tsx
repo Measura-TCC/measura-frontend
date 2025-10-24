@@ -6,6 +6,7 @@ import type { MeasurementPlanResponseDto } from "@/core/types/plans";
 import { CycleAccordion } from "./CycleAccordion";
 import { CreateCycleModal } from "./CreateCycleModal";
 import { AddMeasurementDataModal } from "./AddMeasurementDataModal";
+import { MeasurementChart } from "./MeasurementChart";
 
 interface MeasurementMonitoringTabProps {
   planId: string;
@@ -94,6 +95,10 @@ export const MeasurementMonitoringTab: React.FC<MeasurementMonitoringTabProps> =
           )}
         </CardContent>
       </Card>
+
+      {!isLoading && cyclesData.length > 0 && (
+        <MeasurementChart cyclesData={cyclesData} />
+      )}
 
       <CreateCycleModal
         isOpen={isCreateCycleModalOpen}

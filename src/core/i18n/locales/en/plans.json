@@ -568,7 +568,15 @@
     "addMeasurementToCycle": "Add measurement to cycle",
     "endDateMustBeAfterStart": "End date must be after start date",
     "required": "is required",
-    "noCyclesAvailable": "No cycles available. Create a cycle first."
+    "noCyclesAvailable": "No cycles available. Create a cycle first.",
+    "measurementTrends": "Measurement Trends Over Time",
+    "metricsLegend": "Metrics Overview",
+    "latestValue": "Latest",
+    "filterByCycle": "Filter by Cycle",
+    "allCycles": "All Cycles",
+    "noDataForMetric": "No Data Available",
+    "noDataForMetricDescription": "No measurements have been recorded for this metric yet. Add measurements to see trends.",
+    "noDataForMetricInCycle": "No measurements for this metric in the selected cycle. Try selecting a different cycle or add new measurements."
   },
   "optional": "optional",
   "saving": "Saving...",
