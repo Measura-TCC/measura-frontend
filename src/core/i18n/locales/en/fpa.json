@@ -645,7 +645,14 @@
     "classifySubtitle": "Classify each requirement as ILF, EIF, EI, EO or EQ",
     "proceedDescription": "Click \"Next\" to classify requirements as ILF, EIF, EI, EO or EQ",
     "backToImport": "← Back to Import",
-    "nextToGSC": "Next: General System Characteristics →"
+    "nextToGSC": "Next: General System Characteristics →",
+    "notConfigured": "Integration not configured",
+    "requiresConfiguration": "Requires configuration in Organization Settings",
+    "configured": "Configured and ready to use",
+    "integrationNotConfigured": "Integration not configured",
+    "configureInOrgSettings": "Please configure this integration in Organization Settings to use this import source.",
+    "goToSettings": "Go to Settings",
+    "addPreview": "Add Preview Requirements"
   },
   "requirementClassification": {
     "title": "Requirement Classification",
@@ -727,7 +734,19 @@
       "apiTokenPlaceholder": "Your Jira API token",
       "jql": "JQL Query",
       "jqlPlaceholder": "project = PROJ AND type = Story",
-      "jqlHelp": "Use JQL to filter the issues you want to import"
+      "jqlHelp": "Use JQL to filter the issues you want to import",
+      "selectProject": "Select Project",
+      "selectProjectPlaceholder": "Choose a project...",
+      "loadingProjects": "Loading projects...",
+      "noProjects": "No projects available",
+      "previewMode": "Preview Mode",
+      "previewModeDescription": "During estimate creation, requirements are added as preview items. Full import will be available after the estimate is saved.",
+      "commonFilters": "Common Filters:",
+      "filterAllIssues": "All issues in project",
+      "filterStories": "Stories only",
+      "filterOpenIssues": "Open issues only",
+      "filterCurrentSprint": "Current sprint",
+      "filterAssignedToMe": "Assigned to me"
     },
     "github": {
       "token": "GitHub Token",
@@ -737,7 +756,17 @@
       "repo": "Repository",
       "repoPlaceholder": "repository-name",
       "projectNumber": "Project Number",
-      "projectNumberPlaceholder": "1"
+      "projectNumberPlaceholder": "1",
+      "selectRepository": "Select Repository",
+      "selectRepositoryPlaceholder": "Choose a repository...",
+      "loadingRepositories": "Loading repositories...",
+      "noRepositories": "No repositories available",
+      "issueState": "Issue State",
+      "stateOpen": "Open",
+      "stateClosed": "Closed",
+      "stateAll": "All",
+      "previewMode": "Preview Mode",
+      "previewModeDescription": "During estimate creation, requirements are added as preview items. Full import will be available after the estimate is saved."
     },
     "azureDevops": {
       "organization": "Organization",
@@ -747,13 +776,42 @@
       "pat": "Personal Access Token",
       "patPlaceholder": "Your Azure DevOps PAT",
       "wiql": "WIQL Query",
-      "wiqlPlaceholder": "SELECT [System.Id] FROM WorkItems WHERE [System.WorkItemType] = 'User Story'"
+      "wiqlPlaceholder": "SELECT [System.Id] FROM WorkItems WHERE [System.WorkItemType] = 'User Story'",
+      "selectProject": "Select Project",
+      "selectProjectPlaceholder": "Choose a project...",
+      "loadingProjects": "Loading projects...",
+      "noProjects": "No projects available",
+      "previewMode": "Preview Mode",
+      "previewModeDescription": "During estimate creation, requirements are added as preview items. Full import will be available after the estimate is saved.",
+      "commonFilters": "Common Filters:",
+      "filterUserStories": "User Stories only",
+      "filterActiveBugs": "Active Bugs",
+      "filterAllWorkItems": "All work items"
     },
     "clickup": {
       "token": "ClickUp Token",
       "tokenPlaceholder": "pk_...",
       "listId": "List ID",
-      "listIdPlaceholder": "123456789"
+      "listIdPlaceholder": "123456789",
+      "selectList": "Select List",
+      "selectListPlaceholder": "Choose a list...",
+      "loadingLists": "Loading lists...",
+      "noLists": "No lists available",
+      "space": "Space",
+      "folder": "Folder",
+      "list": "List",
+      "previewMode": "Preview Mode",
+      "previewModeDescription": "During estimate creation, requirements are added as preview items. Full import will be available after the estimate is saved."
+    },
+    "importResult": {
+      "title": "Import Complete",
+      "successMessage": "Successfully imported {{count}} requirement(s)",
+      "skippedMessage": "{{count}} requirement(s) skipped (already imported)",
+      "failedMessage": "{{count}} requirement(s) failed to import",
+      "newRequirements": "New Requirements:",
+      "andMore": "... and {{count}} more",
+      "done": "Done",
+      "viewInExternal": "View in {{source}}"
     }
   }
 }

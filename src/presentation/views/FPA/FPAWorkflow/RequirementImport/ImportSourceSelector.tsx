@@ -2,6 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 import type { RequirementSource } from "@/core/types/fpa";
+import { useIntegrationStatus } from "./hooks/useIntegrationStatus";
 
 interface ImportSourceSelectorProps {
   selectedSource: RequirementSource | null;
@@ -46,37 +47,54 @@ export const ImportSourceSelector = ({
   onSelectSource,
 }: ImportSourceSelectorProps) => {
   const { t } = useTranslation("fpa");
+  const { isJiraConfigured, isGitHubConfigured, isClickUpConfigured, isAzureDevOpsConfigured } = useIntegrationStatus();
 
-  const sources: { id: RequirementSource; label: string }[] = [
-    { id: "manual", label: t("requirementImport.sources.manual") },
-    { id: "csv", label: t("requirementImport.sources.csv") },
-    { id: "jira", label: t("requirementImport.sources.jira") },
-    { id: "github", label: t("requirementImport.sources.github") },
-    { id: "azure_devops", label: t("requirementImport.sources.azure_devops") },
-    { id: "clickup", label: t("requirementImport.sources.clickup") },
+  const sources: { id: RequirementSource; label: string; configured?: boolean }[] = [
+    { id: "manual", label: t("requirementImport.sources.manual"), configured: true },
+    { id: "csv", label: t("requirementImport.sources.csv"), configured: true },
+    { id: "jira", label: t("requirementImport.sources.jira"), configured: isJiraConfigured },
+    { id: "github", label: t("requirementImport.sources.github"), configured: isGitHubConfigured },
+    { id: "azure_devops", label: t("requirementImport.sources.azure_devops"), configured: isAzureDevOpsConfigured },
+    { id: "clickup", label: t("requirementImport.sources.clickup"), configured: isClickUpConfigured },
   ];
 
   return (
     <div>
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
         {t("requirementImport.selectSource")}
       </h3>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {sources.map((source) => (
-          <button
-            key={source.id}
-            onClick={() => onSelectSource(source.id)}
-            className={`p-2 sm:p-3 md:p-4 border-2 rounded-lg text-center transition-all hover:shadow-md cursor-pointer ${
-              selectedSource === source.id
-                ? "border-primary bg-primary/10"
-                : "border-border hover:border-primary/50"
-            }`}
-          >
-            <div className="flex justify-center mb-1 sm:mb-2">{sourceIcons[source.id]}</div>
-            <div className="text-xs sm:text-sm font-medium text-default">
-              {source.label}
-            </div>
-          </button>
+          <div key={source.id} className="relative">
+            <button
+              onClick={() => onSelectSource(source.id)}
+              className={`w-full p-2 sm:p-3 md:p-4 border-2 rounded-lg text-center transition-all hover:shadow-md cursor-pointer ${
+                selectedSource === source.id
+                  ? "border-primary bg-primary/10"
+                  : "border-border hover:border-primary/50"
+              } ${!source.configured ? "opacity-60" : ""}`}
+              title={!source.configured ? t("requirementImport.notConfigured") : ""}
+            >
+              <div className="flex justify-center mb-1 sm:mb-2">{sourceIcons[source.id]}</div>
+              <div className="text-xs sm:text-sm font-medium text-default">
+                {source.label}
+              </div>
+            </button>
+            {!source.configured && (
+              <div className="absolute top-1 right-1">
+                <span className="inline-flex items-center justify-center w-5 h-5 text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full" title={t("requirementImport.requiresConfiguration")}>
+                  !
+                </span>
+              </div>
+            )}
+            {source.configured && source.id !== "manual" && source.id !== "csv" && (
+              <div className="absolute top-1 right-1">
+                <span className="inline-flex items-center justify-center w-5 h-5 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full" title={t("requirementImport.configured")}>
+                  ✓
+                </span>
+              </div>
+            )}
+          </div>
         ))}
       </div>
     </div>

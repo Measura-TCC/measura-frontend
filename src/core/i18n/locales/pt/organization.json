@@ -6,6 +6,7 @@
     "overview": "Visão Geral",
     "members": "Membros",
     "invitations": "Convites",
+    "integrations": "Integrações",
     "settings": "Configurações"
   },
   "organizationDetails": "Detalhes da Organização",
@@ -155,6 +156,62 @@
     "errors": {
       "failedToLeave": "Falha ao sair da organização",
       "failedToRemove": "Falha ao remover membro"
+    }
+  },
+  "integrations": {
+    "title": "Integrações",
+    "subtitle": "Conecte ferramentas externas para importar requisitos automaticamente",
+    "loadingOrganization": "Carregando organização...",
+    "configured": "Configurado",
+    "notConfigured": "Não Configurado",
+    "configure": "Configurar",
+    "edit": "Editar",
+    "configuredAt": "Configurado em {{date}}",
+    "configureJira": "Configurar Integração Jira",
+    "editJira": "Editar Integração Jira",
+    "configureGitHub": "Configurar Integração GitHub",
+    "editGitHub": "Editar Integração GitHub",
+    "configureClickUp": "Configurar Integração ClickUp",
+    "editClickUp": "Editar Integração ClickUp",
+    "configureAzureDevOps": "Configurar Integração Azure DevOps",
+    "editAzureDevOps": "Editar Integração Azure DevOps",
+    "testConnection": "Testar Conexão",
+    "testing": "Testando...",
+    "save": "Salvar",
+    "saving": "Salvando...",
+    "cancel": "Cancelar",
+    "enableIntegration": "Habilitar integração",
+    "testSuccess": "Conexão bem-sucedida!",
+    "testFailed": "Falha na conexão",
+    "testConnectionFailed": "Falha ao testar conexão",
+    "saveConfigFailed": "Falha ao salvar configuração",
+    "howToGenerate": "Como gerar?",
+    "domainHint": "Exemplo: empresa.atlassian.net (sem https://)",
+    "jira": {
+      "description": "Importe issues e user stories do Jira",
+      "domain": "Domínio Jira",
+      "domainPlaceholder": "empresa.atlassian.net",
+      "email": "Email",
+      "emailPlaceholder": "admin@empresa.com",
+      "apiToken": "Token da API",
+      "apiTokenPlaceholder": "Digite seu token da API do Jira"
+    },
+    "github": {
+      "description": "Importe issues de repositórios do GitHub",
+      "token": "Personal Access Token",
+      "tokenPlaceholder": "ghp_..."
+    },
+    "clickup": {
+      "description": "Importe tarefas de listas do ClickUp",
+      "token": "Token da API",
+      "tokenPlaceholder": "pk_..."
+    },
+    "azureDevops": {
+      "description": "Importe itens de trabalho do Azure DevOps",
+      "organization": "Nome da Organização",
+      "organizationPlaceholder": "sua-organizacao",
+      "pat": "Personal Access Token",
+      "patPlaceholder": "Digite seu PAT do Azure DevOps"
     }
   }
 }

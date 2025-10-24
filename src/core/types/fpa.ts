@@ -155,6 +155,15 @@ export interface Requirement {
   description?: string;
   source: RequirementSource;
   sourceReference?: string;
+  sourceMetadata?: {
+    issueType?: string;
+    status?: string;
+    priority?: string;
+    created?: string;
+    updated?: string;
+    externalUrl?: string;
+    [key: string]: any;
+  };
   componentType: ComponentType;
   componentId?: string;
   estimateId: string;

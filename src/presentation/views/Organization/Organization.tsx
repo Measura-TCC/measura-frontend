@@ -19,6 +19,7 @@ import { LeaveOrganizationModal } from "@/presentation/views/Organization/compon
 import { OrganizationTabs } from "@/presentation/views/Organization/components/OrganizationTabs";
 import { OverviewTab } from "@/presentation/views/Organization/components/OverviewTab";
 import { SettingsTab } from "@/presentation/views/Organization/components/SettingsTab";
+import { IntegrationsTab } from "@/presentation/views/Organization/components/IntegrationsTab";
 import { useAuthStore } from "@/core/hooks/auth/useAuth";
 import type { OrganizationTab } from "@/core/types/organization";
 
@@ -89,6 +90,13 @@ export const OrganizationView: React.FC = () => {
 
           {activeTab === "invitations" && (
             <OrganizationInvitationsSection organizationId={userOrganization._id} />
+          )}
+
+          {activeTab === "integrations" && (
+            <IntegrationsTab
+              organization={userOrganization}
+              onRefresh={mutateUserOrganization}
+            />
           )}
 
           {activeTab === "settings" && (

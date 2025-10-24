@@ -27,6 +27,10 @@ export const OrganizationTabs: React.FC<OrganizationTabsProps> = ({
       label: t("tabs.invitations"),
     },
     {
+      id: "integrations" as OrganizationTab,
+      label: t("tabs.integrations"),
+    },
+    {
       id: "settings" as OrganizationTab,
       label: t("tabs.settings"),
     },

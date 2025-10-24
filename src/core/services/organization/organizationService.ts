@@ -4,6 +4,7 @@ import type {
   UpdateOrganizationData,
 } from "@/core/schemas/organizations";
 import type { OrganizationObjective, PredefinedMeasurement, CreateOrganizationalObjectiveDto, UpdateOrganizationalObjectiveDto } from "@/core/types/plans";
+import type { OrganizationIntegrations } from "@/core/types/integrations";
 
 export interface Organization {
   _id: string;
@@ -16,6 +17,7 @@ export interface Organization {
   values?: string;
   objectives?: OrganizationObjective[];
   strategicObjectives?: string;
+  integrations?: OrganizationIntegrations;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
