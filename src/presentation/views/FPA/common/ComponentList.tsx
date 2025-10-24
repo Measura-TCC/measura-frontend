@@ -181,7 +181,7 @@ export const ComponentList = ({
                 <div className="flex items-center space-x-2 ml-4">
                   <button
                     onClick={() => onEdit?.(component)}
-                    className="p-2 text-gray-400 hover:text-indigo-600 transition-colors"
+                    className="p-2 text-gray-400 hover:text-indigo-600 transition-colors cursor-pointer"
                     title="Edit component"
                   >
                     <svg
@@ -203,7 +203,7 @@ export const ComponentList = ({
                     <div className="flex items-center space-x-1">
                       <button
                         onClick={() => handleDelete(component._id)}
-                        className="p-1 text-red-600 hover:bg-red-50 rounded"
+                        className="p-1 text-red-600 hover:bg-red-50 rounded cursor-pointer"
                         title="Confirm delete"
                       >
                         <svg
@@ -222,7 +222,7 @@ export const ComponentList = ({
                       </button>
                       <button
                         onClick={() => setDeleteConfirmId(null)}
-                        className="p-1 text-gray-400 hover:bg-gray-50 rounded"
+                        className="p-1 text-gray-400 hover:bg-gray-50 rounded cursor-pointer"
                         title="Cancel delete"
                       >
                         <svg
@@ -243,7 +243,7 @@ export const ComponentList = ({
                   ) : (
                     <button
                       onClick={() => setDeleteConfirmId(component._id)}
-                      className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                      className="p-2 text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
                       title="Delete component"
                     >
                       <svg

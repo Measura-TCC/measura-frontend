@@ -45,7 +45,9 @@
     "next": "Próximo",
     "back": "Voltar",
     "backToComponentTypes": "Voltar aos Tipos de Componentes",
-    "edit": "Editar"
+    "edit": "Editar",
+    "save": "Salvar",
+    "backToImport": "Voltar para Importação"
   },
   "messages": {
     "noOverviewData": "Nenhum dado de visão geral disponível ainda. Adicione componentes e calcule pontos de função."
@@ -680,11 +682,6 @@
     "allComplete": "Todos os requisitos classificados e preenchidos!",
     "nextToSpecification": "Próximo: Especificação de Componentes",
     "mustClassifyFirst": "Você deve classificar o requisito antes de preencher os campos"
-  },
-  "actions": {
-    "cancel": "Cancelar",
-    "save": "Salvar",
-    "backToImport": "Voltar para Importação"
   },
   "componentTypes": {
     "ALI": "ALI - Arquivo Lógico Interno",

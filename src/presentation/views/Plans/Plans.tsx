@@ -13,6 +13,9 @@ import {
 import { PlansTabs, PlansPageHeader, OrganizationAlert, PlansFilters } from "./components";
 import { DocumentIcon } from "@/presentation/assets/icons";
 import { NewPlanTab, CreatedPlansTab } from "./components/Tabs";
+import { EditPlanModal } from "./components/EditPlanModal";
+import { DeletePlanModal } from "./components/DeletePlanModal";
+import type { MeasurementPlanSummaryDto } from "@/core/types/plans";
 
 export const PlansView = () => {
   const { t } = useTranslation("plans");
@@ -41,6 +44,8 @@ export const PlansView = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<MeasurementPlanStatus | undefined>();
   const [projectFilter, setProjectFilter] = useState<string | undefined>();
+  const [editingPlan, setEditingPlan] = useState<MeasurementPlanSummaryDto | null>(null);
+  const [deletingPlan, setDeletingPlan] = useState<MeasurementPlanSummaryDto | null>(null);
 
   const plansHook = useMeasurementPlans({
     page: currentPage,
@@ -56,11 +61,15 @@ export const PlansView = () => {
     statistics,
     isLoadingPlans,
     isCreatingPlan,
+    isUpdatingPlan,
+    isDeletingPlan,
     plansError,
     canCreatePlan,
     hasOrganization,
     formatDate,
     getStatusColor,
+    updatePlan,
+    deletePlan,
     operationError,
     clearError,
   } = plansHook;
@@ -107,12 +116,18 @@ export const PlansView = () => {
         onViewPlan={(planId) => {
           router.push(`/plans/${planId}`);
         }}
+        onEditPlan={(plan) => {
+          setEditingPlan(plan);
+        }}
+        onDeletePlan={(plan) => {
+          setDeletingPlan(plan);
+        }}
         onPageChange={(page) => {
           setCurrentPage(page);
         }}
         onPageSizeChange={(pageSize) => {
           setPageSize(pageSize);
-          setCurrentPage(1); // Reset to first page when changing page size
+          setCurrentPage(1);
         }}
       />
     ),
@@ -215,6 +230,26 @@ export const PlansView = () => {
       )}
 
       {componentMap[activeTab]}
+
+      {editingPlan && (
+        <EditPlanModal
+          isOpen={Boolean(editingPlan)}
+          onClose={() => setEditingPlan(null)}
+          plan={editingPlan}
+          onUpdate={updatePlan}
+          isUpdating={isUpdatingPlan}
+        />
+      )}
+
+      {deletingPlan && (
+        <DeletePlanModal
+          isOpen={Boolean(deletingPlan)}
+          onClose={() => setDeletingPlan(null)}
+          plan={deletingPlan}
+          onDelete={deletePlan}
+          isDeleting={isDeletingPlan}
+        />
+      )}
     </div>
   );
 };

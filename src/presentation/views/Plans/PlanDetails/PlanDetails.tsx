@@ -9,9 +9,11 @@ import {
 } from "@/core/hooks/measurementPlans";
 import { useMeasurementPlanExport } from "@/core/hooks/measurementPlans";
 import { useProjects } from "@/core/hooks/projects/useProjects";
-import { ExportFormat, MeasurementPlanStatus } from "@/core/types/plans";
+import { ExportFormat, MeasurementPlanStatus, type MeasurementPlanSummaryDto } from "@/core/types/plans";
 import { PlanVisualization } from "../components/PlanVisualization";
 import { PlanGQMStructure } from "../components/PlanGQMStructure";
+import { EditPlanModal } from "../components/EditPlanModal";
+import { DeletePlanModal } from "../components/DeletePlanModal";
 import {
   PlanContentManager,
   PlanHeader,
@@ -31,8 +33,9 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
   const { t } = useTranslation("plans");
   const router = useRouter();
   const [isExporting, setIsExporting] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>('details');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     planName: "",
     associatedProject: "",
@@ -40,8 +43,8 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
     status: MeasurementPlanStatus.DRAFT,
   });
 
-  const { plan, planError, isLoadingPlan } = useMeasurementPlan({ planId });
-  const { deletePlan, updatePlan, isUpdatingPlan, operationError, clearError } =
+  const { plan, planError, isLoadingPlan, mutatePlan } = useMeasurementPlan({ planId });
+  const { deletePlan, updatePlan, isUpdatingPlan, isDeletingPlan, operationError, clearError } =
     useMeasurementPlans();
   const { projects } = useProjects();
   const exportHook = useMeasurementPlanExport({ planId });
@@ -65,20 +68,6 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!plan) return;
-
-    if (confirm(t("planDetails.confirmDelete", { planName: plan.planName }))) {
-      try {
-        await deletePlan(planId);
-        router.push("/plans");
-      } catch (error) {
-        // Error is already handled by the hook
-        console.error("Failed to delete plan:", error);
-      }
-    }
-  };
-
   const handleEditToggle = () => {
     if (!plan) return;
 
@@ -98,21 +87,14 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
 
     try {
       await updatePlan(planId, {
-        planName:
-          editForm.planName !== plan.planName ? editForm.planName : undefined,
-        associatedProject:
-          editForm.associatedProject !== plan.associatedProject
-            ? editForm.associatedProject
-            : undefined,
-        planResponsible:
-          editForm.planResponsible !== plan.planResponsible
-            ? editForm.planResponsible
-            : undefined,
+        planName: editForm.planName !== plan.planName ? editForm.planName : undefined,
+        associatedProject: editForm.associatedProject !== plan.associatedProject ? editForm.associatedProject : undefined,
+        planResponsible: editForm.planResponsible !== plan.planResponsible ? editForm.planResponsible : undefined,
         status: editForm.status !== plan.status ? editForm.status : undefined,
       });
+      await mutatePlan();
       setIsEditing(false);
     } catch (error) {
-      // Error is already handled by the hook
       console.error("Failed to update plan:", error);
     }
   };
@@ -127,12 +109,29 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
     });
   };
 
-  const handleEditFormChange = (
-    field: string,
-    value: string | MeasurementPlanStatus
-  ) => {
+  const handleEditFormChange = (field: string, value: string | MeasurementPlanStatus) => {
     setEditForm((prev) => ({ ...prev, [field]: value }));
   };
+
+  const handleDeletePlan = async (planId: string) => {
+    await deletePlan(planId);
+    router.push("/plans?tab=createdPlans");
+  };
+
+  const planAsSummary: MeasurementPlanSummaryDto | null = plan ? {
+    id: plan.id,
+    planName: plan.planName,
+    associatedProject: plan.associatedProject,
+    planResponsible: plan.planResponsible,
+    status: plan.status,
+    createdAt: plan.createdAt,
+    updatedAt: plan.updatedAt,
+    objectivesCount: plan.objectivesCount,
+    questionsCount: plan.questionsCount,
+    metricsCount: plan.metricsCount,
+    measurementsCount: plan.measurementsCount,
+    progress: plan.progress,
+  } : null;
 
   if (isLoadingPlan) {
     return (
@@ -169,6 +168,7 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
           onCancelEdit={() => {}}
           onExport={() => {}}
           onDelete={() => {}}
+          onDeleteClick={() => {}}
         />
         <Card>
           <CardContent className="text-center py-12">
@@ -197,7 +197,8 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
         onSaveEdit={handleSaveEdit}
         onCancelEdit={handleCancelEdit}
         onExport={handleExport}
-        onDelete={handleDelete}
+        onDelete={() => {}}
+        onDeleteClick={() => setShowDeleteModal(true)}
       />
 
       {/* Error Alert */}
@@ -283,7 +284,11 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
             ) : (
               <PlanContentManager
                 plan={plan}
-                onUpdatePlan={updatePlan}
+                onUpdatePlan={async (id, data) => {
+                  const updated = await updatePlan(id, data);
+                  await mutatePlan();
+                  return updated;
+                }}
                 isReadOnly={false}
               />
             )}
@@ -291,7 +296,6 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
 
           {/* Responsive Sidebar */}
           <div className="space-y-4 lg:space-y-6">
-            {/* <PlanProgressCard progress={plan.progress} /> */}
             <PlanStatisticsCard
               planId={planId}
               objectivesCount={plan.objectivesCount}
@@ -311,6 +315,17 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
         </div>
       ) : (
         <MeasurementMonitoringTab planId={planId} plan={plan} />
+      )}
+
+      {/* Delete Modal */}
+      {showDeleteModal && planAsSummary && (
+        <DeletePlanModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          plan={planAsSummary}
+          onDelete={handleDeletePlan}
+          isDeleting={isDeletingPlan}
+        />
       )}
     </div>
   );

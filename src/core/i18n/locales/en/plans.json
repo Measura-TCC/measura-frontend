@@ -443,8 +443,13 @@
   "planDetails": {
     "back": "Back to Plans",
     "notFound": "Plan not found",
-    "notFoundDescription": "The requested plan could not be found or you don't have access to it."
+    "notFoundDescription": "The requested plan could not be found or you don't have access to it.",
+    "editContent": "Edit Content"
   },
+  "confirmDeleteObjective": "Are you sure you want to delete this objective and all its related items?",
+  "confirmDeleteQuestion": "Are you sure you want to delete this question and all its related items?",
+  "confirmDeleteMetric": "Are you sure you want to delete this metric and all its measurements?",
+  "confirmDeleteMeasurement": "Are you sure you want to delete this measurement?",
   "measurements": {
     "properties": {
       "worklog": "Total hours logged in project period. Exclude vacations/trainings. Consolidate per iteration/release.",
@@ -547,5 +552,24 @@
     "needsAttention": "Needs Attention",
     "allOk": "All indicators within expected range",
     "someNeedAttention": "Some indicators need attention"
-  }
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "editPlanTitle": "Edit Measurement Plan",
+  "editPlanSuccess": "Plan updated successfully!",
+  "editPlanError": "Error updating plan",
+  "deletePlanTitle": "Delete Measurement Plan",
+  "deletePlanWarning": "Only draft plans can be deleted",
+  "deletePlanConfirmation": "Are you sure you want to delete the plan \"{{planName}}\"?",
+  "deletePlanSuccess": "Plan \"{{planName}}\" deleted successfully!",
+  "deletePlanError": "Error deleting plan",
+  "cannotDeleteActive": "Cannot delete active or completed plans. Change status to draft first.",
+  "completedStatusFinal": "Completed status is final and cannot be changed",
+  "selectProject": "Select a project",
+  "required": "is required"
 }

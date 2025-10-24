@@ -494,8 +494,13 @@
     "confirmDelete": "Tem certeza que deseja excluir o plano '{{planName}}'?",
     "planLoadError": "Erro ao carregar o plano",
     "planNotFound": "Plano não encontrado",
-    "detailsTab": "Detalhes do Plano"
+    "detailsTab": "Detalhes do Plano",
+    "editContent": "Editar Conteúdo"
   },
+  "confirmDeleteObjective": "Tem certeza que deseja excluir este objetivo e todos os seus itens relacionados?",
+  "confirmDeleteQuestion": "Tem certeza que deseja excluir esta questão e todos os seus itens relacionados?",
+  "confirmDeleteMetric": "Tem certeza que deseja excluir esta métrica e todas as suas medições?",
+  "confirmDeleteMeasurement": "Tem certeza que deseja excluir esta medição?",
   "measurements": {
     "properties": {
       "worklog": "Total de horas registradas no período do projeto. Excluir férias/treinamentos. Consolidar por iteração/release.",
@@ -644,5 +649,24 @@
     "needsAttention": "Necessita atenção",
     "allOk": "Todos os indicadores dentro do esperado",
     "someNeedAttention": "Alguns indicadores precisam de atenção"
-  }
+  },
+  "actions": {
+    "view": "Visualizar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "cancel": "Cancelar",
+    "save": "Salvar"
+  },
+  "editPlanTitle": "Editar Plano de Medição",
+  "editPlanSuccess": "Plano atualizado com sucesso!",
+  "editPlanError": "Erro ao atualizar plano",
+  "deletePlanTitle": "Excluir Plano de Medição",
+  "deletePlanWarning": "Apenas planos em rascunho podem ser excluídos",
+  "deletePlanConfirmation": "Tem certeza que deseja excluir o plano \"{{planName}}\"?",
+  "deletePlanSuccess": "Plano \"{{planName}}\" excluído com sucesso!",
+  "deletePlanError": "Erro ao excluir plano",
+  "cannotDeleteActive": "Não é possível excluir planos ativos ou concluídos. Altere o status para rascunho primeiro.",
+  "completedStatusFinal": "O status 'concluído' é final e não pode ser alterado",
+  "selectProject": "Selecione um projeto",
+  "required": "é obrigatório"
 }

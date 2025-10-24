@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import {
@@ -40,6 +41,8 @@ interface CreatedPlansTabProps {
   formatDate: (date: Date | string) => string;
   getStatusColor: (status: MeasurementPlanStatus) => string;
   onViewPlan: (planId: string) => void;
+  onEditPlan?: (plan: MeasurementPlanSummaryDto) => void;
+  onDeletePlan?: (plan: MeasurementPlanSummaryDto) => void;
   projects?: Array<{ _id: string; name: string }>;
   pagination?: {
     page: number;
@@ -57,6 +60,8 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
   formatDate,
   getStatusColor,
   onViewPlan,
+  onEditPlan,
+  onDeletePlan,
   projects = [],
   pagination,
   onPageChange,
@@ -64,6 +69,7 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
 }) => {
   const { t } = useTranslation("plans");
   const router = useRouter();
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
   const getProjectName = (projectId: string): string => {
     const project = projects.find((p) => p._id === projectId);
@@ -117,23 +123,95 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
           onClick={() => onViewPlan(plan.id)}
         >
           <CardHeader>
-            <div>
-              <CardTitle className="text-xl mb-2">{plan.planName}</CardTitle>
-              <div className="flex items-center flex-wrap gap-2 md:gap-4 text-sm text-gray-600">
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                    plan.status
-                  )}`}
-                >
-                  {t(`status.${plan.status}`)}
-                </span>
-                <span>
-                  {t("responsible")}: {plan.planResponsible}
-                </span>
-                <span>
-                  {t("project")}: {getProjectName(plan.associatedProject)}
-                </span>
+            <div className="flex justify-between items-start">
+              <div>
+                <CardTitle className="text-xl mb-2">{plan.planName}</CardTitle>
+                <div className="flex items-center flex-wrap gap-2 md:gap-4 text-sm text-gray-600">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                      plan.status
+                    )}`}
+                  >
+                    {t(`status.${plan.status}`)}
+                  </span>
+                  <span>
+                    {t("responsible")}: {plan.planResponsible}
+                  </span>
+                  <span>
+                    {t("project")}: {getProjectName(plan.associatedProject)}
+                  </span>
+                </div>
               </div>
+
+              {(onEditPlan || onDeletePlan) && (
+                <div className="relative">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenMenuId(openMenuId === plan.id ? null : plan.id);
+                    }}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                  >
+                    <svg
+                      className="w-5 h-5 text-gray-600"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                    </svg>
+                  </button>
+
+                  {openMenuId === plan.id && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-10"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenMenuId(null);
+                        }}
+                      />
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 border border-gray-200">
+                        <div className="py-1">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onViewPlan(plan.id);
+                              setOpenMenuId(null);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                          >
+                            {t("actions.view")}
+                          </button>
+                          {onEditPlan && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onEditPlan(plan);
+                                setOpenMenuId(null);
+                              }}
+                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                            >
+                              {t("actions.edit")}
+                            </button>
+                          )}
+                          {onDeletePlan && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onDeletePlan(plan);
+                                setOpenMenuId(null);
+                              }}
+                              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
+                            >
+                              {t("actions.delete")}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           </CardHeader>
           <CardContent>

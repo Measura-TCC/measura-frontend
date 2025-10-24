@@ -45,7 +45,9 @@
     "next": "Next",
     "back": "Back",
     "backToComponentTypes": "Back to Component Types",
-    "edit": "Edit"
+    "edit": "Edit",
+    "save": "Save",
+    "backToImport": "Back to Import"
   },
   "messages": {
     "noOverviewData": "No overview data available yet. Please add components and calculate function points."
@@ -674,11 +676,6 @@
     "allComplete": "All requirements classified and completed!",
     "nextToSpecification": "Next: Component Specification",
     "mustClassifyFirst": "You must classify the requirement before filling the fields"
-  },
-  "actions": {
-    "cancel": "Cancel",
-    "save": "Save",
-    "backToImport": "Back to Import"
   },
   "componentTypes": {
     "ALI": "ILF - Internal Logical File",

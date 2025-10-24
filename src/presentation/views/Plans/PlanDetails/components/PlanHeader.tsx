@@ -22,6 +22,7 @@ interface PlanHeaderProps {
   onCancelEdit: () => void;
   onExport: (format: ExportFormat) => void;
   onDelete: () => void;
+  onDeleteClick?: () => void;
 }
 
 export const PlanHeader: React.FC<PlanHeaderProps> = ({
@@ -35,6 +36,7 @@ export const PlanHeader: React.FC<PlanHeaderProps> = ({
   onCancelEdit,
   onExport,
   onDelete,
+  onDeleteClick,
 }) => {
   const { t } = useTranslation("plans");
   const router = useRouter();
@@ -97,7 +99,7 @@ export const PlanHeader: React.FC<PlanHeaderProps> = ({
             </Button>
             <Button
               variant="danger"
-              onClick={onDelete}
+              onClick={onDeleteClick || onDelete}
               size="sm"
             >
               <TrashIcon className="h-4 w-4 mr-2" />
