@@ -44,7 +44,8 @@
     "continue": "Continue",
     "next": "Next",
     "back": "Back",
-    "backToComponentTypes": "Back to Component Types"
+    "backToComponentTypes": "Back to Component Types",
+    "edit": "Edit"
   },
   "messages": {
     "noOverviewData": "No overview data available yet. Please add components and calculate function points."
@@ -67,6 +68,7 @@
   },
   "components": {
     "title": "Add Components",
+    "addComponents": "Add Components",
     "addALIComponents": "Add ALI Components",
     "addEIComponents": "Add EI Components",
     "addEOComponents": "Add EO Components",
@@ -94,7 +96,10 @@
     "created": "Created",
     "ret": "RET",
     "det": "DET",
-    "ftr": "FTR"
+    "ftr": "FTR",
+    "editingComponent": "Editing component",
+    "editDescription": "Edit the fields below. The backend will automatically recalculate complexity and function points.",
+    "editSuccess": "{{type}} \"{{name}}\" updated successfully! Complexity and function points recalculated."
   },
   "calculations": {
     "title": "Calculation Details",
@@ -403,7 +408,10 @@
       "dataElementTypes": "Data Element Types (DETs)",
       "submit": "Create ALI",
       "submitting": "Creating...",
-      "failedToCreate": "Failed to create ALI component"
+      "failedToCreate": "Failed to create ALI component",
+      "update": "Update ALI",
+      "updating": "Updating...",
+      "failedToUpdate": "Failed to update ALI component"
     },
     "ei": {
       "name": "EI Name",
@@ -414,7 +422,10 @@
       "dataElementTypes": "Data Element Types (DETs)",
       "submit": "Create EI",
       "submitting": "Creating...",
-      "failedToCreate": "Failed to create EI component"
+      "failedToCreate": "Failed to create EI component",
+      "update": "Update EI",
+      "updating": "Updating...",
+      "failedToUpdate": "Failed to update EI component"
     },
     "eo": {
       "name": "EO Name",
@@ -426,7 +437,10 @@
       "dataElementTypes": "Data Element Types (DETs)",
       "submit": "Create EO",
       "submitting": "Creating...",
-      "failedToCreate": "Failed to create EO component"
+      "failedToCreate": "Failed to create EO component",
+      "update": "Update EO",
+      "updating": "Updating...",
+      "failedToUpdate": "Failed to update EO component"
     },
     "eq": {
       "name": "EQ Name",
@@ -469,7 +483,10 @@
       "retrievalLogicLabel": "Retrieval Logic",
       "retrievalLogicPlaceholder": "Description of query logic",
       "creating": "Creating...",
-      "createComponent": "Create EQ Component"
+      "createComponent": "Create EQ Component",
+      "updating": "Updating...",
+      "updateComponent": "Update EQ Component",
+      "failedToUpdate": "Failed to update EQ component"
     },
     "aie": {
       "name": "AIE Name",
@@ -479,7 +496,10 @@
       "externalSystem": "External System",
       "submit": "Create AIE",
       "submitting": "Creating...",
-      "failedToCreate": "Failed to create AIE component"
+      "failedToCreate": "Failed to create AIE component",
+      "update": "Update AIE",
+      "updating": "Updating...",
+      "failedToUpdate": "Failed to update AIE component"
     }
   },
   "status": {

@@ -1,16 +1,39 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useToast } from "@/core/hooks/common/useToast";
 import { ComponentList } from "@/presentation/views/FPA/common/ComponentList";
+import { RequirementImportView } from "@/presentation/views/FPA/FPAWorkflow/RequirementImport/RequirementImportView";
 import { CreateALIForm } from "@/presentation/views/FPA/FPAWorkflow/components/CreateALIForm";
 import { CreateEIForm } from "@/presentation/views/FPA/FPAWorkflow/components/CreateEIForm";
 import { CreateEOForm } from "@/presentation/views/FPA/FPAWorkflow/components/CreateEOForm";
 import { CreateEQForm } from "@/presentation/views/FPA/FPAWorkflow/components/CreateEQForm";
 import { CreateAIEForm } from "@/presentation/views/FPA/FPAWorkflow/components/CreateAIEForm";
 import { PlusIcon } from "@/presentation/assets/icons";
+import { Button } from "@/presentation/components/primitives";
 import type { ComponentResponse } from "@/core/hooks/fpa/components/useComponents";
 
 type ComponentType = "ALI" | "EI" | "EO" | "EQ" | "AIE";
+type ViewMode = "list" | "import" | "edit";
+
+interface ComponentItem {
+  _id: string;
+  name: string;
+  description?: string;
+  complexity?: "LOW" | "MEDIUM" | "HIGH";
+  functionPoints?: number;
+  primaryIntent?: string;
+  recordElementTypes?: number;
+  dataElementTypes?: number;
+  fileTypesReferenced?: number;
+  derivedData?: boolean;
+  outputFormat?: string;
+  retrievalLogic?: string;
+  externalSystem?: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 interface ComponentsTabProps {
   estimateId: string;
@@ -51,52 +74,139 @@ export const ComponentsTab = ({
   onComponentAdded,
 }: ComponentsTabProps) => {
   const { t } = useTranslation("fpa");
+  const toast = useToast();
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [editingComponent, setEditingComponent] = useState<{
+    component: ComponentItem;
+    type: ComponentType;
+  } | null>(null);
 
-  if (!selectedComponentType) {
+  const handleEdit = (component: ComponentItem, type: ComponentType) => {
+    setEditingComponent({ component, type });
+    setViewMode("edit");
+  };
+
+  const handleEditSuccess = () => {
+    const componentTypeName = {
+      ALI: t("components.aliTitle"),
+      AIE: t("components.aieTitle"),
+      EI: t("components.eiTitle"),
+      EO: t("components.eoTitle"),
+      EQ: t("components.eqTitle"),
+    }[editingComponent?.type || "ALI"];
+
+    toast.success({
+      message: t("components.editSuccess", {
+        type: componentTypeName,
+        name: editingComponent?.component.name,
+      }),
+    });
+    setEditingComponent(null);
+    setViewMode("list");
+    onComponentAdded(); // Refresh data
+  };
+
+  const handleCancelEdit = () => {
+    setEditingComponent(null);
+    setViewMode("list");
+  };
+
+  const handleImportComplete = () => {
+    setViewMode("list");
+    onComponentAdded(); // Refresh data
+  };
+
+  // Import View - Reuse requirement import flow
+  if (viewMode === "import") {
+    return (
+      <div>
+        <div className="mb-4">
+          <Button
+            onClick={() => setViewMode("list")}
+            variant="secondary"
+            size="md"
+          >
+            ← {t("actions.back")}
+          </Button>
+        </div>
+        <RequirementImportView onProceed={handleImportComplete} />
+      </div>
+    );
+  }
+
+  // Edit View - Show edit form
+  if (viewMode === "edit" && editingComponent) {
+    return (
+      <div>
+        <div className="mb-4">
+          <Button
+            onClick={handleCancelEdit}
+            variant="secondary"
+            size="md"
+          >
+            ← {t("actions.cancel")}
+          </Button>
+        </div>
+        <div className="bg-background-secondary p-6 rounded-lg mb-4">
+          <h3 className="text-lg font-semibold mb-2 text-default">
+            {t("components.editingComponent")}: {editingComponent.component.name}
+          </h3>
+          <p className="text-sm text-secondary">
+            {t("components.editDescription")}
+          </p>
+        </div>
+        {editingComponent.type === "ALI" && (
+          <CreateALIForm
+            estimateId={estimateId}
+            onSuccess={handleEditSuccess}
+            componentToEdit={editingComponent.component}
+          />
+        )}
+        {editingComponent.type === "EI" && (
+          <CreateEIForm
+            estimateId={estimateId}
+            onSuccess={handleEditSuccess}
+            componentToEdit={editingComponent.component}
+          />
+        )}
+        {editingComponent.type === "EO" && (
+          <CreateEOForm
+            estimateId={estimateId}
+            onSuccess={handleEditSuccess}
+            componentToEdit={editingComponent.component}
+          />
+        )}
+        {editingComponent.type === "EQ" && (
+          <CreateEQForm
+            estimateId={estimateId}
+            onSuccess={handleEditSuccess}
+            componentToEdit={editingComponent.component}
+          />
+        )}
+        {editingComponent.type === "AIE" && (
+          <CreateAIEForm
+            estimateId={estimateId}
+            onSuccess={handleEditSuccess}
+            componentToEdit={editingComponent.component}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // List View - Show components and import button
+  if (viewMode === "list") {
     return (
       <>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          {[
-            {
-              type: "ALI" as ComponentType,
-              label: t("workflow.components.aliLabel"),
-              desc: t("workflow.components.aliDescription"),
-            },
-            {
-              type: "EI" as ComponentType,
-              label: t("workflow.components.eiLabel"),
-              desc: t("workflow.components.eiDescription"),
-            },
-            {
-              type: "EO" as ComponentType,
-              label: t("workflow.components.eoLabel"),
-              desc: t("workflow.components.eoDescription"),
-            },
-            {
-              type: "EQ" as ComponentType,
-              label: t("workflow.components.eqLabel"),
-              desc: t("workflow.components.eqDescription"),
-            },
-            {
-              type: "AIE" as ComponentType,
-              label: t("workflow.components.aieLabel"),
-              desc: t("workflow.components.aieDescription"),
-            },
-          ].map(({ type, label, desc }) => (
-            <button
-              key={type}
-              onClick={() => setSelectedComponentType(type)}
-              className="p-4 border border-border rounded-lg hover:border-primary/30 hover:shadow-sm transition-all text-center bg-background"
-            >
-              <div className="flex flex-col items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <h3 className="font-medium text-default">{label}</h3>
-                  <PlusIcon className="w-4 h-4" />
-                </div>
-                <p className="text-sm text-secondary text-center">{desc}</p>
-              </div>
-            </button>
-          ))}
+        <div className="mb-6 flex justify-end">
+          <Button
+            onClick={() => setViewMode("import")}
+            variant="primary"
+            size="md"
+          >
+            <PlusIcon className="w-4 h-4 mr-2" />
+            {t("components.addComponents")}
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -109,6 +219,7 @@ export const ComponentsTab = ({
               components={aliComponents || []}
               isLoading={isLoadingALI}
               componentType="ALI"
+              onEdit={(component) => handleEdit(component, "ALI")}
               onDelete={(id) => onDeleteComponent(id, "ALI")}
             />
           </div>
@@ -122,6 +233,7 @@ export const ComponentsTab = ({
               components={aieComponents || []}
               isLoading={isLoadingAIE}
               componentType="AIE"
+              onEdit={(component) => handleEdit(component, "AIE")}
               onDelete={(id) => onDeleteComponent(id, "AIE")}
             />
           </div>
@@ -135,6 +247,7 @@ export const ComponentsTab = ({
               components={eiComponents || []}
               isLoading={isLoadingEI}
               componentType="EI"
+              onEdit={(component) => handleEdit(component, "EI")}
               onDelete={(id) => onDeleteComponent(id, "EI")}
             />
           </div>
@@ -148,6 +261,7 @@ export const ComponentsTab = ({
               components={eoComponents || []}
               isLoading={isLoadingEO}
               componentType="EO"
+              onEdit={(component) => handleEdit(component, "EO")}
               onDelete={(id) => onDeleteComponent(id, "EO")}
             />
           </div>
@@ -161,6 +275,7 @@ export const ComponentsTab = ({
               components={eqComponents || []}
               isLoading={isLoadingEQ}
               componentType="EQ"
+              onEdit={(component) => handleEdit(component, "EQ")}
               onDelete={(id) => onDeleteComponent(id, "EQ")}
             />
           </div>
@@ -172,12 +287,13 @@ export const ComponentsTab = ({
   return (
     <div>
       <div className="mb-4">
-        <button
+        <Button
           onClick={() => setSelectedComponentType(null)}
-          className="px-4 py-2 text-primary border border-primary rounded-md hover:bg-primary/5 transition-colors"
+          variant="secondary"
+          size="md"
         >
           ← {t("actions.backToComponentTypes")}
-        </button>
+        </Button>
       </div>
       {selectedComponentType === "ALI" && (
         <CreateALIForm estimateId={estimateId} onSuccess={onComponentAdded} />

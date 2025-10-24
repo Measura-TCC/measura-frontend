@@ -11,15 +11,26 @@ import { Button } from "@/presentation/components/primitives";
 interface CreateALIFormProps {
   estimateId: string;
   onSuccess?: (ali: unknown) => void;
+  componentToEdit?: {
+    _id: string;
+    name: string;
+    description?: string;
+    primaryIntent?: string;
+    recordElementTypes?: number;
+    dataElementTypes?: number;
+    notes?: string;
+  };
 }
 
 export const CreateALIForm = ({
   estimateId,
   onSuccess,
+  componentToEdit,
 }: CreateALIFormProps) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isEditing = !!componentToEdit;
 
   const {
     register,
@@ -28,26 +39,46 @@ export const CreateALIForm = ({
     reset,
   } = useForm<CreateALIData>({
     resolver: zodResolver(createALISchema),
-    defaultValues: {
-      recordElementTypes: 1,
-      dataElementTypes: 1,
-    },
+    defaultValues: componentToEdit
+      ? {
+          name: componentToEdit.name,
+          description: componentToEdit.description || "",
+          primaryIntent: componentToEdit.primaryIntent || "",
+          recordElementTypes: componentToEdit.recordElementTypes || 1,
+          dataElementTypes: componentToEdit.dataElementTypes || 1,
+          notes: componentToEdit.notes || "",
+        }
+      : {
+          recordElementTypes: 1,
+          dataElementTypes: 1,
+        },
   });
 
-  const { createALIComponent } = useFpaComponents();
+  const { createALIComponent, updateALIComponent } = useFpaComponents();
 
   const onSubmit = async (data: CreateALIData) => {
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const result = await createALIComponent({ estimateId, data });
-      reset();
-      onSuccess?.(result);
+      if (isEditing) {
+        const result = await updateALIComponent({
+          estimateId,
+          id: componentToEdit._id,
+          data,
+        });
+        onSuccess?.(result);
+      } else {
+        const result = await createALIComponent({ estimateId, data });
+        reset();
+        onSuccess?.(result);
+      }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
+          : isEditing
+          ? t("componentForms.ali.failedToUpdate")
           : t("componentForms.ali.failedToCreate")
       );
     } finally {
@@ -190,7 +221,11 @@ export const CreateALIForm = ({
           size="md"
         >
           {isSubmitting
-            ? t("componentForms.ali.submitting")
+            ? isEditing
+              ? t("componentForms.ali.updating")
+              : t("componentForms.ali.submitting")
+            : isEditing
+            ? t("componentForms.ali.update")
             : t("componentForms.ali.submit")}
         </Button>
       </div>

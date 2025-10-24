@@ -44,7 +44,8 @@
     "continue": "Continuar",
     "next": "Próximo",
     "back": "Voltar",
-    "backToComponentTypes": "Voltar aos Tipos de Componentes"
+    "backToComponentTypes": "Voltar aos Tipos de Componentes",
+    "edit": "Editar"
   },
   "messages": {
     "noOverviewData": "Nenhum dado de visão geral disponível ainda. Adicione componentes e calcule pontos de função."
@@ -68,6 +69,7 @@
   },
   "components": {
     "title": "Adicionar Componentes",
+    "addComponents": "Adicionar Componentes",
     "addALIComponents": "Adicionar Componentes ALI",
     "addEIComponents": "Adicionar Componentes EE",
     "addEOComponents": "Adicionar Componentes SE",
@@ -95,7 +97,10 @@
     "created": "Criado",
     "ret": "TR",
     "det": "TD",
-    "ftr": "TR"
+    "ftr": "TR",
+    "editingComponent": "Editando componente",
+    "editDescription": "Edite os campos abaixo. O backend recalculará automaticamente a complexidade e pontos de função.",
+    "editSuccess": "{{type}} \"{{name}}\" atualizado com sucesso! APF recalculado."
   },
   "calculations": {
     "title": "Detalhes dos Cálculos",
@@ -409,7 +414,10 @@
       "dataElementTypes": "Tipos de Dados (TD)",
       "submit": "Criar ALI",
       "submitting": "Criando...",
-      "failedToCreate": "Falha ao criar componente ALI"
+      "failedToCreate": "Falha ao criar componente ALI",
+      "update": "Atualizar ALI",
+      "updating": "Atualizando...",
+      "failedToUpdate": "Falha ao atualizar componente ALI"
     },
     "ei": {
       "name": "Nome da EE",
@@ -420,7 +428,10 @@
       "dataElementTypes": "Tipos de Dados (TD)",
       "submit": "Criar EE",
       "submitting": "Criando...",
-      "failedToCreate": "Falha ao criar componente EE"
+      "failedToCreate": "Falha ao criar componente EE",
+      "update": "Atualizar EE",
+      "updating": "Atualizando...",
+      "failedToUpdate": "Falha ao atualizar componente EE"
     },
     "eo": {
       "name": "Nome da SE",
@@ -432,7 +443,10 @@
       "dataElementTypes": "Tipos de Dados (TD)",
       "submit": "Criar SE",
       "submitting": "Criando...",
-      "failedToCreate": "Falha ao criar componente SE"
+      "failedToCreate": "Falha ao criar componente SE",
+      "update": "Atualizar SE",
+      "updating": "Atualizando...",
+      "failedToUpdate": "Falha ao atualizar componente SE"
     },
     "eq": {
       "name": "Nome da CE",
@@ -441,9 +455,12 @@
       "retrievalLogicPlaceholder": "Descreva como os dados são recuperados e apresentados...",
       "fileTypesReferenced": "Tipos de Registro (TR)",
       "dataElementTypes": "Tipos de Dados (TD)",
-      "submit": "Criar CE",
-      "submitting": "Criando...",
+      "creating": "Criando...",
+      "createComponent": "Criar CE",
       "failedToCreate": "Falha ao criar componente CE",
+      "updating": "Atualizando...",
+      "updateComponent": "Atualizar CE",
+      "failedToUpdate": "Falha ao atualizar componente CE",
       "calculationMethod": "Método de Cálculo da CE",
       "useSpecialCalculation": "Usar cálculo especial (entrada e saída separadas)",
       "specialCalculationRecommendation": "Recomendado quando entrada e saída têm complexidades diferentes",
@@ -485,7 +502,10 @@
       "externalSystem": "Sistema Externo",
       "submit": "Criar AIE",
       "submitting": "Criando...",
-      "failedToCreate": "Falha ao criar componente AIE"
+      "failedToCreate": "Falha ao criar componente AIE",
+      "update": "Atualizar AIE",
+      "updating": "Atualizando...",
+      "failedToUpdate": "Falha ao atualizar componente AIE"
     }
   },
   "status": {

@@ -11,12 +11,24 @@ import { Button } from "@/presentation/components/primitives";
 interface CreateEOFormProps {
   estimateId: string;
   onSuccess?: (eo: unknown) => void;
+  componentToEdit?: {
+    _id: string;
+    name: string;
+    description?: string;
+    primaryIntent?: string;
+    derivedData?: boolean;
+    outputFormat?: string;
+    fileTypesReferenced?: number;
+    dataElementTypes?: number;
+    notes?: string;
+  };
 }
 
-export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
+export const CreateEOForm = ({ estimateId, onSuccess, componentToEdit }: CreateEOFormProps) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isEditing = !!componentToEdit;
 
   const {
     register,
@@ -25,22 +37,45 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
     reset,
   } = useForm<CreateEOData>({
     resolver: zodResolver(createEOSchema),
+    defaultValues: componentToEdit
+      ? {
+          name: componentToEdit.name,
+          description: componentToEdit.description || "",
+          primaryIntent: componentToEdit.primaryIntent || "",
+          derivedData: componentToEdit.derivedData || false,
+          outputFormat: componentToEdit.outputFormat || "",
+          fileTypesReferenced: componentToEdit.fileTypesReferenced || 0,
+          dataElementTypes: componentToEdit.dataElementTypes || 0,
+          notes: componentToEdit.notes || "",
+        }
+      : undefined,
   });
 
-  const { createEOComponent } = useFpaComponents();
+  const { createEOComponent, updateEOComponent } = useFpaComponents();
 
   const onSubmit = async (data: CreateEOData) => {
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const result = await createEOComponent({ estimateId, data });
-      reset();
-      onSuccess?.(result);
+      if (isEditing) {
+        const result = await updateEOComponent({
+          estimateId,
+          id: componentToEdit._id,
+          data,
+        });
+        onSuccess?.(result);
+      } else {
+        const result = await createEOComponent({ estimateId, data });
+        reset();
+        onSuccess?.(result);
+      }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
+          : isEditing
+          ? t("componentForms.eo.failedToUpdate")
           : t("componentForms.eo.failedToCreate")
       );
     } finally {
@@ -224,7 +259,11 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
           size="md"
         >
           {isSubmitting
-            ? t("componentForms.eo.submitting")
+            ? isEditing
+              ? t("componentForms.eo.updating")
+              : t("componentForms.eo.submitting")
+            : isEditing
+            ? t("componentForms.eo.update")
             : t("componentForms.eo.submit")}
         </Button>
       </div>

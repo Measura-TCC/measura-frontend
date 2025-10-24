@@ -11,12 +11,28 @@ import { Button } from "@/presentation/components/primitives";
 interface CreateEQFormProps {
   estimateId: string;
   onSuccess: () => void;
+  componentToEdit?: {
+    _id: string;
+    name: string;
+    description?: string;
+    primaryIntent?: string;
+    retrievalLogic?: string;
+    useSpecialCalculation?: boolean;
+    fileTypesReferenced?: number;
+    dataElementTypes?: number;
+    inputFtr?: number;
+    inputDet?: number;
+    outputFtr?: number;
+    outputDet?: number;
+    notes?: string;
+  };
 }
 
-export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
+export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateEQFormProps) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isEditing = !!componentToEdit;
 
   const {
     register,
@@ -27,22 +43,37 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
     reset,
   } = useForm<CreateEQData>({
     resolver: zodResolver(createEQSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      primaryIntent: "",
-      retrievalLogic: "",
-      useSpecialCalculation: false,
-      fileTypesReferenced: 0,
-      dataElementTypes: 1,
-      inputFtr: 0,
-      inputDet: 1,
-      outputFtr: 0,
-      outputDet: 1,
-    },
+    defaultValues: componentToEdit
+      ? {
+          name: componentToEdit.name,
+          description: componentToEdit.description || "",
+          primaryIntent: componentToEdit.primaryIntent || "",
+          retrievalLogic: componentToEdit.retrievalLogic || "",
+          useSpecialCalculation: componentToEdit.useSpecialCalculation || false,
+          fileTypesReferenced: componentToEdit.fileTypesReferenced || 0,
+          dataElementTypes: componentToEdit.dataElementTypes || 1,
+          inputFtr: componentToEdit.inputFtr || 0,
+          inputDet: componentToEdit.inputDet || 1,
+          outputFtr: componentToEdit.outputFtr || 0,
+          outputDet: componentToEdit.outputDet || 1,
+          notes: componentToEdit.notes || "",
+        }
+      : {
+          name: "",
+          description: "",
+          primaryIntent: "",
+          retrievalLogic: "",
+          useSpecialCalculation: false,
+          fileTypesReferenced: 0,
+          dataElementTypes: 1,
+          inputFtr: 0,
+          inputDet: 1,
+          outputFtr: 0,
+          outputDet: 1,
+        },
   });
 
-  const { createEQComponent } = useFpaComponents();
+  const { createEQComponent, updateEQComponent } = useFpaComponents();
 
   const useSpecialCalculation = watch("useSpecialCalculation");
   const inputFtr = watch("inputFtr");
@@ -103,15 +134,25 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
     setError(null);
 
     try {
-      await createEQComponent({ estimateId, data });
-
-      reset();
-      onSuccess?.();
+      if (isEditing) {
+        await updateEQComponent({
+          estimateId,
+          id: componentToEdit._id,
+          data,
+        });
+        onSuccess?.();
+      } else {
+        await createEQComponent({ estimateId, data });
+        reset();
+        onSuccess?.();
+      }
     } catch (err) {
-      console.error("Error creating EQ component:", err);
+      console.error(`Error ${isEditing ? 'updating' : 'creating'} EQ component:`, err);
       setError(
         err instanceof Error
           ? err.message
+          : isEditing
+          ? t("componentForms.eq.failedToUpdate")
           : t("componentForms.eq.failedToCreate")
       );
     } finally {
@@ -425,7 +466,11 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
           size="md"
         >
           {isSubmitting
-            ? t("componentForms.eq.creating")
+            ? isEditing
+              ? t("componentForms.eq.updating")
+              : t("componentForms.eq.creating")
+            : isEditing
+            ? t("componentForms.eq.updateComponent")
             : t("componentForms.eq.createComponent")}
         </Button>
       </div>

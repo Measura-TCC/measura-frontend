@@ -25,12 +25,23 @@ interface EIResponse {
 interface CreateEIFormProps {
   estimateId: string;
   onSuccess?: (ei: EIResponse) => void;
+  componentToEdit?: {
+    _id: string;
+    name: string;
+    description?: string;
+    primaryIntent?: string;
+    processingLogic?: string;
+    fileTypesReferenced?: number;
+    dataElementTypes?: number;
+    notes?: string;
+  };
 }
 
-export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
+export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateEIFormProps) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isEditing = !!componentToEdit;
 
   const {
     register,
@@ -39,22 +50,44 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
     reset,
   } = useForm<CreateEIData>({
     resolver: zodResolver(createEISchema),
+    defaultValues: componentToEdit
+      ? {
+          name: componentToEdit.name,
+          description: componentToEdit.description || "",
+          primaryIntent: componentToEdit.primaryIntent || "",
+          processingLogic: componentToEdit.processingLogic || "",
+          fileTypesReferenced: componentToEdit.fileTypesReferenced || 0,
+          dataElementTypes: componentToEdit.dataElementTypes || 0,
+          notes: componentToEdit.notes || "",
+        }
+      : undefined,
   });
 
-  const { createEIComponent } = useFpaComponents();
+  const { createEIComponent, updateEIComponent } = useFpaComponents();
 
   const onSubmit = async (data: CreateEIData) => {
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const result = await createEIComponent({ estimateId, data });
-      reset();
-      onSuccess?.(result as unknown as EIResponse);
+      if (isEditing) {
+        const result = await updateEIComponent({
+          estimateId,
+          id: componentToEdit._id,
+          data,
+        });
+        onSuccess?.(result as unknown as EIResponse);
+      } else {
+        const result = await createEIComponent({ estimateId, data });
+        reset();
+        onSuccess?.(result as unknown as EIResponse);
+      }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
+          : isEditing
+          ? t("componentForms.ei.failedToUpdate")
           : t("componentForms.ei.failedToCreate")
       );
     } finally {
@@ -218,7 +251,11 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
           size="md"
         >
           {isSubmitting
-            ? t("componentForms.ei.submitting")
+            ? isEditing
+              ? t("componentForms.ei.updating")
+              : t("componentForms.ei.submitting")
+            : isEditing
+            ? t("componentForms.ei.update")
             : t("componentForms.ei.submit")}
         </Button>
       </div>

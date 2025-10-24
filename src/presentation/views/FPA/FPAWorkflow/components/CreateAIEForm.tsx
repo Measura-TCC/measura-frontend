@@ -11,15 +11,27 @@ import { Button } from "@/presentation/components/primitives";
 interface CreateAIEFormProps {
   estimateId: string;
   onSuccess?: (aie: unknown) => void;
+  componentToEdit?: {
+    _id: string;
+    name: string;
+    description?: string;
+    primaryIntent?: string;
+    recordElementTypes?: number;
+    dataElementTypes?: number;
+    externalSystem?: string;
+    notes?: string;
+  };
 }
 
 export const CreateAIEForm = ({
   estimateId,
   onSuccess,
+  componentToEdit,
 }: CreateAIEFormProps) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isEditing = !!componentToEdit;
 
   const {
     register,
@@ -28,22 +40,44 @@ export const CreateAIEForm = ({
     reset,
   } = useForm<CreateAIEData>({
     resolver: zodResolver(createAIESchema),
+    defaultValues: componentToEdit
+      ? {
+          name: componentToEdit.name,
+          description: componentToEdit.description || "",
+          primaryIntent: componentToEdit.primaryIntent || "",
+          recordElementTypes: componentToEdit.recordElementTypes || 1,
+          dataElementTypes: componentToEdit.dataElementTypes || 1,
+          externalSystem: componentToEdit.externalSystem || "",
+          notes: componentToEdit.notes || "",
+        }
+      : undefined,
   });
 
-  const { createAIEComponent } = useFpaComponents();
+  const { createAIEComponent, updateAIEComponent } = useFpaComponents();
 
   const onSubmit = async (data: CreateAIEData) => {
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const result = await createAIEComponent({ estimateId, data });
-      reset();
-      onSuccess?.(result);
+      if (isEditing) {
+        const result = await updateAIEComponent({
+          estimateId,
+          id: componentToEdit._id,
+          data,
+        });
+        onSuccess?.(result);
+      } else {
+        const result = await createAIEComponent({ estimateId, data });
+        reset();
+        onSuccess?.(result);
+      }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
+          : isEditing
+          ? t("componentForms.aie.failedToUpdate")
           : t("componentForms.aie.failedToCreate")
       );
     } finally {
@@ -206,7 +240,11 @@ export const CreateAIEForm = ({
           size="md"
         >
           {isSubmitting
-            ? t("componentForms.aie.submitting")
+            ? isEditing
+              ? t("componentForms.aie.updating")
+              : t("componentForms.aie.submitting")
+            : isEditing
+            ? t("componentForms.aie.update")
             : t("componentForms.aie.submit")}
         </Button>
       </div>

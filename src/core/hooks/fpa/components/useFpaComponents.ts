@@ -197,6 +197,87 @@ export const useFpaComponentActions = () => {
     }
   };
 
+  const updateALIComponent = async (params: {
+    estimateId: string;
+    id: string;
+    data: Partial<CreateALIData>;
+  }) => {
+    try {
+      const result = await fpaComponentService.updateALIComponent(params);
+      // Backend auto-recalculates complexity & FP, invalidate caches for all tabs
+      await mutate(`/estimates/${params.estimateId}/components/ilf`);
+      await mutate(`/estimates/${params.estimateId}`);
+      await mutate(`/estimates/${params.estimateId}/overview`);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const updateEIComponent = async (params: {
+    estimateId: string;
+    id: string;
+    data: Partial<CreateEIData>;
+  }) => {
+    try {
+      const result = await fpaComponentService.updateEIComponent(params);
+      await mutate(`/estimates/${params.estimateId}/components/ei`);
+      await mutate(`/estimates/${params.estimateId}`);
+      await mutate(`/estimates/${params.estimateId}/overview`);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const updateEOComponent = async (params: {
+    estimateId: string;
+    id: string;
+    data: Partial<CreateEOData>;
+  }) => {
+    try {
+      const result = await fpaComponentService.updateEOComponent(params);
+      await mutate(`/estimates/${params.estimateId}/components/eo`);
+      await mutate(`/estimates/${params.estimateId}`);
+      await mutate(`/estimates/${params.estimateId}/overview`);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const updateEQComponent = async (params: {
+    estimateId: string;
+    id: string;
+    data: Partial<CreateEQData>;
+  }) => {
+    try {
+      const result = await fpaComponentService.updateEQComponent(params);
+      await mutate(`/estimates/${params.estimateId}/components/eq`);
+      await mutate(`/estimates/${params.estimateId}`);
+      await mutate(`/estimates/${params.estimateId}/overview`);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const updateAIEComponent = async (params: {
+    estimateId: string;
+    id: string;
+    data: Partial<CreateAIEData>;
+  }) => {
+    try {
+      const result = await fpaComponentService.updateAIEComponent(params);
+      await mutate(`/estimates/${params.estimateId}/components/eif`);
+      await mutate(`/estimates/${params.estimateId}`);
+      await mutate(`/estimates/${params.estimateId}/overview`);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const invalidateAllComponents = async (estimateId: string) => {
     await mutate(`/estimates/${estimateId}/components/ilf`);
     await mutate(`/estimates/${estimateId}/components/ei`);
@@ -204,6 +285,7 @@ export const useFpaComponentActions = () => {
     await mutate(`/estimates/${estimateId}/components/eq`);
     await mutate(`/estimates/${estimateId}/components/eif`);
     await mutate(`/estimates/${estimateId}`);
+    await mutate(`/estimates/${estimateId}/overview`);
   };
 
   return {
@@ -212,6 +294,11 @@ export const useFpaComponentActions = () => {
     createEOComponent,
     createEQComponent,
     createAIEComponent,
+    updateALIComponent,
+    updateEIComponent,
+    updateEOComponent,
+    updateEQComponent,
+    updateAIEComponent,
     invalidateAllComponents,
   };
 };
