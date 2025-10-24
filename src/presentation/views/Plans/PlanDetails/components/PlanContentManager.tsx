@@ -10,21 +10,26 @@ import {
 import {
   PlusIcon,
   TrashIcon,
-  GearIcon,
+  PencilIcon,
   ChevronDownIcon,
   ChevronRightIcon,
 } from "@/presentation/assets/icons";
 import type {
   MeasurementPlanResponseDto,
+  Objective,
+  Question,
+  Metric,
+  Measurement,
 } from "@/core/types/plans";
 import { CustomQuestionModal } from "../../components/Tabs/NewPlanTab/components/CustomQuestionModal";
 import { CustomMetricModal } from "../../components/Tabs/NewPlanTab/components/CustomMetricModal";
 import { CustomMeasurementModal } from "../../components/Tabs/NewPlanTab/components/CustomMeasurementModal";
-import { availableObjectives } from "../../components/Tabs/NewPlanTab/utils/stepData";
+import { CustomObjectiveModal } from "../../components/Tabs/NewPlanTab/components/CustomObjectiveModal";
+import { ConfirmDeleteModal } from "@/presentation/components/modals/ConfirmDeleteModal";
+import { useMeasurementPlanOperations } from "@/core/hooks/measurementPlans/useMeasurementPlanOperations";
 
 interface PlanContentManagerProps {
   plan: MeasurementPlanResponseDto;
-  onUpdatePlan: (planId: string, updates: any) => Promise<MeasurementPlanResponseDto>;
   isReadOnly?: boolean;
 }
 
@@ -34,202 +39,245 @@ interface ExpandedState {
 
 export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
   plan,
-  onUpdatePlan,
   isReadOnly = false,
 }) => {
   const { t } = useTranslation("plans");
   const [expanded, setExpanded] = useState<ExpandedState>({});
+  const [showObjectiveModal, setShowObjectiveModal] = useState(false);
+  const [editingObjective, setEditingObjective] = useState<Objective | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{
+    type: "objective" | "question" | "metric" | "measurement";
+    id: string;
+    title: string;
+    parentIds?: string[];
+  } | null>(null);
   const [editingItem, setEditingItem] = useState<{
     type: "objective" | "question" | "metric" | "measurement";
     id?: string;
+    data?: Objective | Question | Metric | Measurement;
     parentIds?: string[];
   } | null>(null);
-  const [showObjectiveDropdown, setShowObjectiveDropdown] = useState(false);
+
+  const {
+    addObjective,
+    updateObjective,
+    deleteObjective,
+    addQuestion,
+    updateQuestion,
+    deleteQuestion,
+    addMetric,
+    updateMetric,
+    deleteMetric,
+    addMeasurement,
+    updateMeasurement,
+    deleteMeasurement,
+  } = useMeasurementPlanOperations({ planId: plan.id });
 
   const toggleExpanded = (id: string) => {
     setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleAddObjective = (objective: any) => {
-    const updatedObjectives = [...(plan.objectives || []), objective];
-    onUpdatePlan(plan.id, { objectives: updatedObjectives });
-    setShowObjectiveDropdown(false);
+  const handleAddObjective = async (objective: any) => {
+    try {
+      if (editingObjective?._id) {
+        // Update existing objective
+        await updateObjective(editingObjective._id, { objectiveTitle: objective.objectiveTitle, questions: [] });
+        setEditingObjective(null);
+      } else {
+        // Add new objective
+        await addObjective({ objectiveTitle: objective.objectiveTitle, questions: [] });
+      }
+      setShowObjectiveModal(false);
+    } catch (error) {
+      console.error("Failed to add/update objective:", error);
+    }
   };
 
-  const handleDeleteObjective = async (objectiveTitle: string) => {
-    if (!confirm(t("confirmDeleteObjective"))) return;
-    const updatedObjectives = plan.objectives?.filter(obj => obj.objectiveTitle !== objectiveTitle);
-    await onUpdatePlan(plan.id, { objectives: updatedObjectives });
+  const handleEditObjective = (objective: Objective) => {
+    setEditingObjective(objective);
+    setShowObjectiveModal(true);
   };
 
-  const handleAddQuestion = (objectiveTitle: string) => {
-    setEditingItem({ type: "question", parentIds: [objectiveTitle] });
+  const handleDeleteObjective = async (objective: Objective) => {
+    setDeleteConfirm({
+      type: "objective",
+      id: objective._id!,
+      title: t(objective.objectiveTitle),
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteConfirm) return;
+
+    try {
+      switch (deleteConfirm.type) {
+        case "objective":
+          await deleteObjective(deleteConfirm.id);
+          break;
+        case "question":
+          if (deleteConfirm.parentIds) {
+            await deleteQuestion(deleteConfirm.parentIds[0], deleteConfirm.id);
+          }
+          break;
+        case "metric":
+          if (deleteConfirm.parentIds) {
+            await deleteMetric(deleteConfirm.parentIds[0], deleteConfirm.parentIds[1], deleteConfirm.id);
+          }
+          break;
+        case "measurement":
+          if (deleteConfirm.parentIds) {
+            await deleteMeasurement(
+              deleteConfirm.parentIds[0],
+              deleteConfirm.parentIds[1],
+              deleteConfirm.parentIds[2],
+              deleteConfirm.id
+            );
+          }
+          break;
+      }
+      setDeleteConfirm(null);
+    } catch (error) {
+      console.error(`Failed to delete ${deleteConfirm.type}:`, error);
+    }
+  };
+
+  const handleAddQuestion = (objectiveId: string) => {
+    setEditingItem({ type: "question", parentIds: [objectiveId] });
   };
 
   const handleSaveQuestion = async (question: any) => {
     if (!editingItem?.parentIds) return;
 
-    const [objectiveTitle] = editingItem.parentIds;
-    const updatedObjectives = plan.objectives?.map(obj => {
-      if (obj.objectiveTitle === objectiveTitle) {
-        return {
-          ...obj,
-          questions: [...(obj.questions || []), question],
-        };
+    const [objectiveId] = editingItem.parentIds;
+    try {
+      if (editingItem.id) {
+        // Edit mode
+        await updateQuestion(objectiveId, editingItem.id, { questionText: question.questionText, metrics: [] });
+      } else {
+        // Add mode
+        await addQuestion(objectiveId, { questionText: question.questionText, metrics: [] });
       }
-      return obj;
-    });
-
-    await onUpdatePlan(plan.id, { objectives: updatedObjectives });
-    setEditingItem(null);
+      setEditingItem(null);
+    } catch (error) {
+      console.error("Failed to save question:", error);
+    }
   };
 
-  const handleDeleteQuestion = async (objectiveTitle: string, questionText: string) => {
-    if (!confirm(t("confirmDeleteQuestion"))) return;
-
-    const updatedObjectives = plan.objectives?.map(obj => {
-      if (obj.objectiveTitle === objectiveTitle) {
-        return {
-          ...obj,
-          questions: obj.questions?.filter(q => q.questionText !== questionText),
-        };
-      }
-      return obj;
+  const handleEditQuestion = (objectiveId: string, question: Question) => {
+    setEditingItem({
+      type: "question",
+      id: question._id,
+      data: question,
+      parentIds: [objectiveId]
     });
-
-    await onUpdatePlan(plan.id, { objectives: updatedObjectives });
   };
 
-  const handleAddMetric = (objectiveTitle: string, questionText: string) => {
-    setEditingItem({ type: "metric", parentIds: [objectiveTitle, questionText] });
+  const handleDeleteQuestion = async (objectiveId: string, question: Question) => {
+    setDeleteConfirm({
+      type: "question",
+      id: question._id!,
+      title: question.questionText,
+      parentIds: [objectiveId],
+    });
+  };
+
+  const handleAddMetric = (objectiveId: string, questionId: string) => {
+    setEditingItem({ type: "metric", parentIds: [objectiveId, questionId] });
   };
 
   const handleSaveMetric = async (metric: any) => {
     if (!editingItem?.parentIds) return;
 
-    const [objectiveTitle, questionText] = editingItem.parentIds;
-    const updatedObjectives = plan.objectives?.map(obj => {
-      if (obj.objectiveTitle === objectiveTitle) {
-        return {
-          ...obj,
-          questions: obj.questions?.map(q => {
-            if (q.questionText === questionText) {
-              return {
-                ...q,
-                metrics: [...(q.metrics || []), metric],
-              };
-            }
-            return q;
-          }),
-        };
+    const [objectiveId, questionId] = editingItem.parentIds;
+    try {
+      if (editingItem.id) {
+        // Edit mode
+        await updateMetric(objectiveId, questionId, editingItem.id, {
+          ...metric,
+          measurements: metric.measurements || []
+        });
+      } else {
+        // Add mode
+        await addMetric(objectiveId, questionId, {
+          ...metric,
+          measurements: metric.measurements || []
+        });
       }
-      return obj;
-    });
-
-    await onUpdatePlan(plan.id, { objectives: updatedObjectives });
-    setEditingItem(null);
+      setEditingItem(null);
+    } catch (error) {
+      console.error("Failed to save metric:", error);
+    }
   };
 
-  const handleDeleteMetric = async (objectiveTitle: string, questionText: string, metricMnemonic: string) => {
-    if (!confirm(t("confirmDeleteMetric"))) return;
-
-    const updatedObjectives = plan.objectives?.map(obj => {
-      if (obj.objectiveTitle === objectiveTitle) {
-        return {
-          ...obj,
-          questions: obj.questions?.map(q => {
-            if (q.questionText === questionText) {
-              return {
-                ...q,
-                metrics: q.metrics?.filter(m => m.metricMnemonic !== metricMnemonic),
-              };
-            }
-            return q;
-          }),
-        };
-      }
-      return obj;
+  const handleEditMetric = (objectiveId: string, questionId: string, metric: Metric) => {
+    setEditingItem({
+      type: "metric",
+      id: metric._id,
+      data: metric,
+      parentIds: [objectiveId, questionId]
     });
-
-    await onUpdatePlan(plan.id, { objectives: updatedObjectives });
   };
 
-  const handleAddMeasurement = (objectiveTitle: string, questionText: string, metricMnemonic: string) => {
+  const handleDeleteMetric = async (objectiveId: string, questionId: string, metric: Metric) => {
+    setDeleteConfirm({
+      type: "metric",
+      id: metric._id!,
+      title: metric.metricName,
+      parentIds: [objectiveId, questionId],
+    });
+  };
+
+  const handleAddMeasurement = (objectiveId: string, questionId: string, metricId: string) => {
     setEditingItem({
       type: "measurement",
-      parentIds: [objectiveTitle, questionText, metricMnemonic]
+      parentIds: [objectiveId, questionId, metricId]
     });
   };
 
   const handleSaveMeasurement = async (measurement: any) => {
     if (!editingItem?.parentIds) return;
 
-    const [objectiveTitle, questionText, metricMnemonic] = editingItem.parentIds;
-    const updatedObjectives = plan.objectives?.map(obj => {
-      if (obj.objectiveTitle === objectiveTitle) {
-        return {
-          ...obj,
-          questions: obj.questions?.map(q => {
-            if (q.questionText === questionText) {
-              return {
-                ...q,
-                metrics: q.metrics?.map(m => {
-                  if (m.metricMnemonic === metricMnemonic) {
-                    return {
-                      ...m,
-                      measurements: [...(m.measurements || []), measurement],
-                    };
-                  }
-                  return m;
-                }),
-              };
-            }
-            return q;
-          }),
-        };
+    const [objectiveId, questionId, metricId] = editingItem.parentIds;
+    try {
+      if (editingItem.id) {
+        // Edit mode
+        await updateMeasurement(objectiveId, questionId, metricId, editingItem.id, measurement);
+      } else {
+        // Add mode
+        await addMeasurement(objectiveId, questionId, metricId, measurement);
       }
-      return obj;
-    });
+      setEditingItem(null);
+    } catch (error) {
+      console.error("Failed to save measurement:", error);
+    }
+  };
 
-    await onUpdatePlan(plan.id, { objectives: updatedObjectives });
-    setEditingItem(null);
+  const handleEditMeasurement = (
+    objectiveId: string,
+    questionId: string,
+    metricId: string,
+    measurement: Measurement
+  ) => {
+    setEditingItem({
+      type: "measurement",
+      id: measurement._id,
+      data: measurement,
+      parentIds: [objectiveId, questionId, metricId]
+    });
   };
 
   const handleDeleteMeasurement = async (
-    objectiveTitle: string,
-    questionText: string,
-    metricMnemonic: string,
-    measurementAcronym: string
+    objectiveId: string,
+    questionId: string,
+    metricId: string,
+    measurement: Measurement
   ) => {
-    if (!confirm(t("confirmDeleteMeasurement"))) return;
-
-    const updatedObjectives = plan.objectives?.map(obj => {
-      if (obj.objectiveTitle === objectiveTitle) {
-        return {
-          ...obj,
-          questions: obj.questions?.map(q => {
-            if (q.questionText === questionText) {
-              return {
-                ...q,
-                metrics: q.metrics?.map(m => {
-                  if (m.metricMnemonic === metricMnemonic) {
-                    return {
-                      ...m,
-                      measurements: m.measurements?.filter(meas => meas.measurementAcronym !== measurementAcronym),
-                    };
-                  }
-                  return m;
-                }),
-              };
-            }
-            return q;
-          }),
-        };
-      }
-      return obj;
+    setDeleteConfirm({
+      type: "measurement",
+      id: measurement._id!,
+      title: measurement.measurementEntity,
+      parentIds: [objectiveId, questionId, metricId],
     });
-
-    await onUpdatePlan(plan.id, { objectives: updatedObjectives });
   };
 
   const renderObjective = (objective: any, index: number) => {
@@ -239,9 +287,8 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     return (
       <div key={objId} className="border border-gray-200 rounded-lg">
         <div className="flex items-center justify-between p-4 bg-blue-50">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 flex-1 cursor-pointer" onClick={() => toggleExpanded(objId)}>
             <button
-              onClick={() => toggleExpanded(objId)}
               className="p-1 hover:bg-blue-100 rounded"
             >
               {isExpanded ? (
@@ -256,7 +303,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               </div>
               <div>
                 <h3 className="font-medium text-gray-900">
-                  {objective.objectiveTitle}
+                  {t(objective.objectiveTitle)}
                 </h3>
                 <p className="text-sm text-gray-500">
                   {objective.questions?.length || 0} {t("workflow.questions")}
@@ -269,7 +316,10 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleAddQuestion(objective.objectiveTitle)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddQuestion(objective._id!);
+                }}
                 className="text-blue-600 hover:text-blue-700"
               >
                 <PlusIcon className="w-4 h-4 mr-1" />
@@ -278,14 +328,20 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setEditingItem({ type: "objective", id: objective.objectiveTitle })}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditObjective(objective);
+                }}
               >
-                <GearIcon className="w-4 h-4" />
+                <PencilIcon className="w-4 h-4" />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleDeleteObjective(objective.objectiveTitle)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteObjective(objective);
+                }}
                 className="text-red-600 hover:text-red-700"
               >
                 <TrashIcon className="w-4 h-4" />
@@ -297,16 +353,16 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
         {isExpanded && (
           <div className="p-4 space-y-4">
             {objective.questions?.map((question: any, qIndex: number) =>
-              renderQuestion(question, qIndex, objective.objectiveTitle)
+              renderQuestion(question, qIndex, objective._id!)
             )}
             {(!objective.questions || objective.questions.length === 0) && (
               <div className="text-center py-4 text-gray-500">
                 <p>{t("noQuestionsYet")}</p>
                 {!isReadOnly && (
                   <Button
-                    variant="ghost"
+                    variant="primary"
                     size="sm"
-                    onClick={() => handleAddQuestion(objective.objectiveTitle)}
+                    onClick={() => handleAddQuestion(objective._id!)}
                     className="mt-2"
                   >
                     <PlusIcon className="w-4 h-4 mr-1" />
@@ -321,8 +377,8 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     );
   };
 
-  const renderQuestion = (question: any, index: number, objectiveTitle: string) => {
-    const qId = `q-${objectiveTitle}-${index}`;
+  const renderQuestion = (question: any, index: number, objectiveId: string) => {
+    const qId = `q-${objectiveId}-${index}`;
     const isExpanded = expanded[qId];
 
     return (
@@ -358,7 +414,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleAddMetric(objectiveTitle, question.questionText)}
+                onClick={() => handleAddMetric(objectiveId, question._id!)}
                 className="text-green-600 hover:text-green-700"
               >
                 <PlusIcon className="w-3 h-3 mr-1" />
@@ -367,18 +423,14 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setEditingItem({
-                  type: "question",
-                  id: question.questionText,
-                  parentIds: [objectiveTitle]
-                })}
+                onClick={() => handleEditQuestion(objectiveId, question)}
               >
-                <GearIcon className="w-3 h-3" />
+                <PencilIcon className="w-3 h-3" />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleDeleteQuestion(objectiveTitle, question.questionText)}
+                onClick={() => handleDeleteQuestion(objectiveId, question)}
                 className="text-red-600 hover:text-red-700"
               >
                 <TrashIcon className="w-3 h-3" />
@@ -390,7 +442,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
         {isExpanded && (
           <div className="p-3 space-y-3">
             {question.metrics?.map((metric: any, mIndex: number) =>
-              renderMetric(metric, mIndex, objectiveTitle, question.questionText)
+              renderMetric(metric, mIndex, objectiveId, question._id!)
             )}
             {(!question.metrics || question.metrics.length === 0) && (
               <div className="text-center py-3 text-gray-500">
@@ -399,7 +451,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleAddMetric(objectiveTitle, question.questionText)}
+                    onClick={() => handleAddMetric(objectiveId, question._id!)}
                     className="mt-2"
                   >
                     <PlusIcon className="w-4 h-4 mr-1" />
@@ -414,8 +466,8 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     );
   };
 
-  const renderMetric = (metric: any, index: number, objectiveTitle: string, questionText: string) => {
-    const mId = `m-${objectiveTitle}-${questionText}-${index}`;
+  const renderMetric = (metric: any, index: number, objectiveId: string, questionId: string) => {
+    const mId = `m-${objectiveId}-${questionId}-${index}`;
     const isExpanded = expanded[mId];
 
     return (
@@ -451,27 +503,23 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleAddMeasurement(objectiveTitle, questionText, metric.metricMnemonic)}
+                onClick={() => handleAddMeasurement(objectiveId, questionId, metric._id!)}
                 className="text-orange-600 hover:text-orange-700"
               >
                 <PlusIcon className="w-3 h-3 mr-1" />
-                {t("addMeasurement")}
+                {t("measurement.addMeasurement")}
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setEditingItem({
-                  type: "metric",
-                  id: metric.metricMnemonic,
-                  parentIds: [objectiveTitle, questionText]
-                })}
+                onClick={() => handleEditMetric(objectiveId, questionId, metric)}
               >
-                <GearIcon className="w-3 h-3" />
+                <PencilIcon className="w-3 h-3" />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleDeleteMetric(objectiveTitle, questionText, metric.metricMnemonic)}
+                onClick={() => handleDeleteMetric(objectiveId, questionId, metric)}
                 className="text-red-600 hover:text-red-700"
               >
                 <TrashIcon className="w-3 h-3" />
@@ -506,7 +554,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
             <div className="space-y-2">
               <h6 className="font-medium text-gray-700 text-sm">{t("workflow.measurements")}:</h6>
               {metric.measurements?.map((measurement: any, measIndex: number) =>
-                renderMeasurement(measurement, measIndex, objectiveTitle, questionText, metric.metricMnemonic)
+                renderMeasurement(measurement, measIndex, objectiveId, questionId, metric._id!)
               )}
               {(!metric.measurements || metric.measurements.length === 0) && (
                 <div className="text-center py-2 text-gray-500">
@@ -515,7 +563,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleAddMeasurement(objectiveTitle, questionText, metric.metricMnemonic)}
+                      onClick={() => handleAddMeasurement(objectiveId, questionId, metric._id!)}
                       className="mt-1"
                     >
                       <PlusIcon className="w-3 h-3 mr-1" />
@@ -534,9 +582,9 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
   const renderMeasurement = (
     measurement: any,
     index: number,
-    objectiveTitle: string,
-    questionText: string,
-    metricMnemonic: string
+    objectiveId: string,
+    questionId: string,
+    metricId: string
   ) => {
     return (
       <div key={index} className="border border-gray-200 rounded p-2 ml-4 bg-purple-50">
@@ -559,18 +607,14 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setEditingItem({
-                  type: "measurement",
-                  id: measurement.measurementAcronym,
-                  parentIds: [objectiveTitle, questionText, metricMnemonic]
-                })}
+                onClick={() => handleEditMeasurement(objectiveId, questionId, metricId, measurement)}
               >
-                <GearIcon className="w-3 h-3" />
+                <PencilIcon className="w-3 h-3" />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleDeleteMeasurement(objectiveTitle, questionText, metricMnemonic, measurement.measurementAcronym)}
+                onClick={() => handleDeleteMeasurement(objectiveId, questionId, metricId, measurement)}
                 className="text-red-600 hover:text-red-700"
               >
                 <TrashIcon className="w-3 h-3" />
@@ -606,39 +650,14 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               </p>
             </div>
             {!isReadOnly && (
-              <div className="relative inline-block">
-                <select
-                  className="px-4 py-2 bg-primary text-white rounded-md cursor-pointer appearance-none pr-10"
-                  value=""
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      const objective = availableObjectives.find(
-                        (obj) => obj.objectiveTitle === e.target.value
-                      );
-                      if (objective) {
-                        handleAddObjective(objective);
-                      }
-                    }
-                  }}
-                >
-                  <option value="">{t("addFirstObjective")}</option>
-                  {availableObjectives
-                    .filter(
-                      (obj) =>
-                        !plan.objectives?.some(
-                          (selected) => selected.objectiveTitle === obj.objectiveTitle
-                        )
-                    )
-                    .map((objective) => (
-                      <option key={objective.objectiveTitle} value={objective.objectiveTitle}>
-                        {t(objective.objectiveTitle)}
-                      </option>
-                    ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                  <PlusIcon className="w-4 h-4 text-white" />
-                </div>
-              </div>
+              <Button
+                variant="primary"
+                onClick={() => setShowObjectiveModal(true)}
+                className="mt-2"
+              >
+                <PlusIcon className="w-4 h-4 mr-2" />
+                {t("addFirstObjective")}
+              </Button>
             )}
           </div>
         </CardContent>
@@ -652,39 +671,13 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
         <div className="flex items-center justify-between">
           <CardTitle>{t("planContent")}</CardTitle>
           {!isReadOnly && (
-            <div className="relative">
-              <select
-                className="px-3 py-2 bg-primary text-white rounded-md cursor-pointer appearance-none pr-8 text-sm"
-                value=""
-                onChange={(e) => {
-                  if (e.target.value) {
-                    const objective = availableObjectives.find(
-                      (obj) => obj.objectiveTitle === e.target.value
-                    );
-                    if (objective) {
-                      handleAddObjective(objective);
-                    }
-                  }
-                }}
-              >
-                <option value="">{t("addObjective")}</option>
-                {availableObjectives
-                  .filter(
-                    (obj) =>
-                      !plan.objectives?.some(
-                        (selected) => selected.objectiveTitle === obj.objectiveTitle
-                      )
-                  )
-                  .map((objective) => (
-                    <option key={objective.objectiveTitle} value={objective.objectiveTitle}>
-                      {t(objective.objectiveTitle)}
-                    </option>
-                  ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <PlusIcon className="w-4 h-4 text-white" />
-              </div>
-            </div>
+            <Button
+              variant="primary"
+              onClick={() => setShowObjectiveModal(true)}
+            >
+              <PlusIcon className="w-4 h-4 mr-2" />
+              {t("addObjective")}
+            </Button>
           )}
         </div>
       </CardHeader>
@@ -695,11 +688,23 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
       </CardContent>
 
       {/* Modals */}
+      <CustomObjectiveModal
+        isOpen={showObjectiveModal}
+        onClose={() => {
+          setShowObjectiveModal(false);
+          setEditingObjective(null);
+        }}
+        onAddObjective={handleAddObjective}
+        existingObjectives={plan.objectives || []}
+        editingData={editingObjective as any}
+      />
+
       {editingItem?.type === "question" && (
         <CustomQuestionModal
           isOpen={true}
           onClose={() => setEditingItem(null)}
           onAddQuestion={handleSaveQuestion}
+          editingData={editingItem.data as any}
         />
       )}
 
@@ -708,6 +713,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
           isOpen={true}
           onClose={() => setEditingItem(null)}
           onAddMetric={handleSaveMetric}
+          editingData={editingItem.data as any}
         />
       )}
 
@@ -717,8 +723,18 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
           onClose={() => setEditingItem(null)}
           onAddMeasurement={handleSaveMeasurement}
           existingMeasurements={[]}
+          editingData={editingItem.data as any}
         />
       )}
+
+      <ConfirmDeleteModal
+        isOpen={!!deleteConfirm}
+        onClose={() => setDeleteConfirm(null)}
+        onConfirm={handleConfirmDelete}
+        title={t(`confirmDelete${deleteConfirm?.type?.charAt(0).toUpperCase()}${deleteConfirm?.type?.slice(1)}Title`)}
+        message={t(`confirmDelete${deleteConfirm?.type?.charAt(0).toUpperCase()}${deleteConfirm?.type?.slice(1)}`)}
+        itemName={deleteConfirm?.title}
+      />
     </Card>
   );
 };

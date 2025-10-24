@@ -12,24 +12,26 @@ interface CustomMetricModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddMetric: (metric: Metric) => void;
+  editingData?: Metric;
 }
 
 export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
   isOpen,
   onClose,
   onAddMetric,
+  editingData,
 }) => {
   const { t } = useTranslation("plans");
-  const [selectedTab, setSelectedTab] = useState("predefined");
+  const [selectedTab, setSelectedTab] = useState(editingData ? "custom" : "predefined");
   const [customMetric, setCustomMetric] = useState<Omit<Metric, "measurements">>({
-    metricName: "",
-    metricDescription: "",
-    metricMnemonic: "",
-    metricFormula: "",
-    metricControlRange: [0, 100],
-    analysisProcedure: "",
-    analysisFrequency: "",
-    analysisResponsible: "",
+    metricName: editingData?.metricName || "",
+    metricDescription: editingData?.metricDescription || "",
+    metricMnemonic: editingData?.metricMnemonic || "",
+    metricFormula: editingData?.metricFormula || "",
+    metricControlRange: editingData?.metricControlRange || [0, 100],
+    analysisProcedure: editingData?.analysisProcedure || "",
+    analysisFrequency: editingData?.analysisFrequency || "",
+    analysisResponsible: editingData?.analysisResponsible || "",
   });
 
   const handleAddPredefinedMetric = (metric: Metric) => {
@@ -83,24 +85,28 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
       <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border" onClick={(e) => e.stopPropagation()}>
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">{t("modals.customMetric.title")}</h2>
+            <h2 className="text-lg font-semibold">
+              {editingData ? t("editMetric") : t("modals.customMetric.title")}
+            </h2>
             <button onClick={handleClose} className="text-gray-500 hover:text-gray-700 cursor-pointer">
               ×
             </button>
           </div>
 
-          <div className="mb-4">
-            <Tabs
-              tabs={[
-                { id: "predefined", label: t("modals.customMetric.predefinedTab") },
-                { id: "custom", label: t("modals.customMetric.customTab") },
-              ]}
-              activeTab={selectedTab}
-              onTabChange={setSelectedTab}
-            />
-          </div>
+          {!editingData && (
+            <div className="mb-4">
+              <Tabs
+                tabs={[
+                  { id: "predefined", label: t("modals.customMetric.predefinedTab") },
+                  { id: "custom", label: t("modals.customMetric.customTab") },
+                ]}
+                activeTab={selectedTab}
+                onTabChange={setSelectedTab}
+              />
+            </div>
+          )}
 
-          {selectedTab === 'predefined' && (
+          {!editingData && selectedTab === 'predefined' && (
             <div className="space-y-4">
             <p className="text-sm text-secondary">
               {t("modals.customMetric.predefinedDescription")}
@@ -138,7 +144,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
             </div>
           )}
 
-          {selectedTab === 'custom' && (
+          {(editingData || selectedTab === 'custom') && (
             <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -307,7 +313,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
             <Button variant="secondary" onClick={handleClose}>
               {t("modals.customMetric.cancel")}
             </Button>
-            {selectedTab === "custom" && (
+            {(editingData || selectedTab === "custom") && (
               <Button
                 onClick={handleCreateCustomMetric}
                 disabled={
@@ -317,7 +323,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                   !customMetric.metricFormula?.trim()
                 }
               >
-                {t("modals.customMetric.create")}
+                {editingData ? t("updateMetric") : t("modals.customMetric.create")}
               </Button>
             )}
           </div>

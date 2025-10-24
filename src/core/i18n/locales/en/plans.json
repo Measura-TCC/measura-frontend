@@ -370,6 +370,10 @@
     "addCustomMetric": "Add Custom Metric",
     "measurements": "Measurements"
   },
+  "objective": {
+    "objectiveTitle": "Objective Title",
+    "objectiveTitlePlaceholder": "Enter the objective title"
+  },
   "question": {
     "questionText": "Question Text",
     "questionDescription": "Question Description",
@@ -418,6 +422,16 @@
       "addButton": "Add",
       "createButton": "Create Question",
       "cancelButton": "Cancel"
+    },
+    "customObjective": {
+      "title": "Select or Create Objective",
+      "predefinedTab": "Predefined",
+      "customTab": "Custom",
+      "predefinedDescription": "Select a predefined objective from the list below:",
+      "customDescription": "Create a custom objective for your measurement plan:",
+      "addButton": "Add",
+      "createButton": "Create Objective",
+      "noAvailableObjectives": "All predefined objectives have already been added"
     }
   },
   "accordion": {
@@ -446,10 +460,23 @@
     "notFoundDescription": "The requested plan could not be found or you don't have access to it.",
     "editContent": "Edit Content"
   },
+  "confirmDeleteObjectiveTitle": "Delete Objective",
   "confirmDeleteObjective": "Are you sure you want to delete this objective and all its related items?",
+  "confirmDeleteQuestionTitle": "Delete Question",
   "confirmDeleteQuestion": "Are you sure you want to delete this question and all its related items?",
+  "confirmDeleteMetricTitle": "Delete Metric",
   "confirmDeleteMetric": "Are you sure you want to delete this metric and all its measurements?",
+  "confirmDeleteMeasurementTitle": "Delete Measurement",
   "confirmDeleteMeasurement": "Are you sure you want to delete this measurement?",
+  "deleting": "Deleting...",
+  "editObjective": "Edit Objective",
+  "editQuestion": "Edit Question",
+  "editMetric": "Edit Metric",
+  "editMeasurement": "Edit Measurement",
+  "updateObjective": "Update Objective",
+  "updateQuestion": "Update Question",
+  "updateMetric": "Update Metric",
+  "updateMeasurement": "Update Measurement",
   "measurements": {
     "properties": {
       "worklog": "Total hours logged in project period. Exclude vacations/trainings. Consolidate per iteration/release.",

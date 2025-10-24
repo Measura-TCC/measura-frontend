@@ -413,6 +413,10 @@
     "addCustomMetric": "Adicionar Métrica Personalizada",
     "measurements": " Medidas"
   },
+  "objective": {
+    "objectiveTitle": "Título do Objetivo",
+    "objectiveTitlePlaceholder": "Digite o título do objetivo"
+  },
   "question": {
     "questionText": "Texto da Questão",
     "questionDescription": "Descrição da Questão",
@@ -461,6 +465,16 @@
       "addButton": "Adicionar",
       "createButton": "Criar Questão",
       "cancelButton": "Cancelar"
+    },
+    "customObjective": {
+      "title": "Selecionar ou Criar Objetivo",
+      "predefinedTab": "Predefinidos",
+      "customTab": "Personalizado",
+      "predefinedDescription": "Selecione um objetivo predefinido da lista abaixo:",
+      "customDescription": "Crie um objetivo personalizado para seu plano de medição:",
+      "addButton": "Adicionar",
+      "createButton": "Criar Objetivo",
+      "noAvailableObjectives": "Todos os objetivos predefinidos já foram adicionados"
     }
   },
   "accordion": {
@@ -497,10 +511,23 @@
     "detailsTab": "Detalhes do Plano",
     "editContent": "Editar Conteúdo"
   },
+  "confirmDeleteObjectiveTitle": "Excluir Objetivo",
   "confirmDeleteObjective": "Tem certeza que deseja excluir este objetivo e todos os seus itens relacionados?",
+  "confirmDeleteQuestionTitle": "Excluir Questão",
   "confirmDeleteQuestion": "Tem certeza que deseja excluir esta questão e todos os seus itens relacionados?",
+  "confirmDeleteMetricTitle": "Excluir Métrica",
   "confirmDeleteMetric": "Tem certeza que deseja excluir esta métrica e todas as suas medições?",
+  "confirmDeleteMeasurementTitle": "Excluir Medição",
   "confirmDeleteMeasurement": "Tem certeza que deseja excluir esta medição?",
+  "deleting": "Excluindo...",
+  "editObjective": "Editar Objetivo",
+  "editQuestion": "Editar Questão",
+  "editMetric": "Editar Métrica",
+  "editMeasurement": "Editar Medição",
+  "updateObjective": "Atualizar Objetivo",
+  "updateQuestion": "Atualizar Questão",
+  "updateMetric": "Atualizar Métrica",
+  "updateMeasurement": "Atualizar Medição",
   "measurements": {
     "properties": {
       "worklog": "Total de horas registradas no período do projeto. Excluir férias/treinamentos. Consolidar por iteração/release.",

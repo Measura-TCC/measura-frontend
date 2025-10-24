@@ -12,17 +12,19 @@ interface CustomQuestionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddQuestion: (question: Question) => void;
+  editingData?: Question;
 }
 
 export const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
   isOpen,
   onClose,
   onAddQuestion,
+  editingData,
 }) => {
   const { t } = useTranslation("plans");
-  const [selectedTab, setSelectedTab] = useState("predefined");
+  const [selectedTab, setSelectedTab] = useState(editingData ? "custom" : "predefined");
   const [customQuestion, setCustomQuestion] = useState<Omit<Question, "metrics">>({
-    questionText: "",
+    questionText: editingData?.questionText || "",
   });
 
   const handleAddPredefinedQuestion = (question: Question) => {
@@ -62,24 +64,28 @@ export const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
       <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border" onClick={(e) => e.stopPropagation()}>
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">{t("modals.customQuestion.title")}</h2>
+            <h2 className="text-lg font-semibold">
+              {editingData ? t("editQuestion") : t("modals.customQuestion.title")}
+            </h2>
             <button onClick={handleClose} className="text-gray-500 hover:text-gray-700 cursor-pointer">
               ×
             </button>
           </div>
 
-          <div className="mb-4">
-            <Tabs
-              tabs={[
-                { id: "predefined", label: t("modals.customQuestion.predefinedTab") },
-                { id: "custom", label: t("modals.customQuestion.customTab") },
-              ]}
-              activeTab={selectedTab}
-              onTabChange={setSelectedTab}
-            />
-          </div>
+          {!editingData && (
+            <div className="mb-4">
+              <Tabs
+                tabs={[
+                  { id: "predefined", label: t("modals.customQuestion.predefinedTab") },
+                  { id: "custom", label: t("modals.customQuestion.customTab") },
+                ]}
+                activeTab={selectedTab}
+                onTabChange={setSelectedTab}
+              />
+            </div>
+          )}
 
-          {selectedTab === 'predefined' && (
+          {!editingData && selectedTab === 'predefined' && (
             <div className="space-y-4">
               <p className="text-secondary text-sm mb-4">
                 {t("modals.customQuestion.predefinedDescription")}
@@ -114,7 +120,7 @@ export const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
             </div>
           )}
 
-          {selectedTab === 'custom' && (
+          {(editingData || selectedTab === 'custom') && (
             <div className="space-y-4">
               <p className="text-secondary text-sm mb-4">
                 {t("modals.customQuestion.customDescription")}
@@ -142,7 +148,7 @@ export const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
                   onClick={handleCreateCustomQuestion}
                   disabled={!customQuestion.questionText.trim()}
                 >
-                  {t("modals.customQuestion.createButton")}
+                  {editingData ? t("updateQuestion") : t("modals.customQuestion.createButton")}
                 </Button>
               </div>
             </div>

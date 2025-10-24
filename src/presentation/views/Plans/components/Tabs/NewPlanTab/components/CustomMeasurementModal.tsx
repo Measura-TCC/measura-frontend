@@ -13,6 +13,7 @@ interface CustomMeasurementModalProps {
   onClose: () => void;
   onAddMeasurement: (measurement: Measurement) => void;
   existingMeasurements: Measurement[];
+  editingData?: Measurement;
 }
 
 export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
@@ -20,18 +21,19 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
   onClose,
   onAddMeasurement,
   existingMeasurements,
+  editingData,
 }) => {
   const { t } = useTranslation("plans");
-  const [selectedTab, setSelectedTab] = useState("predefined");
+  const [selectedTab, setSelectedTab] = useState(editingData ? "custom" : "predefined");
   const [customMeasurement, setCustomMeasurement] = useState<Measurement>({
-    measurementEntity: "",
-    measurementAcronym: "",
-    measurementProperties: "",
-    measurementUnit: "",
-    measurementScale: "",
-    measurementProcedure: "",
-    measurementFrequency: "",
-    measurementResponsible: "",
+    measurementEntity: editingData?.measurementEntity || "",
+    measurementAcronym: editingData?.measurementAcronym || "",
+    measurementProperties: editingData?.measurementProperties || "",
+    measurementUnit: editingData?.measurementUnit || "",
+    measurementScale: editingData?.measurementScale || "",
+    measurementProcedure: editingData?.measurementProcedure || "",
+    measurementFrequency: editingData?.measurementFrequency || "",
+    measurementResponsible: editingData?.measurementResponsible || "",
   });
 
   const availablePredefined = availableMeasurements.filter(
@@ -89,24 +91,28 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
       <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border" onClick={(e) => e.stopPropagation()}>
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">{t("modals.customMeasurement.title")}</h2>
+            <h2 className="text-lg font-semibold">
+              {editingData ? t("editMeasurement") : t("modals.customMeasurement.title")}
+            </h2>
             <button onClick={handleClose} className="text-gray-500 hover:text-gray-700 cursor-pointer">
               ×
             </button>
           </div>
 
-          <div className="mb-4">
-            <Tabs
-              tabs={[
-                { id: "predefined", label: t("modals.customMetric.predefinedTab") },
-                { id: "custom", label: t("modals.customMetric.customTab") },
-              ]}
-              activeTab={selectedTab}
-              onTabChange={setSelectedTab}
-            />
-          </div>
+          {!editingData && (
+            <div className="mb-4">
+              <Tabs
+                tabs={[
+                  { id: "predefined", label: t("modals.customMetric.predefinedTab") },
+                  { id: "custom", label: t("modals.customMetric.customTab") },
+                ]}
+                activeTab={selectedTab}
+                onTabChange={setSelectedTab}
+              />
+            </div>
+          )}
 
-          {selectedTab === 'predefined' && (
+          {!editingData && selectedTab === 'predefined' && (
             <div className="space-y-4">
             <p className="text-sm text-secondary">
               {t("measurement.selectMeasurement")}
@@ -156,7 +162,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
             </div>
           )}
 
-          {selectedTab === 'custom' && (
+          {(editingData || selectedTab === 'custom') && (
             <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -307,7 +313,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
             <Button variant="secondary" onClick={handleClose}>
               {t("modals.customMeasurement.cancel")}
             </Button>
-            {selectedTab === "custom" && (
+            {(editingData || selectedTab === "custom") && (
               <Button
                 onClick={handleCreateCustomMeasurement}
                 disabled={
@@ -320,7 +326,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                   !customMeasurement.measurementFrequency.trim()
                 }
               >
-                {t("modals.customMeasurement.create")}
+                {editingData ? t("updateMeasurement") : t("modals.customMeasurement.create")}
               </Button>
             )}
           </div>

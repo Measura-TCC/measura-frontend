@@ -284,11 +284,6 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
             ) : (
               <PlanContentManager
                 plan={plan}
-                onUpdatePlan={async (id, data) => {
-                  const updated = await updatePlan(id, data);
-                  await mutatePlan();
-                  return updated;
-                }}
                 isReadOnly={false}
               />
             )}
