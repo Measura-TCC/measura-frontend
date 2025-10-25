@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useInvitations } from "@/core/hooks/organizations";
 import { useOrganizations } from "@/core/hooks/organizations";
 import { Button } from "@/presentation/components/primitives";
+import { XIcon } from "@/presentation/assets/icons";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 
@@ -61,8 +62,15 @@ export const InvitationsModal = ({ isOpen, onClose }: InvitationsModalProps) => 
   return createPortal(
     <div className="fixed inset-0 backdrop-blur-sm bg-black/50 dark:bg-black/70 flex items-center justify-center z-[100]" onClick={onClose}>
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
-        <div className="border-b dark:border-gray-700 px-6 py-4">
+        <div className="border-b dark:border-gray-700 px-6 py-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold dark:text-white">{t("invitations.myInvitations")}</h2>
+          <button
+            onClick={onClose}
+            className="text-muted hover:text-default transition-colors cursor-pointer"
+            aria-label={t("invitations.close")}
+          >
+            <XIcon className="w-5 h-5" />
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6">

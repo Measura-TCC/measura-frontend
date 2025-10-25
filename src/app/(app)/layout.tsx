@@ -41,8 +41,8 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       <Header />
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 lg:ml-64 pt-4 md:pt-14">
-          <div className="container mx-auto px-4 py-6">{children}</div>
+        <main className="flex-1 lg:ml-64 pt-4 md:pt-14 ">
+          <div className="container mx-auto px-4 md:px-12 py-6">{children}</div>
         </main>
       </div>
     </div>

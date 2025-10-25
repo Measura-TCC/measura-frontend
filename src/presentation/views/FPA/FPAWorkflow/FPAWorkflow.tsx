@@ -29,8 +29,13 @@ type Tab = "new" | "created";
 
 export const FPAWorkflow = () => {
   const { t } = useTranslation("fpa");
-  const { requireOrganization, userOrganization, isLoadingUserOrganization, activeOrganizationId, forceClearCache } =
-    useOrganizations({ fetchUserOrganization: true });
+  const {
+    requireOrganization,
+    userOrganization,
+    isLoadingUserOrganization,
+    activeOrganizationId,
+    forceClearCache,
+  } = useOrganizations({ fetchUserOrganization: true });
   const searchParams = useSearchParams();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("new");
@@ -406,16 +411,16 @@ export const FPAWorkflow = () => {
 
         {currentStep === 4 && estimateFormData && (
           <div className="bg-background rounded-lg border border-border p-6">
-              <h2 className="text-xl font-semibold mb-4 text-default">
-                {t("workflow.step4Title")}
-              </h2>
-              <p className="text-secondary mb-6">
-                {t("workflow.step4Description")}
-              </p>
-              <CreateGSCForm
-                onSuccess={handleGSCCompleted}
-                onAutoSave={handleGSCAutoSave}
-                onBack={() => setCurrentStep(3)}
+            <h2 className="text-xl font-semibold mb-4 text-default">
+              {t("workflow.step4Title")}
+            </h2>
+            <p className="text-secondary mb-6">
+              {t("workflow.step4Description")}
+            </p>
+            <CreateGSCForm
+              onSuccess={handleGSCCompleted}
+              onAutoSave={handleGSCAutoSave}
+              onBack={() => setCurrentStep(3)}
               initialValues={
                 generalSystemCharacteristics
                   ? {
@@ -442,15 +447,15 @@ export const FPAWorkflow = () => {
 
         {currentStep === 5 && estimateFormData && (
           <div className="bg-background rounded-lg border border-border p-6">
-              <h2 className="text-xl font-semibold mb-4 text-default">
-                {t("workflow.step5Title")}
-              </h2>
-              <p className="text-secondary mb-6">
-                {t("workflow.step5Description")}
-              </p>
+            <h2 className="text-xl font-semibold mb-4 text-default">
+              {t("workflow.step5Title")}
+            </h2>
+            <p className="text-secondary mb-6">
+              {t("workflow.step5Description")}
+            </p>
 
-              <ProjectConfigurationForm
-                initialData={{
+            <ProjectConfigurationForm
+              initialData={{
                 teamSize: estimateFormData.teamSize,
                 hourlyRateBRL: estimateFormData.hourlyRateBRL,
                 productivityFactor: estimateFormData.productivityFactor,
@@ -474,7 +479,6 @@ export const FPAWorkflow = () => {
 
             {!createdEstimate ? (
               <>
-
                 {/* Item 1: Estimate Information */}
                 {summaryPage === 1 && (
                   <>
@@ -533,8 +537,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.previous")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
                         </svg>
                       </button>
                       <div className="text-sm text-secondary">
@@ -545,8 +559,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.next")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -654,8 +678,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.previous")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
                         </svg>
                       </button>
                       <div className="text-sm text-secondary">
@@ -666,8 +700,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.next")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -716,8 +760,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.previous")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
                         </svg>
                       </button>
                       <div className="text-sm text-secondary">
@@ -728,8 +782,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.next")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -787,8 +851,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.previous")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
                         </svg>
                       </button>
                       <div className="text-sm text-secondary">
@@ -799,8 +873,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.next")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -828,9 +912,7 @@ export const FPAWorkflow = () => {
                       ).length === 0
                     }
                   >
-                    {isSubmitting
-                      ? "Calculando..."
-                      : "Calcular PF"}
+                    {isSubmitting ? "Calculando..." : "Calcular PF"}
                   </Button>
                 </div>
               </>
@@ -883,7 +965,7 @@ export const FPAWorkflow = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto pb-[20px]">
+    <div className="mx-auto pb-[20px]">
       <div className="mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-default">
           {t("title")}

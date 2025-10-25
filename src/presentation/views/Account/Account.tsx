@@ -102,39 +102,35 @@ export const AccountView: React.FC = () => {
 
   if (userError) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-          <h2 className="text-lg font-semibold text-red-800 mb-2">
-            {t("error.loadingTitle")}
-          </h2>
-          <p className="text-red-600 mb-4">{t("error.loadingMessage")}</p>
-          <button
-            onClick={refreshData}
-            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
-          >
-            {t("error.tryAgain")}
-          </button>
-        </div>
+      <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+        <h2 className="text-lg font-semibold text-red-800 mb-2">
+          {t("error.loadingTitle")}
+        </h2>
+        <p className="text-red-600 mb-4">{t("error.loadingMessage")}</p>
+        <button
+          onClick={refreshData}
+          className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+        >
+          {t("error.tryAgain")}
+        </button>
       </div>
     );
   }
 
   if (isLoadingUser && !user) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="space-y-6">
-          <div className="animate-pulse">
-            <div className="h-8 bg-background-secondary rounded w-1/4 mb-2"></div>
-            <div className="h-4 bg-background-secondary rounded w-1/2"></div>
-          </div>
-          <div className="animate-pulse bg-background-secondary h-64 rounded-lg"></div>
+      <div className="space-y-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-background-secondary rounded w-1/4 mb-2"></div>
+          <div className="h-4 bg-background-secondary rounded w-1/2"></div>
         </div>
+        <div className="animate-pulse bg-background-secondary h-64 rounded-lg"></div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="space-y-6">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-default mb-2">{t("title")}</h1>
         <p className="text-muted">{t("subtitle")}</p>
