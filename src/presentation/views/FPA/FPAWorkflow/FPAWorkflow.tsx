@@ -92,51 +92,6 @@ export const FPAWorkflow = () => {
     }
   }, [searchParams, setSelectedProjectId]);
 
-  if (isLoadingUserOrganization) {
-    return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-secondary">{t("workflow.loading")}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!userOrganization) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-default">
-            {t("title")}
-          </h1>
-          <p className="text-muted mt-1">{t("subtitle")}</p>
-        </div>
-        <OrganizationAlert hasOrganization={false} translationNamespace="fpa" />
-      </div>
-    );
-  }
-
-  if (
-    !isLoadingProjects &&
-    userOrganization &&
-    (!projects || projects.length === 0)
-  ) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-default">
-            {t("title")}
-          </h1>
-          <p className="text-muted mt-1">{t("subtitle")}</p>
-        </div>
-        <NoProjectsAlert translationNamespace="fpa" />
-      </div>
-    );
-  }
-
   const handleCancel = () => {
     resetWorkflow();
     resetRequirements();
@@ -149,6 +104,10 @@ export const FPAWorkflow = () => {
   const handleEstimateFormSubmit = (data: EstimateFormData) => {
     setEstimateFormData(data);
     setCurrentStep(3);
+  };
+
+  const handleGSCAutoSave = (gsc: number[]) => {
+    setGeneralSystemCharacteristics(gsc);
   };
 
   const handleGSCCompleted = (gsc: number[]) => {
@@ -276,6 +235,51 @@ export const FPAWorkflow = () => {
     }
   };
 
+  if (isLoadingUserOrganization) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-secondary">{t("workflow.loading")}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!userOrganization) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">
+            {t("title")}
+          </h1>
+          <p className="text-muted mt-1">{t("subtitle")}</p>
+        </div>
+        <OrganizationAlert hasOrganization={false} translationNamespace="fpa" />
+      </div>
+    );
+  }
+
+  if (
+    !isLoadingProjects &&
+    userOrganization &&
+    (!projects || projects.length === 0)
+  ) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">
+            {t("title")}
+          </h1>
+          <p className="text-muted mt-1">{t("subtitle")}</p>
+        </div>
+        <NoProjectsAlert translationNamespace="fpa" />
+      </div>
+    );
+  }
+
   const renderTabContent = () => {
     if (activeTab === "created") {
       return <EstimatesDashboard onCreateNew={() => setActiveTab("new")} />;
@@ -387,15 +391,16 @@ export const FPAWorkflow = () => {
 
         {currentStep === 4 && estimateFormData && (
           <div className="bg-background rounded-lg border border-border p-6">
-            <h2 className="text-xl font-semibold mb-4 text-default">
-              {t("workflow.step4Title")}
-            </h2>
-            <p className="text-secondary mb-6">
-              {t("workflow.step4Description")}
-            </p>
-            <CreateGSCForm
-              onSuccess={handleGSCCompleted}
-              onBack={() => setCurrentStep(3)}
+              <h2 className="text-xl font-semibold mb-4 text-default">
+                {t("workflow.step4Title")}
+              </h2>
+              <p className="text-secondary mb-6">
+                {t("workflow.step4Description")}
+              </p>
+              <CreateGSCForm
+                onSuccess={handleGSCCompleted}
+                onAutoSave={handleGSCAutoSave}
+                onBack={() => setCurrentStep(3)}
               initialValues={
                 generalSystemCharacteristics
                   ? {
@@ -422,15 +427,15 @@ export const FPAWorkflow = () => {
 
         {currentStep === 5 && estimateFormData && (
           <div className="bg-background rounded-lg border border-border p-6">
-            <h2 className="text-xl font-semibold mb-4 text-default">
-              {t("workflow.step5Title")}
-            </h2>
-            <p className="text-secondary mb-6">
-              {t("workflow.step5Description")}
-            </p>
+              <h2 className="text-xl font-semibold mb-4 text-default">
+                {t("workflow.step5Title")}
+              </h2>
+              <p className="text-secondary mb-6">
+                {t("workflow.step5Description")}
+              </p>
 
-            <ProjectConfigurationForm
-              initialData={{
+              <ProjectConfigurationForm
+                initialData={{
                 teamSize: estimateFormData.teamSize,
                 hourlyRateBRL: estimateFormData.hourlyRateBRL,
                 productivityFactor: estimateFormData.productivityFactor,

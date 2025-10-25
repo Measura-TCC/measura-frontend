@@ -9,7 +9,7 @@ export interface Measurement {
   measurementScale: string;
   measurementProcedure: string;
   measurementFrequency: string;
-  measurementResponsible: string;
+  measurementResponsible?: string;
 }
 
 export interface Metric {

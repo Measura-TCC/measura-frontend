@@ -9,6 +9,7 @@ import { Button } from "@/presentation/components/primitives/Button/Button";
 
 interface CreateGSCFormProps {
   onSuccess?: (gsc: number[]) => void;
+  onAutoSave?: (gsc: number[]) => void; // New: for saving without navigation
   onBack: () => void;
   initialValues?: {
     dataProcessing?: number;
@@ -31,6 +32,7 @@ interface CreateGSCFormProps {
 
 export const CreateGSCForm = ({
   onSuccess,
+  onAutoSave,
   onBack,
   initialValues,
 }: CreateGSCFormProps) => {
@@ -82,9 +84,31 @@ export const CreateGSCForm = ({
     formValues.facilitateChange > 0 ||
     formValues.distributedFunctions > 0;
 
+  // Auto-save to store (without navigation) when form values change
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const hasUserInteractedRef = useRef(false);
+  const onAutoSaveRef = useRef(onAutoSave);
+  const previousValuesRef = useRef<CreateGSCData | null>(null);
 
   useEffect(() => {
+    onAutoSaveRef.current = onAutoSave;
+  }, [onAutoSave]);
+
+  useEffect(() => {
+    if (previousValuesRef.current === null) {
+      previousValuesRef.current = formValues;
+      return;
+    }
+
+    const valuesChanged =
+      JSON.stringify(previousValuesRef.current) !== JSON.stringify(formValues);
+    if (!valuesChanged) {
+      return;
+    }
+
+    hasUserInteractedRef.current = true;
+    previousValuesRef.current = formValues;
+
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
@@ -107,7 +131,7 @@ export const CreateGSCForm = ({
         formValues.distributedFunctions || 0,
       ];
 
-      onSuccess?.(generalSystemCharacteristics);
+      onAutoSaveRef.current?.(generalSystemCharacteristics);
     }, 500);
 
     return () => {
@@ -115,7 +139,7 @@ export const CreateGSCForm = ({
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [formValues, onSuccess]);
+  }, [formValues]);
 
   const onSubmit = async (data: CreateGSCData) => {
     setIsSubmitting(true);
