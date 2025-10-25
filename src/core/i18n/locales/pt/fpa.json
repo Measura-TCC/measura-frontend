@@ -626,6 +626,7 @@
     "title": "Importar Requisitos",
     "subtitle": "Importe requisitos de diferentes fontes para começar sua análise APF",
     "selectSource": "Selecione a Fonte de Importação",
+    "allRequirements": "Todos os Requisitos",
     "sources": {
       "manual": "Manual",
       "csv": "CSV",
@@ -808,6 +809,25 @@
       "list": "Lista",
       "previewMode": "Modo de Visualização",
       "previewModeDescription": "Durante a criação da estimativa, os requisitos são adicionados como itens de visualização. A importação completa estará disponível após salvar a estimativa."
+    },
+    "preview": {
+      "successfullyImported": "{{count}} requisito(s) importado(s) com sucesso",
+      "skipped": "{{count}} requisito(s) ignorado(s) (já existem)",
+      "failed": "{{count}} requisito(s) falharam na importação",
+      "reviewRequirements": "Revisar Requisitos Importados",
+      "selectedCount": "{{count}} de {{total}} selecionados",
+      "reference": "Referência",
+      "metadata": "Metadados",
+      "source": "Fonte",
+      "edit": "Ações",
+      "remove": "Remover",
+      "cancel": "Cancelar",
+      "addSelected": "Adicionar {{count}} Selecionados",
+      "selectAll": "Selecionar Todos",
+      "deselectAll": "Desmarcar Todos",
+      "showing": "Mostrando {{start}}-{{end}} de {{total}}",
+      "previous": "Anterior",
+      "next": "Próximo"
     },
     "importResult": {
       "title": "Importação Concluída",

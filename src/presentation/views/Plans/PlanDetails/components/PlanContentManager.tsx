@@ -27,6 +27,7 @@ import { CustomMeasurementModal } from "../../components/Tabs/NewPlanTab/compone
 import { CustomObjectiveModal } from "../../components/Tabs/NewPlanTab/components/CustomObjectiveModal";
 import { ConfirmDeleteModal } from "@/presentation/components/modals/ConfirmDeleteModal";
 import { useMeasurementPlanOperations } from "@/core/hooks/measurementPlans/useMeasurementPlanOperations";
+import { useToast } from "@/core/hooks/common/useToast";
 
 interface PlanContentManagerProps {
   plan: MeasurementPlanResponseDto;
@@ -42,6 +43,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
   isReadOnly = false,
 }) => {
   const { t } = useTranslation("plans");
+  const toast = useToast();
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [showObjectiveModal, setShowObjectiveModal] = useState(false);
   const [editingObjective, setEditingObjective] = useState<Objective | null>(null);
@@ -82,14 +84,20 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
       if (editingObjective?._id) {
         // Update existing objective
         await updateObjective(editingObjective._id, { objectiveTitle: objective.objectiveTitle, questions: [] });
+        toast.success({ message: t("objectiveUpdatedSuccess") || "Objective updated successfully" });
         setEditingObjective(null);
       } else {
         // Add new objective
         await addObjective({ objectiveTitle: objective.objectiveTitle, questions: [] });
+        toast.success({ message: t("objectiveAddedSuccess") || "Objective added successfully" });
       }
       setShowObjectiveModal(false);
     } catch (error) {
       console.error("Failed to add/update objective:", error);
+      const errorMessage = editingObjective?._id
+        ? (t("objectiveUpdateError") || "Failed to update objective")
+        : (t("objectiveAddError") || "Failed to add objective");
+      toast.error({ message: `${errorMessage}: ${error instanceof Error ? error.message : "An error occurred"}` });
     }
   };
 
@@ -113,15 +121,18 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
       switch (deleteConfirm.type) {
         case "objective":
           await deleteObjective(deleteConfirm.id);
+          toast.success({ message: t("objectiveDeletedSuccess") || "Objective deleted successfully" });
           break;
         case "question":
           if (deleteConfirm.parentIds) {
             await deleteQuestion(deleteConfirm.parentIds[0], deleteConfirm.id);
+            toast.success({ message: t("questionDeletedSuccess") || "Question deleted successfully" });
           }
           break;
         case "metric":
           if (deleteConfirm.parentIds) {
             await deleteMetric(deleteConfirm.parentIds[0], deleteConfirm.parentIds[1], deleteConfirm.id);
+            toast.success({ message: t("metricDeletedSuccess") || "Metric deleted successfully" });
           }
           break;
         case "measurement":
@@ -132,12 +143,15 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               deleteConfirm.parentIds[2],
               deleteConfirm.id
             );
+            toast.success({ message: t("measurementDeletedSuccess") || "Measurement deleted successfully" });
           }
           break;
       }
       setDeleteConfirm(null);
     } catch (error) {
       console.error(`Failed to delete ${deleteConfirm.type}:`, error);
+      const errorMessage = t(`${deleteConfirm.type}DeleteError`) || `Failed to delete ${deleteConfirm.type}`;
+      toast.error({ message: `${errorMessage}: ${error instanceof Error ? error.message : "An error occurred"}` });
     }
   };
 
@@ -153,13 +167,19 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
       if (editingItem.id) {
         // Edit mode
         await updateQuestion(objectiveId, editingItem.id, { questionText: question.questionText, metrics: [] });
+        toast.success({ message: t("questionUpdatedSuccess") || "Question updated successfully" });
       } else {
         // Add mode
         await addQuestion(objectiveId, { questionText: question.questionText, metrics: [] });
+        toast.success({ message: t("questionAddedSuccess") || "Question added successfully" });
       }
       setEditingItem(null);
     } catch (error) {
       console.error("Failed to save question:", error);
+      const errorMessage = editingItem.id
+        ? (t("questionUpdateError") || "Failed to update question")
+        : (t("questionAddError") || "Failed to add question");
+      toast.error({ message: `${errorMessage}: ${error instanceof Error ? error.message : "An error occurred"}` });
     }
   };
 
@@ -196,16 +216,22 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
           ...metric,
           measurements: metric.measurements || []
         });
+        toast.success({ message: t("metricUpdatedSuccess") || "Metric updated successfully" });
       } else {
         // Add mode
         await addMetric(objectiveId, questionId, {
           ...metric,
           measurements: metric.measurements || []
         });
+        toast.success({ message: t("metricAddedSuccess") || "Metric added successfully" });
       }
       setEditingItem(null);
     } catch (error) {
       console.error("Failed to save metric:", error);
+      const errorMessage = editingItem.id
+        ? (t("metricUpdateError") || "Failed to update metric")
+        : (t("metricAddError") || "Failed to add metric");
+      toast.error({ message: `${errorMessage}: ${error instanceof Error ? error.message : "An error occurred"}` });
     }
   };
 
@@ -242,13 +268,19 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
       if (editingItem.id) {
         // Edit mode
         await updateMeasurement(objectiveId, questionId, metricId, editingItem.id, measurement);
+        toast.success({ message: t("measurementUpdatedSuccess") || "Measurement updated successfully" });
       } else {
         // Add mode
         await addMeasurement(objectiveId, questionId, metricId, measurement);
+        toast.success({ message: t("measurementAddedSuccess") || "Measurement added successfully" });
       }
       setEditingItem(null);
     } catch (error) {
       console.error("Failed to save measurement:", error);
+      const errorMessage = editingItem.id
+        ? (t("measurementUpdateError") || "Failed to update measurement")
+        : (t("measurementAddError") || "Failed to add measurement");
+      toast.error({ message: `${errorMessage}: ${error instanceof Error ? error.message : "An error occurred"}` });
     }
   };
 

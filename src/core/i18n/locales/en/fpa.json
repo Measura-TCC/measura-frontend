@@ -620,6 +620,7 @@
     "title": "Import Requirements",
     "subtitle": "Import requirements from different sources to start your FPA analysis",
     "selectSource": "Select Import Source",
+    "allRequirements": "All Requirements",
     "sources": {
       "manual": "Manual",
       "csv": "CSV",

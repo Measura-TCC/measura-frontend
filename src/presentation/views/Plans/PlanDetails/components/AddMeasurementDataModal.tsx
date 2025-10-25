@@ -166,9 +166,6 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
         .toISOString()
         .split("T")[0];
 
-      console.log("🔍 [SUBMIT] formData.date (local):", formData.date);
-      console.log("🔍 [SUBMIT] utcDate (sending to backend):", utcDate);
-
       await addMeasurementData({
         organizationId,
         planId,

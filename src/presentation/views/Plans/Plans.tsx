@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useOrganizations } from "@/core/hooks/organizations";
+import { useOrganizationStore } from "@/core/hooks/organizations/useOrganizationStore";
 import { useMeasurementPlans } from "@/core/hooks/measurementPlans";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import {
@@ -21,10 +22,24 @@ export const PlansView = () => {
   const { t } = useTranslation("plans");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { userOrganization, isLoadingUserOrganization } = useOrganizations({ fetchUserOrganization: true });
+  const { userOrganization, isLoadingUserOrganization, activeOrganizationId, forceClearCache } = useOrganizations({ fetchUserOrganization: true });
   const { projects, isLoadingProjects } = useProjects();
   const hasProjects = !!(projects && projects.length > 0);
   const [activeTab, setActiveTab] = useState<PlanTab>("newPlan");
+
+  // Auto-set activeOrganizationId if missing but userOrganization is loaded
+  useEffect(() => {
+    // Force clear cache if demo ID is detected
+    if (activeOrganizationId === "demo-organization-id") {
+      forceClearCache();
+    }
+
+    // Directly set the active organization ID if we have userOrganization but no activeOrganizationId
+    if (!activeOrganizationId && userOrganization?._id) {
+      const { setActiveOrganization } = useOrganizationStore.getState();
+      setActiveOrganization(userOrganization._id);
+    }
+  }, [activeOrganizationId, userOrganization, forceClearCache]);
 
   useEffect(() => {
     const tabParam = searchParams.get("tab") as PlanTab;

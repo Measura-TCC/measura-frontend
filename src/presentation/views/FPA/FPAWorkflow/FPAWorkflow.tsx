@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useOrganizations } from "@/core/hooks/organizations";
+import { useOrganizationStore } from "@/core/hooks/organizations/useOrganizationStore";
 import { EstimatesDashboard } from "./EstimatesDashboard";
 import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
 import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
@@ -28,7 +29,7 @@ type Tab = "new" | "created";
 
 export const FPAWorkflow = () => {
   const { t } = useTranslation("fpa");
-  const { requireOrganization, userOrganization, isLoadingUserOrganization } =
+  const { requireOrganization, userOrganization, isLoadingUserOrganization, activeOrganizationId, forceClearCache } =
     useOrganizations({ fetchUserOrganization: true });
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -78,6 +79,20 @@ export const FPAWorkflow = () => {
 
   const { projects, isLoadingProjects } = useProjects();
   const { calculateFunctionPoints } = useEstimateActions();
+
+  // Auto-set activeOrganizationId if missing but userOrganization is loaded
+  useEffect(() => {
+    // Force clear cache if demo ID is detected
+    if (activeOrganizationId === "demo-organization-id") {
+      forceClearCache();
+    }
+
+    // Directly set the active organization ID if we have userOrganization but no activeOrganizationId
+    if (!activeOrganizationId && userOrganization?._id) {
+      const { setActiveOrganization } = useOrganizationStore.getState();
+      setActiveOrganization(userOrganization._id);
+    }
+  }, [activeOrganizationId, userOrganization, forceClearCache]);
 
   useEffect(() => {
     const tabParam = searchParams.get("tab") as Tab;

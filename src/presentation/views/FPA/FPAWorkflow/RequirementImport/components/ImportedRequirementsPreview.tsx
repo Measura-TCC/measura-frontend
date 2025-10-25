@@ -116,7 +116,7 @@ export const ImportedRequirementsPreview = ({
             <div className="flex items-center gap-4">
               <button
                 onClick={toggleAll}
-                className="text-sm text-primary hover:underline"
+                className="text-sm text-primary hover:underline cursor-pointer"
               >
                 {selectedIds.size === requirements.length
                   ? t("importForms.preview.deselectAll")
