@@ -813,8 +813,16 @@
       "selectedCount": "{{count}} of {{total}} selected",
       "reference": "Reference",
       "metadata": "Metadata",
+      "source": "Source",
+      "edit": "Actions",
+      "remove": "Remove",
       "cancel": "Cancel",
-      "addSelected": "Add {{count}} Selected"
+      "addSelected": "Add {{count}} Selected",
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "showing": "Showing {{start}}-{{end}} of {{total}}",
+      "previous": "Previous",
+      "next": "Next"
     },
     "importResult": {
       "title": "Import Complete",
