@@ -75,6 +75,7 @@ export const ComponentsTab = ({
 }: ComponentsTabProps) => {
   const { t } = useTranslation("fpa");
   const toast = useToast();
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [editingComponent, setEditingComponent] = useState<{
     component: ComponentItem;
     type: ComponentType;
