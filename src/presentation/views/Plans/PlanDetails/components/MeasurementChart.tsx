@@ -18,37 +18,45 @@ interface MeasurementChartProps {
   cyclesData: CycleWithData[];
 }
 
-export const MeasurementChart: React.FC<MeasurementChartProps> = ({ cyclesData }) => {
+export const MeasurementChart: React.FC<MeasurementChartProps> = ({
+  cyclesData,
+}) => {
   const { t } = useTranslation("plans");
   const [selectedMetric, setSelectedMetric] = useState<string | null>(null);
   const [selectedCycle, setSelectedCycle] = useState<string>("all");
 
   // Transform data for chart - group measurements by metric name
-  const chartData = cyclesData.flatMap((cycleData) =>
-    cycleData.measurements.map((measurement) => ({
-      cycleId: cycleData.cycle._id,
-      cycleName: cycleData.cycle.cycleName,
-      date: new Date(measurement.date).toLocaleDateString('pt-BR'),
-      fullDate: measurement.date,
-      metricName: measurement.metricName,
-      measurementName: measurement.measurementDefinitionName,
-      value: measurement.value,
-    }))
-  ).sort((a, b) => new Date(a.fullDate).getTime() - new Date(b.fullDate).getTime());
+  const chartData = cyclesData
+    .flatMap((cycleData) =>
+      cycleData.measurements.map((measurement) => ({
+        cycleId: cycleData.cycle._id,
+        cycleName: cycleData.cycle.cycleName,
+        date: new Date(measurement.date).toLocaleDateString("pt-BR"),
+        fullDate: measurement.date,
+        metricName: measurement.metricName,
+        measurementName: measurement.measurementDefinitionName,
+        value: measurement.value,
+      }))
+    )
+    .sort(
+      (a, b) => new Date(a.fullDate).getTime() - new Date(b.fullDate).getTime()
+    );
 
   // Get unique cycles
-  const uniqueCycles = cyclesData.map(cd => ({
+  const uniqueCycles = cyclesData.map((cd) => ({
     id: cd.cycle._id,
-    name: cd.cycle.cycleName
+    name: cd.cycle.cycleName,
   }));
 
   // Get unique metrics for different bar colors
-  const uniqueMetrics = Array.from(new Set(chartData.map(d => d.metricName)));
+  const uniqueMetrics = Array.from(new Set(chartData.map((d) => d.metricName)));
 
   // Count measurements per metric
   const metricCounts: Record<string, number> = {};
-  uniqueMetrics.forEach(metric => {
-    metricCounts[metric] = chartData.filter(d => d.metricName === metric).length;
+  uniqueMetrics.forEach((metric) => {
+    metricCounts[metric] = chartData.filter(
+      (d) => d.metricName === metric
+    ).length;
   });
 
   // Define colors for different metrics
@@ -73,9 +81,12 @@ export const MeasurementChart: React.FC<MeasurementChartProps> = ({ cyclesData }
   }
 
   // Filter data by selected metric and cycle
-  const filteredChartData = chartData.filter(d => {
-    const matchesMetric = selectedMetric ? d.metricName === selectedMetric : true;
-    const matchesCycle = selectedCycle === "all" ? true : d.cycleId === selectedCycle;
+  const filteredChartData = chartData.filter((d) => {
+    const matchesMetric = selectedMetric
+      ? d.metricName === selectedMetric
+      : true;
+    const matchesCycle =
+      selectedCycle === "all" ? true : d.cycleId === selectedCycle;
     return matchesMetric && matchesCycle;
   });
 
@@ -92,7 +103,10 @@ export const MeasurementChart: React.FC<MeasurementChartProps> = ({ cyclesData }
 
         {/* Cycle Filter Dropdown */}
         <div className="flex items-center gap-2">
-          <label htmlFor="cycle-filter" className="text-sm text-secondary whitespace-nowrap">
+          <label
+            htmlFor="cycle-filter"
+            className="text-sm text-secondary whitespace-nowrap"
+          >
             {t("monitoring.filterByCycle")}:
           </label>
           <select
@@ -172,8 +186,8 @@ export const MeasurementChart: React.FC<MeasurementChartProps> = ({ cyclesData }
                       label={{
                         value: t("monitoring.value"),
                         angle: -90,
-                        position: 'insideLeft',
-                        style: { fill: '#6b7280' }
+                        position: "insideLeft",
+                        style: { fill: "#6b7280" },
                       }}
                       allowDecimals={false}
                     />
@@ -201,23 +215,29 @@ export const MeasurementChart: React.FC<MeasurementChartProps> = ({ cyclesData }
 
               {/* Metric details */}
               <div className="mt-6 pt-4 border-t border-border">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center gap-5">
                   <div className="flex items-center gap-3">
                     <div
                       className="w-4 h-4 rounded"
                       style={{ backgroundColor: colors[selectedMetric] }}
                     />
                     <div>
-                      <h4 className="text-base font-semibold text-default">{selectedMetric}</h4>
+                      <h4 className="text-base font-semibold text-default">
+                        {selectedMetric}
+                      </h4>
                       <p className="text-sm text-secondary">
-                        {filteredChartData.length} {t("monitoring.measurementsInCycle")}
+                        {filteredChartData.length}{" "}
+                        {t("monitoring.measurementsInCycle")}
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs text-secondary">{t("monitoring.latestValue")}</p>
+                  <div className="text-left">
+                    <p className="text-xs text-secondary">
+                      {t("monitoring.latestValue")}
+                    </p>
                     <p className="text-2xl font-bold text-primary">
-                      {filteredChartData[filteredChartData.length - 1]?.value || 0}
+                      {filteredChartData[filteredChartData.length - 1]?.value ||
+                        0}
                     </p>
                   </div>
                 </div>

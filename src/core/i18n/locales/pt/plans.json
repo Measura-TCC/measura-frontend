@@ -673,7 +673,8 @@
     "allCycles": "Todos os Ciclos",
     "noDataForMetric": "Nenhum Dado Disponível",
     "noDataForMetricDescription": "Nenhuma medição foi registrada para esta métrica ainda. Adicione medições para visualizar tendências.",
-    "noDataForMetricInCycle": "Nenhuma medição para esta métrica no ciclo selecionado. Tente selecionar um ciclo diferente ou adicione novas medições."
+    "noDataForMetricInCycle": "Nenhuma medição para esta métrica no ciclo selecionado. Tente selecionar um ciclo diferente ou adicione novas medições.",
+    "dateAdjustedToCycleStart": "A data atual está fora do ciclo; por isso, foi ajustada para o início do ciclo."
   },
   "optional": "opcional",
   "saving": "Salvando...",

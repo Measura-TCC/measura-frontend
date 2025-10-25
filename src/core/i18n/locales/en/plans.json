@@ -576,7 +576,8 @@
     "allCycles": "All Cycles",
     "noDataForMetric": "No Data Available",
     "noDataForMetricDescription": "No measurements have been recorded for this metric yet. Add measurements to see trends.",
-    "noDataForMetricInCycle": "No measurements for this metric in the selected cycle. Try selecting a different cycle or add new measurements."
+    "noDataForMetricInCycle": "No measurements for this metric in the selected cycle. Try selecting a different cycle or add new measurements.",
+    "dateAdjustedToCycleStart": "Date was automatically set to the cycle's start date because today's date is outside the cycle's range."
   },
   "optional": "optional",
   "saving": "Saving...",
