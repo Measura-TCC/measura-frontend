@@ -171,14 +171,14 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             {t("componentForms.eq.componentNameLabel")}
           </label>
           <input
             {...register("name")}
             type="text"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             placeholder={t("componentForms.eq.componentNamePlaceholder")}
           />
           {errors.name && (
@@ -189,14 +189,14 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
         <div>
           <label
             htmlFor="description"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             {t("componentForms.eq.descriptionLabel")}
           </label>
           <textarea
             {...register("description")}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             placeholder={t("componentForms.eq.descriptionPlaceholder")}
           />
         </div>
@@ -204,14 +204,14 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
         <div>
           <label
             htmlFor="primaryIntent"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             {t("componentForms.eq.primaryIntentLabel")}
           </label>
           <input
             {...register("primaryIntent")}
             type="text"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             placeholder={t("componentForms.eq.primaryIntentPlaceholder")}
           />
         </div>
@@ -227,7 +227,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
             <input
               {...register("useSpecialCalculation")}
               type="checkbox"
-              className="mr-2 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              className="mr-2 h-4 w-4 text-primary focus:ring-primary border-border rounded"
               onChange={(e) => {
                 setValue("useSpecialCalculation", e.target.checked);
                 if (e.target.checked) {
@@ -241,7 +241,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
                 }
               }}
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-secondary">
               {t("componentForms.eq.useSpecialCalculation")}
             </span>
           </label>
@@ -255,7 +255,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
             <div>
               <label
                 htmlFor="fileTypesReferenced"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-secondary mb-1"
               >
                 {t("componentForms.eq.ftrReferencedFiles")}
               </label>
@@ -263,7 +263,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
                 {...register("fileTypesReferenced", { valueAsNumber: true })}
                 type="number"
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 placeholder="2"
               />
               <p className="mt-1 text-xs text-gray-500">
@@ -279,7 +279,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
             <div>
               <label
                 htmlFor="dataElementTypes"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-secondary mb-1"
               >
                 {t("componentForms.eq.detDataElements")}
               </label>
@@ -287,7 +287,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
                 {...register("dataElementTypes", { valueAsNumber: true })}
                 type="number"
                 min="1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 placeholder="10"
               />
               <p className="mt-1 text-xs text-gray-500">
@@ -310,7 +310,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
                 <div>
                   <label
                     htmlFor="inputFtr"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-secondary mb-1"
                   >
                     {t("componentForms.eq.inputFtr")}
                   </label>
@@ -318,7 +318,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
                     {...register("inputFtr", { valueAsNumber: true })}
                     type="number"
                     min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                     placeholder="1"
                   />
                   <p className="mt-1 text-xs text-gray-500">
@@ -329,7 +329,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
                 <div>
                   <label
                     htmlFor="inputDet"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-secondary mb-1"
                   >
                     {t("componentForms.eq.inputDet")}
                   </label>
@@ -337,7 +337,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
                     {...register("inputDet", { valueAsNumber: true })}
                     type="number"
                     min="1"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                     placeholder="5"
                   />
                   <p className="mt-1 text-xs text-gray-500">
@@ -369,7 +369,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
                 <div>
                   <label
                     htmlFor="outputFtr"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-secondary mb-1"
                   >
                     {t("componentForms.eq.outputFtr")}
                   </label>
@@ -377,7 +377,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
                     {...register("outputFtr", { valueAsNumber: true })}
                     type="number"
                     min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                     placeholder="3"
                   />
                   <p className="mt-1 text-xs text-gray-500">
@@ -388,7 +388,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
                 <div>
                   <label
                     htmlFor="outputDet"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-secondary mb-1"
                   >
                     {t("componentForms.eq.outputDet")}
                   </label>
@@ -396,7 +396,7 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
                     {...register("outputDet", { valueAsNumber: true })}
                     type="number"
                     min="1"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                     placeholder="12"
                   />
                   <p className="mt-1 text-xs text-gray-500">

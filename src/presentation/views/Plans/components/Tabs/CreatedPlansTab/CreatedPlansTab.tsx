@@ -25,11 +25,11 @@ const PlanStatusDisplay: React.FC<PlanStatusDisplayProps> = ({ planId }) => {
   const { status, isLoading } = usePlanStatus({ planId });
 
   if (isLoading) {
-    return <span className="text-xs text-gray-400">{t("loading")}</span>;
+    return <span className="text-xs text-gray-400 dark:text-gray-500">{t("loading")}</span>;
   }
 
   if (!status) {
-    return <span className="text-xs text-gray-400">-</span>;
+    return <span className="text-xs text-gray-400 dark:text-gray-500">-</span>;
   }
 
   return <MetricStatusBadge status={status.overallStatus} size="sm" />;
@@ -101,11 +101,11 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
     return (
       <Card>
         <CardContent className="text-center py-12">
-          <DocumentIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <DocumentIcon className="h-16 w-16 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-default mb-2">
             {t("noPlan")}
           </h3>
-          <p className="text-gray-500 mb-6">{t("createFirstPlan")}</p>
+          <p className="text-muted mb-6">{t("createFirstPlan")}</p>
           <Button onClick={() => router.push("/plans?tab=newPlan")}>
             {t("createPlan")}
           </Button>
@@ -126,7 +126,7 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle className="text-xl mb-2">{plan.planName}</CardTitle>
-                <div className="flex items-center flex-wrap gap-2 md:gap-4 text-sm text-gray-600">
+                <div className="flex items-center flex-wrap gap-2 md:gap-4 text-sm text-muted">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
                       plan.status
@@ -150,10 +150,10 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
                       e.stopPropagation();
                       setOpenMenuId(openMenuId === plan.id ? null : plan.id);
                     }}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors cursor-pointer"
                   >
                     <svg
-                      className="w-5 h-5 text-gray-600"
+                      className="w-5 h-5 text-secondary"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -170,7 +170,7 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
                           setOpenMenuId(null);
                         }}
                       />
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 border border-gray-200">
+                      <div className="absolute right-0 mt-2 w-48 bg-background rounded-md shadow-lg z-20 border border-border">
                         <div className="py-1">
                           <button
                             onClick={(e) => {
@@ -178,7 +178,7 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
                               onViewPlan(plan.id);
                               setOpenMenuId(null);
                             }}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                            className="w-full text-left px-4 py-2 text-sm text-default hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                           >
                             {t("actions.view")}
                           </button>
@@ -189,7 +189,7 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
                                 onEditPlan(plan);
                                 setOpenMenuId(null);
                               }}
-                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                              className="w-full text-left px-4 py-2 text-sm text-default hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                             >
                               {t("actions.edit")}
                             </button>
@@ -201,7 +201,7 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
                                 onDeletePlan(plan);
                                 setOpenMenuId(null);
                               }}
-                              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
+                              className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 cursor-pointer"
                             >
                               {t("actions.delete")}
                             </button>
@@ -217,7 +217,7 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               {/* <div>
-                <span className="font-medium text-gray-900">
+                <span className="font-medium text-default">
                   {t("progress")}
                 </span>
                 <div className="mt-1">
@@ -235,25 +235,25 @@ export const CreatedPlansTab: React.FC<CreatedPlansTabProps> = ({
                 </div>
               </div> */}
               <div>
-                <span className="font-medium text-gray-900">
+                <span className="font-medium text-default">
                   {t("workflow.objectives")}
                 </span>
-                <p className="text-gray-600">{plan.objectivesCount}</p>
+                <p className="text-secondary">{plan.objectivesCount}</p>
               </div>
               <div>
-                <span className="font-medium text-gray-900">
+                <span className="font-medium text-default">
                   {t("workflow.questions")}
                 </span>
-                <p className="text-gray-600">{plan.questionsCount}</p>
+                <p className="text-secondary">{plan.questionsCount}</p>
               </div>
               <div>
-                <span className="font-medium text-gray-900">
+                <span className="font-medium text-default">
                   {t("workflow.metrics")}
                 </span>
-                <p className="text-gray-600">{plan.metricsCount}</p>
+                <p className="text-secondary">{plan.metricsCount}</p>
               </div>
               <div>
-                <span className="font-medium text-gray-900">
+                <span className="font-medium text-default">
                   {t("indicatorStatus.title")}
                 </span>
                 <div className="mt-1">

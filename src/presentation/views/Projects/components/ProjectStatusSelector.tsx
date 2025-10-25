@@ -23,22 +23,22 @@ export const ProjectStatusSelector: React.FC<ProjectStatusSelectorProps> = ({
     {
       value: "PLANNING",
       label: t("statusPlanning"),
-      color: "bg-gray-100 text-gray-800",
+      color: "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300",
     },
     {
       value: "IN_PROGRESS",
       label: t("statusInProgress"),
-      color: "bg-blue-100 text-blue-800",
+      color: "bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300",
     },
     {
       value: "COMPLETED",
       label: t("statusCompleted"),
-      color: "bg-green-100 text-green-800",
+      color: "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300",
     },
     {
       value: "ARCHIVED",
       label: t("statusArchived"),
-      color: "bg-red-100 text-red-800",
+      color: "bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300",
     },
   ] as const;
 
@@ -70,7 +70,7 @@ export const ProjectStatusSelector: React.FC<ProjectStatusSelectorProps> = ({
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700">
+      <label className="block text-sm font-medium text-default">
         {t("status")}
       </label>
 
@@ -81,7 +81,7 @@ export const ProjectStatusSelector: React.FC<ProjectStatusSelectorProps> = ({
             handleStatusChange(e.target.value as Project["status"])
           }
           disabled={isLoading}
-          className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md disabled:opacity-50"
+          className="block w-full pl-3 pr-10 py-2 text-base border border-border bg-background text-default focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary rounded-md disabled:opacity-50"
         >
           {STATUS_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>
@@ -93,7 +93,7 @@ export const ProjectStatusSelector: React.FC<ProjectStatusSelectorProps> = ({
         {isLoading && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
             <svg
-              className="animate-spin h-4 w-4 text-gray-400"
+              className="animate-spin h-4 w-4 text-secondary"
               viewBox="0 0 24 24"
             >
               <circle
@@ -121,7 +121,7 @@ export const ProjectStatusSelector: React.FC<ProjectStatusSelectorProps> = ({
         </span>
       )}
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
     </div>
   );
 };

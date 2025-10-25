@@ -49,7 +49,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
-              <label className="text-md font-medium text-gray-700">
+              <label className="text-md font-medium text-secondary">
                 {t("name")}
               </label>
               <p className="text-secondary text-sm">{organization.name}</p>
@@ -57,7 +57,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
 
             {organization.industry && (
               <div>
-                <label className="text-md font-medium text-gray-700">
+                <label className="text-md font-medium text-secondary">
                   {t("industry")}
                 </label>
                 <p className="text-secondary text-sm">
@@ -67,7 +67,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
             )}
 
             <div>
-              <label className="text-md font-medium text-gray-700">
+              <label className="text-md font-medium text-secondary">
                 {t("created")}
               </label>
               <p className="text-secondary text-sm">
@@ -77,7 +77,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
 
             {organization.website && (
               <div className="sm:col-span-2 lg:col-span-1">
-                <label className="text-md font-medium text-gray-700">
+                <label className="text-md font-medium text-secondary">
                   {t("website")}
                 </label>
                 <a
@@ -95,7 +95,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
           <div className="space-y-4">
             {organization.description && (
               <div>
-                <label className="text-md font-medium text-gray-700">
+                <label className="text-md font-medium text-secondary">
                   {t("description")}
                 </label>
                 <p className="text-secondary text-sm">
@@ -105,7 +105,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
             )}
 
             <div>
-              <label className="text-md font-medium text-gray-700">
+              <label className="text-md font-medium text-secondary">
                 {t("mission")}
               </label>
               <p className="text-secondary text-sm whitespace-pre-line">
@@ -114,7 +114,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
             </div>
 
             <div>
-              <label className="text-md font-medium text-gray-700">
+              <label className="text-md font-medium text-secondary">
                 {t("vision")}
               </label>
               <p className="text-secondary text-sm whitespace-pre-line">
@@ -123,7 +123,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
             </div>
 
             <div>
-              <label className="text-md font-medium text-gray-700">
+              <label className="text-md font-medium text-secondary">
                 {t("values")}
               </label>
               <p className="text-secondary text-sm whitespace-pre-line">
@@ -132,7 +132,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
             </div>
 
             <div>
-              <label className="text-md font-medium text-gray-700">
+              <label className="text-md font-medium text-secondary">
                 {t("strategicObjectives")}
               </label>
               <div className="text-secondary text-sm  mt-2">
@@ -199,19 +199,19 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ organization }) => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-md font-medium text-gray-700">
+            <label className="text-md font-medium text-secondary">
               {t("totalProjects")}
             </label>
             <p className="text-secondary text-sm">-</p>
           </div>
           <div>
-            <label className="text-md font-medium text-gray-700">
+            <label className="text-md font-medium text-secondary">
               {t("activeEstimates")}
             </label>
             <p className="text-secondary text-sm">-</p>
           </div>
           <div>
-            <label className="text-md font-medium text-gray-700">
+            <label className="text-md font-medium text-secondary">
               {t("teamMembers")}
             </label>
             <p className="text-secondary text-sm">-</p>

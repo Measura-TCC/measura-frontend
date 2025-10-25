@@ -137,17 +137,17 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
     return (
       <div className="space-y-6">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-2"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-2"></div>
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-4"></div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <div className="animate-pulse bg-gray-200 h-64 rounded-lg"></div>
-            <div className="animate-pulse bg-gray-200 h-32 rounded-lg"></div>
+            <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-64 rounded-lg"></div>
+            <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-32 rounded-lg"></div>
           </div>
           <div className="space-y-6">
-            <div className="animate-pulse bg-gray-200 h-48 rounded-lg"></div>
-            <div className="animate-pulse bg-gray-200 h-32 rounded-lg"></div>
+            <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-48 rounded-lg"></div>
+            <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-32 rounded-lg"></div>
           </div>
         </div>
       </div>

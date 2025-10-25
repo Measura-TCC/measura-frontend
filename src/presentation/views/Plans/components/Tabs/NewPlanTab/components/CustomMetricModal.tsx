@@ -81,14 +81,14 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 backdrop-blur-sm bg-white/20 flex items-center justify-center z-50" onClick={handleClose}>
-      <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 backdrop-blur-sm bg-white/20 dark:bg-black/40 flex items-center justify-center z-50" onClick={handleClose}>
+      <div className="bg-white dark:bg-gray-900 rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border border-gray-200 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">
               {editingData ? t("editMetric") : t("modals.customMetric.title")}
             </h2>
-            <button onClick={handleClose} className="text-gray-500 hover:text-gray-700 cursor-pointer">
+            <button onClick={handleClose} className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer text-2xl leading-none">
               ×
             </button>
           </div>
@@ -116,7 +116,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
               {availableMetrics.map((metric) => (
                 <div
                   key={metric.metricName}
-                  className="border border-border rounded-lg p-4 hover:bg-gray-50 cursor-pointer"
+                  className="border border-border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
                   onClick={() => handleAddPredefinedMetric(metric)}
                 >
                   <div className="flex justify-between items-start mb-2">
@@ -130,11 +130,11 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                   <p className="text-sm text-secondary mb-2">
                     {metric.metricDescription ? t(metric.metricDescription) : "No description available"}
                   </p>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
                     <span className="font-medium">{t("metric.metricFormula")}:</span>{" "}
                     {metric.metricFormula}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                     <span className="font-medium">{t("measurement.measurementsCount")}:</span>{" "}
                     {metric.measurements.length}
                   </div>
@@ -195,7 +195,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                 }
                 placeholder={t("modals.customMetric.descriptionPlaceholder")}
                 rows={3}
-                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
+                className="w-full px-3 py-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background dark:bg-gray-800 text-default"
               />
             </div>
 
@@ -269,7 +269,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                 }
                 placeholder={t("modals.customMetric.analysisProcedurePlaceholder")}
                 rows={3}
-                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
+                className="w-full px-3 py-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background dark:bg-gray-800 text-default"
               />
             </div>
 
@@ -309,7 +309,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
             </div>
           )}
 
-          <div className="flex justify-end gap-2 mt-6 pt-4 border-t">
+          <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
             <Button variant="secondary" onClick={handleClose}>
               {t("modals.customMetric.cancel")}
             </Button>

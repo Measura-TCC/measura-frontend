@@ -26,11 +26,11 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 backdrop-blur-sm bg-white/20 flex items-center justify-center z-50"
+      className="fixed inset-0 backdrop-blur-sm bg-white/20 dark:bg-black/40 flex items-center justify-center z-50"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg max-w-md w-full mx-4 shadow-xl border"
+        className="bg-white dark:bg-gray-900 rounded-lg max-w-md w-full mx-4 shadow-xl border border-gray-200 dark:border-gray-700"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
@@ -40,7 +40,7 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 text-2xl leading-none cursor-pointer"
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 text-2xl leading-none cursor-pointer"
               disabled={isDeleting}
             >
               ×
@@ -48,12 +48,12 @@ export const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
           </div>
 
           <div className="space-y-4">
-            <div className="bg-red-50 border border-red-200 rounded-md p-4">
-              <p className="text-sm text-red-800">
+            <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md p-4">
+              <p className="text-sm text-red-800 dark:text-red-300">
                 {message}
               </p>
               {itemName && (
-                <p className="text-sm text-red-900 font-semibold mt-2">
+                <p className="text-sm text-red-900 dark:text-red-200 font-semibold mt-2">
                   {itemName}
                 </p>
               )}

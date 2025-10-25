@@ -65,7 +65,7 @@ export const ManualRequirementForm = ({ requirements, addRequirement, addRequire
       <div className="space-y-6">
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-            <h3 className="text-lg font-semibold text-gray-900 whitespace-normal">
+            <h3 className="text-lg font-semibold text-default whitespace-normal">
               {t("importForms.manual.title")}
             </h3>
             <Button
@@ -81,7 +81,7 @@ export const ManualRequirementForm = ({ requirements, addRequirement, addRequire
           <form onSubmit={handleSubmit} className="space-y-4">
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-secondary mb-1">
             {t("importForms.manual.requirementTitle")} *
           </label>
           <input
@@ -89,12 +89,12 @@ export const ManualRequirementForm = ({ requirements, addRequirement, addRequire
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder={t("importForms.manual.titlePlaceholder")}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:invalid:border-red-500"
+            className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:invalid:border-red-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-secondary mb-1">
             {t("importForms.manual.description")}
           </label>
           <textarea
@@ -102,7 +102,7 @@ export const ManualRequirementForm = ({ requirements, addRequirement, addRequire
             onChange={(e) => setDescription(e.target.value)}
             placeholder={t("importForms.manual.descriptionPlaceholder")}
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
 
@@ -194,14 +194,14 @@ export const ManualRequirementForm = ({ requirements, addRequirement, addRequire
                   getRowKey={(req) => req._id}
                 />
             ) : (
-              <div className="text-center py-8 text-gray-400">
+              <div className="text-center py-8 text-gray-400 dark:text-gray-500">
                 <svg className="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <p className="text-sm font-medium text-gray-500">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                   {t("importForms.manual.noRequirementsYet", "Nenhum requisito adicionado ainda")}
                 </p>
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                   {t("importForms.manual.addRequirementsToSee", "Adicione requisitos para vê-los aqui")}
                 </p>
               </div>

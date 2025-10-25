@@ -77,7 +77,7 @@ export const CustomObjectiveModal: React.FC<CustomObjectiveModalProps> = ({
             <h2 className="text-lg font-semibold">
               {editingData ? t("editObjective") : t("modals.customObjective.title")}
             </h2>
-            <button onClick={handleClose} className="text-gray-500 hover:text-gray-700 cursor-pointer text-2xl leading-none">
+            <button onClick={handleClose} className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer text-2xl leading-none">
               ×
             </button>
           </div>
@@ -101,7 +101,7 @@ export const CustomObjectiveModal: React.FC<CustomObjectiveModalProps> = ({
                 {t("modals.customObjective.predefinedDescription")}
               </p>
               {availableToAdd.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                   <p>{t("modals.customObjective.noAvailableObjectives")}</p>
                 </div>
               ) : (

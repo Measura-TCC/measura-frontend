@@ -85,8 +85,8 @@ export const CreateEstimateForm = ({
         </div>
       )}
 
-      <fieldset className="border border-gray-200 rounded-lg p-6">
-        <legend className="text-lg font-semibold px-2 text-gray-900">
+      <fieldset className="border border-border rounded-lg p-6">
+        <legend className="text-lg font-semibold px-2 text-default">
           {tFpa("estimateForm.estimateInformation")}
         </legend>
 
@@ -94,14 +94,14 @@ export const CreateEstimateForm = ({
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-secondary mb-1"
             >
               {tFpa("estimateForm.estimateName")} *
             </label>
             <input
               {...register("name")}
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-default"
               placeholder={tFpa("estimateForm.estimateNamePlaceholder")}
             />
             {errors.name && (
@@ -112,14 +112,14 @@ export const CreateEstimateForm = ({
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-secondary mb-1"
             >
               {tFpa("estimateForm.description")}
             </label>
             <textarea
               {...register("description")}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-default"
               placeholder={tFpa("estimateForm.descriptionPlaceholder")}
             />
             {errors.description && (
@@ -132,14 +132,14 @@ export const CreateEstimateForm = ({
           <div>
             <label
               htmlFor="applicationBoundary"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-secondary mb-1"
             >
               {tFpa("estimateForm.applicationBoundary")} *
             </label>
             <input
               {...register("applicationBoundary")}
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-default"
               placeholder={tFpa("estimateForm.applicationBoundaryPlaceholder")}
             />
             {errors.applicationBoundary && (
@@ -152,14 +152,14 @@ export const CreateEstimateForm = ({
           <div>
             <label
               htmlFor="countingScope"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-secondary mb-1"
             >
               {tFpa("estimateForm.countingScope")} *
             </label>
             <textarea
               {...register("countingScope")}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-default"
               placeholder={tFpa("estimateForm.countingScopePlaceholder")}
             />
             {errors.countingScope && (
@@ -172,13 +172,13 @@ export const CreateEstimateForm = ({
           <div>
             <label
               htmlFor="countType"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-secondary mb-1"
             >
               {tFpa("estimateForm.countType")} *
             </label>
             <select
               {...register("countType")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-default"
             >
               <option value="DEVELOPMENT_PROJECT">
                 {tFpa("estimateForm.developmentProject")}

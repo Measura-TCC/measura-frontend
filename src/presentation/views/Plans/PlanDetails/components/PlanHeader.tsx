@@ -52,14 +52,14 @@ export const PlanHeader: React.FC<PlanHeaderProps> = ({
           {t("planDetails.back")}
         </Button>
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
             {planName}
           </h1>
-          <p className="text-gray-600 text-sm md:text-base">
+          <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base">
             {t("responsible")}: {planResponsible}
           </p>
           {isEditing && (
-            <p className="text-sm text-blue-600 mt-1">
+            <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">
               {t("planDetails.editingMode")}
             </p>
           )}

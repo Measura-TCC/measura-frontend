@@ -123,10 +123,10 @@ export const RequirementImportView = ({
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-default">
             {t("requirementImport.title")}
           </h2>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 text-sm text-secondary">
             {t("requirementImport.subtitle")}
           </p>
         </div>
@@ -136,7 +136,7 @@ export const RequirementImportView = ({
           onSelectSource={setSelectedSource}
         />
 
-        <div className="border-t border-gray-200 pt-6">
+        <div className="border-t border-border pt-6">
           {renderImportForm()}
         </div>
 

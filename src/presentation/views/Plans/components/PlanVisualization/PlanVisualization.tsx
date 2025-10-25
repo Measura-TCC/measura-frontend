@@ -117,7 +117,7 @@ export const PlanVisualization: React.FC<PlanVisualizationProps> = ({
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="bg-gray-50 p-4 rounded-lg space-y-3 text-sm">
+          <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg space-y-3 text-sm">
             {plan.planName && (
               <div>
                 <strong>{t("measurementPlan.planName")}:</strong>{" "}
@@ -140,8 +140,8 @@ export const PlanVisualization: React.FC<PlanVisualizationProps> = ({
                 key={`${objective.objectiveTitle}-${objectiveIndex}`}
                 className="space-y-6"
               >
-                <div className="border-b border-gray-200 pb-4">
-                  <h2 className="text-xl font-semibold text-gray-900">
+                <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                     {t("workflow.objective")} {objectiveIndex}:{" "}
                     {t(objective.objectiveTitle)}
                   </h2>
@@ -153,10 +153,10 @@ export const PlanVisualization: React.FC<PlanVisualizationProps> = ({
                     className="ml-4 space-y-4"
                   >
                     <div className="flex items-start gap-2">
-                      <span className="text-sm font-medium text-gray-600">
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
                         - {t("workflow.question")} {questionIndex + 1}:
                       </span>
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                         {t(question.questionText)}
                       </span>
                     </div>
@@ -164,20 +164,20 @@ export const PlanVisualization: React.FC<PlanVisualizationProps> = ({
                     {question.metrics.map((metric, metricIndex) => (
                       <div
                         key={`${metric.metricName}-${metricIndex}`}
-                        className="ml-6 space-y-4 border-l-2 border-gray-200 pl-4"
+                        className="ml-6 space-y-4 border-l-2 border-gray-200 dark:border-gray-700 pl-4"
                       >
                         <div className="flex items-start gap-2">
-                          <span className="text-sm font-medium text-gray-600">
+                          <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
                             - {t("workflow.metric")} {metricIndex + 1}:
                           </span>
-                          <span className="text-sm font-medium text-gray-900">
+                          <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                             {t(metric.metricName)}
                           </span>
                         </div>
 
-                        <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-4 text-sm">
+                        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4 text-sm">
                           <div>
-                            <h4 className="font-semibold text-gray-700 mb-2">
+                            <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-2">
                               {t("measurement.generalInfo")}:
                             </h4>
                             <div className="ml-4">
@@ -202,7 +202,7 @@ export const PlanVisualization: React.FC<PlanVisualizationProps> = ({
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-700 mb-2">
+                            <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-2">
                               {t("measurement.controlAnalysis")}
                             </h4>
                             <div className="ml-4 space-y-1">
@@ -237,7 +237,7 @@ export const PlanVisualization: React.FC<PlanVisualizationProps> = ({
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-700 mb-2">
+                            <h4 className="font-semibold text-gray-700 dark:text-gray-200 mb-2">
                               {t("measurement.measurementDetails")}
                             </h4>
                             {metric.measurements.map(
@@ -246,7 +246,7 @@ export const PlanVisualization: React.FC<PlanVisualizationProps> = ({
                                   key={`${measurement.measurementAcronym}-${measurementIndex}`}
                                   className="ml-4 space-y-1 mb-4 last:mb-0"
                                 >
-                                  <div className="font-medium text-gray-900">
+                                  <div className="font-medium text-gray-900 dark:text-gray-100">
                                     {t("types.measurement")} {measurementIndex + 1}
                                   </div>
                                   <div>
@@ -318,7 +318,7 @@ export const PlanVisualization: React.FC<PlanVisualizationProps> = ({
           </Button>
 
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
               {t("planVisualization.pageOf", {
                 current: currentPage + 1,
                 total: totalPages,

@@ -337,7 +337,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
                 <h3 className="font-medium text-gray-900">
                   {t(objective.objectiveTitle)}
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   {objective.questions?.length || 0} {t("workflow.questions")}
                 </p>
               </div>
@@ -388,7 +388,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               renderQuestion(question, qIndex, objective._id!)
             )}
             {(!objective.questions || objective.questions.length === 0) && (
-              <div className="text-center py-4 text-gray-500">
+              <div className="text-center py-4 text-gray-500 dark:text-gray-400">
                 <p>{t("noQuestionsYet")}</p>
                 {!isReadOnly && (
                   <Button
@@ -435,7 +435,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
                 <h4 className="font-medium text-gray-900 text-sm">
                   {question.questionText}
                 </h4>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   {question.metrics?.length || 0} {t("workflow.metrics")}
                 </p>
               </div>

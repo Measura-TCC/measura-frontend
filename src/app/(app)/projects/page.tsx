@@ -318,18 +318,18 @@ export default function ProjectsPage() {
                 </div>
                 {project.objectives && project.objectives.length > 0 && (
                   <div className="border-t border-border pt-3 mt-3">
-                    <h4 className="text-sm font-medium mb-2">
+                    <h4 className="text-sm font-medium mb-2 text-default">
                       {t("projectObjectives")}
                     </h4>
                     {project.objectives.slice(0, 2).map((obj) => (
                       <div
                         key={obj._id}
-                        className="text-xs bg-blue-50 p-2 rounded mb-1"
+                        className="text-xs bg-blue-50 dark:bg-blue-900/30 p-2 rounded mb-1"
                       >
-                        <div className="font-medium">{obj.title}</div>
+                        <div className="font-medium text-default">{obj.title}</div>
                         {obj.organizationalObjectiveIds &&
                           obj.organizationalObjectiveIds.length > 0 && (
-                            <div className="text-blue-600 mt-1">
+                            <div className="text-blue-600 dark:text-blue-400 mt-1">
                               {t("linkedTo")}{" "}
                               {obj.organizationalObjectiveIds
                                 .map(
@@ -345,7 +345,7 @@ export default function ProjectsPage() {
                       </div>
                     ))}
                     {project.objectives.length > 2 && (
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-secondary">
                         +{project.objectives.length - 2} more objectives
                       </div>
                     )}

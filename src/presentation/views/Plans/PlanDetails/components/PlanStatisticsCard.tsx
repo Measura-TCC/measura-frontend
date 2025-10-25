@@ -54,15 +54,15 @@ export const PlanStatisticsCard: React.FC<PlanStatisticsCardProps> = ({
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-600">{t("indicatorStatus.title")}</span>
             {isLoading ? (
-              <span className="text-xs text-gray-400">{t("loading")}</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">{t("loading")}</span>
             ) : status ? (
               <MetricStatusBadge status={status.overallStatus} size="sm" />
             ) : (
-              <span className="text-xs text-gray-400">-</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">-</span>
             )}
           </div>
           {status && status.overallStatus === 'NEEDS_ATTENTION' && (
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
               {status.metricsNeedAttention} de {status.totalMetrics} {t("workflow.metrics").toLowerCase()} {t("indicatorStatus.someNeedAttention").toLowerCase()}
             </p>
           )}

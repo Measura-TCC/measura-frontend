@@ -100,7 +100,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.ei.name")}
         </label>
@@ -108,7 +108,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
           {...register("name")}
           id="name"
           type="text"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.name && (
           <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
@@ -118,7 +118,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.descriptionOptional")}
         </label>
@@ -126,7 +126,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
           {...register("description")}
           id="description"
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.description && (
           <p className="mt-1 text-sm text-red-600">
@@ -138,7 +138,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
       <div>
         <label
           htmlFor="primaryIntent"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.primaryIntent")}
         </label>
@@ -147,7 +147,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
           id="primaryIntent"
           rows={3}
           placeholder={t("componentForms.ei.primaryIntentPlaceholder")}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.primaryIntent && (
           <p className="mt-1 text-sm text-red-600">
@@ -159,7 +159,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
       <div>
         <label
           htmlFor="processingLogic"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.ei.processingLogic")}
         </label>
@@ -168,7 +168,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
           id="processingLogic"
           rows={3}
           placeholder={t("componentForms.ei.processingLogicPlaceholder")}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.processingLogic && (
           <p className="mt-1 text-sm text-red-600">
@@ -180,7 +180,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
       <div>
         <label
           htmlFor="fileTypesReferenced"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.ei.fileTypesReferenced")}
         </label>
@@ -189,7 +189,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
           id="fileTypesReferenced"
           type="number"
           min="1"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.fileTypesReferenced && (
           <p className="mt-1 text-sm text-red-600">
@@ -201,7 +201,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
       <div>
         <label
           htmlFor="dataElementTypes"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.ei.dataElementTypes")}
         </label>
@@ -210,7 +210,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
           id="dataElementTypes"
           type="number"
           min="1"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.dataElementTypes && (
           <p className="mt-1 text-sm text-red-600">
@@ -222,7 +222,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
       <div>
         <label
           htmlFor="notes"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.notesOptional")}
         </label>
@@ -230,7 +230,7 @@ export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
           {...register("notes")}
           id="notes"
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.notes && (
           <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>

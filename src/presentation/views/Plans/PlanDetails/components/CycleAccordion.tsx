@@ -33,8 +33,8 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
 
   return (
     <>
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="w-full p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
+      <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-900">
+        <div className="w-full p-4 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
           <div
             className="flex items-center gap-3 text-left flex-1 cursor-pointer"
             onClick={() => setIsOpen(!isOpen)}
@@ -43,7 +43,7 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
               <div className="font-medium text-default text-base">
                 {cycleData.cycle.cycleName}
               </div>
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 {formatDate(cycleData.cycle.startDate)} -{" "}
                 {formatDate(cycleData.cycle.endDate)} •{" "}
                 {cycleData.measurementCount} {t("monitoring.measurementsInCycle")}
@@ -57,11 +57,11 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
                 e.stopPropagation();
                 setIsEditCycleModalOpen(true);
               }}
-              className="p-2 hover:bg-gray-100 rounded-md transition-colors cursor-pointer"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors cursor-pointer"
               title={t("monitoring.editCycle")}
             >
               <svg
-                className="w-4 h-4 text-gray-600"
+                className="w-4 h-4 text-gray-600 dark:text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -75,7 +75,7 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
               </svg>
             </button>
 
-            <span className="text-gray-500">
+            <span className="text-gray-500 dark:text-gray-400">
               {isOpen ? (
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path
@@ -98,7 +98,7 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
         </div>
 
         {isOpen && (
-          <div className="border-t border-gray-200 p-4 bg-gray-50">
+          <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-800">
             <div className="mb-4 flex justify-end">
               <Button
                 size="sm"
@@ -109,7 +109,7 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
             </div>
 
             {cycleData.measurements.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                 <p>{t("monitoring.noMeasurementsInCycle")}</p>
               </div>
             ) : (
@@ -117,7 +117,7 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
                 {cycleData.measurements.map((measurement) => (
                   <div
                     key={measurement._id}
-                    className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow"
+                    className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-sm transition-shadow"
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
@@ -126,23 +126,23 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
                             <h4 className="font-medium text-default">
                               {measurement.measurementDefinitionName}
                               {measurement.measurementAcronym && (
-                                <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                                <span className="ml-2 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-2 py-0.5 rounded">
                                   {measurement.measurementAcronym}
                                 </span>
                               )}
                             </h4>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                               {measurement.metricName} • {measurement.objectiveTitle}
                             </p>
                           </div>
 
                           <button
                             onClick={() => setEditingMeasurement(measurement)}
-                            className="p-1 hover:bg-gray-100 rounded transition-colors cursor-pointer"
+                            className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors cursor-pointer"
                             title={t("monitoring.editMeasurement")}
                           >
                             <svg
-                              className="w-4 h-4 text-gray-600"
+                              className="w-4 h-4 text-gray-600 dark:text-gray-400"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -159,30 +159,30 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
 
                         <div className="grid grid-cols-2 gap-4 mt-3">
                           <div>
-                            <span className="text-xs font-medium text-gray-500">
+                            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
                               {t("monitoring.value")}:
                             </span>
-                            <p className="text-lg font-semibold text-purple-600">
+                            <p className="text-lg font-semibold text-purple-600 dark:text-purple-400">
                               {measurement.value}
                             </p>
                           </div>
 
                           <div>
-                            <span className="text-xs font-medium text-gray-500">
+                            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
                               {t("monitoring.measurementDate")}:
                             </span>
-                            <p className="text-sm text-gray-700">
+                            <p className="text-sm text-gray-700 dark:text-gray-200">
                               {formatDate(measurement.date)}
                             </p>
                           </div>
                         </div>
 
                         {measurement.notes && (
-                          <div className="mt-3 pt-3 border-t border-gray-100">
-                            <span className="text-xs font-medium text-gray-500">
+                          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
                               {t("monitoring.notes")}:
                             </span>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                               {measurement.notes}
                             </p>
                           </div>

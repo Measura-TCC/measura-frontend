@@ -212,7 +212,7 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
 
   return (
     <div
-      className="fixed inset-0 backdrop-blur-sm bg-white/20 flex items-center justify-center z-50"
+      className="fixed inset-0 backdrop-blur-sm bg-white/20 dark:bg-black/40 flex items-center justify-center z-50"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           handleClose();
@@ -220,7 +220,7 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
       }}
     >
       <div
-        className="bg-white rounded-lg max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border"
+        className="bg-white dark:bg-gray-900 rounded-lg max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border border-gray-200 dark:border-gray-700"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
@@ -230,7 +230,7 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
             </h2>
             <button
               onClick={handleClose}
-              className="text-gray-500 hover:text-gray-700 text-2xl leading-none cursor-pointer"
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 text-2xl leading-none cursor-pointer"
             >
               ×
             </button>
@@ -242,7 +242,7 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
                 {t("monitoring.selectCycle")}
               </label>
               {cycles.length === 0 ? (
-                <div className="w-full border border-yellow-300 bg-yellow-50 rounded-md px-3 py-2 text-sm text-yellow-800">
+                <div className="w-full border border-yellow-300 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/30 rounded-md px-3 py-2 text-sm text-yellow-800 dark:text-yellow-300">
                   {t("monitoring.noCyclesAvailable")}
                 </div>
               ) : (
@@ -279,8 +279,8 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
                     setDateAdjustedMessage(wasAdjusted);
                   }}
                   disabled={!!preSelectedCycleId}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 ${
-                    preSelectedCycleId ? 'bg-gray-100 cursor-not-allowed' : ''
+                  className={`w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ${
+                    preSelectedCycleId ? 'bg-gray-100 dark:bg-gray-700 cursor-not-allowed' : ''
                   }`}
                 >
                   <option value="">{t("monitoring.selectCycle")}</option>
@@ -357,14 +357,14 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
                 className="w-full"
               />
               {dateAdjustedMessage && (
-                <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-md">
-                  <p className="text-xs text-blue-700">
+                <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-md">
+                  <p className="text-xs text-blue-700 dark:text-blue-300">
                     ℹ️ {t("monitoring.dateAdjustedToCycleStart")}
                   </p>
                 </div>
               )}
               {selectedCycle && (
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   {t("monitoring.selectCycle")}: {new Date(selectedCycle.startDate).toLocaleDateString('pt-BR')} -{" "}
                   {new Date(selectedCycle.endDate).toLocaleDateString('pt-BR')}
                 </p>
@@ -382,13 +382,13 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
                 }
                 placeholder={t("monitoring.notes")}
                 rows={3}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
               />
             </div>
 
             {(validationError || operationError) && (
-              <div className="bg-red-50 border border-red-200 rounded-md p-3">
-                <p className="text-sm text-red-600">
+              <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md p-3">
+                <p className="text-sm text-red-600 dark:text-red-300">
                   {validationError || operationError}
                 </p>
               </div>

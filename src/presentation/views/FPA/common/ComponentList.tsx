@@ -44,13 +44,13 @@ export const ComponentList = ({
   const getComplexityColor = (complexity?: string) => {
     switch (complexity) {
       case "LOW":
-        return "bg-green-100 text-green-800 border-green-200";
+        return "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 border-green-200 dark:border-green-800";
       case "MEDIUM":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+        return "bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800";
       case "HIGH":
-        return "bg-red-100 text-red-800 border-red-200";
+        return "bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 border-gray-200 dark:border-gray-700";
     }
   };
 
@@ -82,10 +82,10 @@ export const ComponentList = ({
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <span className="text-sm text-gray-500">
+        <h3 className="text-lg font-semibold text-default">{title}</h3>
+        <span className="text-sm text-secondary">
           {components.length}{" "}
           {components.length === 1
             ? t("components.component")
@@ -96,7 +96,7 @@ export const ComponentList = ({
       {components.length === 0 ? (
         <div className="text-center py-8">
           <svg
-            className="w-12 h-12 mx-auto text-gray-400 mb-4"
+            className="w-12 h-12 mx-auto text-secondary mb-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -108,10 +108,10 @@ export const ComponentList = ({
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             />
           </svg>
-          <p className="text-gray-500">
+          <p className="text-secondary">
             {t("components.noComponentsYet", { type: componentType })}
           </p>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-muted mt-1">
             {t("components.addComponentsUsingButtons")}
           </p>
         </div>
@@ -120,12 +120,12 @@ export const ComponentList = ({
           {components.map((component) => (
             <div
               key={component._id}
-              className="border border-gray-100 rounded-lg p-4 hover:shadow-sm transition-shadow"
+              className="border border-gray-100 dark:border-gray-800 rounded-lg p-4 hover:shadow-sm transition-shadow bg-white dark:bg-gray-900"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center space-x-3 mb-2">
-                    <h4 className="text-sm font-medium text-gray-900 truncate">
+                    <h4 className="text-sm font-medium text-default truncate">
                       {component.name}
                     </h4>
                     {component.complexity && (
@@ -138,19 +138,19 @@ export const ComponentList = ({
                       </span>
                     )}
                     {component.functionPoints !== undefined && (
-                      <span className="text-sm font-semibold text-indigo-600">
+                      <span className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
                         {component.functionPoints} {t("calculations.fp")}
                       </span>
                     )}
                   </div>
 
                   {component.description && (
-                    <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                    <p className="text-sm text-secondary mb-2 line-clamp-2">
                       {component.description}
                     </p>
                   )}
 
-                  <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                  <div className="flex flex-wrap gap-4 text-xs text-secondary">
                     {component.recordElementTypes !== undefined && (
                       <span>
                         {t("components.ret")}: {component.recordElementTypes}
@@ -181,7 +181,7 @@ export const ComponentList = ({
                 <div className="flex items-center space-x-2 ml-4">
                   <button
                     onClick={() => onEdit?.(component)}
-                    className="p-2 text-gray-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                    className="p-2 text-secondary hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
                     title="Edit component"
                   >
                     <svg
@@ -203,7 +203,7 @@ export const ComponentList = ({
                     <div className="flex items-center space-x-1">
                       <button
                         onClick={() => handleDelete(component._id)}
-                        className="p-1 text-red-600 hover:bg-red-50 rounded cursor-pointer"
+                        className="p-1 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded cursor-pointer"
                         title="Confirm delete"
                       >
                         <svg
@@ -222,7 +222,7 @@ export const ComponentList = ({
                       </button>
                       <button
                         onClick={() => setDeleteConfirmId(null)}
-                        className="p-1 text-gray-400 hover:bg-gray-50 rounded cursor-pointer"
+                        className="p-1 text-secondary hover:bg-gray-50 dark:hover:bg-gray-800 rounded cursor-pointer"
                         title="Cancel delete"
                       >
                         <svg
@@ -243,7 +243,7 @@ export const ComponentList = ({
                   ) : (
                     <button
                       onClick={() => setDeleteConfirmId(component._id)}
-                      className="p-2 text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
+                      className="p-2 text-secondary hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer"
                       title="Delete component"
                     >
                       <svg

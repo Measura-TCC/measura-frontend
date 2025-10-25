@@ -36,13 +36,13 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300";
       case "active":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300";
       case "draft":
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300";
     }
   };
 
@@ -55,7 +55,7 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
         {!isEditing ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t("planDetails.status")}
               </label>
               <span
@@ -65,24 +65,24 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
               </span>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t("planDetails.project")}
               </label>
-              <p className="text-gray-900">{getProjectName(plan.associatedProject)}</p>
+              <p className="text-gray-900 dark:text-gray-100">{getProjectName(plan.associatedProject)}</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t("created")}
               </label>
-              <p className="text-gray-900">
+              <p className="text-gray-900 dark:text-gray-100">
                 {new Date(plan.createdAt).toLocaleDateString('pt-BR')}
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t("updated")}
               </label>
-              <p className="text-gray-900">
+              <p className="text-gray-900 dark:text-gray-100">
                 {new Date(plan.updatedAt).toLocaleDateString('pt-BR')}
               </p>
             </div>
@@ -90,7 +90,7 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
         ) : (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {t("forms.planName")}
               </label>
               <Input
@@ -102,13 +102,13 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t("planDetails.project")}
                 </label>
                 <select
                   value={editForm.associatedProject}
                   onChange={(e) => onEditFormChange("associatedProject", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                 >
                   <option value="">{t("forms.selectProject")}</option>
                   {projects?.map((project) => (
@@ -119,7 +119,7 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t("forms.planResponsible")}
                 </label>
                 <Input
@@ -131,13 +131,13 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {t("planDetails.status")}
               </label>
               <select
                 value={editForm.status}
                 onChange={(e) => onEditFormChange("status", e.target.value as MeasurementPlanStatus)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
               >
                 <option value={MeasurementPlanStatus.DRAFT}>
                   {t(`status.${MeasurementPlanStatus.DRAFT}`)}
@@ -150,20 +150,20 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
                 </option>
               </select>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t("created")}
                 </label>
-                <p className="text-gray-900">
+                <p className="text-gray-900 dark:text-gray-100">
                   {new Date(plan.createdAt).toLocaleDateString('pt-BR')}
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t("updated")}
                 </label>
-                <p className="text-gray-900">
+                <p className="text-gray-900 dark:text-gray-100">
                   {new Date(plan.updatedAt).toLocaleDateString('pt-BR')}
                 </p>
               </div>
