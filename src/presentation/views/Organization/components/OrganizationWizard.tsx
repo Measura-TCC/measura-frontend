@@ -280,7 +280,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   {...register("description")}
                   rows={3}
                   placeholder={t("form.descriptionPlaceholder")}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                 />
                 {errors.description && (
                   <p className="text-sm text-red-600">
@@ -329,7 +329,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   {...register("mission")}
                   rows={3}
                   placeholder={t("form.missionPlaceholder")}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                 />
                 {errors.mission && (
                   <p className="text-sm text-red-600">
@@ -345,7 +345,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   {...register("vision")}
                   rows={3}
                   placeholder={t("form.visionPlaceholder")}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                 />
                 {errors.vision && (
                   <p className="text-sm text-red-600">
@@ -359,7 +359,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                 </label>
                 <div className="relative">
                   <select
-                    className="input-base appearance-none pr-8 bg-white"
+                    className="input-base appearance-none pr-8"
                     value=""
                     onChange={(e) => {
                       if (e.target.value) {
