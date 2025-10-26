@@ -6,6 +6,7 @@ import { Button } from "@/presentation/components/primitives";
 import { integrationService } from "@/core/services/integrationService";
 import type { AzureDevOpsIntegration } from "@/core/types/integrations";
 import { createPortal } from "react-dom";
+import { mapBackendErrorToI18n } from "@/core/utils/errorMapper";
 
 interface ConfigureAzureDevOpsModalProps {
   isOpen: boolean;
@@ -24,20 +25,35 @@ export const ConfigureAzureDevOpsModal = ({
 }: ConfigureAzureDevOpsModalProps) => {
   const { t } = useTranslation("organization");
   const [mounted, setMounted] = useState(false);
-  const [formData, setFormData] = useState({
+
+  // Create initial form data
+  const getInitialFormData = () => ({
     organization: existingConfig?.organization || "",
     pat: "",
     enabled: existingConfig?.enabled ?? true,
   });
+
+  const [formData, setFormData] = useState(getInitialFormData());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [hasBeenTested, setHasBeenTested] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     return () => setMounted(false);
   }, []);
+
+  // Reset everything when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setError(null);
+      setTestResult(null);
+      setHasBeenTested(false);
+      setFormData(getInitialFormData());
+    }
+  }, [isOpen, existingConfig]);
 
   const handleTestConnection = async () => {
     setIsTesting(true);
@@ -47,12 +63,17 @@ export const ConfigureAzureDevOpsModal = ({
     try {
       await integrationService.configureAzureDevOps(organizationId, formData);
       const result = await integrationService.testAzureDevOpsConnection(organizationId);
+      const success = result.success;
       setTestResult({
-        success: result.success,
-        message: result.success ? t("integrations.testSuccess") : t("integrations.testFailed")
+        success,
+        message: success ? t("integrations.testSuccess") : t("integrations.testFailed")
       });
+      setHasBeenTested(success);
     } catch (err: any) {
-      setError(err.response?.data?.message || t("integrations.testConnectionFailed"));
+      const backendError = err.response?.data?.message;
+      const errorKey = backendError ? mapBackendErrorToI18n(backendError) : "integrations.testConnectionFailed";
+      setError(t(errorKey));
+      setHasBeenTested(false);
     } finally {
       setIsTesting(false);
     }
@@ -62,17 +83,26 @@ export const ConfigureAzureDevOpsModal = ({
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+    setTestResult(null); // Clear previous test result to avoid duplicate errors
 
     try {
-      if (existingConfig) {
-        await integrationService.updateAzureDevOps(organizationId, formData);
-      } else {
+      // Auto-test connection if not already tested
+      if (!hasBeenTested) {
         await integrationService.configureAzureDevOps(organizationId, formData);
+        const testResult = await integrationService.testAzureDevOpsConnection(organizationId);
+        if (!testResult.success) {
+          throw new Error(t("integrations.testFailed"));
+        }
       }
+
+      // Always use POST - backend POST endpoint handles both create and update by overwriting
+      await integrationService.configureAzureDevOps(organizationId, formData);
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || t("integrations.saveConfigFailed"));
+      const backendError = err.response?.data?.message || err.message;
+      const errorKey = backendError ? mapBackendErrorToI18n(backendError) : "integrations.saveConfigFailed";
+      setError(t(errorKey));
     } finally {
       setIsSubmitting(false);
     }
@@ -105,7 +135,15 @@ export const ConfigureAzureDevOpsModal = ({
               id="organization"
               type="text"
               value={formData.organization}
-              onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, organization: e.target.value });
+                setHasBeenTested(false);
+              }}
+              onInvalid={(e) => {
+                e.preventDefault();
+                (e.target as HTMLInputElement).setCustomValidity(t("integrations.fieldRequired"));
+              }}
+              onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
               placeholder="your-azure-org"
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
@@ -124,7 +162,15 @@ export const ConfigureAzureDevOpsModal = ({
               id="pat"
               type="password"
               value={formData.pat}
-              onChange={(e) => setFormData({ ...formData, pat: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, pat: e.target.value });
+                setHasBeenTested(false);
+              }}
+              onInvalid={(e) => {
+                e.preventDefault();
+                (e.target as HTMLInputElement).setCustomValidity(t("integrations.patRequired"));
+              }}
+              onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
               placeholder={existingConfig ? "••••••••" : t("integrations.azureDevops.patPlaceholder")}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required={!existingConfig}
@@ -166,7 +212,10 @@ export const ConfigureAzureDevOpsModal = ({
             </div>
           )}
 
-          <div className="flex gap-2 pt-4">
+          <div className="flex justify-end gap-2 pt-4">
+            <Button type="button" onClick={onClose} variant="secondary" disabled={isSubmitting}>
+              {t("integrations.cancel")}
+            </Button>
             <Button
               type="button"
               onClick={handleTestConnection}
@@ -175,11 +224,12 @@ export const ConfigureAzureDevOpsModal = ({
             >
               {isTesting ? t("integrations.testing") : t("integrations.testConnection")}
             </Button>
-            <Button type="submit" variant="primary" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={isSubmitting || !formData.organization || (!existingConfig && !formData.pat)}
+            >
               {isSubmitting ? t("integrations.saving") : t("integrations.save")}
-            </Button>
-            <Button type="button" onClick={onClose} variant="secondary">
-              {t("integrations.cancel")}
             </Button>
           </div>
         </form>

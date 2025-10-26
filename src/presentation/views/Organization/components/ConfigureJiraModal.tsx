@@ -6,6 +6,7 @@ import { Button } from "@/presentation/components/primitives";
 import { integrationService } from "@/core/services/integrationService";
 import type { JiraIntegration } from "@/core/types/integrations";
 import { createPortal } from "react-dom";
+import { mapBackendErrorToI18n } from "@/core/utils/errorMapper";
 
 interface ConfigureJiraModalProps {
   isOpen: boolean;
@@ -24,21 +25,36 @@ export const ConfigureJiraModal = ({
 }: ConfigureJiraModalProps) => {
   const { t } = useTranslation("organization");
   const [mounted, setMounted] = useState(false);
-  const [formData, setFormData] = useState({
+
+  // Create initial form data
+  const getInitialFormData = () => ({
     domain: existingConfig?.domain || "",
     email: existingConfig?.email || "",
     apiToken: "",
     enabled: existingConfig?.enabled ?? true,
   });
+
+  const [formData, setFormData] = useState(getInitialFormData());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [hasBeenTested, setHasBeenTested] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     return () => setMounted(false);
   }, []);
+
+  // Reset everything when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setError(null);
+      setTestResult(null);
+      setHasBeenTested(false);
+      setFormData(getInitialFormData());
+    }
+  }, [isOpen, existingConfig]);
 
   const handleTestConnection = async () => {
     setIsTesting(true);
@@ -48,12 +64,17 @@ export const ConfigureJiraModal = ({
     try {
       await integrationService.configureJira(organizationId, formData);
       const result = await integrationService.testJiraConnection(organizationId);
+      const success = result.success;
       setTestResult({
-        success: result.success,
-        message: result.success ? t("integrations.testSuccess") : t("integrations.testFailed")
+        success,
+        message: success ? t("integrations.testSuccess") : t("integrations.testFailed")
       });
+      setHasBeenTested(success);
     } catch (err: any) {
-      setError(err.response?.data?.message || t("integrations.testConnectionFailed"));
+      const backendError = err.response?.data?.message;
+      const errorKey = backendError ? mapBackendErrorToI18n(backendError) : "integrations.testConnectionFailed";
+      setError(t(errorKey));
+      setHasBeenTested(false);
     } finally {
       setIsTesting(false);
     }
@@ -63,17 +84,26 @@ export const ConfigureJiraModal = ({
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+    setTestResult(null); // Clear previous test result to avoid duplicate errors
 
     try {
-      if (existingConfig) {
-        await integrationService.updateJira(organizationId, formData);
-      } else {
+      // Auto-test connection if not already tested
+      if (!hasBeenTested) {
         await integrationService.configureJira(organizationId, formData);
+        const testResult = await integrationService.testJiraConnection(organizationId);
+        if (!testResult.success) {
+          throw new Error(t("integrations.testFailed"));
+        }
       }
+
+      // Always use POST - backend POST endpoint handles both create and update by overwriting
+      await integrationService.configureJira(organizationId, formData);
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || t("integrations.saveConfigFailed"));
+      const backendError = err.response?.data?.message || err.message;
+      const errorKey = backendError ? mapBackendErrorToI18n(backendError) : "integrations.saveConfigFailed";
+      setError(t(errorKey));
     } finally {
       setIsSubmitting(false);
     }
@@ -106,7 +136,15 @@ export const ConfigureJiraModal = ({
               id="domain"
               type="text"
               value={formData.domain}
-              onChange={(e) => setFormData({ ...formData, domain: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, domain: e.target.value });
+                setHasBeenTested(false);
+              }}
+              onInvalid={(e) => {
+                e.preventDefault();
+                (e.target as HTMLInputElement).setCustomValidity(t("integrations.fieldRequired"));
+              }}
+              onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
               placeholder="company.atlassian.net"
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
@@ -125,7 +163,15 @@ export const ConfigureJiraModal = ({
               id="email"
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, email: e.target.value });
+                setHasBeenTested(false);
+              }}
+              onInvalid={(e) => {
+                e.preventDefault();
+                (e.target as HTMLInputElement).setCustomValidity(t("integrations.fieldRequired"));
+              }}
+              onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
               placeholder="admin@company.com"
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
@@ -141,7 +187,15 @@ export const ConfigureJiraModal = ({
               id="apiToken"
               type="password"
               value={formData.apiToken}
-              onChange={(e) => setFormData({ ...formData, apiToken: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, apiToken: e.target.value });
+                setHasBeenTested(false);
+              }}
+              onInvalid={(e) => {
+                e.preventDefault();
+                (e.target as HTMLInputElement).setCustomValidity(t("integrations.apiTokenRequired"));
+              }}
+              onInput={(e) => (e.target as HTMLInputElement).setCustomValidity("")}
               placeholder={existingConfig ? "••••••••" : t("integrations.jira.apiTokenPlaceholder")}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required={!existingConfig}
@@ -183,7 +237,10 @@ export const ConfigureJiraModal = ({
             </div>
           )}
 
-          <div className="flex gap-2 pt-4">
+          <div className="flex justify-end gap-2 pt-4">
+            <Button type="button" onClick={onClose} variant="secondary" disabled={isSubmitting}>
+              {t("integrations.cancel")}
+            </Button>
             <Button
               type="button"
               onClick={handleTestConnection}
@@ -192,11 +249,12 @@ export const ConfigureJiraModal = ({
             >
               {isTesting ? t("integrations.testing") : t("integrations.testConnection")}
             </Button>
-            <Button type="submit" variant="primary" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={isSubmitting || !formData.domain || !formData.email || (!existingConfig && !formData.apiToken)}
+            >
               {isSubmitting ? t("integrations.saving") : t("integrations.save")}
-            </Button>
-            <Button type="button" onClick={onClose} variant="secondary">
-              {t("integrations.cancel")}
             </Button>
           </div>
         </form>

@@ -188,6 +188,12 @@
     "saveConfigFailed": "Failed to save configuration",
     "howToGenerate": "How to generate?",
     "domainHint": "Example: company.atlassian.net (without https://)",
+    "fieldRequired": "This field is required",
+    "tokenRequired": "Token is required",
+    "apiTokenRequired": "API Token is required",
+    "patRequired": "Personal Access Token is required",
+    "disabled": "This integration is currently disabled",
+    "notConfigured": "Integration not configured",
     "jira": {
       "description": "Import issues and user stories from Jira",
       "domain": "Jira Domain",
