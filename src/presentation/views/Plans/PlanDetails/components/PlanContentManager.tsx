@@ -344,10 +344,10 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
 
     return (
       <div key={objId} className="border border-gray-200 rounded-lg">
-        <div className="flex items-center justify-between p-4 bg-blue-50">
-          <div className="flex items-center space-x-2 flex-1 cursor-pointer" onClick={() => toggleExpanded(objId)}>
+        <div className="flex flex-wrap items-center justify-between gap-2 p-4 bg-blue-50">
+          <div className="flex items-center space-x-2 flex-1 min-w-[200px] cursor-pointer" onClick={() => toggleExpanded(objId)}>
             <button
-              className="p-1 hover:bg-blue-100 rounded cursor-pointer"
+              className="p-1 hover:bg-blue-100 rounded cursor-pointer flex-shrink-0"
             >
               {isExpanded ? (
                 <ChevronDownIcon className="w-4 h-4" />
@@ -355,12 +355,12 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
                 <ChevronRightIcon className="w-4 h-4" />
               )}
             </button>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+            <div className="flex items-center space-x-2 min-w-0 flex-1">
+              <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0">
                 O{index + 1}
               </div>
-              <div>
-                <h3 className="font-medium text-gray-900">
+              <div className="min-w-0 flex-1">
+                <h3 className="font-medium text-gray-900 break-words">
                   {objective.objectiveTitle?.startsWith("objectives.")
                     ? t(objective.objectiveTitle)
                     : objective.objectiveTitle}
@@ -372,7 +372,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
             </div>
           </div>
           {!isReadOnly && (
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
@@ -443,11 +443,11 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
 
     return (
       <div key={qId} className="border border-gray-200 rounded-lg ml-4">
-        <div className="flex items-center justify-between p-3 bg-green-50">
-          <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-green-50">
+          <div className="flex items-center space-x-2 flex-1 min-w-[200px]">
             <button
               onClick={() => toggleExpanded(qId)}
-              className="p-1 hover:bg-green-100 rounded cursor-pointer"
+              className="p-1 hover:bg-green-100 rounded cursor-pointer flex-shrink-0"
             >
               {isExpanded ? (
                 <ChevronDownIcon className="w-4 h-4" />
@@ -455,12 +455,12 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
                 <ChevronRightIcon className="w-4 h-4" />
               )}
             </button>
-            <div className="flex items-center space-x-2">
-              <div className="w-7 h-7 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+            <div className="flex items-center space-x-2 min-w-0 flex-1">
+              <div className="w-7 h-7 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0">
                 Q{index + 1}
               </div>
-              <div>
-                <h4 className="font-medium text-gray-900 text-sm">
+              <div className="min-w-0 flex-1">
+                <h4 className="font-medium text-gray-900 text-sm break-words">
                   {question.questionText?.startsWith("questions.")
                     ? t(question.questionText)
                     : question.questionText}
@@ -472,7 +472,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
             </div>
           </div>
           {!isReadOnly && (
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
@@ -534,11 +534,11 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
 
     return (
       <div key={mId} className="border border-gray-200 rounded-lg ml-4">
-        <div className="flex items-center justify-between p-3 bg-orange-50">
-          <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-orange-50">
+          <div className="flex items-center space-x-2 flex-1 min-w-[200px]">
             <button
               onClick={() => toggleExpanded(mId)}
-              className="p-1 hover:bg-orange-100 rounded cursor-pointer"
+              className="p-1 hover:bg-orange-100 rounded cursor-pointer flex-shrink-0"
             >
               {isExpanded ? (
                 <ChevronDownIcon className="w-4 h-4" />
@@ -546,12 +546,12 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
                 <ChevronRightIcon className="w-4 h-4" />
               )}
             </button>
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-medium">
+            <div className="flex items-center space-x-2 min-w-0 flex-1">
+              <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0">
                 M{index + 1}
               </div>
-              <div>
-                <h5 className="font-medium text-gray-900 text-sm">
+              <div className="min-w-0 flex-1">
+                <h5 className="font-medium text-gray-900 text-sm break-words">
                   {metric.metricName?.startsWith("metrics.")
                     ? t(metric.metricName)
                     : metric.metricName} ({metric.metricMnemonic})
@@ -563,7 +563,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
             </div>
           </div>
           {!isReadOnly && (
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
