@@ -318,6 +318,8 @@
     "calculationSuccess": "Function points calculated successfully!",
     "calculationError": "Failed to calculate function points. Please try again.",
     "estimateCreationError": "Failed to create estimate. Please try again.",
+    "requirementsRequired": "Please add at least one requirement before proceeding to the next step.",
+    "requirementsNotClassified": "You have added requirements but haven't classified them yet. Please scroll down and click 'Next: Classify Requirements' to continue.",
     "components": {
       "title": "Components",
       "addALI": "ALI",

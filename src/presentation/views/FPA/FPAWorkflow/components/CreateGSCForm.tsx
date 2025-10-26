@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { createGSCSchema, type CreateGSCData } from "@/core/schemas/fpa";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import { Button } from "@/presentation/components/primitives/Button/Button";
 
 interface CreateGSCFormProps {
@@ -30,12 +30,16 @@ interface CreateGSCFormProps {
   };
 }
 
-export const CreateGSCForm = ({
+export interface CreateGSCFormRef {
+  validateAndSave: () => Promise<boolean>;
+}
+
+export const CreateGSCForm = forwardRef<CreateGSCFormRef, CreateGSCFormProps>(({
   onSuccess,
   onAutoSave,
   onBack,
   initialValues,
-}: CreateGSCFormProps) => {
+}, ref) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,6 +47,8 @@ export const CreateGSCForm = ({
   const {
     register,
     handleSubmit,
+    trigger,
+    getValues,
     formState: { errors },
     reset,
     watch,
@@ -66,6 +72,36 @@ export const CreateGSCForm = ({
       notes: initialValues?.notes || "",
     },
   });
+
+  useImperativeHandle(ref, () => ({
+    async validateAndSave() {
+      const isValid = await trigger();
+      if (isValid) {
+        const data = getValues();
+        const gscArray = [
+          data.dataProcessing,
+          data.performanceRequirements,
+          data.heavilyUsedConfiguration,
+          data.transactionRate,
+          data.onlineDataEntry,
+          data.endUserEfficiency,
+          data.onlineUpdate,
+          data.complexProcessing,
+          data.reusability,
+          data.installationEase,
+          data.operationalEase,
+          data.multipleSites,
+          data.facilitateChange,
+          data.distributedFunctions,
+        ];
+        if (onAutoSave) {
+          onAutoSave(gscArray);
+        }
+        return true;
+      }
+      return false;
+    },
+  }));
 
   const formValues = watch();
   const hasFilledGSC =
@@ -276,4 +312,6 @@ export const CreateGSCForm = ({
       </div>
     </form>
   );
-};
+});
+
+CreateGSCForm.displayName = "CreateGSCForm";

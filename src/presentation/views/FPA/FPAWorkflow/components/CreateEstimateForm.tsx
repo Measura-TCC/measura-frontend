@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, forwardRef, useImperativeHandle } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -40,12 +40,16 @@ interface CreateEstimateFormProps {
   onBack: () => void;
 }
 
-export const CreateEstimateForm = ({
+export interface CreateEstimateFormRef {
+  validateAndSave: () => Promise<boolean>;
+}
+
+export const CreateEstimateForm = forwardRef<CreateEstimateFormRef, CreateEstimateFormProps>(({
   projectId,
   initialData,
   onSuccess,
   onBack,
-}: CreateEstimateFormProps) => {
+}, ref) => {
   const { t } = useTranslation("validation");
   const { t: tFpa } = useTranslation("fpa");
   const [error, setError] = useState<string | null>(null);
@@ -60,6 +64,8 @@ export const CreateEstimateForm = ({
   const {
     register,
     handleSubmit,
+    trigger,
+    getValues,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(estimateSchema),
@@ -71,6 +77,18 @@ export const CreateEstimateForm = ({
       countingScope: initialData?.countingScope || "",
     },
   });
+
+  useImperativeHandle(ref, () => ({
+    async validateAndSave() {
+      const isValid = await trigger();
+      if (isValid) {
+        const data = getValues();
+        onSuccess(data as EstimateFormData);
+        return true;
+      }
+      return false;
+    },
+  }));
 
   const onSubmit = (data: FormData) => {
     try {
@@ -224,4 +242,6 @@ export const CreateEstimateForm = ({
       </div>
     </form>
   );
-};
+});
+
+CreateEstimateForm.displayName = "CreateEstimateForm";

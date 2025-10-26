@@ -321,6 +321,8 @@
     "calculationSuccess": "Pontos de função calculados com sucesso!",
     "calculationError": "Falha ao calcular pontos de função. Tente novamente.",
     "estimateCreationError": "Falha ao criar estimativa. Tente novamente.",
+    "requirementsRequired": "Por favor, adicione pelo menos um requisito antes de prosseguir para a próxima etapa.",
+    "requirementsNotClassified": "Você adicionou requisitos, mas ainda não os classificou. Por favor, role para baixo e clique em 'Próximo: Classificar Requisitos' para continuar.",
     "adjustedFunctionPoints": "Pontos de Função Ajustados",
     "estimatedEffort": "Esforço Estimado",
     "calculated": "Calculado",

@@ -1,5 +1,6 @@
 "use client";
 
+import { forwardRef, useImperativeHandle } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -36,11 +37,15 @@ interface ProjectConfigurationFormProps {
   onBack: () => void;
 }
 
-export const ProjectConfigurationForm = ({
+export interface ProjectConfigurationFormRef {
+  validateAndSave: () => Promise<boolean>;
+}
+
+export const ProjectConfigurationForm = forwardRef<ProjectConfigurationFormRef, ProjectConfigurationFormProps>(({
   initialData,
   onSuccess,
   onBack,
-}: ProjectConfigurationFormProps) => {
+}, ref) => {
   const { t } = useTranslation("validation");
   const { t: tFpa } = useTranslation("fpa");
 
@@ -50,6 +55,8 @@ export const ProjectConfigurationForm = ({
   const {
     register,
     handleSubmit,
+    trigger,
+    getValues,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -60,6 +67,18 @@ export const ProjectConfigurationForm = ({
       averageDailyWorkingHours: initialData?.averageDailyWorkingHours || 8,
     },
   });
+
+  useImperativeHandle(ref, () => ({
+    async validateAndSave() {
+      const isValid = await trigger();
+      if (isValid) {
+        const data = getValues();
+        onSuccess(data);
+        return true;
+      }
+      return false;
+    },
+  }));
 
   const onSubmit = (data: FormData) => {
     onSuccess(data);
@@ -163,4 +182,6 @@ export const ProjectConfigurationForm = ({
       </div>
     </form>
   );
-};
+});
+
+ProjectConfigurationForm.displayName = "ProjectConfigurationForm";

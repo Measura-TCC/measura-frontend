@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useProjects } from "@/core/hooks/projects/useProjects";
@@ -10,9 +10,9 @@ import { EstimatesDashboard } from "./EstimatesDashboard";
 import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
 import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
 import { NoProjectsAlert } from "@/presentation/components/shared/NoProjectsAlert";
-import { CreateEstimateForm } from "./components/CreateEstimateForm";
-import { CreateGSCForm } from "./components/CreateGSCForm";
-import { ProjectConfigurationForm } from "./components/ProjectConfigurationForm";
+import { CreateEstimateForm, type CreateEstimateFormRef } from "./components/CreateEstimateForm";
+import { CreateGSCForm, type CreateGSCFormRef } from "./components/CreateGSCForm";
+import { ProjectConfigurationForm, type ProjectConfigurationFormRef } from "./components/ProjectConfigurationForm";
 import { RequirementImportView } from "./RequirementImport/RequirementImportView";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
 import { Button, Tabs, Stepper } from "@/presentation/components/primitives";
@@ -43,6 +43,11 @@ export const FPAWorkflow = () => {
   const [activeTab, setActiveTab] = useState<Tab>("new");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [summaryPage, setSummaryPage] = useState<1 | 2 | 3 | 4>(1);
+
+  // Form refs for validation
+  const estimateFormRef = useRef<CreateEstimateFormRef>(null);
+  const gscFormRef = useRef<CreateGSCFormRef>(null);
+  const configFormRef = useRef<ProjectConfigurationFormRef>(null);
 
   const currentStep = useFPAWorkflowStore((state) => state.currentStep);
   const selectedProjectId = useFPAWorkflowStore(
@@ -253,10 +258,50 @@ export const FPAWorkflow = () => {
     setCurrentStep(2);
   };
 
-  const handleStepClick = (step: number) => {
-    if (canNavigateToStep(step as Step)) {
-      setCurrentStep(step as Step);
+  const handleStepClick = async (step: number) => {
+    if (!canNavigateToStep(step as Step)) return;
+
+    // Block navigation from Step 3 if no classified requirements
+    if (currentStep === 3 && step > 3) {
+      const hasClassifiedRequirements = requirements.filter(
+        (r) => r.componentType && r.componentId
+      ).length > 0;
+
+      const hasUnclassifiedRequirements = requirements.length > 0;
+
+      if (!hasClassifiedRequirements) {
+        if (hasUnclassifiedRequirements) {
+          toast.warning({
+            message: t("workflow.requirementsNotClassified"),
+            duration: 5000
+          });
+        } else {
+          toast.warning({
+            message: t("workflow.requirementsRequired"),
+            duration: 4000
+          });
+        }
+        return;
+      }
     }
+
+    // Validate current step before navigating away from form steps
+    if (currentStep === 2 && estimateFormRef.current) {
+      const isValid = await estimateFormRef.current.validateAndSave();
+      if (!isValid) return; // Block navigation if validation fails
+    }
+
+    if (currentStep === 4 && gscFormRef.current) {
+      const isValid = await gscFormRef.current.validateAndSave();
+      if (!isValid) return;
+    }
+
+    if (currentStep === 5 && configFormRef.current) {
+      const isValid = await configFormRef.current.validateAndSave();
+      if (!isValid) return;
+    }
+
+    setCurrentStep(step as Step);
   };
 
   if (isLoadingUserOrganization) {
@@ -397,6 +442,7 @@ export const FPAWorkflow = () => {
               {t("workflow.step2Description")}
             </p>
             <CreateEstimateForm
+              ref={estimateFormRef}
               projectId={selectedProjectId}
               initialData={estimateFormData || undefined}
               onSuccess={handleEstimateFormSubmit}
@@ -422,6 +468,7 @@ export const FPAWorkflow = () => {
               {t("workflow.step4Description")}
             </p>
             <CreateGSCForm
+              ref={gscFormRef}
               onSuccess={handleGSCCompleted}
               onAutoSave={handleGSCAutoSave}
               onBack={() => setCurrentStep(3)}
@@ -459,6 +506,7 @@ export const FPAWorkflow = () => {
             </p>
 
             <ProjectConfigurationForm
+              ref={configFormRef}
               initialData={{
                 teamSize: estimateFormData.teamSize,
                 hourlyRateBRL: estimateFormData.hourlyRateBRL,

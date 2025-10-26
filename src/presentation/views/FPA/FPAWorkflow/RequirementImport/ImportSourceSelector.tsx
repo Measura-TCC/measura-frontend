@@ -3,6 +3,7 @@
 import { useTranslation } from "react-i18next";
 import type { RequirementSource } from "@/core/types/fpa";
 import { useIntegrationStatus } from "./hooks/useIntegrationStatus";
+import { AzureDevOpsIcon, ClickUpIcon } from "@/presentation/assets/icons";
 
 interface ImportSourceSelectorProps {
   selectedSource: RequirementSource | null;
@@ -30,16 +31,8 @@ const sourceIcons: Record<RequirementSource, React.ReactNode> = {
       <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
     </svg>
   ),
-  azure_devops: (
-    <svg className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12" viewBox="0 0 24 24" fill="#0078D7">
-      <path d="M0 8.181l8.156 1.633v11.452L0 12.726V8.181zm8.156-6.448v4.818L19.2 8.9 16.68 0 8.156 1.733zM20.4 6.818L10.992 4.364v14.908l9.408-2.727V6.818zM24 8.181v9.09L19.2 18.9l-9.408 3.636v-1.636L16.68 24 24 13.636V8.181z"/>
-    </svg>
-  ),
-  clickup: (
-    <svg className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12" viewBox="0 0 24 24" fill="#7B68EE">
-      <path d="M2 18.439l3.636-2.07 6.364 5.656 6.364-5.656L22 18.439l-10 7.076-10-7.076zM.364 12.439L4 10.369l8 7.11 8-7.11 3.636 2.07L12 21.484.364 12.439zm11.68-10.09l7.337-1.71.595 2.508L12.045 4.8l-8.013-1.7.594-2.509 7.419 1.758z"/>
-    </svg>
-  ),
+  azure_devops: <AzureDevOpsIcon className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12" />,
+  clickup: <ClickUpIcon className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12" />,
 };
 
 export const ImportSourceSelector = ({
