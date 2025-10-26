@@ -114,7 +114,8 @@ export interface ProductivityMetricItem {
 }
 
 export interface EstimateOverviewResponse {
-  _id: string;
+  id: string;
+  _id?: string; // Deprecated, use 'id' instead
   projectId: string;
   name: string;
   description: string;
@@ -354,7 +355,7 @@ export const estimateService = {
   ): Promise<EstimateResponse> => {
     const { activeOrganizationId } = getOrganizationState();
     if (!activeOrganizationId) throw new Error('Organization access required');
-    const response = await measuraApi.patch(`/estimates/${activeOrganizationId}/${estimateId}/status`, { status });
+    const response = await measuraApi.put(`/estimates/${activeOrganizationId}/${estimateId}`, { status });
     return response.data;
   },
 

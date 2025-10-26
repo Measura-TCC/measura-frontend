@@ -521,6 +521,9 @@
     "archived": "Archived"
   },
   "estimateStatus": "Estimate Status",
+  "statusUpdatedSuccess": "Status updated to {{status}}",
+  "statusUpdateError": "Failed to update estimate status",
+  "statusChangePermissionRequired": "Only administrators and project managers can change status",
   "countTypes": {
     "DEVELOPMENT_PROJECT": "Development Project",
     "ENHANCEMENT_PROJECT": "Enhancement Project",
@@ -599,7 +602,6 @@
     "status": "Status",
     "allStatuses": "All Statuses",
     "draft": "Draft",
-    "inProgress": "In Progress",
     "finalized": "Finalized",
     "archived": "Archived",
     "sortBy": "Sort By",

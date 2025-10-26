@@ -527,6 +527,9 @@
     "archived": "Arquivada"
   },
   "estimateStatus": "Status da Estimativa",
+  "statusUpdatedSuccess": "Status atualizado para {{status}}",
+  "statusUpdateError": "Falha ao atualizar status da estimativa",
+  "statusChangePermissionRequired": "Apenas administradores e gerentes de projeto podem alterar o status",
   "countTypes": {
     "DEVELOPMENT_PROJECT": "Projeto de Desenvolvimento",
     "ENHANCEMENT_PROJECT": "Projeto de Melhoria",
@@ -605,7 +608,6 @@
     "status": "Status",
     "allStatuses": "Todos os Status",
     "draft": "Rascunho",
-    "inProgress": "Em Progresso",
     "finalized": "Finalizada",
     "archived": "Arquivada",
     "sortBy": "Ordenar Por",

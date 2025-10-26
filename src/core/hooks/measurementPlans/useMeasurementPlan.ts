@@ -65,8 +65,9 @@ export const useMeasurementPlans = (params: UseMeasurementPlanParams = {}) => {
 
   const statistics: PlansStatistics = {
     totalPlans: pagination?.total || 0,
-    activePlans: plans?.filter((p) => p.status === MeasurementPlanStatus.ACTIVE).length || 0,
-    completedPlans: plans?.filter((p) => p.status === MeasurementPlanStatus.COMPLETED).length || 0,
+    approvedPlans: plans?.filter((p) => p.status === MeasurementPlanStatus.APPROVED).length || 0,
+    finishedPlans: plans?.filter((p) => p.status === MeasurementPlanStatus.FINISHED).length || 0,
+    rejectedPlans: plans?.filter((p) => p.status === MeasurementPlanStatus.REJECTED).length || 0,
     draftPlans: plans?.filter((p) => p.status === MeasurementPlanStatus.DRAFT).length || 0,
     averageProgress: plans?.length
       ? Math.round(plans.reduce((sum, p) => sum + p.progress, 0) / plans.length)
