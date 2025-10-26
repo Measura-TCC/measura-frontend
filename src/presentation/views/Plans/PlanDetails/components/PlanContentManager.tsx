@@ -92,12 +92,13 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
         toast.success({ message: t("objectiveAddedSuccess") || "Objective added successfully" });
       }
       setShowObjectiveModal(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to add/update objective:", error);
-      const errorMessage = editingObjective?._id
+      const baseMessage = editingObjective?._id
         ? (t("objectiveUpdateError") || "Failed to update objective")
         : (t("objectiveAddError") || "Failed to add objective");
-      toast.error({ message: `${errorMessage}: ${error instanceof Error ? error.message : "An error occurred"}` });
+      const backendMessage = error?.response?.data?.message || error?.message || "An error occurred";
+      toast.error({ message: `${baseMessage}: ${backendMessage}` });
     }
   };
 
@@ -148,10 +149,11 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
           break;
       }
       setDeleteConfirm(null);
-    } catch (error) {
+    } catch (error: any) {
       console.error(`Failed to delete ${deleteConfirm.type}:`, error);
-      const errorMessage = t(`${deleteConfirm.type}DeleteError`) || `Failed to delete ${deleteConfirm.type}`;
-      toast.error({ message: `${errorMessage}: ${error instanceof Error ? error.message : "An error occurred"}` });
+      const baseMessage = t(`${deleteConfirm.type}DeleteError`) || `Failed to delete ${deleteConfirm.type}`;
+      const backendMessage = error?.response?.data?.message || error?.message || "An error occurred";
+      toast.error({ message: `${baseMessage}: ${backendMessage}` });
     }
   };
 
@@ -174,12 +176,13 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
         toast.success({ message: t("questionAddedSuccess") || "Question added successfully" });
       }
       setEditingItem(null);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to save question:", error);
-      const errorMessage = editingItem.id
+      const baseMessage = editingItem.id
         ? (t("questionUpdateError") || "Failed to update question")
         : (t("questionAddError") || "Failed to add question");
-      toast.error({ message: `${errorMessage}: ${error instanceof Error ? error.message : "An error occurred"}` });
+      const backendMessage = error?.response?.data?.message || error?.message || "An error occurred";
+      toast.error({ message: `${baseMessage}: ${backendMessage}` });
     }
   };
 
@@ -226,12 +229,13 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
         toast.success({ message: t("metricAddedSuccess") || "Metric added successfully" });
       }
       setEditingItem(null);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to save metric:", error);
-      const errorMessage = editingItem.id
+      const baseMessage = editingItem.id
         ? (t("metricUpdateError") || "Failed to update metric")
         : (t("metricAddError") || "Failed to add metric");
-      toast.error({ message: `${errorMessage}: ${error instanceof Error ? error.message : "An error occurred"}` });
+      const backendMessage = error?.response?.data?.message || error?.message || "An error occurred";
+      toast.error({ message: `${baseMessage}: ${backendMessage}` });
     }
   };
 
@@ -275,12 +279,13 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
         toast.success({ message: t("measurementAddedSuccess") || "Measurement added successfully" });
       }
       setEditingItem(null);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to save measurement:", error);
-      const errorMessage = editingItem.id
+      const baseMessage = editingItem.id
         ? (t("measurementUpdateError") || "Failed to update measurement")
         : (t("measurementAddError") || "Failed to add measurement");
-      toast.error({ message: `${errorMessage}: ${error instanceof Error ? error.message : "An error occurred"}` });
+      const backendMessage = error?.response?.data?.message || error?.message || "An error occurred";
+      toast.error({ message: `${baseMessage}: ${backendMessage}` });
     }
   };
 
@@ -335,7 +340,9 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               </div>
               <div>
                 <h3 className="font-medium text-gray-900">
-                  {t(objective.objectiveTitle)}
+                  {objective.objectiveTitle?.startsWith("objectives.")
+                    ? t(objective.objectiveTitle)
+                    : objective.objectiveTitle}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {objective.questions?.length || 0} {t("workflow.questions")}
@@ -433,7 +440,9 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               </div>
               <div>
                 <h4 className="font-medium text-gray-900 text-sm">
-                  {question.questionText}
+                  {question.questionText?.startsWith("questions.")
+                    ? t(question.questionText)
+                    : question.questionText}
                 </h4>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   {question.metrics?.length || 0} {t("workflow.metrics")}
@@ -522,7 +531,9 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               </div>
               <div>
                 <h5 className="font-medium text-gray-900 text-sm">
-                  {metric.metricName} ({metric.metricMnemonic})
+                  {metric.metricName?.startsWith("metrics.")
+                    ? t(metric.metricName)
+                    : metric.metricName} ({metric.metricMnemonic})
                 </h5>
                 <p className="text-xs text-gray-500">
                   {metric.measurements?.length || 0} {t("workflow.measurements")}
@@ -565,7 +576,11 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
             <div className="grid grid-cols-2 gap-2 text-sm mb-3">
               <div>
                 <span className="font-medium text-gray-700">{t("description")}:</span>
-                <p className="text-gray-600">{metric.metricDescription}</p>
+                <p className="text-gray-600">
+                  {metric.metricDescription?.startsWith("metrics.descriptions.")
+                    ? t(metric.metricDescription)
+                    : metric.metricDescription}
+                </p>
               </div>
               <div>
                 <span className="font-medium text-gray-700">{t("formula")}:</span>
@@ -627,10 +642,16 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
             </div>
             <div>
               <h6 className="font-medium text-gray-900 text-sm">
-                {measurement.measurementEntity} ({measurement.measurementAcronym})
+                {measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
+                  ? t(measurement.measurementEntity)
+                  : measurement.measurementEntity} ({measurement.measurementAcronym})
               </h6>
               <p className="text-xs text-gray-500">
-                {measurement.measurementUnit} • {measurement.measurementFrequency}
+                {measurement.measurementUnit?.startsWith("units.")
+                  ? t(measurement.measurementUnit)
+                  : measurement.measurementUnit} • {measurement.measurementFrequency?.startsWith("measurements.frequency.")
+                  ? t(measurement.measurementFrequency)
+                  : measurement.measurementFrequency}
               </p>
             </div>
           </div>
@@ -655,8 +676,12 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
           )}
         </div>
         <div className="mt-2 text-xs text-gray-600">
-          <p><strong>{t("properties")}:</strong> {measurement.measurementProperties}</p>
-          <p><strong>{t("procedure")}:</strong> {measurement.measurementProcedure}</p>
+          <p><strong>{t("properties")}:</strong> {measurement.measurementProperties?.startsWith("measurements.properties.")
+            ? t(measurement.measurementProperties)
+            : measurement.measurementProperties}</p>
+          <p><strong>{t("procedure")}:</strong> {measurement.measurementProcedure?.startsWith("measurements.procedures.")
+            ? t(measurement.measurementProcedure)
+            : measurement.measurementProcedure}</p>
         </div>
       </div>
     );
