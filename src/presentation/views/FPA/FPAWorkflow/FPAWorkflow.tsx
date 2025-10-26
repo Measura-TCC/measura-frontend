@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useOrganizations } from "@/core/hooks/organizations";
+import { useOrganizationStore } from "@/core/hooks/organizations/useOrganizationStore";
 import { EstimatesDashboard } from "./EstimatesDashboard";
-import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
 import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
 import { NoProjectsAlert } from "@/presentation/components/shared/NoProjectsAlert";
-import { CreateEstimateForm } from "./components/CreateEstimateForm";
-import { CreateGSCForm } from "./components/CreateGSCForm";
-import { ProjectConfigurationForm } from "./components/ProjectConfigurationForm";
+import { CreateEstimateForm, type CreateEstimateFormRef } from "./components/CreateEstimateForm";
+import { CreateGSCForm, type CreateGSCFormRef } from "./components/CreateGSCForm";
+import { ProjectConfigurationForm, type ProjectConfigurationFormRef } from "./components/ProjectConfigurationForm";
 import { RequirementImportView } from "./RequirementImport/RequirementImportView";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
 import { Button, Tabs, Stepper } from "@/presentation/components/primitives";
@@ -23,18 +23,32 @@ import {
 } from "@/core/hooks/fpa/useFPAWorkflowStore";
 import { useRequirementsStore } from "@/core/hooks/fpa/useRequirementsStore";
 import { estimateService } from "@/core/services/estimateService";
+import { useToast } from "@/core/hooks/common/useToast";
+import { useAuth } from "@/core/hooks/auth/useAuth";
 
 type Tab = "new" | "created";
 
 export const FPAWorkflow = () => {
   const { t } = useTranslation("fpa");
-  const { requireOrganization, userOrganization, isLoadingUserOrganization } =
-    useOrganizations({ fetchUserOrganization: true });
+  const toast = useToast();
+  const { user } = useAuth();
+  const {
+    requireOrganization,
+    userOrganization,
+    isLoadingUserOrganization,
+    activeOrganizationId,
+    forceClearCache,
+  } = useOrganizations({ fetchUserOrganization: true });
   const searchParams = useSearchParams();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("new");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [summaryPage, setSummaryPage] = useState<1 | 2 | 3 | 4>(1);
+
+  // Form refs for validation
+  const estimateFormRef = useRef<CreateEstimateFormRef>(null);
+  const gscFormRef = useRef<CreateGSCFormRef>(null);
+  const configFormRef = useRef<ProjectConfigurationFormRef>(null);
 
   const currentStep = useFPAWorkflowStore((state) => state.currentStep);
   const selectedProjectId = useFPAWorkflowStore(
@@ -79,6 +93,20 @@ export const FPAWorkflow = () => {
   const { projects, isLoadingProjects } = useProjects();
   const { calculateFunctionPoints } = useEstimateActions();
 
+  // Auto-set activeOrganizationId if missing but userOrganization is loaded
+  useEffect(() => {
+    // Force clear cache if demo ID is detected
+    if (activeOrganizationId === "demo-organization-id") {
+      forceClearCache();
+    }
+
+    // Directly set the active organization ID if we have userOrganization but no activeOrganizationId
+    if (!activeOrganizationId && userOrganization?._id) {
+      const { setActiveOrganization } = useOrganizationStore.getState();
+      setActiveOrganization(userOrganization._id);
+    }
+  }, [activeOrganizationId, userOrganization, forceClearCache]);
+
   useEffect(() => {
     const tabParam = searchParams.get("tab") as Tab;
     if (tabParam && ["new", "created"].includes(tabParam)) {
@@ -92,51 +120,6 @@ export const FPAWorkflow = () => {
     }
   }, [searchParams, setSelectedProjectId]);
 
-  if (isLoadingUserOrganization) {
-    return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-secondary">{t("workflow.loading")}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!userOrganization) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-default">
-            {t("title")}
-          </h1>
-          <p className="text-muted mt-1">{t("subtitle")}</p>
-        </div>
-        <OrganizationAlert hasOrganization={false} translationNamespace="fpa" />
-      </div>
-    );
-  }
-
-  if (
-    !isLoadingProjects &&
-    userOrganization &&
-    (!projects || projects.length === 0)
-  ) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-default">
-            {t("title")}
-          </h1>
-          <p className="text-muted mt-1">{t("subtitle")}</p>
-        </div>
-        <NoProjectsAlert translationNamespace="fpa" />
-      </div>
-    );
-  }
-
   const handleCancel = () => {
     resetWorkflow();
     resetRequirements();
@@ -149,6 +132,10 @@ export const FPAWorkflow = () => {
   const handleEstimateFormSubmit = (data: EstimateFormData) => {
     setEstimateFormData(data);
     setCurrentStep(3);
+  };
+
+  const handleGSCAutoSave = (gsc: number[]) => {
+    setGeneralSystemCharacteristics(gsc);
   };
 
   const handleGSCCompleted = (gsc: number[]) => {
@@ -244,8 +231,10 @@ export const FPAWorkflow = () => {
       // Now calculate function points
       await calculateFunctionPoints({ estimateId: estimate._id });
       setCalculationComplete(true);
+      toast.success({ message: t("workflow.estimateCreatedSuccess") });
     } catch (error) {
       console.error("Failed to create and calculate estimate:", error);
+      toast.error({ message: t("workflow.estimateCreationError") });
     } finally {
       setIsSubmitting(false);
     }
@@ -260,21 +249,100 @@ export const FPAWorkflow = () => {
     } catch {}
   };
 
-  const handleProjectCreated = (project: unknown) => {
-    const p = project as { _id: string };
-    setSelectedProjectId(p._id);
-    setCurrentStep(2);
-  };
-
   const handleProjectSelected = () => {
     setCurrentStep(2);
   };
 
-  const handleStepClick = (step: number) => {
-    if (canNavigateToStep(step as Step)) {
-      setCurrentStep(step as Step);
+  const handleStepClick = async (step: number) => {
+    if (!canNavigateToStep(step as Step)) return;
+
+    // Block navigation from Step 3 if no classified requirements
+    if (currentStep === 3 && step > 3) {
+      const hasClassifiedRequirements = requirements.filter(
+        (r) => r.componentType && r.componentId
+      ).length > 0;
+
+      const hasUnclassifiedRequirements = requirements.length > 0;
+
+      if (!hasClassifiedRequirements) {
+        if (hasUnclassifiedRequirements) {
+          toast.warning({
+            message: t("workflow.requirementsNotClassified"),
+            duration: 5000
+          });
+        } else {
+          toast.warning({
+            message: t("workflow.requirementsRequired"),
+            duration: 4000
+          });
+        }
+        return;
+      }
     }
+
+    // Validate current step before navigating away from form steps
+    if (currentStep === 2 && estimateFormRef.current) {
+      const isValid = await estimateFormRef.current.validateAndSave();
+      if (!isValid) return; // Block navigation if validation fails
+    }
+
+    if (currentStep === 4 && gscFormRef.current) {
+      const isValid = await gscFormRef.current.validateAndSave();
+      if (!isValid) return;
+    }
+
+    if (currentStep === 5 && configFormRef.current) {
+      const isValid = await configFormRef.current.validateAndSave();
+      if (!isValid) return;
+    }
+
+    setCurrentStep(step as Step);
   };
+
+  if (isLoadingUserOrganization) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-secondary">{t("workflow.loading")}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!userOrganization) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">
+            {t("title")}
+          </h1>
+          <p className="text-muted mt-1">{t("subtitle")}</p>
+        </div>
+        <OrganizationAlert hasOrganization={false} translationNamespace="fpa" userRole={user?.role} />
+      </div>
+    );
+  }
+
+  if (
+    !isLoadingProjects &&
+    userOrganization &&
+    (!projects || projects.length === 0)
+  ) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">
+            {t("title")}
+          </h1>
+          <p className="text-muted mt-1">{t("subtitle")}</p>
+        </div>
+        <NoProjectsAlert translationNamespace="fpa" userRole={user?.role} />
+      </div>
+    );
+  }
 
   const renderTabContent = () => {
     if (activeTab === "created") {
@@ -347,12 +415,23 @@ export const FPAWorkflow = () => {
                   </div>
                 )}
 
-                {!selectedProjectId && (
+                {!selectedProjectId && projects && projects.length > 0 && (
                   <div className="border-t border-border pt-6">
-                    <h3 className="text-lg font-medium mb-4 text-default">
-                      {t("workflow.createNewProject")}
-                    </h3>
-                    <CreateProjectForm onSuccess={handleProjectCreated} />
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                      <h3 className="text-lg font-medium mb-2 text-default">
+                        {t("workflow.needNewProject")}
+                      </h3>
+                      <p className="text-sm text-secondary mb-4">
+                        {t("workflow.needNewProjectDescription")}
+                      </p>
+                      <Button
+                        onClick={() => router.push("/projects")}
+                        variant="primary"
+                        size="md"
+                      >
+                        {t("workflow.goToProjects")}
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -369,6 +448,7 @@ export const FPAWorkflow = () => {
               {t("workflow.step2Description")}
             </p>
             <CreateEstimateForm
+              ref={estimateFormRef}
               projectId={selectedProjectId}
               initialData={estimateFormData || undefined}
               onSuccess={handleEstimateFormSubmit}
@@ -378,7 +458,11 @@ export const FPAWorkflow = () => {
         )}
 
         {currentStep === 3 && estimateFormData && (
-          <RequirementImportView onProceed={() => setCurrentStep(4)} />
+          <RequirementImportView
+            onProceed={() => setCurrentStep(4)}
+            organizationId={userOrganization?._id}
+            projectId={selectedProjectId || undefined}
+          />
         )}
 
         {currentStep === 4 && estimateFormData && (
@@ -390,7 +474,9 @@ export const FPAWorkflow = () => {
               {t("workflow.step4Description")}
             </p>
             <CreateGSCForm
+              ref={gscFormRef}
               onSuccess={handleGSCCompleted}
+              onAutoSave={handleGSCAutoSave}
               onBack={() => setCurrentStep(3)}
               initialValues={
                 generalSystemCharacteristics
@@ -426,6 +512,7 @@ export const FPAWorkflow = () => {
             </p>
 
             <ProjectConfigurationForm
+              ref={configFormRef}
               initialData={{
                 teamSize: estimateFormData.teamSize,
                 hourlyRateBRL: estimateFormData.hourlyRateBRL,
@@ -450,7 +537,6 @@ export const FPAWorkflow = () => {
 
             {!createdEstimate ? (
               <>
-
                 {/* Item 1: Estimate Information */}
                 {summaryPage === 1 && (
                   <>
@@ -509,8 +595,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.previous")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
                         </svg>
                       </button>
                       <div className="text-sm text-secondary">
@@ -521,8 +617,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.next")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -630,8 +736,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.previous")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
                         </svg>
                       </button>
                       <div className="text-sm text-secondary">
@@ -642,8 +758,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.next")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -692,8 +818,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.previous")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
                         </svg>
                       </button>
                       <div className="text-sm text-secondary">
@@ -704,8 +840,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.next")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -763,8 +909,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.previous")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
                         </svg>
                       </button>
                       <div className="text-sm text-secondary">
@@ -775,8 +931,18 @@ export const FPAWorkflow = () => {
                         className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                         aria-label={t("workflow.next")}
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -804,9 +970,7 @@ export const FPAWorkflow = () => {
                       ).length === 0
                     }
                   >
-                    {isSubmitting
-                      ? "Calculando..."
-                      : "Calcular PF"}
+                    {isSubmitting ? "Calculando..." : "Calcular PF"}
                   </Button>
                 </div>
               </>
@@ -859,7 +1023,7 @@ export const FPAWorkflow = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto pb-[20px]">
+    <div className="mx-auto pb-[20px]">
       <div className="mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-default">
           {t("title")}

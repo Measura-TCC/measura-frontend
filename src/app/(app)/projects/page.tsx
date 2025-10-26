@@ -31,9 +31,12 @@ import { PlansModal } from "@/presentation/views/Projects/components/PlansModal"
 import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
 import { NoProjectsAlert } from "@/presentation/components/shared/NoProjectsAlert";
 import type { Project } from "@/core/schemas/projects";
+import { useAuth } from "@/core/hooks/auth/useAuth";
+import { canManageProjects } from "@/core/utils/permissions";
 
 export default function ProjectsPage() {
   const { t, i18n } = useTranslation("projects");
+  const { user } = useAuth();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showEstimatesModal, setShowEstimatesModal] = useState(false);
@@ -52,6 +55,7 @@ export default function ProjectsPage() {
   const { deleteProject } = useProjectActions();
   const { objectives: organizationalObjectives } =
     useOrganizationalObjectives();
+  const canManage = canManageProjects(user?.role);
 
   // Debug organization state
   useEffect(() => {
@@ -166,6 +170,7 @@ export default function ProjectsPage() {
         <OrganizationAlert
           hasOrganization={false}
           translationNamespace="projects"
+          userRole={user?.role}
         />
       </div>
     );
@@ -186,10 +191,12 @@ export default function ProjectsPage() {
             {userOrganization.name}
           </p>
         </div>
-        <Button onClick={() => setShowCreateForm(true)}>
-          <PlusIcon className="w-4 h-4 mr-2" />
-          {t("newProject")}
-        </Button>
+        {canManage && (
+          <Button onClick={() => setShowCreateForm(true)}>
+            <PlusIcon className="w-4 h-4 mr-2" />
+            {t("newProject")}
+          </Button>
+        )}
       </div>
 
       {showCreateForm && (
@@ -260,29 +267,31 @@ export default function ProjectsPage() {
                       {getStatusLabel(project.status)}
                     </span>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedProject(project);
-                        setShowEditForm(true);
-                      }}
-                    >
-                      <PencilIcon className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setProjectToDelete(project);
-                      }}
-                    >
-                      <TrashIcon className="w-4 h-4 text-red-600" />
-                    </Button>
-                  </div>
+                  {canManage && (
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedProject(project);
+                          setShowEditForm(true);
+                        }}
+                      >
+                        <PencilIcon className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setProjectToDelete(project);
+                        }}
+                      >
+                        <TrashIcon className="w-4 h-4 text-red-600" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -290,7 +299,7 @@ export default function ProjectsPage() {
                   {project.description}
                 </p>
                 <div className="border-t border-border pt-3">
-                  <ProjectStatusSelector project={project} />
+                  <ProjectStatusSelector project={project} disabled={!canManage} />
                 </div>
                 <div className="flex gap-2 mt-3">
                   <Button
@@ -318,18 +327,18 @@ export default function ProjectsPage() {
                 </div>
                 {project.objectives && project.objectives.length > 0 && (
                   <div className="border-t border-border pt-3 mt-3">
-                    <h4 className="text-sm font-medium mb-2">
+                    <h4 className="text-sm font-medium mb-2 text-default">
                       {t("projectObjectives")}
                     </h4>
                     {project.objectives.slice(0, 2).map((obj) => (
                       <div
                         key={obj._id}
-                        className="text-xs bg-blue-50 p-2 rounded mb-1"
+                        className="text-xs bg-blue-50 dark:bg-blue-900/30 p-2 rounded mb-1"
                       >
-                        <div className="font-medium">{obj.title}</div>
+                        <div className="font-medium text-default">{obj.title}</div>
                         {obj.organizationalObjectiveIds &&
                           obj.organizationalObjectiveIds.length > 0 && (
-                            <div className="text-blue-600 mt-1">
+                            <div className="text-blue-600 dark:text-blue-400 mt-1">
                               {t("linkedTo")}{" "}
                               {obj.organizationalObjectiveIds
                                 .map(
@@ -345,7 +354,7 @@ export default function ProjectsPage() {
                       </div>
                     ))}
                     {project.objectives.length > 2 && (
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-secondary">
                         +{project.objectives.length - 2} more objectives
                       </div>
                     )}
@@ -383,6 +392,7 @@ export default function ProjectsPage() {
         <NoProjectsAlert
           translationNamespace="projects"
           onActionClick={() => setShowCreateForm(true)}
+          userRole={user?.role}
         />
       )}
 

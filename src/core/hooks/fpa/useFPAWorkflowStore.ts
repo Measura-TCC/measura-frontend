@@ -53,7 +53,8 @@ export const useFPAWorkflowStore = create<FPAWorkflowStore>()(
       ...initialState,
 
       setCurrentStep: (step) => {
-        if (get().canNavigateToStep(step)) {
+        const canNavigate = get().canNavigateToStep(step);
+        if (canNavigate) {
           set({ currentStep: step });
         }
       },

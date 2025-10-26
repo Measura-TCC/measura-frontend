@@ -123,6 +123,24 @@ export function Stepper({
                   }`}
                 />
               )}
+              {/* End cap for last step */}
+              {index === steps.length - 1 && (
+                <>
+                  <div
+                    className={`flex-1 h-0.5 mx-2 ${
+                      isStepCompleted(step.number) ? "bg-primary" : "bg-gray-200"
+                    }`}
+                  />
+                  <div
+                    className={`w-3 h-3 rounded-full border-2 transition-all ${
+                      currentStep > steps.length
+                        ? "bg-primary border-primary"
+                        : "border-gray-300 bg-white"
+                    }`}
+                    title="Endpoint"
+                  />
+                </>
+              )}
             </div>
             <div className="mt-2 text-center">
               <p className={`text-xs font-medium ${getLabelClasses(step.number)}`}>

@@ -34,8 +34,10 @@
   "useTemplate": "Use Template",
   "statistics": "Statistics",
   "totalPlans": "Total Plans",
-  "activePlans": "Active Plans",
-  "completedPlans": "Completed Plans",
+  "approvedPlans": "Approved Plans",
+  "finishedPlans": "Finished Plans",
+  "rejectedPlans": "Rejected Plans",
+  "draftPlans": "Draft Plans",
   "averageProgress": "Average Progress",
   "totalGoals": "Total Goals",
   "totalMetrics": "Total Metrics",
@@ -47,6 +49,8 @@
   "performanceDescription": "Track project delivery and timeline metrics",
   "organizationRequired": "Organization Required",
   "organizationRequiredDescription": "You need to create or join an organization to create measurement plans and manage planning activities",
+  "organizationRequiredMessage": "You need to create or join an organization to create measurement plans and manage planning activities",
+  "organizationRequiredUserMessage": "You need to join an organization. Ask your Project Manager or Administrator to invite you.",
   "createOrganization": "Create Organization",
   "noProjectsTitle": "No Projects Found",
   "noProjectsDescription": "You need to create at least one project before creating measurement plans.",
@@ -65,10 +69,10 @@
     "estimation": "Estimation"
   },
   "status": {
-    "active": "active",
-    "completed": "completed",
-    "draft": "draft",
-    "scheduled": "scheduled"
+    "draft": "Draft",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "finished": "Finished"
   },
   "gqm": {
     "notStarted": "Not Started",
@@ -322,6 +326,26 @@
       "deployment": "Deployment"
     }
   },
+  "entities": {
+    "worklog": "Worklog",
+    "deliveredFunctionPoints": "Delivered Function Points",
+    "deploymentToProduction": "Deployment to Production",
+    "commit": "Commit",
+    "incidentStart": "Incident Start",
+    "serviceRestoration": "Service Restoration",
+    "deployFailure": "Deploy Failure",
+    "deployTotal": "Deploy Total",
+    "bugReport": "Bug Report",
+    "codeLine": "Code Line",
+    "testCase": "Test Case",
+    "buildExecution": "Build Execution",
+    "apiResponse": "API Response",
+    "userStory": "User Story",
+    "codeReview": "Code Review",
+    "systemResource": "System Resource",
+    "userSession": "User Session",
+    "deployment": "Deployment"
+  },
   "measurementPlan": {
     "planName": "Plan Name",
     "associatedProject": "Associated Project",
@@ -344,7 +368,9 @@
     "addMeasurement": "Add Measurement",
     "customMeasurement": "Custom Measurement",
     "selectMeasurement": "Select Measurement",
-    "measurementsCount": "measurements"
+    "measurementsCount": "measurements",
+    "acronymDuplicateError": "This acronym already exists in this metric",
+    "optionalField": "(Optional)"
   },
   "units": {
     "hoursDecimals": "hours (2 decimals)",
@@ -368,7 +394,14 @@
     "analysisResponsible": "Analysis Responsible",
     "customMetric": "Custom Metric",
     "addCustomMetric": "Add Custom Metric",
-    "measurements": "Measurements"
+    "measurements": "Measurements",
+    "mnemonicDuplicateError": "This mnemonic already exists in this plan",
+    "atLeastOneMeasurementRequired": "At least one measurement is required",
+    "optionalField": "(Optional)"
+  },
+  "objective": {
+    "objectiveTitle": "Objective Title",
+    "objectiveTitlePlaceholder": "Enter the objective title"
   },
   "question": {
     "questionText": "Question Text",
@@ -418,6 +451,16 @@
       "addButton": "Add",
       "createButton": "Create Question",
       "cancelButton": "Cancel"
+    },
+    "customObjective": {
+      "title": "Select or Create Objective",
+      "predefinedTab": "Predefined",
+      "customTab": "Custom",
+      "predefinedDescription": "Select a predefined objective from the list below:",
+      "customDescription": "Create a custom objective for your measurement plan:",
+      "addButton": "Add",
+      "createButton": "Create Objective",
+      "noAvailableObjectives": "All predefined objectives have already been added"
     }
   },
   "accordion": {
@@ -443,8 +486,26 @@
   "planDetails": {
     "back": "Back to Plans",
     "notFound": "Plan not found",
-    "notFoundDescription": "The requested plan could not be found or you don't have access to it."
+    "notFoundDescription": "The requested plan could not be found or you don't have access to it.",
+    "editContent": "Edit Content"
   },
+  "confirmDeleteObjectiveTitle": "Delete Objective",
+  "confirmDeleteObjective": "Are you sure you want to delete this objective and all its related items?",
+  "confirmDeleteQuestionTitle": "Delete Question",
+  "confirmDeleteQuestion": "Are you sure you want to delete this question and all its related items?",
+  "confirmDeleteMetricTitle": "Delete Metric",
+  "confirmDeleteMetric": "Are you sure you want to delete this metric and all its measurements?",
+  "confirmDeleteMeasurementTitle": "Delete Measurement",
+  "confirmDeleteMeasurement": "Are you sure you want to delete this measurement?",
+  "deleting": "Deleting...",
+  "editObjective": "Edit Objective",
+  "editQuestion": "Edit Question",
+  "editMetric": "Edit Metric",
+  "editMeasurement": "Edit Measurement",
+  "updateObjective": "Update Objective",
+  "updateQuestion": "Update Question",
+  "updateMetric": "Update Metric",
+  "updateMeasurement": "Update Measurement",
   "measurements": {
     "properties": {
       "worklog": "Total hours logged in project period. Exclude vacations/trainings. Consolidate per iteration/release.",
@@ -536,7 +597,16 @@
     "addMeasurementToCycle": "Add measurement to cycle",
     "endDateMustBeAfterStart": "End date must be after start date",
     "required": "is required",
-    "noCyclesAvailable": "No cycles available. Create a cycle first."
+    "noCyclesAvailable": "No cycles available. Create a cycle first.",
+    "measurementTrends": "Measurement Trends Over Time",
+    "metricsLegend": "Metrics Overview",
+    "latestValue": "Latest",
+    "filterByCycle": "Filter by Cycle",
+    "allCycles": "All Cycles",
+    "noDataForMetric": "No Data Available",
+    "noDataForMetricDescription": "No measurements have been recorded for this metric yet. Add measurements to see trends.",
+    "noDataForMetricInCycle": "No measurements for this metric in the selected cycle. Try selecting a different cycle or add new measurements.",
+    "dateAdjustedToCycleStart": "Date was automatically set to the cycle's start date because today's date is outside the cycle's range."
   },
   "optional": "optional",
   "saving": "Saving...",
@@ -547,5 +617,48 @@
     "needsAttention": "Needs Attention",
     "allOk": "All indicators within expected range",
     "someNeedAttention": "Some indicators need attention"
-  }
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "editPlanTitle": "Edit Measurement Plan",
+  "editPlanSuccess": "Plan updated successfully!",
+  "editPlanError": "Error updating plan",
+  "deletePlanTitle": "Delete Measurement Plan",
+  "deletePlanWarning": "Only draft plans can be deleted",
+  "deletePlanConfirmation": "Are you sure you want to delete the plan \"{{planName}}\"?",
+  "deletePlanSuccess": "Plan \"{{planName}}\" deleted successfully!",
+  "deletePlanError": "Error deleting plan",
+  "cannotDeleteActive": "Cannot delete active or completed plans. Change status to draft first.",
+  "finishedStatusFinal": "Completed status is final and cannot be changed",
+  "selectProject": "Select a project",
+  "required": "is required",
+  "objectiveAddedSuccess": "Objective added successfully",
+  "objectiveUpdatedSuccess": "Objective updated successfully",
+  "objectiveDeletedSuccess": "Objective deleted successfully",
+  "objectiveAddError": "Failed to add objective",
+  "objectiveUpdateError": "Failed to update objective",
+  "objectiveDeleteError": "Failed to delete objective",
+  "questionAddedSuccess": "Question added successfully",
+  "questionUpdatedSuccess": "Question updated successfully",
+  "questionDeletedSuccess": "Question deleted successfully",
+  "questionAddError": "Failed to add question",
+  "questionUpdateError": "Failed to update question",
+  "questionDeleteError": "Failed to delete question",
+  "metricAddedSuccess": "Metric added successfully",
+  "metricUpdatedSuccess": "Metric updated successfully",
+  "metricDeletedSuccess": "Metric deleted successfully",
+  "metricAddError": "Failed to add metric",
+  "metricUpdateError": "Failed to update metric",
+  "metricDeleteError": "Failed to delete metric",
+  "measurementAddedSuccess": "Measurement added successfully",
+  "measurementUpdatedSuccess": "Measurement updated successfully",
+  "measurementDeletedSuccess": "Measurement deleted successfully",
+  "measurementAddError": "Failed to add measurement",
+  "measurementUpdateError": "Failed to update measurement",
+  "measurementDeleteError": "Failed to delete measurement"
 }

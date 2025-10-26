@@ -11,15 +11,26 @@ import { Button } from "@/presentation/components/primitives";
 interface CreateALIFormProps {
   estimateId: string;
   onSuccess?: (ali: unknown) => void;
+  componentToEdit?: {
+    _id: string;
+    name: string;
+    description?: string;
+    primaryIntent?: string;
+    recordElementTypes?: number;
+    dataElementTypes?: number;
+    notes?: string;
+  };
 }
 
 export const CreateALIForm = ({
   estimateId,
   onSuccess,
+  componentToEdit,
 }: CreateALIFormProps) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isEditing = !!componentToEdit;
 
   const {
     register,
@@ -28,26 +39,46 @@ export const CreateALIForm = ({
     reset,
   } = useForm<CreateALIData>({
     resolver: zodResolver(createALISchema),
-    defaultValues: {
-      recordElementTypes: 1,
-      dataElementTypes: 1,
-    },
+    defaultValues: componentToEdit
+      ? {
+          name: componentToEdit.name,
+          description: componentToEdit.description || "",
+          primaryIntent: componentToEdit.primaryIntent || "",
+          recordElementTypes: componentToEdit.recordElementTypes || 1,
+          dataElementTypes: componentToEdit.dataElementTypes || 1,
+          notes: componentToEdit.notes || "",
+        }
+      : {
+          recordElementTypes: 1,
+          dataElementTypes: 1,
+        },
   });
 
-  const { createALIComponent } = useFpaComponents();
+  const { createALIComponent, updateALIComponent } = useFpaComponents();
 
   const onSubmit = async (data: CreateALIData) => {
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const result = await createALIComponent({ estimateId, data });
-      reset();
-      onSuccess?.(result);
+      if (isEditing) {
+        const result = await updateALIComponent({
+          estimateId,
+          id: componentToEdit._id,
+          data,
+        });
+        onSuccess?.(result);
+      } else {
+        const result = await createALIComponent({ estimateId, data });
+        reset();
+        onSuccess?.(result);
+      }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
+          : isEditing
+          ? t("componentForms.ali.failedToUpdate")
           : t("componentForms.ali.failedToCreate")
       );
     } finally {
@@ -60,7 +91,7 @@ export const CreateALIForm = ({
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.ali.name")}
         </label>
@@ -68,7 +99,7 @@ export const CreateALIForm = ({
           {...register("name")}
           id="name"
           type="text"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.name && (
           <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
@@ -78,7 +109,7 @@ export const CreateALIForm = ({
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.descriptionOptional")}
         </label>
@@ -86,7 +117,7 @@ export const CreateALIForm = ({
           {...register("description")}
           id="description"
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.description && (
           <p className="mt-1 text-sm text-red-600">
@@ -98,7 +129,7 @@ export const CreateALIForm = ({
       <div>
         <label
           htmlFor="primaryIntent"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.primaryIntent")}
         </label>
@@ -107,7 +138,7 @@ export const CreateALIForm = ({
           id="primaryIntent"
           rows={3}
           placeholder={t("componentForms.ali.primaryIntentPlaceholder")}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.primaryIntent && (
           <p className="mt-1 text-sm text-red-600">
@@ -119,7 +150,7 @@ export const CreateALIForm = ({
       <div>
         <label
           htmlFor="recordElementTypes"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.ali.recordElementTypes")}
         </label>
@@ -128,7 +159,7 @@ export const CreateALIForm = ({
           id="recordElementTypes"
           type="number"
           min="1"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.recordElementTypes && (
           <p className="mt-1 text-sm text-red-600">
@@ -140,7 +171,7 @@ export const CreateALIForm = ({
       <div>
         <label
           htmlFor="dataElementTypes"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.ali.dataElementTypes")}
         </label>
@@ -149,7 +180,7 @@ export const CreateALIForm = ({
           id="dataElementTypes"
           type="number"
           min="1"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.dataElementTypes && (
           <p className="mt-1 text-sm text-red-600">
@@ -161,7 +192,7 @@ export const CreateALIForm = ({
       <div>
         <label
           htmlFor="notes"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.notesOptional")}
         </label>
@@ -169,7 +200,7 @@ export const CreateALIForm = ({
           {...register("notes")}
           id="notes"
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.notes && (
           <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>
@@ -190,7 +221,11 @@ export const CreateALIForm = ({
           size="md"
         >
           {isSubmitting
-            ? t("componentForms.ali.submitting")
+            ? isEditing
+              ? t("componentForms.ali.updating")
+              : t("componentForms.ali.submitting")
+            : isEditing
+            ? t("componentForms.ali.update")
             : t("componentForms.ali.submit")}
         </Button>
       </div>

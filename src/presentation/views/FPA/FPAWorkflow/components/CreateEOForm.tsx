@@ -11,12 +11,24 @@ import { Button } from "@/presentation/components/primitives";
 interface CreateEOFormProps {
   estimateId: string;
   onSuccess?: (eo: unknown) => void;
+  componentToEdit?: {
+    _id: string;
+    name: string;
+    description?: string;
+    primaryIntent?: string;
+    derivedData?: boolean;
+    outputFormat?: string;
+    fileTypesReferenced?: number;
+    dataElementTypes?: number;
+    notes?: string;
+  };
 }
 
-export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
+export const CreateEOForm = ({ estimateId, onSuccess, componentToEdit }: CreateEOFormProps) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isEditing = !!componentToEdit;
 
   const {
     register,
@@ -25,22 +37,45 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
     reset,
   } = useForm<CreateEOData>({
     resolver: zodResolver(createEOSchema),
+    defaultValues: componentToEdit
+      ? {
+          name: componentToEdit.name,
+          description: componentToEdit.description || "",
+          primaryIntent: componentToEdit.primaryIntent || "",
+          derivedData: componentToEdit.derivedData || false,
+          outputFormat: componentToEdit.outputFormat || "",
+          fileTypesReferenced: componentToEdit.fileTypesReferenced || 0,
+          dataElementTypes: componentToEdit.dataElementTypes || 0,
+          notes: componentToEdit.notes || "",
+        }
+      : undefined,
   });
 
-  const { createEOComponent } = useFpaComponents();
+  const { createEOComponent, updateEOComponent } = useFpaComponents();
 
   const onSubmit = async (data: CreateEOData) => {
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const result = await createEOComponent({ estimateId, data });
-      reset();
-      onSuccess?.(result);
+      if (isEditing) {
+        const result = await updateEOComponent({
+          estimateId,
+          id: componentToEdit._id,
+          data,
+        });
+        onSuccess?.(result);
+      } else {
+        const result = await createEOComponent({ estimateId, data });
+        reset();
+        onSuccess?.(result);
+      }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
+          : isEditing
+          ? t("componentForms.eo.failedToUpdate")
           : t("componentForms.eo.failedToCreate")
       );
     } finally {
@@ -53,7 +88,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.eo.name")}
         </label>
@@ -61,7 +96,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
           {...register("name")}
           id="name"
           type="text"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.name && (
           <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
@@ -71,7 +106,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.descriptionOptional")}
         </label>
@@ -79,7 +114,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
           {...register("description")}
           id="description"
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.description && (
           <p className="mt-1 text-sm text-red-600">
@@ -91,7 +126,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
       <div>
         <label
           htmlFor="primaryIntent"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.primaryIntent")}
         </label>
@@ -100,7 +135,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
           id="primaryIntent"
           rows={3}
           placeholder={t("componentForms.eo.primaryIntentPlaceholder")}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.primaryIntent && (
           <p className="mt-1 text-sm text-red-600">
@@ -132,7 +167,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
       <div>
         <label
           htmlFor="outputFormat"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.eo.outputFormat")}
         </label>
@@ -141,7 +176,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
           id="outputFormat"
           type="text"
           placeholder={t("componentForms.eo.outputFormatPlaceholder")}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.outputFormat && (
           <p className="mt-1 text-sm text-red-600">
@@ -153,7 +188,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
       <div>
         <label
           htmlFor="fileTypesReferenced"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.eo.fileTypesReferenced")}
         </label>
@@ -162,7 +197,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
           id="fileTypesReferenced"
           type="number"
           min="0"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.fileTypesReferenced && (
           <p className="mt-1 text-sm text-red-600">
@@ -174,7 +209,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
       <div>
         <label
           htmlFor="dataElementTypes"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.eo.dataElementTypes")}
         </label>
@@ -183,7 +218,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
           id="dataElementTypes"
           type="number"
           min="1"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.dataElementTypes && (
           <p className="mt-1 text-sm text-red-600">
@@ -195,7 +230,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
       <div>
         <label
           htmlFor="notes"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.notesOptional")}
         </label>
@@ -203,7 +238,7 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
           {...register("notes")}
           id="notes"
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.notes && (
           <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>
@@ -224,7 +259,11 @@ export const CreateEOForm = ({ estimateId, onSuccess }: CreateEOFormProps) => {
           size="md"
         >
           {isSubmitting
-            ? t("componentForms.eo.submitting")
+            ? isEditing
+              ? t("componentForms.eo.updating")
+              : t("componentForms.eo.submitting")
+            : isEditing
+            ? t("componentForms.eo.update")
             : t("componentForms.eo.submit")}
         </Button>
       </div>

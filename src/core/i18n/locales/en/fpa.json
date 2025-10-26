@@ -18,6 +18,8 @@
   "inProgress": "In Progress",
   "organizationRequired": "Organization Required",
   "organizationRequiredDescription": "You need to create or join an organization to create FPA estimates and manage measurement activities.",
+  "organizationRequiredMessage": "You need to create or join an organization to start using Measura's features.",
+  "organizationRequiredUserMessage": "You need to join an organization. Ask your Project Manager or Administrator to invite you.",
   "createOrganization": "Create Organization",
   "noProjectsTitle": "No Projects Found",
   "noProjectsDescription": "You need to create at least one project before creating FPA estimates.",
@@ -44,7 +46,10 @@
     "continue": "Continue",
     "next": "Next",
     "back": "Back",
-    "backToComponentTypes": "Back to Component Types"
+    "backToComponentTypes": "Back to Component Types",
+    "edit": "Edit",
+    "save": "Save",
+    "backToImport": "Back to Import"
   },
   "messages": {
     "noOverviewData": "No overview data available yet. Please add components and calculate function points."
@@ -67,6 +72,7 @@
   },
   "components": {
     "title": "Add Components",
+    "addComponents": "Add Components",
     "addALIComponents": "Add ALI Components",
     "addEIComponents": "Add EI Components",
     "addEOComponents": "Add EO Components",
@@ -94,7 +100,10 @@
     "created": "Created",
     "ret": "RET",
     "det": "DET",
-    "ftr": "FTR"
+    "ftr": "FTR",
+    "editingComponent": "Editing component",
+    "editDescription": "Edit the fields below. The backend will automatically recalculate complexity and function points.",
+    "editSuccess": "{{type}} \"{{name}}\" updated successfully! Complexity and function points recalculated."
   },
   "calculations": {
     "title": "Calculation Details",
@@ -253,11 +262,13 @@
     "organizationRequiredTitle": "Organization Required",
     "organizationRequiredText": "You need to belong to an organization to create projects and estimates.",
     "cancel": "Cancel",
-    "step1Title": "1. Select or Create Project",
-    "step1Description": "Choose an existing project or create a new one for your FPA estimate",
+    "step1Title": "1. Select Project",
+    "step1Description": "Choose an existing project for your FPA estimate",
     "selectExistingProject": "Select Existing Project:",
     "chooseProject": "Choose a project...",
-    "createNewProject": "Create New Project",
+    "needNewProject": "Need to create a new project?",
+    "needNewProjectDescription": "Go to the Projects page to create a new project, then return here to create your estimate.",
+    "goToProjects": "Go to Projects",
     "nextCreateEstimate": "Next: Create Estimate",
     "step2Title": "2. Create FPA Estimate",
     "step2Description": "Create your estimate with project details, count type, scope, and application boundary",
@@ -306,6 +317,13 @@
     "createNewEstimate": "Create New Estimate",
     "viewAllEstimates": "View All Estimates",
     "failedToCalculate": "Failed to calculate function points",
+    "estimateCreatedSuccess": "Estimate created successfully!",
+    "calculatingFunctionPoints": "Calculating function points...",
+    "calculationSuccess": "Function points calculated successfully!",
+    "calculationError": "Failed to calculate function points. Please try again.",
+    "estimateCreationError": "Failed to create estimate. Please try again.",
+    "requirementsRequired": "Please add at least one requirement before proceeding to the next step.",
+    "requirementsNotClassified": "You have added requirements but haven't classified them yet. Please scroll down and click 'Next: Classify Requirements' to continue.",
     "components": {
       "title": "Components",
       "addALI": "ALI",
@@ -403,7 +421,10 @@
       "dataElementTypes": "Data Element Types (DETs)",
       "submit": "Create ALI",
       "submitting": "Creating...",
-      "failedToCreate": "Failed to create ALI component"
+      "failedToCreate": "Failed to create ALI component",
+      "update": "Update ALI",
+      "updating": "Updating...",
+      "failedToUpdate": "Failed to update ALI component"
     },
     "ei": {
       "name": "EI Name",
@@ -414,7 +435,10 @@
       "dataElementTypes": "Data Element Types (DETs)",
       "submit": "Create EI",
       "submitting": "Creating...",
-      "failedToCreate": "Failed to create EI component"
+      "failedToCreate": "Failed to create EI component",
+      "update": "Update EI",
+      "updating": "Updating...",
+      "failedToUpdate": "Failed to update EI component"
     },
     "eo": {
       "name": "EO Name",
@@ -426,7 +450,10 @@
       "dataElementTypes": "Data Element Types (DETs)",
       "submit": "Create EO",
       "submitting": "Creating...",
-      "failedToCreate": "Failed to create EO component"
+      "failedToCreate": "Failed to create EO component",
+      "update": "Update EO",
+      "updating": "Updating...",
+      "failedToUpdate": "Failed to update EO component"
     },
     "eq": {
       "name": "EQ Name",
@@ -469,7 +496,10 @@
       "retrievalLogicLabel": "Retrieval Logic",
       "retrievalLogicPlaceholder": "Description of query logic",
       "creating": "Creating...",
-      "createComponent": "Create EQ Component"
+      "createComponent": "Create EQ Component",
+      "updating": "Updating...",
+      "updateComponent": "Update EQ Component",
+      "failedToUpdate": "Failed to update EQ component"
     },
     "aie": {
       "name": "AIE Name",
@@ -479,14 +509,21 @@
       "externalSystem": "External System",
       "submit": "Create AIE",
       "submitting": "Creating...",
-      "failedToCreate": "Failed to create AIE component"
+      "failedToCreate": "Failed to create AIE component",
+      "update": "Update AIE",
+      "updating": "Updating...",
+      "failedToUpdate": "Failed to update AIE component"
     }
   },
   "status": {
-    "completed": "completed",
-    "in_progress": "in progress",
-    "draft": "draft"
+    "draft": "Draft",
+    "finalized": "Finalized",
+    "archived": "Archived"
   },
+  "estimateStatus": "Estimate Status",
+  "statusUpdatedSuccess": "Status updated to {{status}}",
+  "statusUpdateError": "Failed to update estimate status",
+  "statusChangePermissionRequired": "Only administrators and project managers can change status",
   "countTypes": {
     "DEVELOPMENT_PROJECT": "Development Project",
     "ENHANCEMENT_PROJECT": "Enhancement Project",
@@ -565,7 +602,6 @@
     "status": "Status",
     "allStatuses": "All Statuses",
     "draft": "Draft",
-    "inProgress": "In Progress",
     "finalized": "Finalized",
     "archived": "Archived",
     "sortBy": "Sort By",
@@ -598,6 +634,7 @@
     "title": "Import Requirements",
     "subtitle": "Import requirements from different sources to start your FPA analysis",
     "selectSource": "Select Import Source",
+    "allRequirements": "All Requirements",
     "sources": {
       "manual": "Manual",
       "csv": "CSV",
@@ -608,7 +645,9 @@
     },
     "importSuccess": "{{count}} requirements imported successfully!",
     "importButton": "Import Requirements",
+    "import": "Import from {{source}}",
     "importing": "Importing...",
+    "addPreview": "Add to Visualization",
     "nextToClassification": "Next: Classify Requirements",
     "requirementTitle": "Name",
     "description": "Description",
@@ -623,7 +662,14 @@
     "classifySubtitle": "Classify each requirement as ILF, EIF, EI, EO or EQ",
     "proceedDescription": "Click \"Next\" to classify requirements as ILF, EIF, EI, EO or EQ",
     "backToImport": "← Back to Import",
-    "nextToGSC": "Next: General System Characteristics →"
+    "nextToGSC": "Next: General System Characteristics →",
+    "notConfigured": "Integration not configured",
+    "requiresConfiguration": "Requires configuration in Organization Settings",
+    "configured": "Configured and ready to use",
+    "integrationNotConfigured": "Integration not configured",
+    "configureInOrgSettings": "Please configure this integration in Organization Settings to use this import source.",
+    "goToSettings": "Go to Settings",
+    "addPreview": "Add Preview Requirements"
   },
   "requirementClassification": {
     "title": "Requirement Classification",
@@ -654,11 +700,6 @@
     "allComplete": "All requirements classified and completed!",
     "nextToSpecification": "Next: Component Specification",
     "mustClassifyFirst": "You must classify the requirement before filling the fields"
-  },
-  "actions": {
-    "cancel": "Cancel",
-    "save": "Save",
-    "backToImport": "Back to Import"
   },
   "componentTypes": {
     "ALI": "ILF - Internal Logical File",
@@ -710,7 +751,19 @@
       "apiTokenPlaceholder": "Your Jira API token",
       "jql": "JQL Query",
       "jqlPlaceholder": "project = PROJ AND type = Story",
-      "jqlHelp": "Use JQL to filter the issues you want to import"
+      "jqlHelp": "Use JQL to filter the issues you want to import",
+      "selectProject": "Select Project",
+      "selectProjectPlaceholder": "Choose a project...",
+      "loadingProjects": "Loading projects...",
+      "noProjects": "No projects available",
+      "previewMode": "Preview Mode",
+      "previewModeDescription": "During estimate creation, requirements are added as preview items. Full import will be available after the estimate is saved.",
+      "commonFilters": "Common Filters:",
+      "filterAllIssues": "All issues in project",
+      "filterStories": "Stories only",
+      "filterOpenIssues": "Open issues only",
+      "filterCurrentSprint": "Current sprint",
+      "filterAssignedToMe": "Assigned to me"
     },
     "github": {
       "token": "GitHub Token",
@@ -720,7 +773,17 @@
       "repo": "Repository",
       "repoPlaceholder": "repository-name",
       "projectNumber": "Project Number",
-      "projectNumberPlaceholder": "1"
+      "projectNumberPlaceholder": "1",
+      "selectRepository": "Select Repository",
+      "selectRepositoryPlaceholder": "Choose a repository...",
+      "loadingRepositories": "Loading repositories...",
+      "noRepositories": "No repositories available",
+      "issueState": "Issue State",
+      "stateOpen": "Open",
+      "stateClosed": "Closed",
+      "stateAll": "All",
+      "previewMode": "Preview Mode",
+      "previewModeDescription": "During estimate creation, requirements are added as preview items. Full import will be available after the estimate is saved."
     },
     "azureDevops": {
       "organization": "Organization",
@@ -730,13 +793,75 @@
       "pat": "Personal Access Token",
       "patPlaceholder": "Your Azure DevOps PAT",
       "wiql": "WIQL Query",
-      "wiqlPlaceholder": "SELECT [System.Id] FROM WorkItems WHERE [System.WorkItemType] = 'User Story'"
+      "wiqlPlaceholder": "SELECT [System.Id] FROM WorkItems WHERE [System.WorkItemType] = 'User Story'",
+      "selectProject": "Select Project",
+      "selectProjectPlaceholder": "Choose a project...",
+      "loadingProjects": "Loading projects...",
+      "noProjects": "No projects available",
+      "previewMode": "Preview Mode",
+      "previewModeDescription": "During estimate creation, requirements are added as preview items. Full import will be available after the estimate is saved.",
+      "commonFilters": "Common Filters:",
+      "filterUserStories": "User Stories only",
+      "filterActiveBugs": "Active Bugs",
+      "filterAllWorkItems": "All work items"
     },
     "clickup": {
       "token": "ClickUp Token",
       "tokenPlaceholder": "pk_...",
       "listId": "List ID",
-      "listIdPlaceholder": "123456789"
+      "listIdPlaceholder": "123456789",
+      "selectList": "Select List",
+      "selectListPlaceholder": "Choose a list...",
+      "loadingLists": "Loading lists...",
+      "noLists": "No lists available",
+      "space": "Space",
+      "folder": "Folder",
+      "list": "List",
+      "previewMode": "Preview Mode",
+      "previewModeDescription": "During estimate creation, requirements are added as preview items. Full import will be available after the estimate is saved."
+    },
+    "emptyStates": {
+      "noProjects": "No projects found. Check your {{integration}} token permissions.",
+      "noRepositories": "No repositories found. Check your GitHub token permissions.",
+      "noLists": "No lists found. Check your ClickUp token permissions.",
+      "noRequirementsFound": "No requirements were found to import.",
+      "noRequirementsDescription": "The selected source returned no items. Try adjusting your filters or selecting a different source.",
+      "noIssuesInRepo": "No issues found in this repository.",
+      "noIssuesInProject": "No issues found in this project.",
+      "noTasksInList": "No tasks found in this list.",
+      "noWorkItemsInQuery": "No work items found matching the WIQL query.",
+      "tryDifferentSelection": "Try selecting a different {{sourceType}} or adjusting your filters."
+    },
+    "preview": {
+      "successfullyImported": "Successfully imported {{count}} requirement(s)",
+      "skipped": "{{count}} requirement(s) skipped (already exist)",
+      "failed": "{{count}} requirement(s) failed to import",
+      "importRequirements": "Import Requirements",
+      "reviewRequirements": "Review Imported Requirements",
+      "selectedCount": "{{count}} of {{total}} selected",
+      "reference": "Reference",
+      "metadata": "Metadata",
+      "source": "Source",
+      "edit": "Actions",
+      "remove": "Remove",
+      "cancel": "Cancel",
+      "back": "Back",
+      "addSelected": "Add {{count}} Selected",
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "showing": "Showing {{start}}-{{end}} of {{total}}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "importResult": {
+      "title": "Import Complete",
+      "successMessage": "Successfully imported {{count}} requirement(s)",
+      "skippedMessage": "{{count}} requirement(s) skipped (already imported)",
+      "failedMessage": "{{count}} requirement(s) failed to import",
+      "newRequirements": "New Requirements:",
+      "andMore": "... and {{count}} more",
+      "done": "Done",
+      "viewInExternal": "View in {{source}}"
     }
   }
 }

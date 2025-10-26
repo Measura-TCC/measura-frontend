@@ -1,1 +1,1 @@
-export type OrganizationTab = "overview" | "members" | "invitations" | "settings";
+export type OrganizationTab = "overview" | "members" | "invitations" | "settings" | "integrations";

@@ -43,7 +43,7 @@ export const availableMetrics: Metric[] = [
     analysisResponsible: "analysis.responsible.productivityTeam",
     measurements: [
       {
-        measurementEntity: "metrics.measurementEntities.worklog",
+        measurementEntity: "entities.worklog",
         measurementAcronym: "ESF",
         measurementProperties: "measurements.properties.worklog",
         measurementUnit: "units.hoursDecimals",
@@ -53,7 +53,7 @@ export const availableMetrics: Metric[] = [
         measurementResponsible: "measurements.responsible.timesheetERP",
       },
       {
-        measurementEntity: "metrics.measurementEntities.deliveredFunctionPoints",
+        measurementEntity: "entities.deliveredFunctionPoints",
         measurementAcronym: "PFD",
         measurementProperties: "measurements.properties.deliveredFunctionPoints",
         measurementUnit: "units.functionPoints",
@@ -75,7 +75,7 @@ export const availableMetrics: Metric[] = [
     analysisResponsible: "analysis.responsible.productivityTeam",
     measurements: [
       {
-        measurementEntity: "metrics.measurementEntities.deploymentToProduction",
+        measurementEntity: "entities.deploymentToProduction",
         measurementAcronym: "TPD",
         measurementProperties: "measurements.properties.deploymentToProduction",
         measurementUnit: "units.msEpochUTC",
@@ -85,7 +85,7 @@ export const availableMetrics: Metric[] = [
         measurementResponsible: "measurements.responsible.measurementAnalyst",
       },
       {
-        measurementEntity: "metrics.measurementEntities.commit",
+        measurementEntity: "entities.commit",
         measurementAcronym: "TCM",
         measurementProperties: "measurements.properties.commit",
         measurementUnit: "units.msEpochUTC",
@@ -107,7 +107,7 @@ export const availableMetrics: Metric[] = [
     analysisResponsible: "analysis.responsible.productivityTeam",
     measurements: [
       {
-        measurementEntity: "metrics.measurementEntities.incidentStart",
+        measurementEntity: "entities.incidentStart",
         measurementAcronym: "TIN",
         measurementProperties: "measurements.properties.incidentStart",
         measurementUnit: "units.msEpochUTC",
@@ -117,7 +117,7 @@ export const availableMetrics: Metric[] = [
         measurementResponsible: "measurements.responsible.measurementAnalyst",
       },
       {
-        measurementEntity: "metrics.measurementEntities.serviceRestoration",
+        measurementEntity: "entities.serviceRestoration",
         measurementAcronym: "TRS",
         measurementProperties: "measurements.properties.serviceRestoration",
         measurementUnit: "units.msEpochUTC",
@@ -139,7 +139,7 @@ export const availableMetrics: Metric[] = [
     analysisResponsible: "analysis.responsible.productivityTeam",
     measurements: [
       {
-        measurementEntity: "metrics.measurementEntities.deployFailure",
+        measurementEntity: "entities.deployFailure",
         measurementAcronym: "DPF",
         measurementProperties: "measurements.properties.deployFailure",
         measurementUnit: "units.countPerFailedDeploy",
@@ -149,7 +149,7 @@ export const availableMetrics: Metric[] = [
         measurementResponsible: "measurements.responsible.measurementAnalyst",
       },
       {
-        measurementEntity: "metrics.measurementEntities.deployTotal",
+        measurementEntity: "entities.deployTotal",
         measurementAcronym: "DPT",
         measurementProperties: "measurements.properties.deployTotal",
         measurementUnit: "units.countPerDeploy",
@@ -165,7 +165,7 @@ export const availableMetrics: Metric[] = [
 export const availableMeasurements: Measurement[] = [
   // HPF - Productivity measurements
   {
-    measurementEntity: "metrics.measurementEntities.worklog",
+    measurementEntity: "entities.worklog",
     measurementAcronym: "ESF",
     measurementProperties: "measurements.properties.worklog",
     measurementUnit: "units.hoursDecimals",
@@ -175,7 +175,7 @@ export const availableMeasurements: Measurement[] = [
     measurementResponsible: "measurements.responsible.timesheetERP",
   },
   {
-    measurementEntity: "metrics.measurementEntities.deliveredFunctionPoints",
+    measurementEntity: "entities.deliveredFunctionPoints",
     measurementAcronym: "PFD",
     measurementProperties: "measurements.properties.deliveredFunctionPoints",
     measurementUnit: "units.functionPoints",
@@ -186,7 +186,7 @@ export const availableMeasurements: Measurement[] = [
   },
   // LTC - Lead Time for Changes measurements
   {
-    measurementEntity: "metrics.measurementEntities.deploymentToProduction",
+    measurementEntity: "entities.deploymentToProduction",
     measurementAcronym: "TPD",
     measurementProperties: "measurements.properties.deploymentToProduction",
     measurementUnit: "units.msEpochUTC",
@@ -196,7 +196,7 @@ export const availableMeasurements: Measurement[] = [
     measurementResponsible: "measurements.responsible.measurementAnalyst",
   },
   {
-    measurementEntity: "metrics.measurementEntities.commit",
+    measurementEntity: "entities.commit",
     measurementAcronym: "TCM",
     measurementProperties: "measurements.properties.commit",
     measurementUnit: "units.msEpochUTC",
@@ -207,7 +207,7 @@ export const availableMeasurements: Measurement[] = [
   },
   // MTTR - Mean Time to Restore measurements
   {
-    measurementEntity: "metrics.measurementEntities.incidentStart",
+    measurementEntity: "entities.incidentStart",
     measurementAcronym: "TIN",
     measurementProperties: "measurements.properties.incidentStart",
     measurementUnit: "units.msEpochUTC",
@@ -217,7 +217,7 @@ export const availableMeasurements: Measurement[] = [
     measurementResponsible: "measurements.responsible.measurementAnalyst",
   },
   {
-    measurementEntity: "metrics.measurementEntities.serviceRestoration",
+    measurementEntity: "entities.serviceRestoration",
     measurementAcronym: "TRS",
     measurementProperties: "measurements.properties.serviceRestoration",
     measurementUnit: "units.msEpochUTC",
@@ -228,7 +228,7 @@ export const availableMeasurements: Measurement[] = [
   },
   // CFR - Change Failure Rate measurements
   {
-    measurementEntity: "metrics.measurementEntities.deployFailure",
+    measurementEntity: "entities.deployFailure",
     measurementAcronym: "DPF",
     measurementProperties: "measurements.properties.deployFailure",
     measurementUnit: "units.countPerFailedDeploy",
@@ -238,7 +238,7 @@ export const availableMeasurements: Measurement[] = [
     measurementResponsible: "measurements.responsible.measurementAnalyst",
   },
   {
-    measurementEntity: "metrics.measurementEntities.deployTotal",
+    measurementEntity: "entities.deployTotal",
     measurementAcronym: "DPT",
     measurementProperties: "measurements.properties.deployTotal",
     measurementUnit: "units.countPerDeploy",

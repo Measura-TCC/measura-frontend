@@ -65,8 +65,9 @@ export const useMeasurementPlans = (params: UseMeasurementPlanParams = {}) => {
 
   const statistics: PlansStatistics = {
     totalPlans: pagination?.total || 0,
-    activePlans: plans?.filter((p) => p.status === MeasurementPlanStatus.ACTIVE).length || 0,
-    completedPlans: plans?.filter((p) => p.status === MeasurementPlanStatus.COMPLETED).length || 0,
+    approvedPlans: plans?.filter((p) => p.status === MeasurementPlanStatus.APPROVED).length || 0,
+    finishedPlans: plans?.filter((p) => p.status === MeasurementPlanStatus.FINISHED).length || 0,
+    rejectedPlans: plans?.filter((p) => p.status === MeasurementPlanStatus.REJECTED).length || 0,
     draftPlans: plans?.filter((p) => p.status === MeasurementPlanStatus.DRAFT).length || 0,
     averageProgress: plans?.length
       ? Math.round(plans.reduce((sum, p) => sum + p.progress, 0) / plans.length)
@@ -170,14 +171,16 @@ export const useMeasurementPlans = (params: UseMeasurementPlanParams = {}) => {
 
   const getStatusColor = (status: MeasurementPlanStatus): string => {
     switch (status) {
-      case MeasurementPlanStatus.COMPLETED:
-        return "bg-green-100 text-green-800";
-      case MeasurementPlanStatus.ACTIVE:
-        return "bg-blue-100 text-blue-800";
+      case MeasurementPlanStatus.FINISHED:
+        return "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300";
+      case MeasurementPlanStatus.APPROVED:
+        return "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300";
+      case MeasurementPlanStatus.REJECTED:
+        return "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300";
       case MeasurementPlanStatus.DRAFT:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300";
     }
   };
 

@@ -53,7 +53,7 @@ export const Step4: React.FC<Step4Props> = ({
 
               <div className="space-y-4">
                 {objective.questions.map((question, qIndex) => (
-                  <div key={question.questionText} className="border border-gray-200 rounded-lg p-4 bg-gray-50 space-y-3">
+                  <div key={question.questionText} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800 space-y-3">
                     <div className="flex items-center gap-2">
                       <span className="bg-secondary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-medium">
                         Q{qIndex + 1}
@@ -70,7 +70,7 @@ export const Step4: React.FC<Step4Props> = ({
                         </label>
                         <div className="relative">
                           <select
-                            className="w-full p-2 border border-border rounded-md appearance-none bg-white"
+                            className="w-full p-2 border border-border rounded-md appearance-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                             value=""
                             onChange={(e) => {
                               if (e.target.value) {

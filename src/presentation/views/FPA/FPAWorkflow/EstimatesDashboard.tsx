@@ -52,7 +52,7 @@ export const EstimatesDashboard = ({
           .includes(searchQuery.toLowerCase());
 
       const matchesStatus =
-        statusFilter === "ALL" || estimate.status === statusFilter;
+        statusFilter === "ALL" || estimate.status?.toLowerCase() === statusFilter.toLowerCase();
 
       return matchesSearch && matchesStatus;
     });
@@ -91,16 +91,14 @@ export const EstimatesDashboard = ({
 
   const statistics = useMemo(() => {
     if (!estimatesOverviews)
-      return { total: 0, draft: 0, inProgress: 0, finalized: 0, archived: 0 };
+      return { total: 0, draft: 0, finalized: 0, archived: 0 };
 
     return {
       total: estimatesOverviews.length,
-      draft: estimatesOverviews.filter((e) => e.status === "DRAFT").length,
-      inProgress: estimatesOverviews.filter((e) => e.status === "IN_PROGRESS")
+      draft: estimatesOverviews.filter((e) => e.status?.toLowerCase() === "draft").length,
+      finalized: estimatesOverviews.filter((e) => e.status?.toLowerCase() === "finalized")
         .length,
-      finalized: estimatesOverviews.filter((e) => e.status === "FINALIZED")
-        .length,
-      archived: estimatesOverviews.filter((e) => e.status === "ARCHIVED")
+      archived: estimatesOverviews.filter((e) => e.status?.toLowerCase() === "archived")
         .length,
     };
   }, [estimatesOverviews]);
@@ -193,30 +191,22 @@ export const EstimatesDashboard = ({
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-background p-4 rounded-lg border border-border">
           <p className="text-sm text-secondary">{t("totalEstimates")}</p>
           <p className="text-2xl font-bold text-default">{statistics.total}</p>
         </div>
         <div className="bg-background p-4 rounded-lg border border-border">
           <p className="text-sm text-secondary">
-            {t("estimatesDashboard.draft")}
+            {t("status.draft")}
           </p>
-          <p className="text-2xl font-bold text-secondary">
+          <p className="text-2xl font-bold text-gray-600">
             {statistics.draft}
           </p>
         </div>
         <div className="bg-background p-4 rounded-lg border border-border">
           <p className="text-sm text-secondary">
-            {t("estimatesDashboard.inProgress")}
-          </p>
-          <p className="text-2xl font-bold text-blue-600">
-            {statistics.inProgress}
-          </p>
-        </div>
-        <div className="bg-background p-4 rounded-lg border border-border">
-          <p className="text-sm text-secondary">
-            {t("estimatesDashboard.finalized")}
+            {t("status.finalized")}
           </p>
           <p className="text-2xl font-bold text-green-600">
             {statistics.finalized}
@@ -224,7 +214,7 @@ export const EstimatesDashboard = ({
         </div>
         <div className="bg-background p-4 rounded-lg border border-border">
           <p className="text-sm text-secondary">
-            {t("estimatesDashboard.archived")}
+            {t("status.archived")}
           </p>
           <p className="text-2xl font-bold text-red-600">
             {statistics.archived}
@@ -257,16 +247,9 @@ export const EstimatesDashboard = ({
               className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
             >
               <option value="ALL">{t("estimatesDashboard.allStatuses")}</option>
-              <option value="DRAFT">{t("estimatesDashboard.draft")}</option>
-              <option value="IN_PROGRESS">
-                {t("estimatesDashboard.inProgress")}
-              </option>
-              <option value="FINALIZED">
-                {t("estimatesDashboard.finalized")}
-              </option>
-              <option value="ARCHIVED">
-                {t("estimatesDashboard.archived")}
-              </option>
+              <option value="draft">{t("status.draft")}</option>
+              <option value="finalized">{t("status.finalized")}</option>
+              <option value="archived">{t("status.archived")}</option>
             </select>
           </div>
 

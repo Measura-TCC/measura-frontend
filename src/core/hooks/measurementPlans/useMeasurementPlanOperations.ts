@@ -192,10 +192,12 @@ export const useMeasurementPlanOperations = (params: UseMeasurementPlanOperation
 
   const addMetric = useCallback(
     async (objectiveId: string, questionId: string, data: CreateMetricDto): Promise<MeasurementPlanResponseDto> => {
+      if (!userOrganization) throw new Error('Organization not found');
       setIsAddingMetric(true);
 
       try {
         const result = await measurementPlanService.addMetric({
+          organizationId: userOrganization._id,
           planId,
           objectiveId,
           questionId,
@@ -210,15 +212,17 @@ export const useMeasurementPlanOperations = (params: UseMeasurementPlanOperation
         setIsAddingMetric(false);
       }
     },
-    [planId, refreshPlanData]
+    [planId, userOrganization, refreshPlanData]
   );
 
   const updateMetric = useCallback(
     async (objectiveId: string, questionId: string, metricId: string, data: CreateMetricDto): Promise<MeasurementPlanResponseDto> => {
+      if (!userOrganization) throw new Error('Organization not found');
       setIsUpdatingMetric(true);
 
       try {
         const result = await measurementPlanService.updateMetric({
+          organizationId: userOrganization._id,
           planId,
           objectiveId,
           questionId,
@@ -234,15 +238,17 @@ export const useMeasurementPlanOperations = (params: UseMeasurementPlanOperation
         setIsUpdatingMetric(false);
       }
     },
-    [planId, refreshPlanData]
+    [planId, userOrganization, refreshPlanData]
   );
 
   const deleteMetric = useCallback(
     async (objectiveId: string, questionId: string, metricId: string): Promise<void> => {
+      if (!userOrganization) throw new Error('Organization not found');
       setIsDeletingMetric(true);
 
       try {
         await measurementPlanService.deleteMetric({
+          organizationId: userOrganization._id,
           planId,
           objectiveId,
           questionId,
@@ -256,15 +262,17 @@ export const useMeasurementPlanOperations = (params: UseMeasurementPlanOperation
         setIsDeletingMetric(false);
       }
     },
-    [planId, refreshPlanData]
+    [planId, userOrganization, refreshPlanData]
   );
 
   const addMeasurement = useCallback(
     async (objectiveId: string, questionId: string, metricId: string, data: CreateMeasurementDto): Promise<MeasurementPlanResponseDto> => {
+      if (!userOrganization) throw new Error('Organization not found');
       setIsAddingMeasurement(true);
 
       try {
         const result = await measurementPlanService.addMeasurement({
+          organizationId: userOrganization._id,
           planId,
           objectiveId,
           questionId,
@@ -280,15 +288,17 @@ export const useMeasurementPlanOperations = (params: UseMeasurementPlanOperation
         setIsAddingMeasurement(false);
       }
     },
-    [planId, refreshPlanData]
+    [planId, userOrganization, refreshPlanData]
   );
 
   const updateMeasurement = useCallback(
     async (objectiveId: string, questionId: string, metricId: string, measurementId: string, data: CreateMeasurementDto): Promise<MeasurementPlanResponseDto> => {
+      if (!userOrganization) throw new Error('Organization not found');
       setIsUpdatingMeasurement(true);
 
       try {
         const result = await measurementPlanService.updateMeasurement({
+          organizationId: userOrganization._id,
           planId,
           objectiveId,
           questionId,
@@ -305,15 +315,17 @@ export const useMeasurementPlanOperations = (params: UseMeasurementPlanOperation
         setIsUpdatingMeasurement(false);
       }
     },
-    [planId, refreshPlanData]
+    [planId, userOrganization, refreshPlanData]
   );
 
   const deleteMeasurement = useCallback(
     async (objectiveId: string, questionId: string, metricId: string, measurementId: string): Promise<void> => {
+      if (!userOrganization) throw new Error('Organization not found');
       setIsDeletingMeasurement(true);
 
       try {
         await measurementPlanService.deleteMeasurement({
+          organizationId: userOrganization._id,
           planId,
           objectiveId,
           questionId,
@@ -328,7 +340,7 @@ export const useMeasurementPlanOperations = (params: UseMeasurementPlanOperation
         setIsDeletingMeasurement(false);
       }
     },
-    [planId, refreshPlanData]
+    [planId, userOrganization, refreshPlanData]
   );
 
   return {

@@ -266,15 +266,15 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-secondary">{t("activePlans")}</span>
+              <span className="text-secondary">{t("approvedPlans")}</span>
               <span className="font-semibold text-default">
-                {statistics.activePlans}
+                {statistics.approvedPlans}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-secondary">{t("completedPlans")}</span>
+              <span className="text-secondary">{t("finishedPlans")}</span>
               <span className="font-semibold text-default">
-                {statistics.completedPlans}
+                {statistics.finishedPlans}
               </span>
             </div>
             {/* <div className="flex justify-between items-center">

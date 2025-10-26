@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { useOrganizations } from "@/core/hooks/organizations";
 import { measurementPlanService } from "@/core/services/measurementPlanService";
 import { ExportFormat } from "@/core/types/plans";
+import { API_BASE_URL } from "@/core/utils/constants";
 import type {
   ExportMeasurementPlanDto,
   ExportResponseDto,
@@ -75,7 +76,7 @@ export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams)
         // Construct the full URL if it's a relative path
         const fullUrl = downloadUrl.startsWith('http')
           ? downloadUrl
-          : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}${downloadUrl}`;
+          : `${API_BASE_URL}${downloadUrl}`;
 
         const link = document.createElement("a");
         link.href = fullUrl;

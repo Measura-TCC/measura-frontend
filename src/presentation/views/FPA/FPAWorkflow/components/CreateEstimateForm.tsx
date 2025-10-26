@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, forwardRef, useImperativeHandle } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,8 +18,14 @@ const createEstimateFormSchemaFactory = (t: (key: string) => string) =>
       .string()
       .min(10, t("project.description.minLength"))
       .max(500, t("fpa.description.maxLength")),
-    applicationBoundary: z.string().min(1, t("fpa.applicationBoundary.required")),
-    countingScope: z.string().min(1, t("fpa.countingScope.required")),
+    applicationBoundary: z
+      .string()
+      .min(10, t("fpa.applicationBoundary.minLength"))
+      .max(500, t("fpa.applicationBoundary.maxLength")),
+    countingScope: z
+      .string()
+      .min(10, t("fpa.countingScope.minLength"))
+      .max(500, t("fpa.countingScope.maxLength")),
     countType: z.enum([
       "DEVELOPMENT_PROJECT",
       "ENHANCEMENT_PROJECT",
@@ -34,12 +40,16 @@ interface CreateEstimateFormProps {
   onBack: () => void;
 }
 
-export const CreateEstimateForm = ({
+export interface CreateEstimateFormRef {
+  validateAndSave: () => Promise<boolean>;
+}
+
+export const CreateEstimateForm = forwardRef<CreateEstimateFormRef, CreateEstimateFormProps>(({
   projectId,
   initialData,
   onSuccess,
   onBack,
-}: CreateEstimateFormProps) => {
+}, ref) => {
   const { t } = useTranslation("validation");
   const { t: tFpa } = useTranslation("fpa");
   const [error, setError] = useState<string | null>(null);
@@ -54,6 +64,8 @@ export const CreateEstimateForm = ({
   const {
     register,
     handleSubmit,
+    trigger,
+    getValues,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(estimateSchema),
@@ -65,6 +77,18 @@ export const CreateEstimateForm = ({
       countingScope: initialData?.countingScope || "",
     },
   });
+
+  useImperativeHandle(ref, () => ({
+    async validateAndSave() {
+      const isValid = await trigger();
+      if (isValid) {
+        const data = getValues();
+        onSuccess(data as EstimateFormData);
+        return true;
+      }
+      return false;
+    },
+  }));
 
   const onSubmit = (data: FormData) => {
     try {
@@ -85,8 +109,8 @@ export const CreateEstimateForm = ({
         </div>
       )}
 
-      <fieldset className="border border-gray-200 rounded-lg p-6">
-        <legend className="text-lg font-semibold px-2 text-gray-900">
+      <fieldset className="border border-border rounded-lg p-6">
+        <legend className="text-lg font-semibold px-2 text-default">
           {tFpa("estimateForm.estimateInformation")}
         </legend>
 
@@ -94,14 +118,14 @@ export const CreateEstimateForm = ({
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-secondary mb-1"
             >
               {tFpa("estimateForm.estimateName")} *
             </label>
             <input
               {...register("name")}
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-default"
               placeholder={tFpa("estimateForm.estimateNamePlaceholder")}
             />
             {errors.name && (
@@ -112,14 +136,14 @@ export const CreateEstimateForm = ({
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-secondary mb-1"
             >
               {tFpa("estimateForm.description")}
             </label>
             <textarea
               {...register("description")}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-default"
               placeholder={tFpa("estimateForm.descriptionPlaceholder")}
             />
             {errors.description && (
@@ -132,14 +156,14 @@ export const CreateEstimateForm = ({
           <div>
             <label
               htmlFor="applicationBoundary"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-secondary mb-1"
             >
               {tFpa("estimateForm.applicationBoundary")} *
             </label>
             <input
               {...register("applicationBoundary")}
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-default"
               placeholder={tFpa("estimateForm.applicationBoundaryPlaceholder")}
             />
             {errors.applicationBoundary && (
@@ -152,14 +176,14 @@ export const CreateEstimateForm = ({
           <div>
             <label
               htmlFor="countingScope"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-secondary mb-1"
             >
               {tFpa("estimateForm.countingScope")} *
             </label>
             <textarea
               {...register("countingScope")}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-default"
               placeholder={tFpa("estimateForm.countingScopePlaceholder")}
             />
             {errors.countingScope && (
@@ -172,13 +196,13 @@ export const CreateEstimateForm = ({
           <div>
             <label
               htmlFor="countType"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-secondary mb-1"
             >
               {tFpa("estimateForm.countType")} *
             </label>
             <select
               {...register("countType")}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-background text-default"
             >
               <option value="DEVELOPMENT_PROJECT">
                 {tFpa("estimateForm.developmentProject")}
@@ -218,4 +242,6 @@ export const CreateEstimateForm = ({
       </div>
     </form>
   );
-};
+});
+
+CreateEstimateForm.displayName = "CreateEstimateForm";

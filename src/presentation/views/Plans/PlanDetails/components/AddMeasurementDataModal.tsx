@@ -45,13 +45,44 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
     notes: "",
   });
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [dateAdjustedMessage, setDateAdjustedMessage] = useState<boolean>(false);
 
-  // Update cycleId when preSelectedCycleId changes
+  // Update cycleId and date when preSelectedCycleId changes
   useEffect(() => {
     if (preSelectedCycleId) {
-      setFormData(prev => ({ ...prev, cycleId: preSelectedCycleId }));
+      const selectedCycle = cycles.find(c => c._id === preSelectedCycleId);
+      const today = new Date().toISOString().split("T")[0];
+      let initialDate = today;
+      let wasAdjusted = false;
+
+      if (selectedCycle) {
+        // Convert UTC dates to local dates to avoid timezone offset
+        const cycleStartDate = new Date(selectedCycle.startDate);
+        const cycleEndDate = new Date(selectedCycle.endDate);
+
+        // Get local date in YYYY-MM-DD format
+        const cycleStart = new Date(cycleStartDate.getTime() - cycleStartDate.getTimezoneOffset() * 60000)
+          .toISOString()
+          .split("T")[0];
+        const cycleEnd = new Date(cycleEndDate.getTime() - cycleEndDate.getTimezoneOffset() * 60000)
+          .toISOString()
+          .split("T")[0];
+
+        // If today is within cycle range, use today; otherwise use cycle start date
+        if (today < cycleStart || today > cycleEnd) {
+          initialDate = cycleStart;
+          wasAdjusted = true;
+        }
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        cycleId: preSelectedCycleId,
+        date: initialDate
+      }));
+      setDateAdjustedMessage(wasAdjusted);
     }
-  }, [preSelectedCycleId]);
+  }, [preSelectedCycleId, cycles]);
 
   const allMeasurements = useMemo(() => {
     const measurements: MeasurementOption[] = [];
@@ -66,7 +97,7 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
               questionId: q._id || "",
               metricId: m._id || "",
               measurementDefinitionId: meas._id || `${m.metricMnemonic}-${idx}`,
-              label: `${meas.measurementEntity} (${m.metricName} - ${obj.objectiveTitle})`,
+              label: `${meas.measurementEntity?.startsWith("metrics.measurementEntities.") || meas.measurementEntity?.startsWith("entities.") ? t(meas.measurementEntity.startsWith("metrics.measurementEntities.") ? meas.measurementEntity.replace("metrics.measurementEntities.", "entities.") : meas.measurementEntity) : meas.measurementEntity} (${m.metricName} - ${obj.objectiveTitle})`,
               metricName: m.metricName,
               objectiveTitle: obj.objectiveTitle,
             });
@@ -104,11 +135,18 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
     }
 
     if (selectedCycle) {
-      const measurementDate = new Date(formData.date);
-      const cycleStart = new Date(selectedCycle.startDate);
-      const cycleEnd = new Date(selectedCycle.endDate);
+      // Convert UTC dates to local dates for proper comparison
+      const cycleStartDate = new Date(selectedCycle.startDate);
+      const cycleEndDate = new Date(selectedCycle.endDate);
 
-      if (measurementDate < cycleStart || measurementDate > cycleEnd) {
+      const cycleStart = new Date(cycleStartDate.getTime() - cycleStartDate.getTimezoneOffset() * 60000)
+        .toISOString()
+        .split("T")[0];
+      const cycleEnd = new Date(cycleEndDate.getTime() - cycleEndDate.getTimezoneOffset() * 60000)
+        .toISOString()
+        .split("T")[0];
+
+      if (formData.date < cycleStart || formData.date > cycleEnd) {
         setValidationError(t("monitoring.dateOutsideCycleRange"));
         return;
       }
@@ -120,6 +158,14 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
     }
 
     try {
+      // Convert local date to UTC for backend
+      // Since backend stores "2025-11-13" for what user sees as "2025-11-12" in UTC-3
+      // We need to add 1 day to match the backend's UTC storage
+      const [year, month, day] = formData.date.split('-').map(Number);
+      const utcDate = new Date(Date.UTC(year, month - 1, day + 1))
+        .toISOString()
+        .split("T")[0];
+
       await addMeasurementData({
         organizationId,
         planId,
@@ -130,7 +176,7 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
           cycleId: formData.cycleId,
           measurementDefinitionId: formData.selectedMeasurement.measurementDefinitionId,
           value: parseFloat(formData.value),
-          date: formData.date,
+          date: utcDate,
           notes: formData.notes || undefined,
         },
       });
@@ -142,6 +188,7 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
         date: new Date().toISOString().split("T")[0],
         notes: "",
       });
+      setDateAdjustedMessage(false);
       onClose();
     } catch (error) {
       console.error("Failed to add measurement data:", error);
@@ -157,6 +204,7 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
       notes: "",
     });
     setValidationError(null);
+    setDateAdjustedMessage(false);
     onClose();
   };
 
@@ -164,7 +212,7 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
 
   return (
     <div
-      className="fixed inset-0 backdrop-blur-sm bg-white/20 flex items-center justify-center z-50"
+      className="fixed inset-0 backdrop-blur-sm bg-white/20 dark:bg-black/40 flex items-center justify-center z-50"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           handleClose();
@@ -172,7 +220,7 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
       }}
     >
       <div
-        className="bg-white rounded-lg max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border"
+        className="bg-white dark:bg-gray-900 rounded-lg max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border border-gray-200 dark:border-gray-700"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
@@ -182,7 +230,7 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
             </h2>
             <button
               onClick={handleClose}
-              className="text-gray-500 hover:text-gray-700 text-2xl leading-none cursor-pointer"
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 text-2xl leading-none cursor-pointer"
             >
               ×
             </button>
@@ -194,18 +242,45 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
                 {t("monitoring.selectCycle")}
               </label>
               {cycles.length === 0 ? (
-                <div className="w-full border border-yellow-300 bg-yellow-50 rounded-md px-3 py-2 text-sm text-yellow-800">
+                <div className="w-full border border-yellow-300 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/30 rounded-md px-3 py-2 text-sm text-yellow-800 dark:text-yellow-300">
                   {t("monitoring.noCyclesAvailable")}
                 </div>
               ) : (
                 <select
                   value={formData.cycleId}
                   onChange={(e) => {
-                    setFormData({ ...formData, cycleId: e.target.value });
+                    const newCycleId = e.target.value;
+                    const newCycle = cycles.find(c => c._id === newCycleId);
+                    const today = new Date().toISOString().split("T")[0];
+                    let newDate = today;
+                    let wasAdjusted = false;
+
+                    if (newCycle) {
+                      // Convert UTC dates to local dates to avoid timezone offset
+                      const cycleStartDate = new Date(newCycle.startDate);
+                      const cycleEndDate = new Date(newCycle.endDate);
+
+                      // Get local date in YYYY-MM-DD format
+                      const cycleStart = new Date(cycleStartDate.getTime() - cycleStartDate.getTimezoneOffset() * 60000)
+                        .toISOString()
+                        .split("T")[0];
+                      const cycleEnd = new Date(cycleEndDate.getTime() - cycleEndDate.getTimezoneOffset() * 60000)
+                        .toISOString()
+                        .split("T")[0];
+
+                      // If current date is outside cycle range, set to cycle start
+                      if (today < cycleStart || today > cycleEnd) {
+                        newDate = cycleStart;
+                        wasAdjusted = true;
+                      }
+                    }
+
+                    setFormData({ ...formData, cycleId: newCycleId, date: newDate });
+                    setDateAdjustedMessage(wasAdjusted);
                   }}
                   disabled={!!preSelectedCycleId}
-                  className={`w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 ${
-                    preSelectedCycleId ? 'bg-gray-100 cursor-not-allowed' : ''
+                  className={`w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ${
+                    preSelectedCycleId ? 'bg-gray-100 dark:bg-gray-700 cursor-not-allowed' : ''
                   }`}
                 >
                   <option value="">{t("monitoring.selectCycle")}</option>
@@ -261,23 +336,35 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
               <Input
                 type="date"
                 value={formData.date}
-                onChange={(e) =>
-                  setFormData({ ...formData, date: e.target.value })
-                }
+                onChange={(e) => {
+                  setFormData({ ...formData, date: e.target.value });
+                  setDateAdjustedMessage(false); // Clear message when user manually changes date
+                }}
                 min={
                   selectedCycle
-                    ? new Date(selectedCycle.startDate).toISOString().split("T")[0]
+                    ? new Date(new Date(selectedCycle.startDate).getTime() - new Date(selectedCycle.startDate).getTimezoneOffset() * 60000)
+                        .toISOString()
+                        .split("T")[0]
                     : undefined
                 }
                 max={
                   selectedCycle
-                    ? new Date(selectedCycle.endDate).toISOString().split("T")[0]
+                    ? new Date(new Date(selectedCycle.endDate).getTime() - new Date(selectedCycle.endDate).getTimezoneOffset() * 60000)
+                        .toISOString()
+                        .split("T")[0]
                     : undefined
                 }
                 className="w-full"
               />
+              {dateAdjustedMessage && (
+                <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-md">
+                  <p className="text-xs text-blue-700 dark:text-blue-300">
+                    ℹ️ {t("monitoring.dateAdjustedToCycleStart")}
+                  </p>
+                </div>
+              )}
               {selectedCycle && (
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   {t("monitoring.selectCycle")}: {new Date(selectedCycle.startDate).toLocaleDateString('pt-BR')} -{" "}
                   {new Date(selectedCycle.endDate).toLocaleDateString('pt-BR')}
                 </p>
@@ -295,13 +382,13 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
                 }
                 placeholder={t("monitoring.notes")}
                 rows={3}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
               />
             </div>
 
             {(validationError || operationError) && (
-              <div className="bg-red-50 border border-red-200 rounded-md p-3">
-                <p className="text-sm text-red-600">
+              <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md p-3">
+                <p className="text-sm text-red-600 dark:text-red-300">
                   {validationError || operationError}
                 </p>
               </div>

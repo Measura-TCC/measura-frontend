@@ -34,8 +34,10 @@
   "useTemplate": "Usar Modelo",
   "statistics": "Estatísticas",
   "totalPlans": "Total de Planos",
-  "activePlans": "Planos Ativos",
-  "completedPlans": "Planos Concluídos",
+  "approvedPlans": "Planos Aprovados",
+  "finishedPlans": "Planos Finalizados",
+  "rejectedPlans": "Planos Rejeitados",
+  "draftPlans": "Planos em Rascunho",
   "averageProgress": "Progresso Médio",
   "totalGoals": "Total de Objetivos",
   "totalMetrics": "Total de Métricas",
@@ -47,6 +49,8 @@
   "performanceDescription": "Acompanhar entrega do projeto e métricas de cronograma",
   "organizationRequired": "Organização Necessária",
   "organizationRequiredDescription": "Você precisa criar ou ingressar em uma organização para criar planos de medição e gerenciar atividades de planejamento",
+  "organizationRequiredMessage": "Você precisa criar ou ingressar em uma organização para criar planos de medição e gerenciar atividades de planejamento",
+  "organizationRequiredUserMessage": "Você precisa ingressar em uma organização. Peça ao seu Gerente de Projetos ou Administrador para convidá-lo.",
   "createOrganization": "Criar Organização",
   "noProjectsTitle": "Nenhum Projeto Encontrado",
   "noProjectsDescription": "Você precisa criar pelo menos um projeto antes de criar planos de medição.",
@@ -65,10 +69,10 @@
     "estimation": "Estimativa"
   },
   "status": {
-    "active": "ativo",
-    "completed": "concluído",
-    "draft": "rascunho",
-    "scheduled": "agendado"
+    "draft": "Rascunho",
+    "approved": "Aprovado",
+    "rejected": "Rejeitado",
+    "finished": "Finalizado"
   },
   "gqm": {
     "notStarted": "Não Iniciado",
@@ -168,7 +172,7 @@
     "startWorkflow": "Iniciar Criação do Plano",
     "finalizePlan": "Finalizar Plano de Medição",
     "creating": "Criando...",
-  "loading": "Carregando...",
+    "loading": "Carregando...",
     "selectObjectivesTitle": "1. Selecionar Objetivos",
     "chooseObjective": "Escolha o objetivo de medição...",
     "chooseMeasurementObjective": "Escolha o objetivo de medição...",
@@ -365,6 +369,26 @@
       "deployment": "Deployment"
     }
   },
+  "entities": {
+    "worklog": "Log de Trabalho",
+    "deliveredFunctionPoints": "Pontos de Função Entregues",
+    "deploymentToProduction": "Deployment para Produção",
+    "commit": "Commit",
+    "incidentStart": "Início do Incidente",
+    "serviceRestoration": "Restauração do Serviço",
+    "deployFailure": "Falha de Deploy",
+    "deployTotal": "Deploy Total",
+    "bugReport": "Relatório de Bug",
+    "codeLine": "Linha de Código",
+    "testCase": "Caso de Teste",
+    "buildExecution": "Execução de Build",
+    "apiResponse": "Resposta da API",
+    "userStory": "História de Usuário",
+    "codeReview": "Revisão de Código",
+    "systemResource": "Recurso do Sistema",
+    "userSession": "Sessão do Usuário",
+    "deployment": "Deployment"
+  },
   "measurementPlan": {
     "planName": "Nome do Plano",
     "associatedProject": "Projeto Associado",
@@ -387,7 +411,9 @@
     "addMeasurement": "Adicionar  Medida",
     "customMeasurement": " Medida Personalizada",
     "selectMeasurement": "Selecionar  Medida",
-    "measurementsCount": "medidas"
+    "measurementsCount": "medidas",
+    "acronymDuplicateError": "Este acrônimo já existe nesta métrica",
+    "optionalField": "(Opcional)"
   },
   "units": {
     "hoursDecimals": "horas (2 decimais)",
@@ -411,7 +437,14 @@
     "analysisResponsible": "Responsável pela Análise",
     "customMetric": "Métrica Personalizada",
     "addCustomMetric": "Adicionar Métrica Personalizada",
-    "measurements": " Medidas"
+    "measurements": " Medidas",
+    "mnemonicDuplicateError": "Este mnemônico já existe neste plano",
+    "atLeastOneMeasurementRequired": "Pelo menos uma medida é necessária",
+    "optionalField": "(Opcional)"
+  },
+  "objective": {
+    "objectiveTitle": "Título do Objetivo",
+    "objectiveTitlePlaceholder": "Digite o título do objetivo"
   },
   "question": {
     "questionText": "Texto da Questão",
@@ -461,6 +494,16 @@
       "addButton": "Adicionar",
       "createButton": "Criar Questão",
       "cancelButton": "Cancelar"
+    },
+    "customObjective": {
+      "title": "Selecionar ou Criar Objetivo",
+      "predefinedTab": "Predefinidos",
+      "customTab": "Personalizado",
+      "predefinedDescription": "Selecione um objetivo predefinido da lista abaixo:",
+      "customDescription": "Crie um objetivo personalizado para seu plano de medição:",
+      "addButton": "Adicionar",
+      "createButton": "Criar Objetivo",
+      "noAvailableObjectives": "Todos os objetivos predefinidos já foram adicionados"
     }
   },
   "accordion": {
@@ -494,12 +537,30 @@
     "confirmDelete": "Tem certeza que deseja excluir o plano '{{planName}}'?",
     "planLoadError": "Erro ao carregar o plano",
     "planNotFound": "Plano não encontrado",
-    "detailsTab": "Detalhes do Plano"
+    "detailsTab": "Detalhes do Plano",
+    "editContent": "Editar Conteúdo"
   },
+  "confirmDeleteObjectiveTitle": "Excluir Objetivo",
+  "confirmDeleteObjective": "Tem certeza que deseja excluir este objetivo e todos os seus itens relacionados?",
+  "confirmDeleteQuestionTitle": "Excluir Questão",
+  "confirmDeleteQuestion": "Tem certeza que deseja excluir esta questão e todos os seus itens relacionados?",
+  "confirmDeleteMetricTitle": "Excluir Métrica",
+  "confirmDeleteMetric": "Tem certeza que deseja excluir esta métrica e todas as suas medições?",
+  "confirmDeleteMeasurementTitle": "Excluir Medição",
+  "confirmDeleteMeasurement": "Tem certeza que deseja excluir esta medição?",
+  "deleting": "Excluindo...",
+  "editObjective": "Editar Objetivo",
+  "editQuestion": "Editar Questão",
+  "editMetric": "Editar Métrica",
+  "editMeasurement": "Editar Medição",
+  "updateObjective": "Atualizar Objetivo",
+  "updateQuestion": "Atualizar Questão",
+  "updateMetric": "Atualizar Métrica",
+  "updateMeasurement": "Atualizar Medição",
   "measurements": {
     "properties": {
       "worklog": "Total de horas registradas no período do projeto. Excluir férias/treinamentos. Consolidar por iteração/release.",
-      "deliveredFunctionPoints": "Pontos de Função entregues e aceitos na iteração/release (conforme planilha IFPUG/COSMIC). Apenas escopo concluído (feito/aceito).",
+      "deliveredFunctionPoints": "Pontos de Função entregues e aceitos na iteração/release (conforme planilha IFPUG/COSMIC). Apenas escopo finalizado (feito/aceito).",
       "deploymentToProduction": "Timestamp UTC da promoção para produção. Único por deploy, inclui deployment_id e SHAs.",
       "commit": "Timestamp UTC do commit. Único por commit (SHA).",
       "incidentStart": "Timestamp UTC quando incidente foi aberto. Um por incident_id. Manter severidade e serviço impactado.",
@@ -633,7 +694,16 @@
     "addMeasurementToCycle": "Adicionar medição ao ciclo",
     "endDateMustBeAfterStart": "A data de término deve ser posterior à data de início",
     "required": "é obrigatório",
-    "noCyclesAvailable": "Nenhum ciclo disponível. Crie um ciclo primeiro."
+    "noCyclesAvailable": "Nenhum ciclo disponível. Crie um ciclo primeiro.",
+    "measurementTrends": "Tendências de Medições ao Longo do Tempo",
+    "metricsLegend": "Visão Geral das Métricas",
+    "latestValue": "Último",
+    "filterByCycle": "Filtrar por Ciclo",
+    "allCycles": "Todos os Ciclos",
+    "noDataForMetric": "Nenhum Dado Disponível",
+    "noDataForMetricDescription": "Nenhuma medição foi registrada para esta métrica ainda. Adicione medições para visualizar tendências.",
+    "noDataForMetricInCycle": "Nenhuma medição para esta métrica no ciclo selecionado. Tente selecionar um ciclo diferente ou adicione novas medições.",
+    "dateAdjustedToCycleStart": "A data atual está fora do ciclo; por isso, foi ajustada para o início do ciclo."
   },
   "optional": "opcional",
   "saving": "Salvando...",
@@ -644,5 +714,48 @@
     "needsAttention": "Necessita atenção",
     "allOk": "Todos os indicadores dentro do esperado",
     "someNeedAttention": "Alguns indicadores precisam de atenção"
-  }
+  },
+  "actions": {
+    "view": "Visualizar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "cancel": "Cancelar",
+    "save": "Salvar"
+  },
+  "editPlanTitle": "Editar Plano de Medição",
+  "editPlanSuccess": "Plano atualizado com sucesso!",
+  "editPlanError": "Erro ao atualizar plano",
+  "deletePlanTitle": "Excluir Plano de Medição",
+  "deletePlanWarning": "Apenas planos em rascunho podem ser excluídos",
+  "deletePlanConfirmation": "Tem certeza que deseja excluir o plano \"{{planName}}\"?",
+  "deletePlanSuccess": "Plano \"{{planName}}\" excluído com sucesso!",
+  "deletePlanError": "Erro ao excluir plano",
+  "cannotDeleteActive": "Não é possível excluir planos ativos ou finalizados. Altere o status para rascunho primeiro.",
+  "finishedStatusFinal": "O status 'finalizado' é final e não pode ser alterado",
+  "selectProject": "Selecione um projeto",
+  "required": "é obrigatório",
+  "objectiveAddedSuccess": "Objetivo adicionado com sucesso",
+  "objectiveUpdatedSuccess": "Objetivo atualizado com sucesso",
+  "objectiveDeletedSuccess": "Objetivo excluído com sucesso",
+  "objectiveAddError": "Falha ao adicionar objetivo",
+  "objectiveUpdateError": "Falha ao atualizar objetivo",
+  "objectiveDeleteError": "Falha ao excluir objetivo",
+  "questionAddedSuccess": "Questão adicionada com sucesso",
+  "questionUpdatedSuccess": "Questão atualizada com sucesso",
+  "questionDeletedSuccess": "Questão excluída com sucesso",
+  "questionAddError": "Falha ao adicionar questão",
+  "questionUpdateError": "Falha ao atualizar questão",
+  "questionDeleteError": "Falha ao excluir questão",
+  "metricAddedSuccess": "Métrica adicionada com sucesso",
+  "metricUpdatedSuccess": "Métrica atualizada com sucesso",
+  "metricDeletedSuccess": "Métrica excluída com sucesso",
+  "metricAddError": "Falha ao adicionar métrica",
+  "metricUpdateError": "Falha ao atualizar métrica",
+  "metricDeleteError": "Falha ao excluir métrica",
+  "measurementAddedSuccess": "Medida adicionada com sucesso",
+  "measurementUpdatedSuccess": "Medida atualizada com sucesso",
+  "measurementDeletedSuccess": "Medida excluída com sucesso",
+  "measurementAddError": "Falha ao adicionar medida",
+  "measurementUpdateError": "Falha ao atualizar medida",
+  "measurementDeleteError": "Falha ao excluir medida"
 }

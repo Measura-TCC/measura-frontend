@@ -99,11 +99,11 @@ export const EditCycleModal: React.FC<EditCycleModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 backdrop-blur-sm bg-white/20 flex items-center justify-center z-50"
+      className="fixed inset-0 backdrop-blur-sm bg-white/20 dark:bg-black/40 flex items-center justify-center z-50"
       onClick={handleClose}
     >
       <div
-        className="bg-white rounded-lg max-w-md w-full mx-4 shadow-xl border"
+        className="bg-white dark:bg-gray-900 rounded-lg max-w-md w-full mx-4 shadow-xl border border-gray-200 dark:border-gray-700"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
@@ -113,7 +113,7 @@ export const EditCycleModal: React.FC<EditCycleModalProps> = ({
             </h2>
             <button
               onClick={handleClose}
-              className="text-gray-500 hover:text-gray-700 text-2xl leading-none cursor-pointer"
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 text-2xl leading-none cursor-pointer"
             >
               ×
             </button>
@@ -121,8 +121,8 @@ export const EditCycleModal: React.FC<EditCycleModalProps> = ({
 
           {showDeleteConfirm ? (
             <div className="space-y-4">
-              <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
-                <p className="text-sm text-yellow-800">
+              <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-md p-4">
+                <p className="text-sm text-yellow-800 dark:text-yellow-300">
                   {t("monitoring.cycleDeleteWarning", { count: measurementCount })}
                 </p>
               </div>
@@ -192,8 +192,8 @@ export const EditCycleModal: React.FC<EditCycleModalProps> = ({
                 </div>
 
                 {(validationError || operationError) && (
-                  <div className="bg-red-50 border border-red-200 rounded-md p-3">
-                    <p className="text-sm text-red-600">
+                  <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md p-3">
+                    <p className="text-sm text-red-600 dark:text-red-300">
                       {validationError || operationError}
                     </p>
                   </div>

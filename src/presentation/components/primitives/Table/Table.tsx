@@ -25,7 +25,7 @@ export function Table<T = any>({
   if (data.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-        <p>{emptyMessage}</p>
+        {emptyMessage}
       </div>
     );
   }
@@ -50,12 +50,12 @@ export function Table<T = any>({
             {data.map((item) => (
               <tr
                 key={getRowKey(item)}
-                className="border-t dark:border-gray-700"
+                className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
               >
                 {columns.map((column) => (
                   <td
                     key={column.key}
-                    className="px-4 py-3 text-sm dark:text-gray-300"
+                    className="px-4 py-3 text-sm bg-white dark:bg-gray-800 dark:text-gray-300"
                   >
                     {column.render(item)}
                   </td>

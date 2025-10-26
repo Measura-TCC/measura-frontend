@@ -68,7 +68,7 @@ export const BulkRequirementModal = ({ isOpen, onClose, onSubmit }: BulkRequirem
 
   return (
     <div
-      className="fixed inset-0 backdrop-blur-sm bg-white/20 flex items-center justify-center z-50"
+      className="fixed inset-0 backdrop-blur-sm bg-white/20 dark:bg-black/40 flex items-center justify-center z-50"
       onClick={handleCancel}
     >
       <div
@@ -79,7 +79,7 @@ export const BulkRequirementModal = ({ isOpen, onClose, onSubmit }: BulkRequirem
           <h2 className="text-xl font-semibold text-default">
             {t("importForms.manual.bulkAdd", "Adicionar Múltiplos Requisitos")}
           </h2>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-secondary mt-1">
             {t("importForms.manual.bulkAddDescription", "Adicione os requisitos um por vez e depois confirme todos de uma vez.")}
           </p>
         </div>
@@ -130,12 +130,12 @@ export const BulkRequirementModal = ({ isOpen, onClose, onSubmit }: BulkRequirem
               </h3>
               <ul className="space-y-2 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
                 {addedRequirements.map((req) => (
-                  <li key={req.id} className="flex items-start gap-2 p-3 bg-gray-50 rounded-md group">
-                    <span className="text-green-600 mt-0.5 shrink-0">✓</span>
+                  <li key={req.id} className="flex items-start gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-md group">
+                    <span className="text-green-600 dark:text-green-400 mt-0.5 shrink-0">✓</span>
                     <span className="flex-1 min-w-0">
                       <span className="font-medium text-default block break-words">{req.title}</span>
                       {req.description && (
-                        <span className="text-gray-500 text-xs mt-0.5 block break-words">
+                        <span className="text-secondary text-xs mt-0.5 block break-words">
                           {req.description}
                         </span>
                       )}
@@ -143,7 +143,7 @@ export const BulkRequirementModal = ({ isOpen, onClose, onSubmit }: BulkRequirem
                     <button
                       type="button"
                       onClick={() => handleRemove(req.id)}
-                      className="text-red-600 hover:text-red-800 p-1 cursor-pointer transition-colors shrink-0"
+                      className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-1 cursor-pointer transition-colors shrink-0"
                       title={t("actions.delete", "Deletar")}
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

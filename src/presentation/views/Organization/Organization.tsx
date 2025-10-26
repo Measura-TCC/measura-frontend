@@ -19,8 +19,11 @@ import { LeaveOrganizationModal } from "@/presentation/views/Organization/compon
 import { OrganizationTabs } from "@/presentation/views/Organization/components/OrganizationTabs";
 import { OverviewTab } from "@/presentation/views/Organization/components/OverviewTab";
 import { SettingsTab } from "@/presentation/views/Organization/components/SettingsTab";
+import { IntegrationsTab } from "@/presentation/views/Organization/components/IntegrationsTab";
+import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
 import { useAuthStore } from "@/core/hooks/auth/useAuth";
 import type { OrganizationTab } from "@/core/types/organization";
+import { canInviteMembers } from "@/core/utils/permissions";
 
 export const OrganizationView: React.FC = () => {
   const { t } = useTranslation("organization");
@@ -68,11 +71,13 @@ export const OrganizationView: React.FC = () => {
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex-1">
-              <OrganizationTabs activeTab={activeTab} onTabChange={setActiveTab} />
+              <OrganizationTabs activeTab={activeTab} onTabChange={setActiveTab} userRole={user?.role} />
             </div>
-            <Button variant="primary" onClick={() => setShowInviteModal(true)} size="sm">
-              {t("invitations.inviteMember")}
-            </Button>
+            {canInviteMembers(user?.role) && (
+              <Button variant="primary" onClick={() => setShowInviteModal(true)} size="sm">
+                {t("invitations.inviteMember")}
+              </Button>
+            )}
           </div>
 
           {activeTab === "overview" && (
@@ -91,31 +96,30 @@ export const OrganizationView: React.FC = () => {
             <OrganizationInvitationsSection organizationId={userOrganization._id} />
           )}
 
+          {activeTab === "integrations" && (
+            <IntegrationsTab
+              organization={userOrganization}
+              onRefresh={mutateUserOrganization}
+            />
+          )}
+
           {activeTab === "settings" && (
             <SettingsTab
               organization={userOrganization}
               onWizardSuccess={handleWizardSuccess}
               onLeaveOrganization={() => setShowLeaveModal(true)}
+              userRole={user?.role}
             />
           )}
         </div>
       ) : (
         !showCreateForm && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BuildingIcon className="w-5 h-5 text-primary" />
-                {t("noOrganizationFound")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <p className="text-secondary">{t("noOrganizationMessage")}</p>
-              <Button onClick={() => setShowCreateForm(true)}>
-                <PlusIcon className="w-4 h-4 mr-2" />
-                {t("createOrganization")}
-              </Button>
-            </CardContent>
-          </Card>
+          <OrganizationAlert
+            hasOrganization={false}
+            translationNamespace="organization"
+            onCreateClick={() => setShowCreateForm(true)}
+            userRole={user?.role}
+          />
         )
       )}
 

@@ -1,4 +1,4 @@
-export type EstimateStatus = "completed" | "in_progress" | "draft";
+export type EstimateStatus = "draft" | "finalized" | "archived";
 
 export interface Estimate {
   id: string;
@@ -59,8 +59,8 @@ export interface EstimateFormData {
 
 export interface FPAStatistics {
   totalEstimates: number;
-  completedEstimates: number;
-  inProgressEstimates: number;
+  finalizedEstimates: number;
+  archivedEstimates: number;
   draftEstimates: number;
   totalFunctionPoints: number;
   averagePoints: number;
@@ -155,6 +155,15 @@ export interface Requirement {
   description?: string;
   source: RequirementSource;
   sourceReference?: string;
+  sourceMetadata?: {
+    issueType?: string;
+    status?: string;
+    priority?: string;
+    created?: string;
+    updated?: string;
+    externalUrl?: string;
+    [key: string]: any;
+  };
   componentType: ComponentType;
   componentId?: string;
   estimateId: string;

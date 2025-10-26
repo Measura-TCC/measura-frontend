@@ -218,14 +218,6 @@ export const EstimateDetailManager = ({
                 estimateId={estimateId}
                 estimateName={currentData.name}
               />
-              <span
-                className={`px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(
-                  currentData.status || "DRAFT"
-                )}`}
-              >
-                {t(`status.${(currentData.status || "DRAFT").toLowerCase()}`)}
-              </span>
-              <span className="text-sm text-muted">v{currentData.version}</span>
             </div>
           </div>
           <p className="text-secondary mt-2">{currentData.description}</p>

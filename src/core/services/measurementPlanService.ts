@@ -89,6 +89,7 @@ interface DeleteQuestionParams {
 }
 
 interface AddMetricParams {
+  organizationId: string;
   planId: string;
   objectiveId: string;
   questionId: string;
@@ -96,6 +97,7 @@ interface AddMetricParams {
 }
 
 interface UpdateMetricParams {
+  organizationId: string;
   planId: string;
   objectiveId: string;
   questionId: string;
@@ -104,6 +106,7 @@ interface UpdateMetricParams {
 }
 
 interface DeleteMetricParams {
+  organizationId: string;
   planId: string;
   objectiveId: string;
   questionId: string;
@@ -111,6 +114,7 @@ interface DeleteMetricParams {
 }
 
 interface AddMeasurementParams {
+  organizationId: string;
   planId: string;
   objectiveId: string;
   questionId: string;
@@ -119,6 +123,7 @@ interface AddMeasurementParams {
 }
 
 interface UpdateMeasurementParams {
+  organizationId: string;
   planId: string;
   objectiveId: string;
   questionId: string;
@@ -128,6 +133,7 @@ interface UpdateMeasurementParams {
 }
 
 interface DeleteMeasurementParams {
+  organizationId: string;
   planId: string;
   objectiveId: string;
   questionId: string;
@@ -303,7 +309,7 @@ export const measurementPlanService = {
 
   addMetric: async (params: AddMetricParams): Promise<MeasurementPlanResponseDto> => {
     const response = await measuraApi.post(
-      `/measurement-plans/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics`,
+      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics`,
       params.data
     );
     return response.data;
@@ -311,7 +317,7 @@ export const measurementPlanService = {
 
   updateMetric: async (params: UpdateMetricParams): Promise<MeasurementPlanResponseDto> => {
     const response = await measuraApi.put(
-      `/measurement-plans/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}`,
+      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}`,
       params.data
     );
     return response.data;
@@ -319,13 +325,13 @@ export const measurementPlanService = {
 
   deleteMetric: async (params: DeleteMetricParams): Promise<void> => {
     await measuraApi.delete(
-      `/measurement-plans/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}`
+      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}`
     );
   },
 
   addMeasurement: async (params: AddMeasurementParams): Promise<MeasurementPlanResponseDto> => {
     const response = await measuraApi.post(
-      `/measurement-plans/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurements`,
+      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurements`,
       params.data
     );
     return response.data;
@@ -333,7 +339,7 @@ export const measurementPlanService = {
 
   updateMeasurement: async (params: UpdateMeasurementParams): Promise<MeasurementPlanResponseDto> => {
     const response = await measuraApi.put(
-      `/measurement-plans/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurements/${params.measurementId}`,
+      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurements/${params.measurementId}`,
       params.data
     );
     return response.data;
@@ -341,7 +347,7 @@ export const measurementPlanService = {
 
   deleteMeasurement: async (params: DeleteMeasurementParams): Promise<void> => {
     await measuraApi.delete(
-      `/measurement-plans/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurements/${params.measurementId}`
+      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurements/${params.measurementId}`
     );
   },
 

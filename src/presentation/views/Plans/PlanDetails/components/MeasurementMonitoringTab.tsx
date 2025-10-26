@@ -6,6 +6,7 @@ import type { MeasurementPlanResponseDto } from "@/core/types/plans";
 import { CycleAccordion } from "./CycleAccordion";
 import { CreateCycleModal } from "./CreateCycleModal";
 import { AddMeasurementDataModal } from "./AddMeasurementDataModal";
+import { MeasurementChart } from "./MeasurementChart";
 
 interface MeasurementMonitoringTabProps {
   planId: string;
@@ -56,7 +57,7 @@ export const MeasurementMonitoringTab: React.FC<MeasurementMonitoringTabProps> =
           ) : cyclesData.length === 0 ? (
             <div className="text-center py-12">
               <svg
-                className="mx-auto h-12 w-12 text-gray-400"
+                className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -68,10 +69,10 @@ export const MeasurementMonitoringTab: React.FC<MeasurementMonitoringTabProps> =
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              <h3 className="mt-4 text-lg font-medium text-gray-900">
+              <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">
                 {t("monitoring.noCycles")}
               </h3>
-              <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
                 {t("monitoring.noCyclesDescription")}
               </p>
               <div className="mt-6">
@@ -94,6 +95,10 @@ export const MeasurementMonitoringTab: React.FC<MeasurementMonitoringTabProps> =
           )}
         </CardContent>
       </Card>
+
+      {!isLoading && cyclesData.length > 0 && (
+        <MeasurementChart cyclesData={cyclesData} />
+      )}
 
       <CreateCycleModal
         isOpen={isCreateCycleModalOpen}

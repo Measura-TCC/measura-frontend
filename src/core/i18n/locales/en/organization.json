@@ -6,6 +6,7 @@
     "overview": "Overview",
     "members": "Members",
     "invitations": "Invitations",
+    "integrations": "Integrations",
     "settings": "Settings"
   },
   "organizationDetails": "Organization Details",
@@ -26,6 +27,7 @@
   "statisticsNote": "Statistics will be available once you start creating projects and estimates.",
   "organizationRequired": "Organization Required",
   "organizationRequiredMessage": "You need to create or join an organization to start using Measura's features.",
+  "organizationRequiredUserMessage": "You need to join an organization. Ask your Project Manager or Administrator to invite you.",
   "visitWebsite": "Visit Website",
   "memberSince": "Member since",
   "manageOrganization": "Manage Organization",
@@ -155,6 +157,68 @@
     "errors": {
       "failedToLeave": "Failed to leave organization",
       "failedToRemove": "Failed to remove member"
+    }
+  },
+  "integrations": {
+    "title": "Integrations",
+    "subtitle": "Connect external tools to import requirements automatically",
+    "loadingOrganization": "Loading organization...",
+    "configured": "Configured",
+    "notConfigured": "Not Configured",
+    "configure": "Configure",
+    "edit": "Edit",
+    "configuredAt": "Configured on {{date}}",
+    "configureJira": "Configure Jira Integration",
+    "editJira": "Edit Jira Integration",
+    "configureGitHub": "Configure GitHub Integration",
+    "editGitHub": "Edit GitHub Integration",
+    "configureClickUp": "Configure ClickUp Integration",
+    "editClickUp": "Edit ClickUp Integration",
+    "configureAzureDevOps": "Configure Azure DevOps Integration",
+    "editAzureDevOps": "Edit Azure DevOps Integration",
+    "testConnection": "Test Connection",
+    "testing": "Testing...",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "enableIntegration": "Enable integration",
+    "testSuccess": "Connection successful!",
+    "testFailed": "Connection failed",
+    "testConnectionFailed": "Failed to test connection",
+    "saveConfigFailed": "Failed to save configuration",
+    "howToGenerate": "How to generate?",
+    "domainHint": "Example: company.atlassian.net (without https://)",
+    "fieldRequired": "This field is required",
+    "tokenRequired": "Token is required",
+    "apiTokenRequired": "API Token is required",
+    "patRequired": "Personal Access Token is required",
+    "disabled": "This integration is currently disabled",
+    "notConfigured": "Integration not configured",
+    "jira": {
+      "description": "Import issues and user stories from Jira",
+      "domain": "Jira Domain",
+      "domainPlaceholder": "company.atlassian.net",
+      "email": "Email",
+      "emailPlaceholder": "admin@company.com",
+      "apiToken": "API Token",
+      "apiTokenPlaceholder": "Enter your Jira API token"
+    },
+    "github": {
+      "description": "Import issues from GitHub repositories",
+      "token": "Personal Access Token",
+      "tokenPlaceholder": "ghp_..."
+    },
+    "clickup": {
+      "description": "Import tasks from ClickUp lists",
+      "token": "API Token",
+      "tokenPlaceholder": "pk_..."
+    },
+    "azureDevops": {
+      "description": "Import work items from Azure DevOps",
+      "organization": "Organization Name",
+      "organizationPlaceholder": "your-organization",
+      "pat": "Personal Access Token",
+      "patPlaceholder": "Enter your Azure DevOps PAT"
     }
   }
 }

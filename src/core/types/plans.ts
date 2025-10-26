@@ -1,7 +1,8 @@
 export enum MeasurementPlanStatus {
   DRAFT = "draft",
-  ACTIVE = "active",
-  COMPLETED = "completed",
+  APPROVED = "approved",
+  REJECTED = "rejected",
+  FINISHED = "finished",
 }
 
 export enum ExportFormat {
@@ -12,6 +13,7 @@ export enum ExportFormat {
 export type PlanTab = "newPlan" | "createdPlans";
 
 export interface Measurement {
+  _id?: string;
   measurementEntity: string;
   measurementAcronym: string;
   measurementProperties: string;
@@ -23,6 +25,7 @@ export interface Measurement {
 }
 
 export interface Metric {
+  _id?: string;
   metricName: string;
   metricDescription: string;
   metricMnemonic: string;
@@ -35,11 +38,13 @@ export interface Metric {
 }
 
 export interface Question {
+  _id?: string;
   questionText: string;
   metrics: Metric[];
 }
 
 export interface Objective {
+  _id?: string;
   objectiveTitle: string;
   questions: Question[];
 }
@@ -137,8 +142,9 @@ export interface ExportResponseDto {
 
 export interface PlansStatistics {
   totalPlans: number;
-  activePlans: number;
-  completedPlans: number;
+  approvedPlans: number;
+  finishedPlans: number;
+  rejectedPlans: number;
   draftPlans: number;
   averageProgress: number;
   totalObjectives: number;

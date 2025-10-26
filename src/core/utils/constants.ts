@@ -1,11 +1,11 @@
 // Environment Variables Constants
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8081";
 export const NODE_ENV = process.env.NODE_ENV || "development";
 export const SWAGGER_URL =
-  process.env.NEXT_PUBLIC_SWAGGER_URL || "http://localhost:8080/api";
+  process.env.NEXT_PUBLIC_SWAGGER_URL || "http://localhost:8081/api";
 export const OPENAPI_URL =
-  process.env.NEXT_PUBLIC_OPENAPI_URL || "http://localhost:8080/api-json";
+  process.env.NEXT_PUBLIC_OPENAPI_URL || "http://localhost:8081/api-json";
 
 // API Configuration Constants
 export const API_TIMEOUT = 30000;

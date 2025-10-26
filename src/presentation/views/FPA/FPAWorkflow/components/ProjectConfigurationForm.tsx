@@ -1,5 +1,6 @@
 "use client";
 
+import { forwardRef, useImperativeHandle } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -36,11 +37,15 @@ interface ProjectConfigurationFormProps {
   onBack: () => void;
 }
 
-export const ProjectConfigurationForm = ({
+export interface ProjectConfigurationFormRef {
+  validateAndSave: () => Promise<boolean>;
+}
+
+export const ProjectConfigurationForm = forwardRef<ProjectConfigurationFormRef, ProjectConfigurationFormProps>(({
   initialData,
   onSuccess,
   onBack,
-}: ProjectConfigurationFormProps) => {
+}, ref) => {
   const { t } = useTranslation("validation");
   const { t: tFpa } = useTranslation("fpa");
 
@@ -50,6 +55,8 @@ export const ProjectConfigurationForm = ({
   const {
     register,
     handleSubmit,
+    trigger,
+    getValues,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -61,6 +68,18 @@ export const ProjectConfigurationForm = ({
     },
   });
 
+  useImperativeHandle(ref, () => ({
+    async validateAndSave() {
+      const isValid = await trigger();
+      if (isValid) {
+        const data = getValues();
+        onSuccess(data);
+        return true;
+      }
+      return false;
+    },
+  }));
+
   const onSubmit = (data: FormData) => {
     onSuccess(data);
   };
@@ -71,7 +90,7 @@ export const ProjectConfigurationForm = ({
         <div>
           <label
             htmlFor="teamSize"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             {tFpa("estimateForm.teamSize")}
           </label>
@@ -80,7 +99,7 @@ export const ProjectConfigurationForm = ({
             type="number"
             min="1"
             max="100"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           />
           {errors.teamSize && (
             <p className="mt-1 text-sm text-red-600">
@@ -92,7 +111,7 @@ export const ProjectConfigurationForm = ({
         <div>
           <label
             htmlFor="hourlyRateBRL"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             {tFpa("estimateForm.hourlyRate")}
           </label>
@@ -101,7 +120,7 @@ export const ProjectConfigurationForm = ({
             type="number"
             min="0.01"
             step="0.01"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           />
           {errors.hourlyRateBRL && (
             <p className="mt-1 text-sm text-red-600">
@@ -113,7 +132,7 @@ export const ProjectConfigurationForm = ({
         <div>
           <label
             htmlFor="productivityFactor"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             {tFpa("estimateForm.productivityFactor")}
           </label>
@@ -122,7 +141,7 @@ export const ProjectConfigurationForm = ({
             type="number"
             min="1"
             max="100"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           />
           {errors.productivityFactor && (
             <p className="mt-1 text-sm text-red-600">
@@ -134,7 +153,7 @@ export const ProjectConfigurationForm = ({
         <div>
           <label
             htmlFor="averageDailyWorkingHours"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             {tFpa("estimateForm.dailyWorkingHours")}
           </label>
@@ -143,7 +162,7 @@ export const ProjectConfigurationForm = ({
             type="number"
             min="1"
             max="24"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
           />
           {errors.averageDailyWorkingHours && (
             <p className="mt-1 text-sm text-red-600">
@@ -163,4 +182,6 @@ export const ProjectConfigurationForm = ({
       </div>
     </form>
   );
-};
+});
+
+ProjectConfigurationForm.displayName = "ProjectConfigurationForm";
