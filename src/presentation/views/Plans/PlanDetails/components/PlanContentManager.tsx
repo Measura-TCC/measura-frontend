@@ -82,8 +82,8 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
   const handleAddObjective = async (objective: any) => {
     try {
       if (editingObjective?._id) {
-        // Update existing objective
-        await updateObjective(editingObjective._id, { objectiveTitle: objective.objectiveTitle, questions: [] });
+        // Update existing objective - only send the title, preserve existing questions
+        await updateObjective(editingObjective._id, { objectiveTitle: objective.objectiveTitle });
         toast.success({ message: t("objectiveUpdatedSuccess") || "Objective updated successfully" });
         setEditingObjective(null);
       } else {
@@ -175,8 +175,8 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     const [objectiveId] = editingItem.parentIds;
     try {
       if (editingItem.id) {
-        // Edit mode
-        await updateQuestion(objectiveId, editingItem.id, { questionText: question.questionText, metrics: [] });
+        // Edit mode - only send the question text, preserve existing metrics
+        await updateQuestion(objectiveId, editingItem.id, { questionText: question.questionText });
         toast.success({ message: t("questionUpdatedSuccess") || "Question updated successfully" });
       } else {
         // Add mode
