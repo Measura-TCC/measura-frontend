@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Button,
@@ -23,9 +23,29 @@ export const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
 }) => {
   const { t } = useTranslation("plans");
   const [selectedTab, setSelectedTab] = useState(editingData ? "custom" : "predefined");
+
+  // If editing data contains a translation key, translate it for display
+  const getInitialQuestionText = () => {
+    if (!editingData?.questionText) return "";
+    // Check if it's a translation key (starts with "questions.")
+    if (editingData.questionText.startsWith("questions.")) {
+      return t(editingData.questionText);
+    }
+    return editingData.questionText;
+  };
+
   const [customQuestion, setCustomQuestion] = useState<Omit<Question, "metrics">>({
-    questionText: editingData?.questionText || "",
+    questionText: getInitialQuestionText(),
   });
+
+  // Update state when editingData changes
+  useEffect(() => {
+    if (editingData) {
+      setCustomQuestion({
+        questionText: getInitialQuestionText(),
+      });
+    }
+  }, [editingData]);
 
   const handleAddPredefinedQuestion = (question: Question) => {
     onAddQuestion(question);

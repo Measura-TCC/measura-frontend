@@ -107,11 +107,19 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     setShowObjectiveModal(true);
   };
 
+  // Helper function to get translated display text
+  const getDisplayText = (text: string, prefix: string): string => {
+    if (text.startsWith(prefix)) {
+      return t(text);
+    }
+    return text;
+  };
+
   const handleDeleteObjective = async (objective: Objective) => {
     setDeleteConfirm({
       type: "objective",
       id: objective._id!,
-      title: t(objective.objectiveTitle),
+      title: getDisplayText(objective.objectiveTitle, "objectives."),
     });
   };
 
@@ -199,7 +207,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     setDeleteConfirm({
       type: "question",
       id: question._id!,
-      title: question.questionText,
+      title: getDisplayText(question.questionText, "questions."),
       parentIds: [objectiveId],
     });
   };
@@ -252,7 +260,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     setDeleteConfirm({
       type: "metric",
       id: metric._id!,
-      title: metric.metricName,
+      title: getDisplayText(metric.metricName, "metrics."),
       parentIds: [objectiveId, questionId],
     });
   };
@@ -312,7 +320,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     setDeleteConfirm({
       type: "measurement",
       id: measurement._id!,
-      title: measurement.measurementEntity,
+      title: getDisplayText(measurement.measurementEntity, "metrics.measurementEntities."),
       parentIds: [objectiveId, questionId, metricId],
     });
   };

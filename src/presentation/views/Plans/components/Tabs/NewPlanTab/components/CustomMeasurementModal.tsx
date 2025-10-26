@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Button,
@@ -25,16 +25,42 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
 }) => {
   const { t } = useTranslation("plans");
   const [selectedTab, setSelectedTab] = useState(editingData ? "custom" : "predefined");
+
+  // If editing data contains translation keys, translate them for display
+  const getTranslatedValue = (value: string | undefined, prefix: string) => {
+    if (!value) return "";
+    if (value.startsWith(prefix)) {
+      return t(value);
+    }
+    return value;
+  };
+
   const [customMeasurement, setCustomMeasurement] = useState<Measurement>({
-    measurementEntity: editingData?.measurementEntity || "",
+    measurementEntity: getTranslatedValue(editingData?.measurementEntity, "metrics.measurementEntities."),
     measurementAcronym: editingData?.measurementAcronym || "",
-    measurementProperties: editingData?.measurementProperties || "",
-    measurementUnit: editingData?.measurementUnit || "",
-    measurementScale: editingData?.measurementScale || "",
-    measurementProcedure: editingData?.measurementProcedure || "",
-    measurementFrequency: editingData?.measurementFrequency || "",
-    measurementResponsible: editingData?.measurementResponsible || "",
+    measurementProperties: getTranslatedValue(editingData?.measurementProperties, "measurements.properties."),
+    measurementUnit: getTranslatedValue(editingData?.measurementUnit, "units."),
+    measurementScale: getTranslatedValue(editingData?.measurementScale, "scales."),
+    measurementProcedure: getTranslatedValue(editingData?.measurementProcedure, "measurements.procedures."),
+    measurementFrequency: getTranslatedValue(editingData?.measurementFrequency, "measurements.frequency."),
+    measurementResponsible: getTranslatedValue(editingData?.measurementResponsible, "measurements.responsible."),
   });
+
+  // Update state when editingData changes
+  useEffect(() => {
+    if (editingData) {
+      setCustomMeasurement({
+        measurementEntity: getTranslatedValue(editingData.measurementEntity, "metrics.measurementEntities."),
+        measurementAcronym: editingData.measurementAcronym || "",
+        measurementProperties: getTranslatedValue(editingData.measurementProperties, "measurements.properties."),
+        measurementUnit: getTranslatedValue(editingData.measurementUnit, "units."),
+        measurementScale: getTranslatedValue(editingData.measurementScale, "scales."),
+        measurementProcedure: getTranslatedValue(editingData.measurementProcedure, "measurements.procedures."),
+        measurementFrequency: getTranslatedValue(editingData.measurementFrequency, "measurements.frequency."),
+        measurementResponsible: getTranslatedValue(editingData.measurementResponsible, "measurements.responsible."),
+      });
+    }
+  }, [editingData]);
 
   const availablePredefined = availableMeasurements.filter(
     (measurement) =>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Button,
@@ -25,9 +25,29 @@ export const CustomObjectiveModal: React.FC<CustomObjectiveModalProps> = ({
 }) => {
   const { t } = useTranslation("plans");
   const [selectedTab, setSelectedTab] = useState(editingData ? "custom" : "predefined");
+
+  // If editing data contains a translation key, translate it for display
+  const getInitialObjectiveTitle = () => {
+    if (!editingData?.objectiveTitle) return "";
+    // Check if it's a translation key (starts with "objectives.")
+    if (editingData.objectiveTitle.startsWith("objectives.")) {
+      return t(editingData.objectiveTitle);
+    }
+    return editingData.objectiveTitle;
+  };
+
   const [customObjective, setCustomObjective] = useState<Omit<Objective, "questions">>({
-    objectiveTitle: editingData?.objectiveTitle || "",
+    objectiveTitle: getInitialObjectiveTitle(),
   });
+
+  // Update state when editingData changes
+  useEffect(() => {
+    if (editingData) {
+      setCustomObjective({
+        objectiveTitle: getInitialObjectiveTitle(),
+      });
+    }
+  }, [editingData]);
 
   const handleAddPredefinedObjective = (objective: Objective) => {
     onAddObjective(objective);
