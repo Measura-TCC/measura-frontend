@@ -31,6 +31,7 @@ import { useToast } from "@/core/hooks/common/useToast";
 
 interface PlanContentManagerProps {
   plan: MeasurementPlanResponseDto;
+  planId: string;
   isReadOnly?: boolean;
 }
 
@@ -40,6 +41,7 @@ interface ExpandedState {
 
 export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
   plan,
+  planId,
   isReadOnly = false,
 }) => {
   const { t } = useTranslation("plans");
@@ -73,7 +75,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     addMeasurement,
     updateMeasurement,
     deleteMeasurement,
-  } = useMeasurementPlanOperations({ planId: plan.id });
+  } = useMeasurementPlanOperations({ planId });
 
   const toggleExpanded = (id: string) => {
     setExpanded(prev => ({ ...prev, [id]: !prev[id] }));

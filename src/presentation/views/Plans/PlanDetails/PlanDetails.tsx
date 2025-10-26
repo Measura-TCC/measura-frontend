@@ -289,6 +289,7 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
             ) : (
               <PlanContentManager
                 plan={plan}
+                planId={planId}
                 isReadOnly={false}
               />
             )}
