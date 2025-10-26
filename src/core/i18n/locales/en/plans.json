@@ -47,6 +47,8 @@
   "performanceDescription": "Track project delivery and timeline metrics",
   "organizationRequired": "Organization Required",
   "organizationRequiredDescription": "You need to create or join an organization to create measurement plans and manage planning activities",
+  "organizationRequiredMessage": "You need to create or join an organization to create measurement plans and manage planning activities",
+  "organizationRequiredUserMessage": "You need to join an organization. Ask your Project Manager or Administrator to invite you.",
   "createOrganization": "Create Organization",
   "noProjectsTitle": "No Projects Found",
   "noProjectsDescription": "You need to create at least one project before creating measurement plans.",

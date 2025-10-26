@@ -27,6 +27,7 @@
   "statisticsNote": "Statistics will be available once you start creating projects and estimates.",
   "organizationRequired": "Organization Required",
   "organizationRequiredMessage": "You need to create or join an organization to start using Measura's features.",
+  "organizationRequiredUserMessage": "You need to join an organization. Ask your Project Manager or Administrator to invite you.",
   "visitWebsite": "Visit Website",
   "memberSince": "Member since",
   "manageOrganization": "Manage Organization",

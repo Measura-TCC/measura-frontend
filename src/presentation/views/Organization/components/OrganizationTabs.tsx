@@ -41,7 +41,7 @@ export const OrganizationTabs: React.FC<OrganizationTabsProps> = ({
 
   const tabs = canManageOrganization(userRole)
     ? allTabs
-    : allTabs.filter((tab) => tab.id === "overview");
+    : allTabs.filter((tab) => tab.id === "overview" || tab.id === "settings");
 
   return <Tabs tabs={tabs} activeTab={activeTab} onTabChange={onTabChange} />;
 };

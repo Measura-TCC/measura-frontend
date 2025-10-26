@@ -27,6 +27,7 @@
   "statisticsNote": "As estatísticas estarão disponíveis quando você começar a criar projetos e estimativas.",
   "organizationRequired": "Organização Necessária",
   "organizationRequiredMessage": "Você precisa criar ou ingressar em uma organização para começar a usar os recursos do Measura.",
+  "organizationRequiredUserMessage": "Você precisa ingressar em uma organização. Peça ao seu Gerente de Projetos ou Administrador para convidá-lo.",
   "visitWebsite": "Visitar Site",
   "memberSince": "Membro desde",
   "manageOrganization": "Gerenciar Organização",

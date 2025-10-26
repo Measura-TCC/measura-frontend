@@ -4,17 +4,29 @@
       "title": "Welcome to Measura!",
       "description": "Let's guide you through the first steps to start using the platform."
     },
-    "step1": {
+    "managerStep1": {
       "title": "1. Create your Organization",
-      "description": "First, you need to create or join an organization. It groups your projects and team."
+      "description": "As a Project Manager or Admin, you can create organizations to group projects and invite team members."
     },
-    "step2": {
-      "title": "2. Add a Project",
-      "description": "After having an organization, create projects to organize your work. Projects are required for FPA estimates and measurement plans."
+    "managerStep2": {
+      "title": "2. Add Projects",
+      "description": "Create projects to organize work. Projects are required for FPA estimates and measurement plans."
     },
-    "step3": {
-      "title": "3. Use FPA and Measurement Plans",
-      "description": "With projects created, you can create Function Point Analysis estimates and Measurement Plans!"
+    "managerStep3": {
+      "title": "3. Use FPA and Plans",
+      "description": "Create Function Point Analysis estimates and Measurement Plans for your projects!"
+    },
+    "userStep1": {
+      "title": "1. Join an Organization",
+      "description": "Ask your Project Manager or Administrator to invite you to an organization."
+    },
+    "userStep2": {
+      "title": "2. Access Projects",
+      "description": "Once invited, you'll be able to access projects created by your team."
+    },
+    "userStep3": {
+      "title": "3. Create Estimates and Plans",
+      "description": "You can create FPA estimates and measurement plans for existing projects!"
     },
     "buttons": {
       "previous": "Previous",

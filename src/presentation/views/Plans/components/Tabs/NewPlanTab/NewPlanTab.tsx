@@ -36,6 +36,7 @@ import {
   validatePlanData,
 } from "./utils/dataTranslation";
 import { useToast } from "@/core/hooks/common";
+import { useAuth } from "@/core/hooks/auth/useAuth";
 
 interface NewPlanTabProps {
   statistics: PlansStatistics;
@@ -48,6 +49,7 @@ export const NewPlanTab: React.FC<NewPlanTabProps> = ({
   canCreatePlan,
   isCreatingPlan,
 }) => {
+  const { user } = useAuth();
   const { t } = useTranslation("plans");
   const router = useRouter();
   const { projects, isLoadingProjects } = useProjects();
@@ -260,7 +262,7 @@ export const NewPlanTab: React.FC<NewPlanTabProps> = ({
     canCreatePlan &&
     (!projects || projects.length === 0)
   ) {
-    return <NoProjectsAlert translationNamespace="plans" />;
+    return <NoProjectsAlert translationNamespace="plans" userRole={user?.role} />;
   }
 
   if (showWorkflow) {

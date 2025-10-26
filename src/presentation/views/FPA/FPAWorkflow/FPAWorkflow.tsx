@@ -24,12 +24,14 @@ import {
 import { useRequirementsStore } from "@/core/hooks/fpa/useRequirementsStore";
 import { estimateService } from "@/core/services/estimateService";
 import { useToast } from "@/core/hooks/common/useToast";
+import { useAuth } from "@/core/hooks/auth/useAuth";
 
 type Tab = "new" | "created";
 
 export const FPAWorkflow = () => {
   const { t } = useTranslation("fpa");
   const toast = useToast();
+  const { user } = useAuth();
   const {
     requireOrganization,
     userOrganization,
@@ -319,7 +321,7 @@ export const FPAWorkflow = () => {
           </h1>
           <p className="text-muted mt-1">{t("subtitle")}</p>
         </div>
-        <OrganizationAlert hasOrganization={false} translationNamespace="fpa" />
+        <OrganizationAlert hasOrganization={false} translationNamespace="fpa" userRole={user?.role} />
       </div>
     );
   }
@@ -337,7 +339,7 @@ export const FPAWorkflow = () => {
           </h1>
           <p className="text-muted mt-1">{t("subtitle")}</p>
         </div>
-        <NoProjectsAlert translationNamespace="fpa" />
+        <NoProjectsAlert translationNamespace="fpa" userRole={user?.role} />
       </div>
     );
   }

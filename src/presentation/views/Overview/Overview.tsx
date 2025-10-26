@@ -72,6 +72,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ user }) => {
         isOpen={showTour}
         onComplete={handleTourComplete}
         onSkip={handleTourComplete}
+        userRole={user.role}
       />
 
       <div className="space-y-6">
@@ -87,6 +88,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({ user }) => {
         hasOrganization={!!userOrganization}
         translationNamespace="organization"
         onCreateClick={handleCreateOrganization}
+        userRole={user.role}
       />
 
       <QuickActionsSection

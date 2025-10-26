@@ -9,14 +9,17 @@ import {
   BuildingIcon,
   DocumentIcon,
   CheckIcon,
+  UserIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
 } from "@/presentation/assets/icons";
+import { canManageOrganization } from "@/core/utils/permissions";
 
 interface WelcomeTourModalProps {
   isOpen: boolean;
   onComplete: () => void;
   onSkip: () => void;
+  userRole?: string;
 }
 
 interface TourStep {
@@ -25,7 +28,7 @@ interface TourStep {
   descriptionKey: string;
 }
 
-const tourSteps: TourStep[] = [
+const managerTourSteps: TourStep[] = [
   {
     icon: LightningBoltIcon,
     titleKey: "tour.welcome.title",
@@ -33,18 +36,41 @@ const tourSteps: TourStep[] = [
   },
   {
     icon: BuildingIcon,
-    titleKey: "tour.step1.title",
-    descriptionKey: "tour.step1.description",
+    titleKey: "tour.managerStep1.title",
+    descriptionKey: "tour.managerStep1.description",
   },
   {
     icon: DocumentIcon,
-    titleKey: "tour.step2.title",
-    descriptionKey: "tour.step2.description",
+    titleKey: "tour.managerStep2.title",
+    descriptionKey: "tour.managerStep2.description",
   },
   {
     icon: CheckIcon,
-    titleKey: "tour.step3.title",
-    descriptionKey: "tour.step3.description",
+    titleKey: "tour.managerStep3.title",
+    descriptionKey: "tour.managerStep3.description",
+  },
+];
+
+const userTourSteps: TourStep[] = [
+  {
+    icon: LightningBoltIcon,
+    titleKey: "tour.welcome.title",
+    descriptionKey: "tour.welcome.description",
+  },
+  {
+    icon: UserIcon,
+    titleKey: "tour.userStep1.title",
+    descriptionKey: "tour.userStep1.description",
+  },
+  {
+    icon: DocumentIcon,
+    titleKey: "tour.userStep2.title",
+    descriptionKey: "tour.userStep2.description",
+  },
+  {
+    icon: CheckIcon,
+    titleKey: "tour.userStep3.title",
+    descriptionKey: "tour.userStep3.description",
   },
 ];
 
@@ -52,10 +78,15 @@ export const WelcomeTourModal = ({
   isOpen,
   onComplete,
   onSkip,
+  userRole,
 }: WelcomeTourModalProps) => {
   const { t } = useTranslation("onboarding");
   const [currentStep, setCurrentStep] = useState(0);
   const [mounted, setMounted] = useState(false);
+
+  const tourSteps = canManageOrganization(userRole)
+    ? managerTourSteps
+    : userTourSteps;
 
   useEffect(() => {
     setMounted(true);

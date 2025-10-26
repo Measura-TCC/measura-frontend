@@ -170,6 +170,7 @@ export default function ProjectsPage() {
         <OrganizationAlert
           hasOrganization={false}
           translationNamespace="projects"
+          userRole={user?.role}
         />
       </div>
     );
@@ -391,6 +392,7 @@ export default function ProjectsPage() {
         <NoProjectsAlert
           translationNamespace="projects"
           onActionClick={() => setShowCreateForm(true)}
+          userRole={user?.role}
         />
       )}
 

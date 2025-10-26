@@ -20,6 +20,7 @@ import { OrganizationTabs } from "@/presentation/views/Organization/components/O
 import { OverviewTab } from "@/presentation/views/Organization/components/OverviewTab";
 import { SettingsTab } from "@/presentation/views/Organization/components/SettingsTab";
 import { IntegrationsTab } from "@/presentation/views/Organization/components/IntegrationsTab";
+import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
 import { useAuthStore } from "@/core/hooks/auth/useAuth";
 import type { OrganizationTab } from "@/core/types/organization";
 import { canInviteMembers } from "@/core/utils/permissions";
@@ -107,26 +108,18 @@ export const OrganizationView: React.FC = () => {
               organization={userOrganization}
               onWizardSuccess={handleWizardSuccess}
               onLeaveOrganization={() => setShowLeaveModal(true)}
+              userRole={user?.role}
             />
           )}
         </div>
       ) : (
         !showCreateForm && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BuildingIcon className="w-5 h-5 text-primary" />
-                {t("noOrganizationFound")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <p className="text-secondary">{t("noOrganizationMessage")}</p>
-              <Button onClick={() => setShowCreateForm(true)}>
-                <PlusIcon className="w-4 h-4 mr-2" />
-                {t("createOrganization")}
-              </Button>
-            </CardContent>
-          </Card>
+          <OrganizationAlert
+            hasOrganization={false}
+            translationNamespace="organization"
+            onCreateClick={() => setShowCreateForm(true)}
+            userRole={user?.role}
+          />
         )
       )}
 
