@@ -30,6 +30,12 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
   // If editing data contains translation keys, translate them for display
   const getTranslatedValue = (value: string | undefined, prefix: string) => {
     if (!value) return "";
+    // Handle both new format (entities.) and old format (metrics.measurementEntities.)
+    if (value.startsWith("metrics.measurementEntities.")) {
+      // Convert old format to new format and translate
+      const key = value.replace("metrics.measurementEntities.", "entities.");
+      return t(key);
+    }
     if (value.startsWith(prefix)) {
       return t(value);
     }
@@ -37,7 +43,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
   };
 
   const [customMeasurement, setCustomMeasurement] = useState<Measurement>({
-    measurementEntity: getTranslatedValue(editingData?.measurementEntity, "metrics.measurementEntities."),
+    measurementEntity: getTranslatedValue(editingData?.measurementEntity, "entities."),
     measurementAcronym: editingData?.measurementAcronym || "",
     measurementProperties: getTranslatedValue(editingData?.measurementProperties, "measurements.properties."),
     measurementUnit: getTranslatedValue(editingData?.measurementUnit, "units."),
@@ -51,7 +57,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
   useEffect(() => {
     if (editingData) {
       setCustomMeasurement({
-        measurementEntity: getTranslatedValue(editingData.measurementEntity, "metrics.measurementEntities."),
+        measurementEntity: getTranslatedValue(editingData.measurementEntity, "entities."),
         measurementAcronym: editingData.measurementAcronym || "",
         measurementProperties: getTranslatedValue(editingData.measurementProperties, "measurements.properties."),
         measurementUnit: getTranslatedValue(editingData.measurementUnit, "units."),
@@ -175,7 +181,9 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                   >
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-medium text-default">
-                        {t(measurement.measurementEntity)}
+                        {t(measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
+                          ? measurement.measurementEntity.replace("metrics.measurementEntities.", "entities.")
+                          : measurement.measurementEntity)}
                       </h4>
                       <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
                         {measurement.measurementAcronym}

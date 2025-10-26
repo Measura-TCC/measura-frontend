@@ -111,6 +111,11 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
 
   // Helper function to get translated display text
   const getDisplayText = (text: string, prefix: string): string => {
+    // Handle both new format (entities.) and old format (metrics.measurementEntities.)
+    if (text.startsWith("metrics.measurementEntities.")) {
+      const key = text.replace("metrics.measurementEntities.", "entities.");
+      return t(key);
+    }
     if (text.startsWith(prefix)) {
       return t(text);
     }
@@ -344,7 +349,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     setDeleteConfirm({
       type: "measurement",
       id: measurement._id!,
-      title: getDisplayText(measurement.measurementEntity, "metrics.measurementEntities."),
+      title: getDisplayText(measurement.measurementEntity, "entities."),
       parentIds: [objectiveId, questionId, metricId],
     });
   };
@@ -674,8 +679,10 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
             </div>
             <div>
               <h6 className="font-medium text-gray-900 text-sm">
-                {measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
-                  ? t(measurement.measurementEntity)
+                {measurement.measurementEntity?.startsWith("entities.") || measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
+                  ? t(measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
+                      ? measurement.measurementEntity.replace("metrics.measurementEntities.", "entities.")
+                      : measurement.measurementEntity)
                   : measurement.measurementEntity} ({measurement.measurementAcronym})
               </h6>
               <p className="text-xs text-gray-500">

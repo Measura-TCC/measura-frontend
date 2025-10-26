@@ -97,7 +97,7 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
               questionId: q._id || "",
               metricId: m._id || "",
               measurementDefinitionId: meas._id || `${m.metricMnemonic}-${idx}`,
-              label: `${meas.measurementEntity} (${m.metricName} - ${obj.objectiveTitle})`,
+              label: `${meas.measurementEntity?.startsWith("metrics.measurementEntities.") || meas.measurementEntity?.startsWith("entities.") ? t(meas.measurementEntity.startsWith("metrics.measurementEntities.") ? meas.measurementEntity.replace("metrics.measurementEntities.", "entities.") : meas.measurementEntity) : meas.measurementEntity} (${m.metricName} - ${obj.objectiveTitle})`,
               metricName: m.metricName,
               objectiveTitle: obj.objectiveTitle,
             });

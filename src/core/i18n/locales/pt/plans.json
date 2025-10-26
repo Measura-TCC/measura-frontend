@@ -369,6 +369,26 @@
       "deployment": "Deployment"
     }
   },
+  "entities": {
+    "worklog": "Log de Trabalho",
+    "deliveredFunctionPoints": "Pontos de Função Entregues",
+    "deploymentToProduction": "Deployment para Produção",
+    "commit": "Commit",
+    "incidentStart": "Início do Incidente",
+    "serviceRestoration": "Restauração do Serviço",
+    "deployFailure": "Falha de Deploy",
+    "deployTotal": "Deploy Total",
+    "bugReport": "Relatório de Bug",
+    "codeLine": "Linha de Código",
+    "testCase": "Caso de Teste",
+    "buildExecution": "Execução de Build",
+    "apiResponse": "Resposta da API",
+    "userStory": "História de Usuário",
+    "codeReview": "Revisão de Código",
+    "systemResource": "Recurso do Sistema",
+    "userSession": "Sessão do Usuário",
+    "deployment": "Deployment"
+  },
   "measurementPlan": {
     "planName": "Nome do Plano",
     "associatedProject": "Projeto Associado",

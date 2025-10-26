@@ -27,10 +27,8 @@ const AppLayout = ({ children }: AppLayoutProps) => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">
-            Authentication Required
-          </h2>
-          <p className="text-gray-600">Redirecting to login...</p>
+          <h2 className="text-xl font-semibold mb-2">Loading Measura</h2>
+          <p className="text-gray-600">Redirecting You...</p>
         </div>
       </div>
     );

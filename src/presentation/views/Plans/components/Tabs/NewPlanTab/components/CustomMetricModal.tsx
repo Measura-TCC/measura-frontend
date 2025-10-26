@@ -545,8 +545,10 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                             {index + 1}
                           </div>
                           <h5 className="font-medium text-sm text-default">
-                            {measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
-                              ? t(measurement.measurementEntity)
+                            {measurement.measurementEntity?.startsWith("entities.") || measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
+                              ? t(measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
+                                  ? measurement.measurementEntity.replace("metrics.measurementEntities.", "entities.")
+                                  : measurement.measurementEntity)
                               : measurement.measurementEntity}
                           </h5>
                           <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">

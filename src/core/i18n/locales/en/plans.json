@@ -326,6 +326,26 @@
       "deployment": "Deployment"
     }
   },
+  "entities": {
+    "worklog": "Worklog",
+    "deliveredFunctionPoints": "Delivered Function Points",
+    "deploymentToProduction": "Deployment to Production",
+    "commit": "Commit",
+    "incidentStart": "Incident Start",
+    "serviceRestoration": "Service Restoration",
+    "deployFailure": "Deploy Failure",
+    "deployTotal": "Deploy Total",
+    "bugReport": "Bug Report",
+    "codeLine": "Code Line",
+    "testCase": "Test Case",
+    "buildExecution": "Build Execution",
+    "apiResponse": "API Response",
+    "userStory": "User Story",
+    "codeReview": "Code Review",
+    "systemResource": "System Resource",
+    "userSession": "User Session",
+    "deployment": "Deployment"
+  },
   "measurementPlan": {
     "planName": "Plan Name",
     "associatedProject": "Associated Project",

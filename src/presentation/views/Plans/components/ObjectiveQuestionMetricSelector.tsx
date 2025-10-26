@@ -334,7 +334,7 @@ export const ObjectiveQuestionMetricSelector: React.FC<ObjectiveQuestionMetricSe
               <Button
                 variant="ghost"
                 size="sm"
-                className="mt-2"
+                className="mt-2 cursor-pointer"
                 disabled={!selection.objective}
                 onClick={() => setShowCreateQuestion(true)}
               >
