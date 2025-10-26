@@ -196,51 +196,67 @@ export const JiraImportForm = ({ requirements, addRequirements, removeRequiremen
                   </option>
                 ))}
               </select>
+              {projects.length === 0 && (
+                <p className="text-xs text-secondary mt-1">
+                  {t("importForms.emptyStates.noProjects", { integration: "Jira" })}
+                </p>
+              )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-default mb-1">
-                {t("importForms.jira.jql")}
-              </label>
-              <textarea
-                rows={3}
-                value={jql}
-                onChange={(e) => setJql(e.target.value)}
-                placeholder="project = PROJ AND status = 'To Do'"
-                className="w-full px-3 py-2 border border-border bg-background text-default rounded-md"
-                disabled={isImporting}
-              />
-              <div className="mt-2 space-y-1">
-                <p className="text-xs text-secondary">
-                  {t("importForms.jira.commonFilters")}:
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setJql(`project = ${selectedProject}`)}
-                    className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
-                    disabled={isImporting}
-                  >
-                    All issues
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setJql(`project = ${selectedProject} AND status = 'To Do'`)}
-                    className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
-                    disabled={isImporting}
-                  >
-                    Open issues
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setJql(`project = ${selectedProject} AND type = Story`)}
-                    className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
-                    disabled={isImporting}
-                  >
-                    Stories only
-                  </button>
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-default mb-1">
+                  {t("importForms.jira.jql")}
+                </label>
+                <textarea
+                  rows={3}
+                  value={jql}
+                  onChange={(e) => setJql(e.target.value)}
+                  placeholder="project = PROJ AND status = 'To Do'"
+                  className="w-full px-3 py-2 border border-border bg-background text-default rounded-md"
+                  disabled={isImporting}
+                />
+                <div className="mt-2 space-y-1">
+                  <p className="text-xs text-secondary">
+                    {t("importForms.jira.commonFilters")}:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setJql(`project = ${selectedProject}`)}
+                      className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                      disabled={isImporting}
+                    >
+                      All issues
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setJql(`project = ${selectedProject} AND status = 'To Do'`)}
+                      className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                      disabled={isImporting}
+                    >
+                      Open issues
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setJql(`project = ${selectedProject} AND type = Story`)}
+                      className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                      disabled={isImporting}
+                    >
+                      Stories only
+                    </button>
+                  </div>
                 </div>
               </div>
+
+              <Button
+                onClick={handleImport}
+                variant="primary"
+                disabled={isImporting || !jql || !projectId || projects.length === 0}
+                className="md:self-end"
+              >
+                {isImporting ? t("requirementImport.importing") : t("importForms.preview.importRequirements")}
+              </Button>
             </div>
 
             {error && (
@@ -248,14 +264,6 @@ export const JiraImportForm = ({ requirements, addRequirements, removeRequiremen
                 {error}
               </div>
             )}
-
-            <Button
-              onClick={handleImport}
-              variant="primary"
-              disabled={isImporting || !jql || !projectId}
-            >
-              {isImporting ? t("requirementImport.importing") : t("requirementImport.addPreview")}
-            </Button>
           </>
         )}
       </div>

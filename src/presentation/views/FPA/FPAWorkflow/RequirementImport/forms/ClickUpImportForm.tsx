@@ -172,27 +172,38 @@ export const ClickUpImportForm = ({ requirements, addRequirements, removeRequire
           <div className="text-sm text-secondary">Loading ClickUp lists...</div>
         ) : (
           <>
-            <div>
-              <label className="block text-sm font-medium text-default mb-1">
-                {t("importForms.clickup.selectList")}
-              </label>
-              <select
-                value={selectedList}
-                onChange={(e) => setSelectedList(e.target.value)}
-                className="w-full px-3 py-2 border border-border bg-background text-default rounded-md"
-                disabled={isImporting}
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-default mb-1">
+                  {t("importForms.clickup.selectList")}
+                </label>
+                <select
+                  value={selectedList}
+                  onChange={(e) => setSelectedList(e.target.value)}
+                  className="w-full px-3 py-2 border border-border bg-background text-default rounded-md"
+                  disabled={isImporting}
+                >
+                  {lists.map((list) => (
+                    <option key={list.id} value={list.id}>
+                      {list.spaceName} / {list.folderName || 'Root'} / {list.name}
+                    </option>
+                  ))}
+                </select>
+                {lists.length === 0 && (
+                  <p className="text-xs text-secondary mt-1">
+                    No lists found. Check your ClickUp token permissions.
+                  </p>
+                )}
+              </div>
+
+              <Button
+                onClick={handleImport}
+                variant="primary"
+                disabled={isImporting || !selectedList || !projectId}
+                className="md:self-end"
               >
-                {lists.map((list) => (
-                  <option key={list.id} value={list.id}>
-                    {list.spaceName} / {list.folderName || 'Root'} / {list.name}
-                  </option>
-                ))}
-              </select>
-              {lists.length === 0 && (
-                <p className="text-xs text-secondary mt-1">
-                  No lists found. Check your ClickUp token permissions.
-                </p>
-              )}
+                {isImporting ? t("requirementImport.importing") : t("importForms.preview.importRequirements")}
+              </Button>
             </div>
 
             {error && (
@@ -200,14 +211,6 @@ export const ClickUpImportForm = ({ requirements, addRequirements, removeRequire
                 {error}
               </div>
             )}
-
-            <Button
-              onClick={handleImport}
-              variant="primary"
-              disabled={isImporting || !selectedList || !projectId}
-            >
-              {isImporting ? t("requirementImport.importing") : t("requirementImport.addPreview")}
-            </Button>
           </>
         )}
       </div>

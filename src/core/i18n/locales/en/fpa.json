@@ -806,10 +806,23 @@
       "previewMode": "Preview Mode",
       "previewModeDescription": "During estimate creation, requirements are added as preview items. Full import will be available after the estimate is saved."
     },
+    "emptyStates": {
+      "noProjects": "No projects found. Check your {{integration}} token permissions.",
+      "noRepositories": "No repositories found. Check your GitHub token permissions.",
+      "noLists": "No lists found. Check your ClickUp token permissions.",
+      "noRequirementsFound": "No requirements were found to import.",
+      "noRequirementsDescription": "The selected source returned no items. Try adjusting your filters or selecting a different source.",
+      "noIssuesInRepo": "No issues found in this repository.",
+      "noIssuesInProject": "No issues found in this project.",
+      "noTasksInList": "No tasks found in this list.",
+      "noWorkItemsInQuery": "No work items found matching the WIQL query.",
+      "tryDifferentSelection": "Try selecting a different {{sourceType}} or adjusting your filters."
+    },
     "preview": {
       "successfullyImported": "Successfully imported {{count}} requirement(s)",
       "skipped": "{{count}} requirement(s) skipped (already exist)",
       "failed": "{{count}} requirement(s) failed to import",
+      "importRequirements": "Import Requirements",
       "reviewRequirements": "Review Imported Requirements",
       "selectedCount": "{{count}} of {{total}} selected",
       "reference": "Reference",
@@ -818,6 +831,7 @@
       "edit": "Actions",
       "remove": "Remove",
       "cancel": "Cancel",
+      "back": "Back",
       "addSelected": "Add {{count}} Selected",
       "selectAll": "Select All",
       "deselectAll": "Deselect All",

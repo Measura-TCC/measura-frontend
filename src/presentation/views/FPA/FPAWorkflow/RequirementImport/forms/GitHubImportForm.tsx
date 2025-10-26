@@ -206,48 +206,59 @@ export const GitHubImportForm = ({ requirements, addRequirements, removeRequirem
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-default mb-1">
-                {t("importForms.github.issueState")}
-              </label>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setState("open")}
-                  className={`px-4 py-2 rounded-md text-sm font-medium ${
-                    state === "open"
-                      ? "bg-primary text-white"
-                      : "bg-gray-100 dark:bg-gray-700 text-default hover:bg-gray-200 dark:hover:bg-gray-600"
-                  }`}
-                  disabled={isImporting}
-                >
-                  Open
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setState("closed")}
-                  className={`px-4 py-2 rounded-md text-sm font-medium ${
-                    state === "closed"
-                      ? "bg-primary text-white"
-                      : "bg-gray-100 dark:bg-gray-700 text-default hover:bg-gray-200 dark:hover:bg-gray-600"
-                  }`}
-                  disabled={isImporting}
-                >
-                  Closed
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setState("all")}
-                  className={`px-4 py-2 rounded-md text-sm font-medium ${
-                    state === "all"
-                      ? "bg-primary text-white"
-                      : "bg-gray-100 dark:bg-gray-700 text-default hover:bg-gray-200 dark:hover:bg-gray-600"
-                  }`}
-                  disabled={isImporting}
-                >
-                  All
-                </button>
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-default mb-1">
+                  {t("importForms.github.issueState")}
+                </label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setState("open")}
+                    className={`px-4 py-2 rounded-md text-sm font-medium ${
+                      state === "open"
+                        ? "bg-primary text-white"
+                        : "bg-gray-100 dark:bg-gray-700 text-default hover:bg-gray-200 dark:hover:bg-gray-600"
+                    }`}
+                    disabled={isImporting}
+                  >
+                    Open
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setState("closed")}
+                    className={`px-4 py-2 rounded-md text-sm font-medium ${
+                      state === "closed"
+                        ? "bg-primary text-white"
+                        : "bg-gray-100 dark:bg-gray-700 text-default hover:bg-gray-200 dark:hover:bg-gray-600"
+                    }`}
+                    disabled={isImporting}
+                  >
+                    Closed
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setState("all")}
+                    className={`px-4 py-2 rounded-md text-sm font-medium ${
+                      state === "all"
+                        ? "bg-primary text-white"
+                        : "bg-gray-100 dark:bg-gray-700 text-default hover:bg-gray-200 dark:hover:bg-gray-600"
+                    }`}
+                    disabled={isImporting}
+                  >
+                    All
+                  </button>
+                </div>
               </div>
+
+              <Button
+                onClick={handleImport}
+                variant="primary"
+                disabled={isImporting || !selectedRepo || !projectId}
+                className="md:self-end"
+              >
+                {isImporting ? t("requirementImport.importing") : t("importForms.preview.importRequirements")}
+              </Button>
             </div>
 
             {error && (
@@ -255,14 +266,6 @@ export const GitHubImportForm = ({ requirements, addRequirements, removeRequirem
                 {error}
               </div>
             )}
-
-            <Button
-              onClick={handleImport}
-              variant="primary"
-              disabled={isImporting || !selectedRepo || !projectId}
-            >
-              {isImporting ? t("requirementImport.importing") : t("requirementImport.addPreview")}
-            </Button>
           </>
         )}
       </div>

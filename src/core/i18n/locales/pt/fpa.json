@@ -810,10 +810,23 @@
       "previewMode": "Modo de Visualização",
       "previewModeDescription": "Durante a criação da estimativa, os requisitos são adicionados como itens de visualização. A importação completa estará disponível após salvar a estimativa."
     },
+    "emptyStates": {
+      "noProjects": "Nenhum projeto encontrado. Verifique as permissões do token {{integration}}.",
+      "noRepositories": "Nenhum repositório encontrado. Verifique as permissões do seu token GitHub.",
+      "noLists": "Nenhuma lista encontrada. Verifique as permissões do seu token ClickUp.",
+      "noRequirementsFound": "Nenhum requisito foi encontrado para importar.",
+      "noRequirementsDescription": "A fonte selecionada não retornou nenhum item. Tente ajustar seus filtros ou selecionar uma fonte diferente.",
+      "noIssuesInRepo": "Nenhuma issue encontrada neste repositório.",
+      "noIssuesInProject": "Nenhuma issue encontrada neste projeto.",
+      "noTasksInList": "Nenhuma tarefa encontrada nesta lista.",
+      "noWorkItemsInQuery": "Nenhum item de trabalho encontrado para a consulta WIQL.",
+      "tryDifferentSelection": "Tente selecionar um {{sourceType}} diferente ou ajustar seus filtros."
+    },
     "preview": {
-      "successfullyImported": "{{count}} requisito(s) importado(s) com sucesso",
+      "successfullyImported": "{{count}} requisito(s) encontrado(s) com sucesso",
       "skipped": "{{count}} requisito(s) ignorado(s) (já existem)",
       "failed": "{{count}} requisito(s) falharam na importação",
+      "importRequirements": "Importar Requisitos",
       "reviewRequirements": "Revisar Requisitos Importados",
       "selectedCount": "{{count}} de {{total}} selecionados",
       "reference": "Referência",
@@ -822,6 +835,7 @@
       "edit": "Ações",
       "remove": "Remover",
       "cancel": "Cancelar",
+      "back": "Voltar",
       "addSelected": "Adicionar {{count}} Selecionados",
       "selectAll": "Selecionar Todos",
       "deselectAll": "Desmarcar Todos",
@@ -831,7 +845,7 @@
     },
     "importResult": {
       "title": "Importação Concluída",
-      "successMessage": "{{count}} requisito(s) importado(s) com sucesso",
+      "successMessage": "{{count}} requisito(s) encontrado(s) com sucesso",
       "skippedMessage": "{{count}} requisito(s) ignorado(s) (já importado)",
       "failedMessage": "{{count}} requisito(s) falharam na importação",
       "newRequirements": "Novos Requisitos:",

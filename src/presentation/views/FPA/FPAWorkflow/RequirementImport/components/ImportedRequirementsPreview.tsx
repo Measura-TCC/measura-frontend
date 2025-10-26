@@ -106,12 +106,24 @@ export const ImportedRequirementsPreview = ({
         )}
       </div>
 
+      {/* Empty State */}
+      {requirements.length === 0 && (
+        <div className="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-border">
+          <p className="text-lg font-medium text-default mb-2">
+            {t("importForms.emptyStates.noRequirementsFound")}
+          </p>
+          <p className="text-sm text-muted">
+            {t("importForms.emptyStates.noRequirementsDescription")}
+          </p>
+        </div>
+      )}
+
       {/* Requirements Table */}
       {requirements.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-default">
-              {t("importForms.preview.reviewRequirements")} ({requirements.length})
+              {t("importForms.preview.importRequirements")}
             </h3>
             <div className="flex items-center gap-4">
               <button
@@ -253,7 +265,7 @@ export const ImportedRequirementsPreview = ({
       {/* Actions */}
       <div className="flex justify-end gap-3">
         <Button onClick={onCancel} variant="secondary" disabled={isAdding}>
-          {t("importForms.preview.cancel")}
+          {requirements.length === 0 ? t("importForms.preview.back") : t("importForms.preview.cancel")}
         </Button>
         <Button
           onClick={handleConfirm}

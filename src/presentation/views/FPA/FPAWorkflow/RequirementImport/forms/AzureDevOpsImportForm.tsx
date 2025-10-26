@@ -196,51 +196,67 @@ export const AzureDevOpsImportForm = ({ requirements, addRequirements, removeReq
                   </option>
                 ))}
               </select>
+              {projects.length === 0 && (
+                <p className="text-xs text-secondary mt-1">
+                  {t("importForms.emptyStates.noProjects", { integration: "Azure DevOps" })}
+                </p>
+              )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-default mb-1">
-                {t("importForms.azureDevops.wiql")}
-              </label>
-              <textarea
-                rows={4}
-                value={wiql}
-                onChange={(e) => setWiql(e.target.value)}
-                placeholder="SELECT [System.Id] FROM workitems WHERE [System.WorkItemType] = 'User Story'"
-                className="w-full px-3 py-2 border border-border bg-background text-default rounded-md font-mono text-sm"
-                disabled={isImporting}
-              />
-              <div className="mt-2 space-y-1">
-                <p className="text-xs text-secondary">
-                  {t("importForms.azureDevops.commonQueries")}:
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setWiql(`SELECT [System.Id] FROM workitems WHERE [System.TeamProject] = '${selectedProject}'`)}
-                    className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
-                    disabled={isImporting}
-                  >
-                    All work items
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setWiql(`SELECT [System.Id] FROM workitems WHERE [System.WorkItemType] = 'User Story'`)}
-                    className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
-                    disabled={isImporting}
-                  >
-                    User Stories
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setWiql(`SELECT [System.Id] FROM workitems WHERE [System.State] = 'Active'`)}
-                    className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
-                    disabled={isImporting}
-                  >
-                    Active items
-                  </button>
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-default mb-1">
+                  {t("importForms.azureDevops.wiql")}
+                </label>
+                <textarea
+                  rows={4}
+                  value={wiql}
+                  onChange={(e) => setWiql(e.target.value)}
+                  placeholder="SELECT [System.Id] FROM workitems WHERE [System.WorkItemType] = 'User Story'"
+                  className="w-full px-3 py-2 border border-border bg-background text-default rounded-md font-mono text-sm"
+                  disabled={isImporting}
+                />
+                <div className="mt-2 space-y-1">
+                  <p className="text-xs text-secondary">
+                    {t("importForms.azureDevops.commonQueries")}:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setWiql(`SELECT [System.Id] FROM workitems WHERE [System.TeamProject] = '${selectedProject}'`)}
+                      className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                      disabled={isImporting}
+                    >
+                      All work items
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setWiql(`SELECT [System.Id] FROM workitems WHERE [System.WorkItemType] = 'User Story'`)}
+                      className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                      disabled={isImporting}
+                    >
+                      User Stories
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setWiql(`SELECT [System.Id] FROM workitems WHERE [System.State] = 'Active'`)}
+                      className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-default rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                      disabled={isImporting}
+                    >
+                      Active items
+                    </button>
+                  </div>
                 </div>
               </div>
+
+              <Button
+                onClick={handleImport}
+                variant="primary"
+                disabled={isImporting || !wiql || !projectId || projects.length === 0}
+                className="md:self-end"
+              >
+                {isImporting ? t("requirementImport.importing") : t("importForms.preview.importRequirements")}
+              </Button>
             </div>
 
             {error && (
@@ -248,14 +264,6 @@ export const AzureDevOpsImportForm = ({ requirements, addRequirements, removeReq
                 {error}
               </div>
             )}
-
-            <Button
-              onClick={handleImport}
-              variant="primary"
-              disabled={isImporting || !wiql || !projectId}
-            >
-              {isImporting ? t("requirementImport.importing") : t("requirementImport.addPreview")}
-            </Button>
           </>
         )}
       </div>
