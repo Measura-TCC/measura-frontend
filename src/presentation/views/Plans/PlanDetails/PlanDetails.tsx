@@ -2,30 +2,42 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/presentation/components/primitives";
+import { Tabs } from "@/presentation/components/primitives/Tabs";
 import {
   useMeasurementPlan,
   useMeasurementPlans,
 } from "@/core/hooks/measurementPlans";
 import { useMeasurementPlanExport } from "@/core/hooks/measurementPlans";
 import { useProjects } from "@/core/hooks/projects/useProjects";
-import { ExportFormat, MeasurementPlanStatus } from "@/core/types/plans";
+import { useAuth } from "@/core/hooks/auth/useAuth";
+import { canChangePlanStatus } from "@/core/utils/permissions";
+import { ExportFormat, MeasurementPlanStatus, type MeasurementPlanSummaryDto } from "@/core/types/plans";
 import { PlanVisualization } from "../components/PlanVisualization";
+import { PlanGQMStructure } from "../components/PlanGQMStructure";
+import { EditPlanModal } from "../components/EditPlanModal";
+import { DeletePlanModal } from "../components/DeletePlanModal";
 import {
   PlanContentManager,
   PlanHeader,
   PlanDetailsCard,
   PlanProgressCard,
   PlanStatisticsCard,
+  MeasurementMonitoringTab,
 } from "./components";
 
 interface PlanDetailsProps {
   planId: string;
 }
 
+type ActiveTab = 'details' | 'monitoring';
+
 export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
   const { t } = useTranslation("plans");
   const router = useRouter();
+  const { user } = useAuth();
   const [isExporting, setIsExporting] = useState(false);
+  const [activeTab, setActiveTab] = useState<ActiveTab>('details');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     planName: "",
@@ -34,11 +46,12 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
     status: MeasurementPlanStatus.DRAFT,
   });
 
-  const { plan, planError, isLoadingPlan } = useMeasurementPlan({ planId });
-  const { deletePlan, updatePlan, isUpdatingPlan, operationError, clearError } =
+  const { plan, planError, isLoadingPlan, mutatePlan } = useMeasurementPlan({ planId });
+  const { deletePlan, updatePlan, isUpdatingPlan, isDeletingPlan, operationError, clearError } =
     useMeasurementPlans();
   const { projects } = useProjects();
   const exportHook = useMeasurementPlanExport({ planId });
+  const canChangeStatus = canChangePlanStatus(user?.role);
 
   const getProjectName = (projectId: string): string => {
     const project = projects?.find((p) => p._id === projectId);
@@ -56,20 +69,6 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
       alert(`Failed to export plan as ${format}. Please try again.`);
     } finally {
       setIsExporting(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!plan) return;
-
-    if (confirm(t("planDetails.confirmDelete", { planName: plan.planName }))) {
-      try {
-        await deletePlan(planId);
-        router.push("/plans");
-      } catch (error) {
-        // Error is already handled by the hook
-        console.error("Failed to delete plan:", error);
-      }
     }
   };
 
@@ -92,21 +91,14 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
 
     try {
       await updatePlan(planId, {
-        planName:
-          editForm.planName !== plan.planName ? editForm.planName : undefined,
-        associatedProject:
-          editForm.associatedProject !== plan.associatedProject
-            ? editForm.associatedProject
-            : undefined,
-        planResponsible:
-          editForm.planResponsible !== plan.planResponsible
-            ? editForm.planResponsible
-            : undefined,
+        planName: editForm.planName !== plan.planName ? editForm.planName : undefined,
+        associatedProject: editForm.associatedProject !== plan.associatedProject ? editForm.associatedProject : undefined,
+        planResponsible: editForm.planResponsible !== plan.planResponsible ? editForm.planResponsible : undefined,
         status: editForm.status !== plan.status ? editForm.status : undefined,
       });
+      await mutatePlan();
       setIsEditing(false);
     } catch (error) {
-      // Error is already handled by the hook
       console.error("Failed to update plan:", error);
     }
   };
@@ -121,28 +113,45 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
     });
   };
 
-  const handleEditFormChange = (
-    field: string,
-    value: string | MeasurementPlanStatus
-  ) => {
+  const handleEditFormChange = (field: string, value: string | MeasurementPlanStatus) => {
     setEditForm((prev) => ({ ...prev, [field]: value }));
   };
+
+  const handleDeletePlan = async (planId: string) => {
+    await deletePlan(planId);
+    router.push("/plans?tab=createdPlans");
+  };
+
+  const planAsSummary: MeasurementPlanSummaryDto | null = plan ? {
+    id: plan.id,
+    planName: plan.planName,
+    associatedProject: plan.associatedProject,
+    planResponsible: plan.planResponsible,
+    status: plan.status,
+    createdAt: plan.createdAt,
+    updatedAt: plan.updatedAt,
+    objectivesCount: plan.objectivesCount,
+    questionsCount: plan.questionsCount,
+    metricsCount: plan.metricsCount,
+    measurementsCount: plan.measurementsCount,
+    progress: plan.progress,
+  } : null;
 
   if (isLoadingPlan) {
     return (
       <div className="space-y-6">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-2"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-2"></div>
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-4"></div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <div className="animate-pulse bg-gray-200 h-64 rounded-lg"></div>
-            <div className="animate-pulse bg-gray-200 h-32 rounded-lg"></div>
+            <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-64 rounded-lg"></div>
+            <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-32 rounded-lg"></div>
           </div>
           <div className="space-y-6">
-            <div className="animate-pulse bg-gray-200 h-48 rounded-lg"></div>
-            <div className="animate-pulse bg-gray-200 h-32 rounded-lg"></div>
+            <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-48 rounded-lg"></div>
+            <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-32 rounded-lg"></div>
           </div>
         </div>
       </div>
@@ -163,6 +172,7 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
           onCancelEdit={() => {}}
           onExport={() => {}}
           onDelete={() => {}}
+          onDeleteClick={() => {}}
         />
         <Card>
           <CardContent className="text-center py-12">
@@ -191,7 +201,8 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
         onSaveEdit={handleSaveEdit}
         onCancelEdit={handleCancelEdit}
         onExport={handleExport}
-        onDelete={handleDelete}
+        onDelete={() => {}}
+        onDeleteClick={() => setShowDeleteModal(true)}
       />
 
       {/* Error Alert */}
@@ -241,48 +252,82 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
         </div>
       )}
 
+      {/* Tab Navigation */}
+      <Tabs
+        tabs={[
+          { id: 'details', label: t("planDetails.detailsTab") },
+          { id: 'monitoring', label: t("monitoring.title") }
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
+
       {/* Main Content with responsive grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-        <div className="lg:col-span-2 space-y-4 lg:space-y-6">
-          {/* Plan Details Card */}
-          <PlanDetailsCard
-            plan={plan}
-            isEditing={isEditing}
-            editForm={editForm}
-            onEditFormChange={handleEditFormChange}
-            getProjectName={getProjectName}
-            projects={projects || []}
-          />
-
-          {/* Dual Mode Content: Visualization vs Edit */}
-          {!isEditing ? (
-            <div className="space-y-4">
-              <PlanVisualization
-                plan={plan}
-                projects={projects || []}
-                showNavigation={true}
-              />
-            </div>
-          ) : (
-            <PlanContentManager
+      {activeTab === 'details' ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+          <div className="lg:col-span-2 space-y-4 lg:space-y-6">
+            {/* Plan Details Card */}
+            <PlanDetailsCard
               plan={plan}
-              onUpdatePlan={updatePlan}
-              isReadOnly={false}
+              isEditing={isEditing}
+              editForm={editForm}
+              onEditFormChange={handleEditFormChange}
+              getProjectName={getProjectName}
+              projects={projects || []}
+              canChangeStatus={canChangeStatus}
             />
-          )}
-        </div>
 
-        {/* Responsive Sidebar */}
-        <div className="space-y-4 lg:space-y-6">
-          {/* <PlanProgressCard progress={plan.progress} /> */}
-          <PlanStatisticsCard
-            objectivesCount={plan.objectivesCount}
-            questionsCount={plan.questionsCount}
-            metricsCount={plan.metricsCount}
-            measurementsCount={plan.measurementsCount}
-          />
+            {/* Dual Mode Content: Visualization vs Edit */}
+            {!isEditing ? (
+              <div className="space-y-4">
+                <PlanVisualization
+                  plan={plan}
+                  projects={projects || []}
+                  showNavigation={true}
+                />
+              </div>
+            ) : (
+              <PlanContentManager
+                plan={plan}
+                planId={planId}
+                isReadOnly={false}
+              />
+            )}
+          </div>
+
+          {/* Responsive Sidebar */}
+          <div className="space-y-4 lg:space-y-6">
+            <PlanStatisticsCard
+              planId={planId}
+              objectivesCount={plan.objectivesCount}
+              questionsCount={plan.questionsCount}
+              metricsCount={plan.metricsCount}
+              measurementsCount={plan.measurementsCount}
+            />
+
+            {!isEditing && (
+              <Card>
+                <CardContent className="pt-6">
+                  <PlanGQMStructure plan={plan} />
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
-      </div>
+      ) : (
+        <MeasurementMonitoringTab planId={planId} plan={plan} />
+      )}
+
+      {/* Delete Modal */}
+      {showDeleteModal && planAsSummary && (
+        <DeletePlanModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          plan={planAsSummary}
+          onDelete={handleDeletePlan}
+          isDeleting={isDeletingPlan}
+        />
+      )}
     </div>
   );
 };

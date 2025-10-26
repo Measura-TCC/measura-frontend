@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Button,
   Input,
+  Tabs,
 } from "@/presentation/components/primitives";
 import type { Measurement } from "../utils/types";
 import { availableMeasurements } from "../utils/stepData";
@@ -12,6 +13,7 @@ interface CustomMeasurementModalProps {
   onClose: () => void;
   onAddMeasurement: (measurement: Measurement) => void;
   existingMeasurements: Measurement[];
+  editingData?: Measurement;
 }
 
 export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
@@ -19,19 +21,69 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
   onClose,
   onAddMeasurement,
   existingMeasurements,
+  editingData,
 }) => {
   const { t } = useTranslation("plans");
-  const [selectedTab, setSelectedTab] = useState("predefined");
+  const [selectedTab, setSelectedTab] = useState(editingData ? "custom" : "predefined");
+  const [acronymError, setAcronymError] = useState<string | null>(null);
+
+  // If editing data contains translation keys, translate them for display
+  const getTranslatedValue = (value: string | undefined, prefix: string) => {
+    if (!value) return "";
+    // Handle both new format (entities.) and old format (metrics.measurementEntities.)
+    if (value.startsWith("metrics.measurementEntities.")) {
+      // Convert old format to new format and translate
+      const key = value.replace("metrics.measurementEntities.", "entities.");
+      return t(key);
+    }
+    if (value.startsWith(prefix)) {
+      return t(value);
+    }
+    return value;
+  };
+
   const [customMeasurement, setCustomMeasurement] = useState<Measurement>({
-    measurementEntity: "",
-    measurementAcronym: "",
-    measurementProperties: "",
-    measurementUnit: "",
-    measurementScale: "",
-    measurementProcedure: "",
-    measurementFrequency: "",
-    measurementResponsible: "",
+    measurementEntity: getTranslatedValue(editingData?.measurementEntity, "entities."),
+    measurementAcronym: editingData?.measurementAcronym || "",
+    measurementProperties: getTranslatedValue(editingData?.measurementProperties, "measurements.properties."),
+    measurementUnit: getTranslatedValue(editingData?.measurementUnit, "units."),
+    measurementScale: getTranslatedValue(editingData?.measurementScale, "scales."),
+    measurementProcedure: getTranslatedValue(editingData?.measurementProcedure, "measurements.procedures."),
+    measurementFrequency: getTranslatedValue(editingData?.measurementFrequency, "measurements.frequency."),
+    measurementResponsible: getTranslatedValue(editingData?.measurementResponsible, "measurements.responsible."),
   });
+
+  // Update state when editingData changes
+  useEffect(() => {
+    if (editingData) {
+      setCustomMeasurement({
+        measurementEntity: getTranslatedValue(editingData.measurementEntity, "entities."),
+        measurementAcronym: editingData.measurementAcronym || "",
+        measurementProperties: getTranslatedValue(editingData.measurementProperties, "measurements.properties."),
+        measurementUnit: getTranslatedValue(editingData.measurementUnit, "units."),
+        measurementScale: getTranslatedValue(editingData.measurementScale, "scales."),
+        measurementProcedure: getTranslatedValue(editingData.measurementProcedure, "measurements.procedures."),
+        measurementFrequency: getTranslatedValue(editingData.measurementFrequency, "measurements.frequency."),
+        measurementResponsible: getTranslatedValue(editingData.measurementResponsible, "measurements.responsible."),
+      });
+    }
+  }, [editingData]);
+
+  // Check for duplicate acronym
+  useEffect(() => {
+    if (!customMeasurement.measurementAcronym) {
+      setAcronymError(null);
+      return;
+    }
+
+    const isDuplicate = existingMeasurements.some(
+      (m) =>
+        m.measurementAcronym === customMeasurement.measurementAcronym &&
+        (!editingData || editingData.measurementAcronym !== customMeasurement.measurementAcronym)
+    );
+
+    setAcronymError(isDuplicate ? t("measurement.acronymDuplicateError") : null);
+  }, [customMeasurement.measurementAcronym, existingMeasurements, editingData, t]);
 
   const availablePredefined = availableMeasurements.filter(
     (measurement) =>
@@ -88,30 +140,28 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
       <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border" onClick={(e) => e.stopPropagation()}>
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">{t("modals.customMeasurement.title")}</h2>
-            <button onClick={handleClose} className="text-gray-500 hover:text-gray-700">
+            <h2 className="text-lg font-semibold">
+              {editingData ? t("editMeasurement") : t("modals.customMeasurement.title")}
+            </h2>
+            <button onClick={handleClose} className="text-gray-500 hover:text-gray-700 cursor-pointer">
               ×
             </button>
           </div>
 
-          <div className="mb-4">
-            <div className="flex border-b">
-              <button
-                className={`px-4 py-2 ${selectedTab === 'predefined' ? 'border-b-2 border-primary text-primary' : 'text-gray-600'}`}
-                onClick={() => setSelectedTab('predefined')}
-              >
-                {t("modals.customMetric.predefinedTab")}
-              </button>
-              <button
-                className={`px-4 py-2 ${selectedTab === 'custom' ? 'border-b-2 border-primary text-primary' : 'text-gray-600'}`}
-                onClick={() => setSelectedTab('custom')}
-              >
-                {t("modals.customMetric.customTab")}
-              </button>
+          {!editingData && (
+            <div className="mb-4">
+              <Tabs
+                tabs={[
+                  { id: "predefined", label: t("modals.customMetric.predefinedTab") },
+                  { id: "custom", label: t("modals.customMetric.customTab") },
+                ]}
+                activeTab={selectedTab}
+                onTabChange={setSelectedTab}
+              />
             </div>
-          </div>
+          )}
 
-          {selectedTab === 'predefined' && (
+          {!editingData && selectedTab === 'predefined' && (
             <div className="space-y-4">
             <p className="text-sm text-secondary">
               {t("measurement.selectMeasurement")}
@@ -131,7 +181,9 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                   >
                     <div className="flex justify-between items-start mb-2">
                       <h4 className="font-medium text-default">
-                        {t(measurement.measurementEntity)}
+                        {t(measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
+                          ? measurement.measurementEntity.replace("metrics.measurementEntities.", "entities.")
+                          : measurement.measurementEntity)}
                       </h4>
                       <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
                         {measurement.measurementAcronym}
@@ -161,7 +213,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
             </div>
           )}
 
-          {selectedTab === 'custom' && (
+          {(editingData || selectedTab === 'custom') && (
             <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -177,6 +229,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                     }))
                   }
                   placeholder={t("modals.customMeasurement.entityPlaceholder")}
+                  maxLength={50}
                 />
               </div>
 
@@ -195,6 +248,9 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                   placeholder={t("modals.customMeasurement.acronymPlaceholder")}
                   maxLength={3}
                 />
+                {acronymError && (
+                  <p className="text-xs text-red-600">{acronymError}</p>
+                )}
               </div>
             </div>
 
@@ -202,18 +258,24 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
               <label className="text-sm font-medium text-default">
                 {t("measurement.measurementProperties")} *
               </label>
-              <textarea
-                value={customMeasurement.measurementProperties}
-                onChange={(e) =>
-                  setCustomMeasurement((prev) => ({
-                    ...prev,
-                    measurementProperties: e.target.value,
-                  }))
-                }
-                placeholder={t("modals.customMeasurement.propertiesPlaceholder")}
-                rows={3}
-                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
-              />
+              <div className="relative">
+                <textarea
+                  value={customMeasurement.measurementProperties}
+                  onChange={(e) =>
+                    setCustomMeasurement((prev) => ({
+                      ...prev,
+                      measurementProperties: e.target.value.slice(0, 200),
+                    }))
+                  }
+                  placeholder={t("modals.customMeasurement.propertiesPlaceholder")}
+                  rows={3}
+                  maxLength={200}
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
+                />
+                <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-white px-1">
+                  {customMeasurement.measurementProperties.length}/200
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -230,6 +292,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                     }))
                   }
                   placeholder={t("modals.customMeasurement.unitPlaceholder")}
+                  maxLength={50}
                 />
               </div>
 
@@ -258,18 +321,24 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
               <label className="text-sm font-medium text-default">
                 {t("measurement.measurementProcedure")} *
               </label>
-              <textarea
-                value={customMeasurement.measurementProcedure}
-                onChange={(e) =>
-                  setCustomMeasurement((prev) => ({
-                    ...prev,
-                    measurementProcedure: e.target.value,
-                  }))
-                }
-                placeholder={t("modals.customMeasurement.procedurePlaceholder")}
-                rows={3}
-                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
-              />
+              <div className="relative">
+                <textarea
+                  value={customMeasurement.measurementProcedure}
+                  onChange={(e) =>
+                    setCustomMeasurement((prev) => ({
+                      ...prev,
+                      measurementProcedure: e.target.value.slice(0, 1000),
+                    }))
+                  }
+                  placeholder={t("modals.customMeasurement.procedurePlaceholder")}
+                  rows={3}
+                  maxLength={1000}
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
+                />
+                <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-white px-1">
+                  {customMeasurement.measurementProcedure.length}/1000
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -286,12 +355,13 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                     }))
                   }
                   placeholder={t("modals.customMeasurement.frequencyPlaceholder")}
+                  maxLength={50}
                 />
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-default">
-                  {t("measurement.measurementResponsible")}
+                  {t("measurement.measurementResponsible")} {t("measurement.optionalField")}
                 </label>
                 <Input
                   value={customMeasurement.measurementResponsible}
@@ -302,6 +372,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                     }))
                   }
                   placeholder={t("modals.customMeasurement.responsiblePlaceholder")}
+                  maxLength={255}
                 />
               </div>
             </div>
@@ -312,7 +383,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
             <Button variant="secondary" onClick={handleClose}>
               {t("modals.customMeasurement.cancel")}
             </Button>
-            {selectedTab === "custom" && (
+            {(editingData || selectedTab === "custom") && (
               <Button
                 onClick={handleCreateCustomMeasurement}
                 disabled={
@@ -322,10 +393,11 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                   !customMeasurement.measurementUnit.trim() ||
                   !customMeasurement.measurementScale.trim() ||
                   !customMeasurement.measurementProcedure.trim() ||
-                  !customMeasurement.measurementFrequency.trim()
+                  !customMeasurement.measurementFrequency.trim() ||
+                  !!acronymError
                 }
               >
-                {t("modals.customMeasurement.create")}
+                {editingData ? t("updateMeasurement") : t("modals.customMeasurement.create")}
               </Button>
             )}
           </div>

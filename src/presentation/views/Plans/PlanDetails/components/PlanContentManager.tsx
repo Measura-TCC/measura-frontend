@@ -10,17 +10,28 @@ import {
 import {
   PlusIcon,
   TrashIcon,
-  GearIcon,
+  PencilIcon,
   ChevronDownIcon,
   ChevronRightIcon,
 } from "@/presentation/assets/icons";
 import type {
   MeasurementPlanResponseDto,
+  Objective,
+  Question,
+  Metric,
+  Measurement,
 } from "@/core/types/plans";
+import { CustomQuestionModal } from "../../components/Tabs/NewPlanTab/components/CustomQuestionModal";
+import { CustomMetricModal } from "../../components/Tabs/NewPlanTab/components/CustomMetricModal";
+import { CustomMeasurementModal } from "../../components/Tabs/NewPlanTab/components/CustomMeasurementModal";
+import { CustomObjectiveModal } from "../../components/Tabs/NewPlanTab/components/CustomObjectiveModal";
+import { ConfirmDeleteModal } from "@/presentation/components/modals/ConfirmDeleteModal";
+import { useMeasurementPlanOperations } from "@/core/hooks/measurementPlans/useMeasurementPlanOperations";
+import { useToast } from "@/core/hooks/common/useToast";
 
 interface PlanContentManagerProps {
   plan: MeasurementPlanResponseDto;
-  onUpdatePlan: (planId: string, updates: any) => Promise<MeasurementPlanResponseDto>;
+  planId: string;
   isReadOnly?: boolean;
 }
 
@@ -30,31 +41,257 @@ interface ExpandedState {
 
 export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
   plan,
-  onUpdatePlan,
+  planId,
   isReadOnly = false,
 }) => {
   const { t } = useTranslation("plans");
+  const toast = useToast();
   const [expanded, setExpanded] = useState<ExpandedState>({});
+  const [showObjectiveModal, setShowObjectiveModal] = useState(false);
+  const [editingObjective, setEditingObjective] = useState<Objective | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{
+    type: "objective" | "question" | "metric" | "measurement";
+    id: string;
+    title: string;
+    parentIds?: string[];
+  } | null>(null);
   const [editingItem, setEditingItem] = useState<{
     type: "objective" | "question" | "metric" | "measurement";
     id?: string;
+    data?: Objective | Question | Metric | Measurement;
     parentIds?: string[];
   } | null>(null);
+
+  const {
+    addObjective,
+    updateObjective,
+    deleteObjective,
+    addQuestion,
+    updateQuestion,
+    deleteQuestion,
+    addMetric,
+    updateMetric,
+    deleteMetric,
+    addMeasurement,
+    updateMeasurement,
+    deleteMeasurement,
+  } = useMeasurementPlanOperations({ planId });
 
   const toggleExpanded = (id: string) => {
     setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleAddObjective = () => {
-    setEditingItem({ type: "objective" });
+  const handleAddObjective = async (objective: any) => {
+    try {
+      if (editingObjective?._id) {
+        // Update existing objective - only send the title, preserve existing questions
+        await updateObjective(editingObjective._id, { objectiveTitle: objective.objectiveTitle });
+        toast.success({ message: t("objectiveUpdatedSuccess") || "Objective updated successfully" });
+        setEditingObjective(null);
+      } else {
+        // Add new objective
+        await addObjective({ objectiveTitle: objective.objectiveTitle, questions: [] });
+        toast.success({ message: t("objectiveAddedSuccess") || "Objective added successfully" });
+      }
+      setShowObjectiveModal(false);
+    } catch (error: any) {
+      console.error("Failed to add/update objective:", error);
+      const baseMessage = editingObjective?._id
+        ? (t("objectiveUpdateError") || "Failed to update objective")
+        : (t("objectiveAddError") || "Failed to add objective");
+      const backendMessage = error?.response?.data?.message || error?.message || "An error occurred";
+      toast.error({ message: `${baseMessage}: ${backendMessage}` });
+    }
+  };
+
+  const handleEditObjective = (objective: Objective) => {
+    setEditingObjective(objective);
+    setShowObjectiveModal(true);
+  };
+
+  // Helper function to get translated display text
+  const getDisplayText = (text: string, prefix: string): string => {
+    // Handle both new format (entities.) and old format (metrics.measurementEntities.)
+    if (text.startsWith("metrics.measurementEntities.")) {
+      const key = text.replace("metrics.measurementEntities.", "entities.");
+      return t(key);
+    }
+    if (text.startsWith(prefix)) {
+      return t(text);
+    }
+    return text;
+  };
+
+  // Get current metric data from plan (refreshes when plan updates)
+  const getCurrentMetric = (objectiveId: string, questionId: string, metricId: string): Metric | undefined => {
+    const objective = plan.objectives?.find(o => o._id === objectiveId);
+    const question = objective?.questions?.find(q => q._id === questionId);
+    return question?.metrics?.find(m => m._id === metricId);
+  };
+
+  // Get all metrics in plan for mnemonic uniqueness validation
+  const getAllMetricsInPlan = (): Metric[] => {
+    const allMetrics: Metric[] = [];
+    plan.objectives?.forEach(obj => {
+      obj.questions?.forEach(q => {
+        if (q.metrics) allMetrics.push(...q.metrics);
+      });
+    });
+    return allMetrics;
+  };
+
+  const handleDeleteObjective = async (objective: Objective) => {
+    setDeleteConfirm({
+      type: "objective",
+      id: objective._id!,
+      title: getDisplayText(objective.objectiveTitle, "objectives."),
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteConfirm) return;
+
+    try {
+      switch (deleteConfirm.type) {
+        case "objective":
+          await deleteObjective(deleteConfirm.id);
+          toast.success({ message: t("objectiveDeletedSuccess") || "Objective deleted successfully" });
+          break;
+        case "question":
+          if (deleteConfirm.parentIds) {
+            await deleteQuestion(deleteConfirm.parentIds[0], deleteConfirm.id);
+            toast.success({ message: t("questionDeletedSuccess") || "Question deleted successfully" });
+          }
+          break;
+        case "metric":
+          if (deleteConfirm.parentIds) {
+            await deleteMetric(deleteConfirm.parentIds[0], deleteConfirm.parentIds[1], deleteConfirm.id);
+            toast.success({ message: t("metricDeletedSuccess") || "Metric deleted successfully" });
+          }
+          break;
+        case "measurement":
+          if (deleteConfirm.parentIds) {
+            await deleteMeasurement(
+              deleteConfirm.parentIds[0],
+              deleteConfirm.parentIds[1],
+              deleteConfirm.parentIds[2],
+              deleteConfirm.id
+            );
+            toast.success({ message: t("measurementDeletedSuccess") || "Measurement deleted successfully" });
+          }
+          break;
+      }
+      setDeleteConfirm(null);
+    } catch (error: any) {
+      console.error(`Failed to delete ${deleteConfirm.type}:`, error);
+      const baseMessage = t(`${deleteConfirm.type}DeleteError`) || `Failed to delete ${deleteConfirm.type}`;
+      const backendMessage = error?.response?.data?.message || error?.message || "An error occurred";
+      toast.error({ message: `${baseMessage}: ${backendMessage}` });
+    }
   };
 
   const handleAddQuestion = (objectiveId: string) => {
     setEditingItem({ type: "question", parentIds: [objectiveId] });
   };
 
+  const handleSaveQuestion = async (question: any) => {
+    if (!editingItem?.parentIds) return;
+
+    const [objectiveId] = editingItem.parentIds;
+    try {
+      if (editingItem.id) {
+        // Edit mode - only send the question text, preserve existing metrics
+        await updateQuestion(objectiveId, editingItem.id, { questionText: question.questionText });
+        toast.success({ message: t("questionUpdatedSuccess") || "Question updated successfully" });
+      } else {
+        // Add mode
+        await addQuestion(objectiveId, { questionText: question.questionText, metrics: [] });
+        toast.success({ message: t("questionAddedSuccess") || "Question added successfully" });
+      }
+      setEditingItem(null);
+    } catch (error: any) {
+      console.error("Failed to save question:", error);
+      const baseMessage = editingItem.id
+        ? (t("questionUpdateError") || "Failed to update question")
+        : (t("questionAddError") || "Failed to add question");
+      const backendMessage = error?.response?.data?.message || error?.message || "An error occurred";
+      toast.error({ message: `${baseMessage}: ${backendMessage}` });
+    }
+  };
+
+  const handleEditQuestion = (objectiveId: string, question: Question) => {
+    setEditingItem({
+      type: "question",
+      id: question._id,
+      data: question,
+      parentIds: [objectiveId]
+    });
+  };
+
+  const handleDeleteQuestion = async (objectiveId: string, question: Question) => {
+    setDeleteConfirm({
+      type: "question",
+      id: question._id!,
+      title: getDisplayText(question.questionText, "questions."),
+      parentIds: [objectiveId],
+    });
+  };
+
   const handleAddMetric = (objectiveId: string, questionId: string) => {
     setEditingItem({ type: "metric", parentIds: [objectiveId, questionId] });
+  };
+
+  const handleSaveMetric = async (metric: any) => {
+    if (!editingItem?.parentIds) return;
+
+    const [objectiveId, questionId] = editingItem.parentIds;
+
+    // Clean measurements by removing MongoDB fields (_id, __v)
+    const cleanMeasurements = metric.measurements?.map(({ _id, __v, ...measurement }: any) => measurement) || [];
+
+    try {
+      if (editingItem.id) {
+        // Edit mode
+        await updateMetric(objectiveId, questionId, editingItem.id, {
+          ...metric,
+          measurements: cleanMeasurements
+        });
+        toast.success({ message: t("metricUpdatedSuccess") || "Metric updated successfully" });
+      } else {
+        // Add mode
+        await addMetric(objectiveId, questionId, {
+          ...metric,
+          measurements: cleanMeasurements
+        });
+        toast.success({ message: t("metricAddedSuccess") || "Metric added successfully" });
+      }
+      setEditingItem(null);
+    } catch (error: any) {
+      console.error("Failed to save metric:", error);
+      const baseMessage = editingItem.id
+        ? (t("metricUpdateError") || "Failed to update metric")
+        : (t("metricAddError") || "Failed to add metric");
+      const backendMessage = error?.response?.data?.message || error?.message || "An error occurred";
+      toast.error({ message: `${baseMessage}: ${backendMessage}` });
+    }
+  };
+
+  const handleEditMetric = (objectiveId: string, questionId: string, metric: Metric) => {
+    setEditingItem({
+      type: "metric",
+      id: metric._id,
+      data: metric,
+      parentIds: [objectiveId, questionId]
+    });
+  };
+
+  const handleDeleteMetric = async (objectiveId: string, questionId: string, metric: Metric) => {
+    setDeleteConfirm({
+      type: "metric",
+      id: metric._id!,
+      title: getDisplayText(metric.metricName, "metrics."),
+      parentIds: [objectiveId, questionId],
+    });
   };
 
   const handleAddMeasurement = (objectiveId: string, questionId: string, metricId: string) => {
@@ -64,17 +301,69 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     });
   };
 
+  const handleSaveMeasurement = async (measurement: any) => {
+    if (!editingItem?.parentIds) return;
+
+    const [objectiveId, questionId, metricId] = editingItem.parentIds;
+    try {
+      if (editingItem.id) {
+        // Edit mode
+        await updateMeasurement(objectiveId, questionId, metricId, editingItem.id, measurement);
+        toast.success({ message: t("measurementUpdatedSuccess") || "Measurement updated successfully" });
+      } else {
+        // Add mode
+        await addMeasurement(objectiveId, questionId, metricId, measurement);
+        toast.success({ message: t("measurementAddedSuccess") || "Measurement added successfully" });
+      }
+      setEditingItem(null);
+    } catch (error: any) {
+      console.error("Failed to save measurement:", error);
+      const baseMessage = editingItem.id
+        ? (t("measurementUpdateError") || "Failed to update measurement")
+        : (t("measurementAddError") || "Failed to add measurement");
+      const backendMessage = error?.response?.data?.message || error?.message || "An error occurred";
+      toast.error({ message: `${baseMessage}: ${backendMessage}` });
+    }
+  };
+
+  const handleEditMeasurement = (
+    objectiveId: string,
+    questionId: string,
+    metricId: string,
+    measurement: Measurement
+  ) => {
+    setEditingItem({
+      type: "measurement",
+      id: measurement._id,
+      data: measurement,
+      parentIds: [objectiveId, questionId, metricId]
+    });
+  };
+
+  const handleDeleteMeasurement = async (
+    objectiveId: string,
+    questionId: string,
+    metricId: string,
+    measurement: Measurement
+  ) => {
+    setDeleteConfirm({
+      type: "measurement",
+      id: measurement._id!,
+      title: getDisplayText(measurement.measurementEntity, "entities."),
+      parentIds: [objectiveId, questionId, metricId],
+    });
+  };
+
   const renderObjective = (objective: any, index: number) => {
     const objId = `obj-${index}`;
     const isExpanded = expanded[objId];
 
     return (
       <div key={objId} className="border border-gray-200 rounded-lg">
-        <div className="flex items-center justify-between p-4 bg-blue-50">
-          <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 p-4 bg-blue-50">
+          <div className="flex items-center space-x-2 flex-1 min-w-[200px] cursor-pointer" onClick={() => toggleExpanded(objId)}>
             <button
-              onClick={() => toggleExpanded(objId)}
-              className="p-1 hover:bg-blue-100 rounded"
+              className="p-1 hover:bg-blue-100 rounded cursor-pointer flex-shrink-0"
             >
               {isExpanded ? (
                 <ChevronDownIcon className="w-4 h-4" />
@@ -82,26 +371,31 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
                 <ChevronRightIcon className="w-4 h-4" />
               )}
             </button>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+            <div className="flex items-center space-x-2 min-w-0 flex-1">
+              <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0">
                 O{index + 1}
               </div>
-              <div>
-                <h3 className="font-medium text-gray-900">
-                  {objective.objectiveTitle}
+              <div className="min-w-0 flex-1">
+                <h3 className="font-medium text-gray-900 break-words">
+                  {objective.objectiveTitle?.startsWith("objectives.")
+                    ? t(objective.objectiveTitle)
+                    : objective.objectiveTitle}
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   {objective.questions?.length || 0} {t("workflow.questions")}
                 </p>
               </div>
             </div>
           </div>
           {!isReadOnly && (
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleAddQuestion(objective.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddQuestion(objective._id!);
+                }}
                 className="text-blue-600 hover:text-blue-700"
               >
                 <PlusIcon className="w-4 h-4 mr-1" />
@@ -110,13 +404,20 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setEditingItem({ type: "objective", id: objective.id })}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditObjective(objective);
+                }}
               >
-                <GearIcon className="w-4 h-4" />
+                <PencilIcon className="w-4 h-4" />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteObjective(objective);
+                }}
                 className="text-red-600 hover:text-red-700"
               >
                 <TrashIcon className="w-4 h-4" />
@@ -128,16 +429,16 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
         {isExpanded && (
           <div className="p-4 space-y-4">
             {objective.questions?.map((question: any, qIndex: number) =>
-              renderQuestion(question, qIndex, objective.id)
+              renderQuestion(question, qIndex, objective._id!)
             )}
             {(!objective.questions || objective.questions.length === 0) && (
-              <div className="text-center py-4 text-gray-500">
+              <div className="text-center py-4 text-gray-500 dark:text-gray-400">
                 <p>{t("noQuestionsYet")}</p>
                 {!isReadOnly && (
                   <Button
-                    variant="ghost"
+                    variant="primary"
                     size="sm"
-                    onClick={() => handleAddQuestion(objective.id)}
+                    onClick={() => handleAddQuestion(objective._id!)}
                     className="mt-2"
                   >
                     <PlusIcon className="w-4 h-4 mr-1" />
@@ -158,11 +459,11 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
 
     return (
       <div key={qId} className="border border-gray-200 rounded-lg ml-4">
-        <div className="flex items-center justify-between p-3 bg-green-50">
-          <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-green-50">
+          <div className="flex items-center space-x-2 flex-1 min-w-[200px]">
             <button
               onClick={() => toggleExpanded(qId)}
-              className="p-1 hover:bg-green-100 rounded"
+              className="p-1 hover:bg-green-100 rounded cursor-pointer flex-shrink-0"
             >
               {isExpanded ? (
                 <ChevronDownIcon className="w-4 h-4" />
@@ -170,26 +471,28 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
                 <ChevronRightIcon className="w-4 h-4" />
               )}
             </button>
-            <div className="flex items-center space-x-2">
-              <div className="w-7 h-7 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+            <div className="flex items-center space-x-2 min-w-0 flex-1">
+              <div className="w-7 h-7 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0">
                 Q{index + 1}
               </div>
-              <div>
-                <h4 className="font-medium text-gray-900 text-sm">
-                  {question.questionText}
+              <div className="min-w-0 flex-1">
+                <h4 className="font-medium text-gray-900 text-sm break-words">
+                  {question.questionText?.startsWith("questions.")
+                    ? t(question.questionText)
+                    : question.questionText}
                 </h4>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   {question.metrics?.length || 0} {t("workflow.metrics")}
                 </p>
               </div>
             </div>
           </div>
           {!isReadOnly && (
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleAddMetric(objectiveId, question.id)}
+                onClick={() => handleAddMetric(objectiveId, question._id!)}
                 className="text-green-600 hover:text-green-700"
               >
                 <PlusIcon className="w-3 h-3 mr-1" />
@@ -198,17 +501,14 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setEditingItem({
-                  type: "question",
-                  id: question.id,
-                  parentIds: [objectiveId]
-                })}
+                onClick={() => handleEditQuestion(objectiveId, question)}
               >
-                <GearIcon className="w-3 h-3" />
+                <PencilIcon className="w-3 h-3" />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={() => handleDeleteQuestion(objectiveId, question)}
                 className="text-red-600 hover:text-red-700"
               >
                 <TrashIcon className="w-3 h-3" />
@@ -220,7 +520,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
         {isExpanded && (
           <div className="p-3 space-y-3">
             {question.metrics?.map((metric: any, mIndex: number) =>
-              renderMetric(metric, mIndex, objectiveId, question.id)
+              renderMetric(metric, mIndex, objectiveId, question._id!)
             )}
             {(!question.metrics || question.metrics.length === 0) && (
               <div className="text-center py-3 text-gray-500">
@@ -229,7 +529,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleAddMetric(objectiveId, question.id)}
+                    onClick={() => handleAddMetric(objectiveId, question._id!)}
                     className="mt-2"
                   >
                     <PlusIcon className="w-4 h-4 mr-1" />
@@ -250,11 +550,11 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
 
     return (
       <div key={mId} className="border border-gray-200 rounded-lg ml-4">
-        <div className="flex items-center justify-between p-3 bg-orange-50">
-          <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-orange-50">
+          <div className="flex items-center space-x-2 flex-1 min-w-[200px]">
             <button
               onClick={() => toggleExpanded(mId)}
-              className="p-1 hover:bg-orange-100 rounded"
+              className="p-1 hover:bg-orange-100 rounded cursor-pointer flex-shrink-0"
             >
               {isExpanded ? (
                 <ChevronDownIcon className="w-4 h-4" />
@@ -262,13 +562,15 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
                 <ChevronRightIcon className="w-4 h-4" />
               )}
             </button>
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-medium">
+            <div className="flex items-center space-x-2 min-w-0 flex-1">
+              <div className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0">
                 M{index + 1}
               </div>
-              <div>
-                <h5 className="font-medium text-gray-900 text-sm">
-                  {metric.metricName} ({metric.metricMnemonic})
+              <div className="min-w-0 flex-1">
+                <h5 className="font-medium text-gray-900 text-sm break-words">
+                  {metric.metricName?.startsWith("metrics.")
+                    ? t(metric.metricName)
+                    : metric.metricName} ({metric.metricMnemonic})
                 </h5>
                 <p className="text-xs text-gray-500">
                   {metric.measurements?.length || 0} {t("workflow.measurements")}
@@ -277,30 +579,27 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
             </div>
           </div>
           {!isReadOnly && (
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => handleAddMeasurement(objectiveId, questionId, metric.id)}
+                onClick={() => handleAddMeasurement(objectiveId, questionId, metric._id!)}
                 className="text-orange-600 hover:text-orange-700"
               >
                 <PlusIcon className="w-3 h-3 mr-1" />
-                {t("addMeasurement")}
+                {t("measurement.addMeasurement")}
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setEditingItem({
-                  type: "metric",
-                  id: metric.id,
-                  parentIds: [objectiveId, questionId]
-                })}
+                onClick={() => handleEditMetric(objectiveId, questionId, metric)}
               >
-                <GearIcon className="w-3 h-3" />
+                <PencilIcon className="w-3 h-3" />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={() => handleDeleteMetric(objectiveId, questionId, metric)}
                 className="text-red-600 hover:text-red-700"
               >
                 <TrashIcon className="w-3 h-3" />
@@ -314,7 +613,11 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
             <div className="grid grid-cols-2 gap-2 text-sm mb-3">
               <div>
                 <span className="font-medium text-gray-700">{t("description")}:</span>
-                <p className="text-gray-600">{metric.metricDescription}</p>
+                <p className="text-gray-600">
+                  {metric.metricDescription?.startsWith("metrics.descriptions.")
+                    ? t(metric.metricDescription)
+                    : metric.metricDescription}
+                </p>
               </div>
               <div>
                 <span className="font-medium text-gray-700">{t("formula")}:</span>
@@ -335,7 +638,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
             <div className="space-y-2">
               <h6 className="font-medium text-gray-700 text-sm">{t("workflow.measurements")}:</h6>
               {metric.measurements?.map((measurement: any, measIndex: number) =>
-                renderMeasurement(measurement, measIndex, objectiveId, questionId, metric.id)
+                renderMeasurement(measurement, measIndex, objectiveId, questionId, metric._id!)
               )}
               {(!metric.measurements || metric.measurements.length === 0) && (
                 <div className="text-center py-2 text-gray-500">
@@ -344,7 +647,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleAddMeasurement(objectiveId, questionId, metric.id)}
+                      onClick={() => handleAddMeasurement(objectiveId, questionId, metric._id!)}
                       className="mt-1"
                     >
                       <PlusIcon className="w-3 h-3 mr-1" />
@@ -376,10 +679,18 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
             </div>
             <div>
               <h6 className="font-medium text-gray-900 text-sm">
-                {measurement.measurementEntity} ({measurement.measurementAcronym})
+                {measurement.measurementEntity?.startsWith("entities.") || measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
+                  ? t(measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
+                      ? measurement.measurementEntity.replace("metrics.measurementEntities.", "entities.")
+                      : measurement.measurementEntity)
+                  : measurement.measurementEntity} ({measurement.measurementAcronym})
               </h6>
               <p className="text-xs text-gray-500">
-                {measurement.measurementUnit} • {measurement.measurementFrequency}
+                {measurement.measurementUnit?.startsWith("units.")
+                  ? t(measurement.measurementUnit)
+                  : measurement.measurementUnit} • {measurement.measurementFrequency?.startsWith("measurements.frequency.")
+                  ? t(measurement.measurementFrequency)
+                  : measurement.measurementFrequency}
               </p>
             </div>
           </div>
@@ -388,17 +699,14 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setEditingItem({
-                  type: "measurement",
-                  id: measurement.id,
-                  parentIds: [objectiveId, questionId, metricId]
-                })}
+                onClick={() => handleEditMeasurement(objectiveId, questionId, metricId, measurement)}
               >
-                <GearIcon className="w-3 h-3" />
+                <PencilIcon className="w-3 h-3" />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={() => handleDeleteMeasurement(objectiveId, questionId, metricId, measurement)}
                 className="text-red-600 hover:text-red-700"
               >
                 <TrashIcon className="w-3 h-3" />
@@ -407,8 +715,12 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
           )}
         </div>
         <div className="mt-2 text-xs text-gray-600">
-          <p><strong>{t("properties")}:</strong> {measurement.measurementProperties}</p>
-          <p><strong>{t("procedure")}:</strong> {measurement.measurementProcedure}</p>
+          <p><strong>{t("properties")}:</strong> {measurement.measurementProperties?.startsWith("measurements.properties.")
+            ? t(measurement.measurementProperties)
+            : measurement.measurementProperties}</p>
+          <p><strong>{t("procedure")}:</strong> {measurement.measurementProcedure?.startsWith("measurements.procedures.")
+            ? t(measurement.measurementProcedure)
+            : measurement.measurementProcedure}</p>
         </div>
       </div>
     );
@@ -434,7 +746,11 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
               </p>
             </div>
             {!isReadOnly && (
-              <Button onClick={handleAddObjective} variant="primary">
+              <Button
+                variant="primary"
+                onClick={() => setShowObjectiveModal(true)}
+                className="mt-2"
+              >
                 <PlusIcon className="w-4 h-4 mr-2" />
                 {t("addFirstObjective")}
               </Button>
@@ -451,8 +767,11 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
         <div className="flex items-center justify-between">
           <CardTitle>{t("planContent")}</CardTitle>
           {!isReadOnly && (
-            <Button onClick={handleAddObjective} size="sm">
-              <PlusIcon className="w-4 h-4 mr-1" />
+            <Button
+              variant="primary"
+              onClick={() => setShowObjectiveModal(true)}
+            >
+              <PlusIcon className="w-4 h-4 mr-2" />
               {t("addObjective")}
             </Button>
           )}
@@ -463,6 +782,61 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
           renderObjective(objective, index)
         )}
       </CardContent>
+
+      {/* Modals */}
+      <CustomObjectiveModal
+        isOpen={showObjectiveModal}
+        onClose={() => {
+          setShowObjectiveModal(false);
+          setEditingObjective(null);
+        }}
+        onAddObjective={handleAddObjective}
+        existingObjectives={plan.objectives || []}
+        editingData={editingObjective as any}
+      />
+
+      {editingItem?.type === "question" && (
+        <CustomQuestionModal
+          isOpen={true}
+          onClose={() => setEditingItem(null)}
+          onAddQuestion={handleSaveQuestion}
+          editingData={editingItem.data as any}
+        />
+      )}
+
+      {editingItem?.type === "metric" && editingItem.parentIds && (
+        <CustomMetricModal
+          isOpen={true}
+          onClose={() => setEditingItem(null)}
+          onAddMetric={handleSaveMetric}
+          editingData={editingItem.id ? getCurrentMetric(editingItem.parentIds[0], editingItem.parentIds[1], editingItem.id) as any : undefined}
+          objectiveId={editingItem.parentIds[0]}
+          questionId={editingItem.parentIds[1]}
+          metricId={editingItem.id}
+          onAddMeasurement={addMeasurement}
+          onDeleteMeasurement={deleteMeasurement}
+          existingMetrics={getAllMetricsInPlan()}
+        />
+      )}
+
+      {editingItem?.type === "measurement" && editingItem.parentIds && (
+        <CustomMeasurementModal
+          isOpen={true}
+          onClose={() => setEditingItem(null)}
+          onAddMeasurement={handleSaveMeasurement}
+          existingMeasurements={[]}
+          editingData={editingItem.data as any}
+        />
+      )}
+
+      <ConfirmDeleteModal
+        isOpen={!!deleteConfirm}
+        onClose={() => setDeleteConfirm(null)}
+        onConfirm={handleConfirmDelete}
+        title={t(`confirmDelete${deleteConfirm?.type?.charAt(0).toUpperCase()}${deleteConfirm?.type?.slice(1)}Title`)}
+        message={t(`confirmDelete${deleteConfirm?.type?.charAt(0).toUpperCase()}${deleteConfirm?.type?.slice(1)}`)}
+        itemName={deleteConfirm?.title}
+      />
     </Card>
   );
 };

@@ -1,0 +1,146 @@
+{
+  "common": {
+    "required": "Este campo é obrigatório",
+    "invalidFormat": "Formato inválido"
+  },
+  "username": {
+    "minLength": "Nome de usuário deve ter pelo menos 3 caracteres",
+    "maxLength": "Nome de usuário não pode exceder 100 caracteres",
+    "pattern": "Nome de usuário pode conter apenas letras, números, sublinhados e hífens",
+    "helperText": "3-100 caracteres. Apenas letras, números, _ e -"
+  },
+  "email": {
+    "required": "Email é obrigatório",
+    "invalid": "Email inválido",
+    "helperText": "Digite um endereço de email válido"
+  },
+  "password": {
+    "minLength": "Senha deve ter pelo menos 8 caracteres",
+    "maxLength": "Senha não pode exceder 128 caracteres",
+    "uppercase": "Senha deve conter pelo menos uma letra maiúscula",
+    "lowercase": "Senha deve conter pelo menos uma letra minúscula",
+    "number": "Senha deve conter pelo menos um número",
+    "special": "Senha deve conter pelo menos um caractere especial (@$!%*?&)",
+    "helperText": "8-128 caracteres com maiúscula, minúscula, número e caractere especial"
+  },
+  "confirmPassword": {
+    "required": "Por favor, confirme sua senha",
+    "mismatch": "As senhas não coincidem"
+  },
+  "organization": {
+    "name": {
+      "minLength": "Nome da organização deve ter pelo menos 3 caracteres",
+      "maxLength": "Nome da organização não pode exceder 100 caracteres",
+      "helperText": "3-100 caracteres"
+    },
+    "description": {
+      "minLength": "Descrição deve ter pelo menos 10 caracteres",
+      "maxLength": "Descrição não pode exceder 500 caracteres",
+      "helperText": "10-500 caracteres"
+    },
+    "website": {
+      "invalid": "URL do site inválida",
+      "helperText": "Digite uma URL válida (ex: https://exemplo.com)"
+    },
+    "industry": {
+      "maxLength": "Setor não pode exceder 100 caracteres"
+    }
+  },
+  "project": {
+    "name": {
+      "minLength": "Nome do projeto deve ter pelo menos 3 caracteres",
+      "maxLength": "Nome do projeto não pode exceder 200 caracteres",
+      "helperText": "3-200 caracteres"
+    },
+    "description": {
+      "minLength": "Descrição deve ter pelo menos 10 caracteres",
+      "maxLength": "Descrição não pode exceder 1000 caracteres",
+      "helperText": "10-1000 caracteres"
+    },
+    "teamMembers": {
+      "maxLength": "Máximo de 50 membros de equipe permitidos"
+    },
+    "objective": {
+      "title": {
+        "minLength": "Título do objetivo deve ter pelo menos 3 caracteres",
+        "maxLength": "Título do objetivo não pode exceder 200 caracteres"
+      },
+      "description": {
+        "minLength": "Descrição do objetivo deve ter pelo menos 10 caracteres",
+        "maxLength": "Descrição do objetivo não pode exceder 1000 caracteres"
+      }
+    }
+  },
+  "fpa": {
+    "name": {
+      "required": "Nome é obrigatório",
+      "maxLength": "Nome não pode exceder 100 caracteres"
+    },
+    "description": {
+      "required": "Descrição é obrigatória",
+      "maxLength": "Descrição não pode exceder 500 caracteres"
+    },
+    "applicationBoundary": {
+      "required": "Fronteira da aplicação é obrigatória",
+      "minLength": "Fronteira da aplicação deve ter pelo menos 10 caracteres",
+      "maxLength": "Fronteira da aplicação não pode exceder 500 caracteres"
+    },
+    "countingScope": {
+      "required": "Escopo da contagem é obrigatório",
+      "minLength": "Escopo da contagem deve ter pelo menos 10 caracteres",
+      "maxLength": "Escopo da contagem não pode exceder 500 caracteres"
+    },
+    "primaryIntent": {
+      "minLength": "Intenção primária deve ter pelo menos 10 caracteres",
+      "maxLength": "Intenção primária não pode exceder 500 caracteres"
+    },
+    "processingLogic": {
+      "minLength": "Lógica de processamento deve ter pelo menos 10 caracteres",
+      "maxLength": "Lógica de processamento não pode exceder 1000 caracteres"
+    },
+    "externalSystem": {
+      "required": "Sistema externo é obrigatório"
+    },
+    "outputFormat": {
+      "required": "Formato de saída é obrigatório"
+    },
+    "recordElementTypes": {
+      "min": "Deve ter pelo menos 1 tipo de elemento de registro"
+    },
+    "dataElementTypes": {
+      "min": "Deve ter pelo menos 1 tipo de elemento de dados"
+    },
+    "teamSize": {
+      "min": "Tamanho da equipe deve ser pelo menos 1",
+      "max": "Tamanho da equipe não pode exceder 100"
+    },
+    "hourlyRate": {
+      "min": "Taxa horária deve ser pelo menos 0.01"
+    },
+    "gsc": {
+      "length": "GSC deve ter exatamente 14 itens"
+    },
+    "arrays": {
+      "maxLength": "Máximo de 100 itens permitidos"
+    },
+    "eqValidation": "Para CE, forneça FTR/DET padrão ou entrada/saída separadamente"
+  },
+  "fields": {
+    "name": "Nome",
+    "description": "Descrição",
+    "email": "Email",
+    "username": "Nome de usuário",
+    "password": "Senha",
+    "confirmPassword": "Confirmar Senha",
+    "website": "Website",
+    "industry": "Setor",
+    "mission": "Missão",
+    "vision": "Visão",
+    "values": "Valores",
+    "title": "Título",
+    "teamSize": "Tamanho da Equipe",
+    "hourlyRate": "Taxa Horária",
+    "objectives": "Objetivos",
+    "teamMembers": "Membros da Equipe"
+  }
+}

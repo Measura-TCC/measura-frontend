@@ -40,3 +40,6 @@ export { LinkedinIcon } from "./LinkedinIcon";
 export { InfoIcon } from "./InfoIcon";
 export { EyeIcon } from "./EyeIcon";
 export { EyeOffIcon } from "./EyeOffIcon";
+export { PencilIcon } from "./PencilIcon";
+export { AzureDevOpsIcon } from "./AzureDevOpsIcon";
+export { ClickUpIcon } from "./ClickUpIcon";

@@ -11,6 +11,7 @@ import {
 import { PlusIcon, ChartIcon, DocumentIcon } from "@/presentation/assets/icons";
 import type { PlansStatistics } from "@/core/types/plans";
 import type { Objective } from "./utils/types";
+import { NoProjectsAlert } from "@/presentation/components/shared/NoProjectsAlert";
 
 import { Step1 } from "./steps/Step1";
 import { Step2 } from "./steps/Step2";
@@ -35,6 +36,7 @@ import {
   validatePlanData,
 } from "./utils/dataTranslation";
 import { useToast } from "@/core/hooks/common";
+import { useAuth } from "@/core/hooks/auth/useAuth";
 
 interface NewPlanTabProps {
   statistics: PlansStatistics;
@@ -47,6 +49,7 @@ export const NewPlanTab: React.FC<NewPlanTabProps> = ({
   canCreatePlan,
   isCreatingPlan,
 }) => {
+  const { user } = useAuth();
   const { t } = useTranslation("plans");
   const router = useRouter();
   const { projects, isLoadingProjects } = useProjects();
@@ -259,31 +262,7 @@ export const NewPlanTab: React.FC<NewPlanTabProps> = ({
     canCreatePlan &&
     (!projects || projects.length === 0)
   ) {
-    return (
-      <div className="space-y-6">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-center space-y-4">
-              <div className="text-blue-500 mb-4">
-                <DocumentIcon className="w-12 h-12 mx-auto" />
-              </div>
-              <div>
-                <h3 className="font-medium text-blue-900">
-                  {t("noProjectsTitle")}
-                </h3>
-                <p className="text-sm text-blue-700 mt-1">
-                  {t("noProjectsDescription")}
-                </p>
-              </div>
-              <Button onClick={() => router.push("/projects")}>
-                <PlusIcon className="w-4 h-4 mr-2" />
-                {t("goToProjects")}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <NoProjectsAlert translationNamespace="plans" userRole={user?.role} />;
   }
 
   if (showWorkflow) {
@@ -384,15 +363,15 @@ export const NewPlanTab: React.FC<NewPlanTabProps> = ({
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-secondary">{t("activePlans")}</span>
+              <span className="text-secondary">{t("approvedPlans")}</span>
               <span className="font-semibold text-default">
-                {statistics.activePlans}
+                {statistics.approvedPlans}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-secondary">{t("completedPlans")}</span>
+              <span className="text-secondary">{t("finishedPlans")}</span>
               <span className="font-semibold text-default">
-                {statistics.completedPlans}
+                {statistics.finishedPlans}
               </span>
             </div>
             {/* <div className="flex justify-between items-center">

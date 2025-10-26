@@ -1,16 +1,19 @@
 {
   "title": "Projects",
-  "subtitle": "Manage your development projects",
+  "subtitle": "Manage your organization's projects",
   "subtitleWithOrg": "Projects for {{organizationName}}",
   "loading": "Loading projects...",
   "newProject": "New Project",
   "createNewProject": "Create New Project",
   "cancel": "Cancel",
-  "noProjectsYet": "No Projects Yet",
-  "noProjectsMessage": "Create your first project to start organizing your work.",
-  "createFirstProject": "Create First Project",
+  "noProjectsTitle": "No Projects Found",
+  "noProjectsDescription": "Create your first project to start organizing your work.",
+  "noProjectsUserMessage": "No projects found. Ask your Project Manager to create a project for you.",
+  "goToProjects": "Go to Projects",
+  "viewProjects": "View Projects",
   "organizationRequired": "Organization Required",
   "organizationRequiredMessage": "You need to belong to an organization to manage projects.",
+  "organizationRequiredUserMessage": "You need to join an organization. Ask your Project Manager or Administrator to invite you.",
   "createOrganization": "Create Organization",
   "status": "Status",
   "statusPlanning": "Planning",
@@ -48,11 +51,41 @@
     "addAnotherObjective": "Add Another Objective",
     "remove": "Remove"
   },
+  "editProjectForm": {
+    "updateProject": "Update Project",
+    "updating": "Updating...",
+    "failedToUpdateProject": "Failed to update project"
+  },
+  "edit": "Edit",
+  "delete": "Delete",
+  "deleteProject": "Delete Project",
+  "deleteConfirmation": "Are you sure you want to delete this project? This action cannot be undone.",
+  "deleting": "Deleting...",
+  "editProject": "Edit Project",
   "validation": {
     "nameMinLength": "Name must be at least 3 characters",
     "nameMaxLength": "Name must not exceed 100 characters",
     "descriptionMinLength": "Description must be at least 10 characters",
     "descriptionMaxLength": "Description must not exceed 1000 characters"
   },
-  "linkedTo": "Linked to:"
+  "linkedTo": "Linked to:",
+  "projectObjectives": "Project Objectives:",
+  "viewPlans": "View Plans",
+  "viewEstimates": "View Estimates",
+  "plansModal": {
+    "title": "Associated Measurement Plans",
+    "noPlans": "No measurement plans associated with this project.",
+    "responsible": "Responsible:",
+    "objectives": "Objectives:",
+    "created": "Created:",
+    "close": "Close"
+  },
+  "estimatesModal": {
+    "title": "Associated Estimates",
+    "noEstimates": "No estimates associated with this project.",
+    "functionPoints": "Function Points (Adjusted):",
+    "estimatedEffort": "Estimated Effort:",
+    "created": "Created:",
+    "close": "Close"
+  }
 }

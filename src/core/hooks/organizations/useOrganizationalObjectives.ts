@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { organizationService } from "@/core/services/organizationService";
+import { organizationService } from "@/core/services/organization";
 import type { OrganizationObjective } from "@/core/types/plans";
 import { useOrganizationStore } from "./useOrganizationStore";
 

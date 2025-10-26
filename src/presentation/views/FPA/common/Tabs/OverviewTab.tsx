@@ -115,21 +115,21 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
-                  {statistics.completedEstimates}
+                  {statistics.finalizedEstimates}
                 </div>
-                <div className="text-sm text-secondary">{t("completed")}</div>
+                <div className="text-sm text-secondary">{t("status.finalized")}</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">
-                  {statistics.inProgressEstimates}
+                <div className="text-2xl font-bold text-red-600">
+                  {statistics.archivedEstimates}
                 </div>
-                <div className="text-sm text-secondary">{t("inProgress")}</div>
+                <div className="text-sm text-secondary">{t("status.archived")}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-gray-600">
                   {statistics.draftEstimates}
                 </div>
-                <div className="text-sm text-secondary">{t("drafts")}</div>
+                <div className="text-sm text-secondary">{t("status.draft")}</div>
               </div>
             </div>
           </CardContent>
@@ -162,7 +162,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
               <span className="font-semibold text-default">
                 {statistics.totalEstimates > 0
                   ? Math.round(
-                      (statistics.completedEstimates /
+                      (statistics.finalizedEstimates /
                         statistics.totalEstimates) *
                         100
                     )

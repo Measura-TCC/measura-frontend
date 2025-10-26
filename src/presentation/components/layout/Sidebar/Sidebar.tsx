@@ -141,7 +141,6 @@ export const Sidebar = () => {
               <p>
                 {t("common:user")}: {user?.username || "Anonymous"}
               </p>
-              <p>Version: 1.0.0</p>
             </div>
           </div>
         </div>

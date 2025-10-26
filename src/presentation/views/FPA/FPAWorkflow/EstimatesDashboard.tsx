@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { EstimateOverviewCard } from "../common/EstimateOverviewCard";
 import { useEstimatesOverviews } from "@/core/hooks/fpa/estimates/useEstimate";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import {
   ExclamationIcon,
   OfficeIcon,
@@ -31,7 +31,9 @@ export const EstimatesDashboard = ({
   >("updated");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { userOrganization, isLoadingUserOrganization } = useOrganizations({
+    fetchUserOrganization: true,
+  });
   const { estimatesOverviews, isLoadingEstimatesOverviews, error } =
     useEstimatesOverviews(projectId ? { projectId } : undefined);
 
@@ -40,16 +42,17 @@ export const EstimatesDashboard = ({
 
     const filtered = estimatesOverviews.filter((estimate) => {
       const matchesSearch =
-        estimate.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        !searchQuery ||
+        estimate.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         estimate.description
           ?.toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
         estimate.project?.name
-          .toLowerCase()
+          ?.toLowerCase()
           .includes(searchQuery.toLowerCase());
 
       const matchesStatus =
-        statusFilter === "ALL" || estimate.status === statusFilter;
+        statusFilter === "ALL" || estimate.status?.toLowerCase() === statusFilter.toLowerCase();
 
       return matchesSearch && matchesStatus;
     });
@@ -88,16 +91,14 @@ export const EstimatesDashboard = ({
 
   const statistics = useMemo(() => {
     if (!estimatesOverviews)
-      return { total: 0, draft: 0, inProgress: 0, finalized: 0, archived: 0 };
+      return { total: 0, draft: 0, finalized: 0, archived: 0 };
 
     return {
       total: estimatesOverviews.length,
-      draft: estimatesOverviews.filter((e) => e.status === "DRAFT").length,
-      inProgress: estimatesOverviews.filter((e) => e.status === "IN_PROGRESS")
+      draft: estimatesOverviews.filter((e) => e.status?.toLowerCase() === "draft").length,
+      finalized: estimatesOverviews.filter((e) => e.status?.toLowerCase() === "finalized")
         .length,
-      finalized: estimatesOverviews.filter((e) => e.status === "FINALIZED")
-        .length,
-      archived: estimatesOverviews.filter((e) => e.status === "ARCHIVED")
+      archived: estimatesOverviews.filter((e) => e.status?.toLowerCase() === "archived")
         .length,
     };
   }, [estimatesOverviews]);
@@ -116,7 +117,7 @@ export const EstimatesDashboard = ({
 
   if (isLoadingUserOrganization || isLoadingEstimatesOverviews) {
     return (
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto pb-[20px]">
         <div className="animate-pulse">
           <div className="h-8 bg-background-secondary rounded-md w-64 mb-6"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -134,7 +135,7 @@ export const EstimatesDashboard = ({
 
   if (error) {
     return (
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto pb-[20px]">
         <div className="text-center py-12">
           <div className="text-red-500 mb-4">
             <ExclamationIcon className="w-12 h-12 mx-auto" />
@@ -152,7 +153,7 @@ export const EstimatesDashboard = ({
 
   if (!userOrganization) {
     return (
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto pb-[20px]">
         <div className="text-center py-12">
           <div className="text-amber-500 mb-4">
             <OfficeIcon className="w-12 h-12 mx-auto" />
@@ -175,10 +176,10 @@ export const EstimatesDashboard = ({
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto pb-[20px]">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-default">{t("title")}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">{t("title")}</h1>
           <p className="text-secondary mt-1">{t("subtitle")}</p>
         </div>
         <button
@@ -190,30 +191,22 @@ export const EstimatesDashboard = ({
         </button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-background p-4 rounded-lg border border-border">
           <p className="text-sm text-secondary">{t("totalEstimates")}</p>
           <p className="text-2xl font-bold text-default">{statistics.total}</p>
         </div>
         <div className="bg-background p-4 rounded-lg border border-border">
           <p className="text-sm text-secondary">
-            {t("estimatesDashboard.draft")}
+            {t("status.draft")}
           </p>
-          <p className="text-2xl font-bold text-secondary">
+          <p className="text-2xl font-bold text-gray-600">
             {statistics.draft}
           </p>
         </div>
         <div className="bg-background p-4 rounded-lg border border-border">
           <p className="text-sm text-secondary">
-            {t("estimatesDashboard.inProgress")}
-          </p>
-          <p className="text-2xl font-bold text-blue-600">
-            {statistics.inProgress}
-          </p>
-        </div>
-        <div className="bg-background p-4 rounded-lg border border-border">
-          <p className="text-sm text-secondary">
-            {t("estimatesDashboard.finalized")}
+            {t("status.finalized")}
           </p>
           <p className="text-2xl font-bold text-green-600">
             {statistics.finalized}
@@ -221,7 +214,7 @@ export const EstimatesDashboard = ({
         </div>
         <div className="bg-background p-4 rounded-lg border border-border">
           <p className="text-sm text-secondary">
-            {t("estimatesDashboard.archived")}
+            {t("status.archived")}
           </p>
           <p className="text-2xl font-bold text-red-600">
             {statistics.archived}
@@ -254,16 +247,9 @@ export const EstimatesDashboard = ({
               className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
             >
               <option value="ALL">{t("estimatesDashboard.allStatuses")}</option>
-              <option value="DRAFT">{t("estimatesDashboard.draft")}</option>
-              <option value="IN_PROGRESS">
-                {t("estimatesDashboard.inProgress")}
-              </option>
-              <option value="FINALIZED">
-                {t("estimatesDashboard.finalized")}
-              </option>
-              <option value="ARCHIVED">
-                {t("estimatesDashboard.archived")}
-              </option>
+              <option value="draft">{t("status.draft")}</option>
+              <option value="finalized">{t("status.finalized")}</option>
+              <option value="archived">{t("status.archived")}</option>
             </select>
           </div>
 

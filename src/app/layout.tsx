@@ -6,6 +6,7 @@ import { I18nProvider } from "@/core/i18n/I18nProvider";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
+import { useTheme } from "@/core/hooks/useTheme";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ interface RootLayoutProps {
 
 const LayoutContent = ({ children }: RootLayoutProps) => {
   const { t, i18n } = useTranslation("layout");
+  const { theme } = useTheme();
 
   useEffect(() => {
     document.title = t("title");
@@ -42,7 +44,7 @@ const LayoutContent = ({ children }: RootLayoutProps) => {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="light"
+          theme={theme === "dark" ? "dark" : "light"}
         />
       </body>
     </html>

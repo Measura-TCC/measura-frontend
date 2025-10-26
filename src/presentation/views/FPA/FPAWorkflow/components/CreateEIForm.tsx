@@ -25,12 +25,23 @@ interface EIResponse {
 interface CreateEIFormProps {
   estimateId: string;
   onSuccess?: (ei: EIResponse) => void;
+  componentToEdit?: {
+    _id: string;
+    name: string;
+    description?: string;
+    primaryIntent?: string;
+    processingLogic?: string;
+    fileTypesReferenced?: number;
+    dataElementTypes?: number;
+    notes?: string;
+  };
 }
 
-export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
+export const CreateEIForm = ({ estimateId, onSuccess, componentToEdit }: CreateEIFormProps) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isEditing = !!componentToEdit;
 
   const {
     register,
@@ -39,22 +50,44 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
     reset,
   } = useForm<CreateEIData>({
     resolver: zodResolver(createEISchema),
+    defaultValues: componentToEdit
+      ? {
+          name: componentToEdit.name,
+          description: componentToEdit.description || "",
+          primaryIntent: componentToEdit.primaryIntent || "",
+          processingLogic: componentToEdit.processingLogic || "",
+          fileTypesReferenced: componentToEdit.fileTypesReferenced || 0,
+          dataElementTypes: componentToEdit.dataElementTypes || 0,
+          notes: componentToEdit.notes || "",
+        }
+      : undefined,
   });
 
-  const { createEIComponent } = useFpaComponents();
+  const { createEIComponent, updateEIComponent } = useFpaComponents();
 
   const onSubmit = async (data: CreateEIData) => {
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const result = await createEIComponent({ estimateId, data });
-      reset();
-      onSuccess?.(result as unknown as EIResponse);
+      if (isEditing) {
+        const result = await updateEIComponent({
+          estimateId,
+          id: componentToEdit._id,
+          data,
+        });
+        onSuccess?.(result as unknown as EIResponse);
+      } else {
+        const result = await createEIComponent({ estimateId, data });
+        reset();
+        onSuccess?.(result as unknown as EIResponse);
+      }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
+          : isEditing
+          ? t("componentForms.ei.failedToUpdate")
           : t("componentForms.ei.failedToCreate")
       );
     } finally {
@@ -67,7 +100,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.ei.name")}
         </label>
@@ -75,7 +108,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
           {...register("name")}
           id="name"
           type="text"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.name && (
           <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
@@ -85,7 +118,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.descriptionOptional")}
         </label>
@@ -93,7 +126,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
           {...register("description")}
           id="description"
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.description && (
           <p className="mt-1 text-sm text-red-600">
@@ -105,7 +138,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
       <div>
         <label
           htmlFor="primaryIntent"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.primaryIntent")}
         </label>
@@ -114,7 +147,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
           id="primaryIntent"
           rows={3}
           placeholder={t("componentForms.ei.primaryIntentPlaceholder")}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.primaryIntent && (
           <p className="mt-1 text-sm text-red-600">
@@ -126,7 +159,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
       <div>
         <label
           htmlFor="processingLogic"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.ei.processingLogic")}
         </label>
@@ -135,7 +168,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
           id="processingLogic"
           rows={3}
           placeholder={t("componentForms.ei.processingLogicPlaceholder")}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.processingLogic && (
           <p className="mt-1 text-sm text-red-600">
@@ -147,7 +180,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
       <div>
         <label
           htmlFor="fileTypesReferenced"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.ei.fileTypesReferenced")}
         </label>
@@ -156,7 +189,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
           id="fileTypesReferenced"
           type="number"
           min="1"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.fileTypesReferenced && (
           <p className="mt-1 text-sm text-red-600">
@@ -168,7 +201,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
       <div>
         <label
           htmlFor="dataElementTypes"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.ei.dataElementTypes")}
         </label>
@@ -177,7 +210,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
           id="dataElementTypes"
           type="number"
           min="1"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.dataElementTypes && (
           <p className="mt-1 text-sm text-red-600">
@@ -189,7 +222,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
       <div>
         <label
           htmlFor="notes"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.notesOptional")}
         </label>
@@ -197,7 +230,7 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
           {...register("notes")}
           id="notes"
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.notes && (
           <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>
@@ -218,7 +251,11 @@ export const CreateEIForm = ({ estimateId, onSuccess }: CreateEIFormProps) => {
           size="md"
         >
           {isSubmitting
-            ? t("componentForms.ei.submitting")
+            ? isEditing
+              ? t("componentForms.ei.updating")
+              : t("componentForms.ei.submitting")
+            : isEditing
+            ? t("componentForms.ei.update")
             : t("componentForms.ei.submit")}
         </Button>
       </div>

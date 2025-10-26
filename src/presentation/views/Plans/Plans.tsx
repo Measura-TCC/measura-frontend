@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
+import { useOrganizationStore } from "@/core/hooks/organizations/useOrganizationStore";
 import { useMeasurementPlans } from "@/core/hooks/measurementPlans";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import {
@@ -13,17 +14,36 @@ import {
 import { PlansTabs, PlansPageHeader, OrganizationAlert, PlansFilters } from "./components";
 import { DocumentIcon } from "@/presentation/assets/icons";
 import { NewPlanTab, CreatedPlansTab } from "./components/Tabs";
+import { EditPlanModal } from "./components/EditPlanModal";
+import { DeletePlanModal } from "./components/DeletePlanModal";
+import type { MeasurementPlanSummaryDto } from "@/core/types/plans";
 
 export const PlansView = () => {
   const { t } = useTranslation("plans");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { userOrganization, isLoadingUserOrganization, activeOrganizationId, forceClearCache } = useOrganizations({ fetchUserOrganization: true });
   const { projects, isLoadingProjects } = useProjects();
+  const hasProjects = !!(projects && projects.length > 0);
   const [activeTab, setActiveTab] = useState<PlanTab>("newPlan");
+
+  // Auto-set activeOrganizationId if missing but userOrganization is loaded
+  useEffect(() => {
+    // Force clear cache if demo ID is detected
+    if (activeOrganizationId === "demo-organization-id") {
+      forceClearCache();
+    }
+
+    // Directly set the active organization ID if we have userOrganization but no activeOrganizationId
+    if (!activeOrganizationId && userOrganization?._id) {
+      const { setActiveOrganization } = useOrganizationStore.getState();
+      setActiveOrganization(userOrganization._id);
+    }
+  }, [activeOrganizationId, userOrganization, forceClearCache]);
 
   useEffect(() => {
     const tabParam = searchParams.get("tab") as PlanTab;
+
     if (tabParam && ["newPlan", "createdPlans"].includes(tabParam)) {
       setActiveTab(tabParam);
     }
@@ -39,6 +59,8 @@ export const PlansView = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<MeasurementPlanStatus | undefined>();
   const [projectFilter, setProjectFilter] = useState<string | undefined>();
+  const [editingPlan, setEditingPlan] = useState<MeasurementPlanSummaryDto | null>(null);
+  const [deletingPlan, setDeletingPlan] = useState<MeasurementPlanSummaryDto | null>(null);
 
   const plansHook = useMeasurementPlans({
     page: currentPage,
@@ -54,11 +76,15 @@ export const PlansView = () => {
     statistics,
     isLoadingPlans,
     isCreatingPlan,
+    isUpdatingPlan,
+    isDeletingPlan,
     plansError,
     canCreatePlan,
     hasOrganization,
     formatDate,
     getStatusColor,
+    updatePlan,
+    deletePlan,
     operationError,
     clearError,
   } = plansHook;
@@ -105,12 +131,18 @@ export const PlansView = () => {
         onViewPlan={(planId) => {
           router.push(`/plans/${planId}`);
         }}
+        onEditPlan={(plan) => {
+          setEditingPlan(plan);
+        }}
+        onDeletePlan={(plan) => {
+          setDeletingPlan(plan);
+        }}
         onPageChange={(page) => {
           setCurrentPage(page);
         }}
         onPageSizeChange={(pageSize) => {
           setPageSize(pageSize);
-          setCurrentPage(1); // Reset to first page when changing page size
+          setCurrentPage(1);
         }}
       />
     ),
@@ -163,31 +195,7 @@ export const PlansView = () => {
         isLoadingOrganization={isLoadingUserOrganization}
       />
 
-      <OrganizationAlert hasOrganization={hasOrganization} />
-
-      {hasOrganization && !isLoadingProjects && (!projects || projects.length === 0) && (
-        <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-          <div className="text-center space-y-4">
-            <div className="text-blue-500 mb-4">
-              <DocumentIcon className="w-12 h-12 mx-auto" />
-            </div>
-            <div>
-              <h3 className="text-lg font-medium text-blue-900">
-                {t("noProjectsTitle")}
-              </h3>
-              <p className="text-blue-700 mt-1">
-                {t("noProjectsDescription")}
-              </p>
-            </div>
-            <button
-              onClick={() => router.push("/projects")}
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
-            >
-              {t("goToProjects")}
-            </button>
-          </div>
-        </div>
-      )}
+      <OrganizationAlert hasOrganization={hasOrganization} translationNamespace="plans" />
 
       {operationError && (
         <div className="bg-red-50 border border-red-200 rounded-md p-4">
@@ -219,6 +227,7 @@ export const PlansView = () => {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         hasOrganization={hasOrganization}
+        hasProjects={hasProjects}
       />
 
       {activeTab === "createdPlans" && hasOrganization && (
@@ -236,6 +245,26 @@ export const PlansView = () => {
       )}
 
       {componentMap[activeTab]}
+
+      {editingPlan && (
+        <EditPlanModal
+          isOpen={Boolean(editingPlan)}
+          onClose={() => setEditingPlan(null)}
+          plan={editingPlan}
+          onUpdate={updatePlan}
+          isUpdating={isUpdatingPlan}
+        />
+      )}
+
+      {deletingPlan && (
+        <DeletePlanModal
+          isOpen={Boolean(deletingPlan)}
+          onClose={() => setDeletingPlan(null)}
+          plan={deletingPlan}
+          onDelete={deletePlan}
+          isDeleting={isDeletingPlan}
+        />
+      )}
     </div>
   );
 };

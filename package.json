@@ -1,12 +1,13 @@
 {
   "name": "measura-frontend",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:plans": "npx tsx scripts/test-plans-crud.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

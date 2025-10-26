@@ -5,10 +5,10 @@ import { useForm, type Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import {
-  createOrganizationSchema,
+  createOrganizationSchemaFactory,
   type CreateOrganizationData,
 } from "@/core/schemas/organizations";
-import { useOrganizationActions } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import {
   Card,
   CardContent,
@@ -16,6 +16,7 @@ import {
   CardTitle,
   Button,
   Input,
+  Stepper,
 } from "@/presentation/components/primitives";
 
 export interface OrganizationWizardProps {
@@ -48,16 +49,21 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
 }) => {
   const { t } = useTranslation("organization");
   const { createOrganization, updateOrganization, deleteOrganization } =
-    useOrganizationActions();
+    useOrganizations();
 
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const valueInputRef = useRef<HTMLInputElement>(null);
-  const objectiveInputRef = useRef<HTMLInputElement>(null);
+  const objectiveInputRef = useRef<HTMLTextAreaElement>(null);
+
+  const organizationSchema = useMemo(
+    () => createOrganizationSchemaFactory(t),
+    [t]
+  );
 
   const form = useForm<CreateOrganizationData>({
-    resolver: zodResolver(createOrganizationSchema),
+    resolver: zodResolver(organizationSchema),
     defaultValues: useMemo(
       () => ({
         name: initialData?.name || "",
@@ -229,29 +235,18 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, isSubmitting, canGoNext, allValid, stepItems.length]);
 
+  const steps = stepItems.map(item => ({
+    number: item.number,
+    label: item.name
+  }));
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        {stepItems.map((step, index) => (
-          <div key={step.number} className="flex flex-col items-center flex-1">
-            <button
-              type="button"
-              onClick={() => setCurrentStep(step.number as Step)}
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-                currentStep === step.number
-                  ? "bg-primary text-white"
-                  : "bg-primary/20 text-primary hover:bg-primary/30"
-              }`}
-            >
-              {step.number}
-            </button>
-            <div className="text-xs text-center mt-1 max-w-24">{step.name}</div>
-            {index < stepItems.length - 1 && (
-              <div className="flex-1 h-px bg-gray-200 mt-4 mx-2" />
-            )}
-          </div>
-        ))}
-      </div>
+      <Stepper
+        steps={steps}
+        currentStep={currentStep}
+        onStepClick={(step) => setCurrentStep(step as Step)}
+      />
 
       <Card>
         <CardHeader>
@@ -285,7 +280,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   {...register("description")}
                   rows={3}
                   placeholder={t("form.descriptionPlaceholder")}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                 />
                 {errors.description && (
                   <p className="text-sm text-red-600">
@@ -334,7 +329,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   {...register("mission")}
                   rows={3}
                   placeholder={t("form.missionPlaceholder")}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                 />
                 {errors.mission && (
                   <p className="text-sm text-red-600">
@@ -350,7 +345,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   {...register("vision")}
                   rows={3}
                   placeholder={t("form.visionPlaceholder")}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                 />
                 {errors.vision && (
                   <p className="text-sm text-red-600">
@@ -364,7 +359,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                 </label>
                 <div className="relative">
                   <select
-                    className="input-base appearance-none pr-8 bg-white"
+                    className="input-base appearance-none pr-8"
                     value=""
                     onChange={(e) => {
                       if (e.target.value) {
@@ -479,34 +474,32 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
                   </svg>
                 </div>
               </div>
-              <div className="flex gap-2">
-                <div className="flex-1">
-                  <Input
-                    ref={objectiveInputRef}
-                    placeholder={t("form.addObjectivePlaceholder")}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        const target = e.target as HTMLInputElement;
-                        addObjectiveItem(target.value);
-                        target.value = "";
-                      }
-                    }}
-                  />
-                </div>
-                <Button
-                  type="button"
-                  onClick={() => {
-                    if (objectiveInputRef.current) {
-                      addObjectiveItem(objectiveInputRef.current.value);
-                      objectiveInputRef.current.value = "";
-                    }
-                  }}
-                  className="h-[2.25rem]"
-                >
-                  {t("add")}
-                </Button>
-              </div>
+              <textarea
+                ref={objectiveInputRef}
+                placeholder={t("form.addObjectivePlaceholder")}
+                rows={3}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    const target = e.target as HTMLTextAreaElement;
+                    addObjectiveItem(target.value);
+                    target.value = "";
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                onClick={() => {
+                  if (objectiveInputRef.current) {
+                    addObjectiveItem(objectiveInputRef.current.value);
+                    objectiveInputRef.current.value = "";
+                  }
+                }}
+                className="w-full mt-2"
+              >
+                {t("add")}
+              </Button>
               {objectivesList.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">
                   {objectivesList.map((o, idx) => (

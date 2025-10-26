@@ -4,6 +4,10 @@ import type {
   CreateEstimateData,
   UpdateEstimateData,
 } from "@/core/schemas/fpa";
+import type {
+  Requirement,
+  RequirementWithFpaData,
+} from "@/core/types/fpa";
 
 export interface EstimateResponse {
   _id: string;
@@ -110,7 +114,8 @@ export interface ProductivityMetricItem {
 }
 
 export interface EstimateOverviewResponse {
-  _id: string;
+  id: string;
+  _id?: string; // Deprecated, use 'id' instead
   projectId: string;
   name: string;
   description: string;
@@ -245,13 +250,16 @@ export interface EstimateOverview {
 }
 
 export const transformToEstimateOverview = (
-  estimate: EstimateResponse
+  estimate: EstimateResponse | any
 ): EstimateOverview => {
-  const internalLogicalFiles = estimate.internalLogicalFiles || [];
-  const externalInterfaceFiles = estimate.externalInterfaceFiles || [];
-  const externalInputs = estimate.externalInputs || [];
-  const externalOutputs = estimate.externalOutputs || [];
-  const externalQueries = estimate.externalQueries || [];
+  // Extract data from estimate response
+  const data = estimate;
+
+  const internalLogicalFiles = data.internalLogicalFiles || [];
+  const externalInterfaceFiles = data.externalInterfaceFiles || [];
+  const externalInputs = data.externalInputs || [];
+  const externalOutputs = data.externalOutputs || [];
+  const externalQueries = data.externalQueries || [];
 
   const componentCounts = {
     ilf: internalLogicalFiles.length,
@@ -267,16 +275,16 @@ export const transformToEstimateOverview = (
   );
 
   return {
-    _id: estimate._id,
-    name: estimate.name,
-    description: estimate.description,
-    project: estimate.project,
-    countType: estimate.countType,
-    status: estimate.status,
-    unadjustedFunctionPoints: estimate.unadjustedFunctionPoints,
-    adjustedFunctionPoints: estimate.adjustedFunctionPoints,
-    valueAdjustmentFactor: estimate.valueAdjustmentFactor,
-    estimatedEffortHours: estimate.estimatedEffortHours,
+    _id: data._id,
+    name: data.name,
+    description: data.description,
+    project: data.project,
+    countType: data.countType,
+    status: data.status,
+    unadjustedFunctionPoints: data.unadjustedFunctionPoints,
+    adjustedFunctionPoints: data.adjustedFunctionPoints,
+    valueAdjustmentFactor: data.valueAdjustmentFactor,
+    estimatedEffortHours: data.estimatedEffortHours,
     internalLogicalFiles,
     externalInterfaceFiles,
     externalInputs,
@@ -287,13 +295,13 @@ export const transformToEstimateOverview = (
     completionPercentage: totalComponents > 0 ? 80 : 20,
     hasComponents: totalComponents > 0,
     hasGSC:
-      estimate.generalSystemCharacteristics &&
-      estimate.generalSystemCharacteristics.values &&
-      estimate.generalSystemCharacteristics.values.length > 0,
-    isCalculated: estimate.adjustedFunctionPoints > 0,
-    createdAt: estimate.createdAt,
-    updatedAt: estimate.updatedAt,
-    version: estimate.version,
+      data.generalSystemCharacteristics &&
+      data.generalSystemCharacteristics.values &&
+      data.generalSystemCharacteristics.values.length > 0,
+    isCalculated: data.adjustedFunctionPoints > 0,
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt,
+    version: data.version,
   };
 };
 
@@ -338,6 +346,16 @@ export const estimateService = {
     const { activeOrganizationId } = getOrganizationState();
     if (!activeOrganizationId) throw new Error('Organization access required');
     const response = await measuraApi.post(`/estimates/${activeOrganizationId}`, data);
+    return response.data;
+  },
+
+  updateEstimateStatus: async (
+    estimateId: string,
+    status: string
+  ): Promise<EstimateResponse> => {
+    const { activeOrganizationId } = getOrganizationState();
+    if (!activeOrganizationId) throw new Error('Organization access required');
+    const response = await measuraApi.put(`/estimates/${activeOrganizationId}/${estimateId}`, { status });
     return response.data;
   },
 
@@ -386,5 +404,46 @@ export const estimateService = {
       `/estimates/${params.id}/recalculate`
     );
     return response.data;
+  },
+
+  // Requirements management
+  getRequirements: async (params: {
+    estimateId: string;
+  }): Promise<Requirement[]> => {
+    const response = await measuraApi.get(
+      `/estimates/${params.estimateId}/requirements`
+    );
+    return response.data;
+  },
+
+  getRequirement: async (params: {
+    estimateId: string;
+    requirementId: string;
+  }): Promise<Requirement> => {
+    const response = await measuraApi.get(
+      `/estimates/${params.estimateId}/requirements/${params.requirementId}`
+    );
+    return response.data;
+  },
+
+  updateRequirement: async (params: {
+    estimateId: string;
+    requirementId: string;
+    data: Partial<RequirementWithFpaData>;
+  }): Promise<Requirement> => {
+    const response = await measuraApi.put(
+      `/estimates/${params.estimateId}/requirements/${params.requirementId}`,
+      params.data
+    );
+    return response.data;
+  },
+
+  deleteRequirement: async (params: {
+    estimateId: string;
+    requirementId: string;
+  }): Promise<void> => {
+    await measuraApi.delete(
+      `/estimates/${params.estimateId}/requirements/${params.requirementId}`
+    );
   },
 };

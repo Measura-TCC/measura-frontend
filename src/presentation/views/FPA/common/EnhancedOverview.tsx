@@ -14,6 +14,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import type { EstimateOverviewResponse } from "@/core/services/estimateService";
+import { EstimateStatusSelector } from "@/presentation/views/FPA/components/EstimateStatusSelector";
 
 interface EnhancedOverviewProps {
   estimateOverview: EstimateOverviewResponse;
@@ -78,12 +79,15 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
     ];
   };
 
-  const formatDate = (date: string) => {
+  const formatDate = (date: string | undefined) => {
+    if (!date) return '-';
+    const dateObj = new Date(date);
+    if (isNaN(dateObj.getTime())) return '-';
     return new Intl.DateTimeFormat("pt-BR", {
       year: "numeric",
       month: "short",
       day: "numeric",
-    }).format(new Date(date));
+    }).format(dateObj);
   };
 
   const getStatusColor = (status: string) => {
@@ -117,7 +121,7 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
                   </div>
                 </div>
               )}
-              <h1 className="text-2xl font-bold text-default mb-2">
+              <h1 className="text-2xl md:text-3xl font-bold text-default mb-2">
                 {estimateOverview.name}
               </h1>
               {estimateOverview.description && (
@@ -151,15 +155,24 @@ export const EnhancedOverview: React.FC<EnhancedOverviewProps> = ({
             </div>
           </div>
           <div className="flex flex-col lg:items-end gap-2">
-            <span
-              className={`px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(
-                estimateOverview.status || "DRAFT"
-              )}`}
-            >
-              {t(
-                `status.${(estimateOverview.status || "DRAFT").toLowerCase()}`
-              )}
-            </span>
+            {estimateOverview.id ? (
+              <div className="w-48">
+                <EstimateStatusSelector
+                  estimateId={estimateOverview.id}
+                  currentStatus={estimateOverview.status || "draft"}
+                />
+              </div>
+            ) : (
+              <span
+                className={`px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(
+                  estimateOverview.status || "DRAFT"
+                )}`}
+              >
+                {t(
+                  `status.${(estimateOverview.status || "DRAFT").toLowerCase()}`
+                )}
+              </span>
+            )}
             <span className="text-sm text-muted">
               v{estimateOverview.version || 1}
             </span>

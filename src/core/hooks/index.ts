@@ -13,9 +13,6 @@ export {
 
 export {
   useOrganizations,
-  useOrganization,
-  useUserOrganization,
-  useOrganizationActions,
 } from "./organizations/useOrganizations";
 
 export {
@@ -48,3 +45,8 @@ export {
   useMeasurementPlanExport,
   useMeasurementPlanOperations,
 } from "./measurementPlans";
+
+export { useWelcomeTour } from "./onboarding";
+
+export { usePagination } from "./usePagination";
+export type { UsePaginationProps, UsePaginationReturn } from "./usePagination";

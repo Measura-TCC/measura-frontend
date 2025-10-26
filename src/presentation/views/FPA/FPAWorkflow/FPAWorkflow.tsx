@@ -1,71 +1,111 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useProjects } from "@/core/hooks/projects/useProjects";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
-import { useOrganization } from "@/core/hooks/organizations/useOrganization";
+import { useOrganizations } from "@/core/hooks/organizations";
+import { useOrganizationStore } from "@/core/hooks/organizations/useOrganizationStore";
 import { EstimatesDashboard } from "./EstimatesDashboard";
-import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
-import { CreateOrganizationForm } from "../../Organization/components/CreateOrganizationForm";
-import { CreateEstimateForm } from "./components/CreateEstimateForm";
-import { CreateGSCForm } from "./components/CreateGSCForm";
-import { CreateProjectConfigurationForm } from "./components/CreateProjectConfigurationForm";
-import { CreateALIForm } from "./components/CreateALIForm";
-import { CreateEIForm } from "./components/CreateEIForm";
-import { CreateEOForm } from "./components/CreateEOForm";
-import { CreateEQForm } from "./components/CreateEQForm";
-import { CreateAIEForm } from "./components/CreateAIEForm";
+import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
+import { NoProjectsAlert } from "@/presentation/components/shared/NoProjectsAlert";
+import { CreateEstimateForm, type CreateEstimateFormRef } from "./components/CreateEstimateForm";
+import { CreateGSCForm, type CreateGSCFormRef } from "./components/CreateGSCForm";
+import { ProjectConfigurationForm, type ProjectConfigurationFormRef } from "./components/ProjectConfigurationForm";
+import { RequirementImportView } from "./RequirementImport/RequirementImportView";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
-import { OfficeIcon, PlusIcon, DocumentIcon } from "@/presentation/assets/icons";
-import { Button } from "@/presentation/components/primitives/Button/Button";
+import { Button, Tabs, Stepper } from "@/presentation/components/primitives";
+import { useEstimateActions } from "@/core/hooks/fpa/estimates/useEstimate";
 import {
-  useEstimateActions,
-  useEstimate,
-} from "@/core/hooks/fpa/estimates/useEstimate";
-import { estimateService } from "@/core/services/estimateService";
-import {
-  useWorkflowState,
-  type ComponentType,
+  useFPAWorkflowStore,
   type Step,
-} from "@/core/hooks/fpa/useWorkflowState";
+  type EstimateFormData,
+} from "@/core/hooks/fpa/useFPAWorkflowStore";
+import { useRequirementsStore } from "@/core/hooks/fpa/useRequirementsStore";
+import { estimateService } from "@/core/services/estimateService";
+import { useToast } from "@/core/hooks/common/useToast";
+import { useAuth } from "@/core/hooks/auth/useAuth";
 
 type Tab = "new" | "created";
 
-interface EstimateWithArrays {
-  internalLogicalFiles?: unknown[];
-  externalInterfaceFiles?: unknown[];
-  externalInputs?: unknown[];
-  externalOutputs?: unknown[];
-  externalQueries?: unknown[];
-}
-
 export const FPAWorkflow = () => {
   const { t } = useTranslation("fpa");
-  const { requireOrganization } = useOrganization();
+  const toast = useToast();
+  const { user } = useAuth();
+  const {
+    requireOrganization,
+    userOrganization,
+    isLoadingUserOrganization,
+    activeOrganizationId,
+    forceClearCache,
+  } = useOrganizations({ fetchUserOrganization: true });
   const searchParams = useSearchParams();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("new");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [summaryPage, setSummaryPage] = useState<1 | 2 | 3 | 4>(1);
 
-  const {
-    state,
-    setCurrentStep,
-    setSelectedProjectId,
-    setCreatedEstimate,
-    setCalculationComplete,
-    setSelectedComponentType,
-    resetWorkflow,
-    canNavigateToStep,
-  } = useWorkflowState();
+  // Form refs for validation
+  const estimateFormRef = useRef<CreateEstimateFormRef>(null);
+  const gscFormRef = useRef<CreateGSCFormRef>(null);
+  const configFormRef = useRef<ProjectConfigurationFormRef>(null);
 
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const currentStep = useFPAWorkflowStore((state) => state.currentStep);
+  const selectedProjectId = useFPAWorkflowStore(
+    (state) => state.selectedProjectId
+  );
+  const estimateFormData = useFPAWorkflowStore(
+    (state) => state.estimateFormData
+  );
+  const generalSystemCharacteristics = useFPAWorkflowStore(
+    (state) => state.generalSystemCharacteristics
+  );
+  const createdEstimate = useFPAWorkflowStore((state) => state.createdEstimate);
+  const isCalculationComplete = useFPAWorkflowStore(
+    (state) => state.isCalculationComplete
+  );
+  const setCurrentStep = useFPAWorkflowStore((state) => state.setCurrentStep);
+  const setSelectedProjectId = useFPAWorkflowStore(
+    (state) => state.setSelectedProjectId
+  );
+  const setEstimateFormData = useFPAWorkflowStore(
+    (state) => state.setEstimateFormData
+  );
+  const setGeneralSystemCharacteristics = useFPAWorkflowStore(
+    (state) => state.setGeneralSystemCharacteristics
+  );
+  const setCreatedEstimate = useFPAWorkflowStore(
+    (state) => state.setCreatedEstimate
+  );
+  const setCalculationComplete = useFPAWorkflowStore(
+    (state) => state.setCalculationComplete
+  );
+  const resetWorkflow = useFPAWorkflowStore((state) => state.resetWorkflow);
+  const canNavigateToStep = useFPAWorkflowStore(
+    (state) => state.canNavigateToStep
+  );
+
+  const requirements = useRequirementsStore((state) => state.requirements);
+  const resetRequirements = useRequirementsStore(
+    (state) => state.resetRequirements
+  );
+
   const { projects, isLoadingProjects } = useProjects();
   const { calculateFunctionPoints } = useEstimateActions();
 
-  const { estimate: currentEstimateData, mutateEstimate } = useEstimate({
-    id: state.createdEstimate?._id || "",
-  });
+  // Auto-set activeOrganizationId if missing but userOrganization is loaded
+  useEffect(() => {
+    // Force clear cache if demo ID is detected
+    if (activeOrganizationId === "demo-organization-id") {
+      forceClearCache();
+    }
+
+    // Directly set the active organization ID if we have userOrganization but no activeOrganizationId
+    if (!activeOrganizationId && userOrganization?._id) {
+      const { setActiveOrganization } = useOrganizationStore.getState();
+      setActiveOrganization(userOrganization._id);
+    }
+  }, [activeOrganizationId, userOrganization, forceClearCache]);
 
   useEffect(() => {
     const tabParam = searchParams.get("tab") as Tab;
@@ -79,6 +119,185 @@ export const FPAWorkflow = () => {
       setActiveTab("new");
     }
   }, [searchParams, setSelectedProjectId]);
+
+  const handleCancel = () => {
+    resetWorkflow();
+    resetRequirements();
+    setSummaryPage(1);
+    setTimeout(() => {
+      setActiveTab("new");
+    }, 50);
+  };
+
+  const handleEstimateFormSubmit = (data: EstimateFormData) => {
+    setEstimateFormData(data);
+    setCurrentStep(3);
+  };
+
+  const handleGSCAutoSave = (gsc: number[]) => {
+    setGeneralSystemCharacteristics(gsc);
+  };
+
+  const handleGSCCompleted = (gsc: number[]) => {
+    setGeneralSystemCharacteristics(gsc);
+    setCurrentStep(5);
+  };
+
+  const handleProjectConfigSubmit = (configData: {
+    teamSize: number;
+    hourlyRateBRL: number;
+    productivityFactor: number;
+    averageDailyWorkingHours: number;
+  }) => {
+    if (!estimateFormData) return;
+
+    setEstimateFormData({
+      ...estimateFormData,
+      ...configData,
+    });
+
+    // Ensure we clear any previous estimate before showing summary
+    setCreatedEstimate(null);
+    setCalculationComplete(false);
+    setCurrentStep(6);
+  };
+
+  const handleCreateAndCalculate = async () => {
+    if (!selectedProjectId || !estimateFormData) return;
+
+    setIsSubmitting(true);
+    try {
+      requireOrganization();
+
+      const transformedRequirements = requirements
+        .filter((req) => req.componentType && req.componentId)
+        .map((req) => ({
+          title: req.title,
+          description: req.description,
+          source: req.source,
+          sourceReference: req.sourceReference,
+          componentType: req.componentType!,
+          fpaData: {
+            name: (req as any).name || req.title,
+            description: (req as any).description || req.description || "",
+            primaryIntent: (req as any).primaryIntent || "",
+            ...(req.componentType === "ALI" || req.componentType === "AIE"
+              ? {
+                  recordElementTypes: (req as any).recordElementTypes || 1,
+                  dataElementTypes: (req as any).dataElementTypes || 1,
+                  ...(req.componentType === "AIE" && {
+                    externalSystem: (req as any).externalSystem || "",
+                  }),
+                }
+              : {}),
+            ...(req.componentType === "EI"
+              ? {
+                  processingLogic: (req as any).processingLogic || "",
+                  fileTypesReferenced: (req as any).fileTypesReferenced || 0,
+                  dataElementTypes: (req as any).dataElementTypes || 0,
+                }
+              : {}),
+            ...(req.componentType === "EO"
+              ? {
+                  derivedData: (req as any).derivedData || false,
+                  outputFormat: (req as any).outputFormat || "",
+                  fileTypesReferenced: (req as any).fileTypesReferenced || 0,
+                  dataElementTypes: (req as any).dataElementTypes || 0,
+                }
+              : {}),
+            ...(req.componentType === "EQ"
+              ? {
+                  retrievalLogic: (req as any).retrievalLogic || "",
+                  fileTypesReferenced: (req as any).fileTypesReferenced || 0,
+                  dataElementTypes: (req as any).dataElementTypes || 0,
+                }
+              : {}),
+            notes: (req as any).notes || "",
+          },
+        }));
+
+      const createData = {
+        ...estimateFormData,
+        projectId: selectedProjectId,
+        requirements: transformedRequirements,
+        ...(generalSystemCharacteristics && {
+          generalSystemCharacteristics,
+        }),
+      };
+
+      const estimate = await estimateService.createEstimate(createData as any);
+      setCreatedEstimate(estimate);
+
+      // Now calculate function points
+      await calculateFunctionPoints({ estimateId: estimate._id });
+      setCalculationComplete(true);
+      toast.success({ message: t("workflow.estimateCreatedSuccess") });
+    } catch (error) {
+      console.error("Failed to create and calculate estimate:", error);
+      toast.error({ message: t("workflow.estimateCreationError") });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCalculateFP = async () => {
+    if (!createdEstimate) return;
+
+    try {
+      await calculateFunctionPoints({ estimateId: createdEstimate._id });
+      setCalculationComplete(true);
+    } catch {}
+  };
+
+  const handleProjectSelected = () => {
+    setCurrentStep(2);
+  };
+
+  const handleStepClick = async (step: number) => {
+    if (!canNavigateToStep(step as Step)) return;
+
+    // Block navigation from Step 3 if no classified requirements
+    if (currentStep === 3 && step > 3) {
+      const hasClassifiedRequirements = requirements.filter(
+        (r) => r.componentType && r.componentId
+      ).length > 0;
+
+      const hasUnclassifiedRequirements = requirements.length > 0;
+
+      if (!hasClassifiedRequirements) {
+        if (hasUnclassifiedRequirements) {
+          toast.warning({
+            message: t("workflow.requirementsNotClassified"),
+            duration: 5000
+          });
+        } else {
+          toast.warning({
+            message: t("workflow.requirementsRequired"),
+            duration: 4000
+          });
+        }
+        return;
+      }
+    }
+
+    // Validate current step before navigating away from form steps
+    if (currentStep === 2 && estimateFormRef.current) {
+      const isValid = await estimateFormRef.current.validateAndSave();
+      if (!isValid) return; // Block navigation if validation fails
+    }
+
+    if (currentStep === 4 && gscFormRef.current) {
+      const isValid = await gscFormRef.current.validateAndSave();
+      if (!isValid) return;
+    }
+
+    if (currentStep === 5 && configFormRef.current) {
+      const isValid = await configFormRef.current.validateAndSave();
+      if (!isValid) return;
+    }
+
+    setCurrentStep(step as Step);
+  };
 
   if (isLoadingUserOrganization) {
     return (
@@ -95,263 +314,60 @@ export const FPAWorkflow = () => {
 
   if (!userOrganization) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="text-center py-12">
-          <div className="text-amber-500 mb-4">
-            <OfficeIcon className="w-12 h-12 mx-auto" />
-          </div>
-          <h3 className="text-lg font-medium text-default mb-2">
-            {t("workflow.organizationRequiredTitle")}
-          </h3>
-          <p className="text-secondary mb-4">
-            {t("workflow.organizationRequiredText")}
-          </p>
-          <CreateOrganizationForm />
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">
+            {t("title")}
+          </h1>
+          <p className="text-muted mt-1">{t("subtitle")}</p>
         </div>
+        <OrganizationAlert hasOrganization={false} translationNamespace="fpa" userRole={user?.role} />
       </div>
     );
   }
 
-  if (!isLoadingProjects && userOrganization && (!projects || projects.length === 0)) {
+  if (
+    !isLoadingProjects &&
+    userOrganization &&
+    (!projects || projects.length === 0)
+  ) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="text-center py-12">
-          <div className="text-blue-500 mb-4">
-            <DocumentIcon className="w-12 h-12 mx-auto" />
-          </div>
-          <h3 className="text-lg font-medium text-default mb-2">
-            {t("noProjectsTitle")}
-          </h3>
-          <p className="text-secondary mb-4">
-            {t("noProjectsDescription")}
-          </p>
-          <div className="flex gap-3 justify-center">
-            <button
-              onClick={() => router.push("/projects")}
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
-            >
-              {t("goToProjects")}
-            </button>
-          </div>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">
+            {t("title")}
+          </h1>
+          <p className="text-muted mt-1">{t("subtitle")}</p>
         </div>
+        <NoProjectsAlert translationNamespace="fpa" userRole={user?.role} />
       </div>
     );
   }
-
-  const handleCancel = () => {
-    resetWorkflow();
-    setActiveTab("new");
-  };
-
-  const handleEstimateCreated = (estimate: unknown) => {
-    const estimateResponse = estimate as EstimateResponse;
-    setCreatedEstimate(estimateResponse);
-    setCurrentStep(3);
-  };
-
-
-  const handleGSCCompleted = async (generalSystemCharacteristics: number[]) => {
-    if (!state.createdEstimate) return;
-
-    try {
-      requireOrganization();
-      await estimateService.updateEstimate({
-        id: state.createdEstimate._id,
-        data: { generalSystemCharacteristics },
-      });
-      mutateEstimate();
-      setCurrentStep(5);
-    } catch (error) {
-      console.error("Failed to save GSC data:", error);
-    }
-  };
-
-  const handleProjectConfigCompleted = () => {
-    setCurrentStep(6);
-  };
-
-  const handleCalculateFP = async () => {
-    if (!state.createdEstimate) return;
-
-    try {
-      await calculateFunctionPoints({ estimateId: state.createdEstimate._id });
-      setCalculationComplete(true);
-    } catch {
-      // TODO: Error handling can be added here if needed
-    }
-  };
-
-  const handleComponentAdded = () => {
-    setSelectedComponentType(null);
-    mutateEstimate();
-  };
-
-  const handleProjectCreated = (project: unknown) => {
-    const p = project as { _id: string };
-    setSelectedProjectId(p._id);
-    setCurrentStep(2);
-  };
-
-  const handleProjectSelected = () => {
-    setCurrentStep(2);
-  };
-
-  const handleStepClick = (step: Step) => {
-    if (canNavigateToStep(step)) {
-      setCurrentStep(step);
-      setSelectedComponentType(null);
-    }
-  };
 
   const renderTabContent = () => {
     if (activeTab === "created") {
       return <EstimatesDashboard onCreateNew={() => setActiveTab("new")} />;
     }
 
+    const steps = [
+      { number: 1, label: t("workflow.step1Title") },
+      { number: 2, label: t("workflow.step2Title") },
+      { number: 3, label: t("workflow.step3Title") },
+      { number: 4, label: t("workflow.step4Title") },
+      { number: 5, label: t("workflow.step5Title") },
+      { number: 6, label: t("workflow.step6Title") },
+    ];
+
     return (
       <div className="space-y-8">
-        <div className="block md:hidden">
-          <div className="px-4">
-            <div className="grid grid-cols-6 gap-1">
-              {[
-                {
-                  number: 1,
-                  name: t("workflow.step1Title").replace("1. ", ""),
-                },
-                {
-                  number: 2,
-                  name: t("workflow.step2Title").replace("2. ", ""),
-                },
-                {
-                  number: 3,
-                  name: t("workflow.step3Title").replace("3. ", ""),
-                },
-                {
-                  number: 4,
-                  name: t("workflow.step4Title").replace("4. ", ""),
-                },
-                {
-                  number: 5,
-                  name: t("workflow.step5Title").replace("5. ", ""),
-                },
-                {
-                  number: 6,
-                  name: t("workflow.step6Title").replace("6. ", ""),
-                },
-              ].map((step) => (
-                <div
-                  key={step.number}
-                  className="flex flex-col items-center"
-                >
-                  <div
-                    onClick={() => handleStepClick(step.number as Step)}
-                    className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all mb-1 ${
-                      state.currentStep >= step.number
-                        ? "bg-primary border-primary text-white"
-                        : canNavigateToStep(step.number as Step)
-                        ? "border-primary/50 text-primary/70 bg-primary/10"
-                        : "border-gray-300 text-gray-400 bg-gray-100"
-                    } ${
-                      state.currentStep === step.number
-                        ? "ring-2 ring-primary/20"
-                        : ""
-                    } ${
-                      canNavigateToStep(step.number as Step)
-                        ? "cursor-pointer hover:scale-105 hover:shadow-md"
-                        : "cursor-not-allowed opacity-60"
-                    }`}
-                    title={
-                      !canNavigateToStep(step.number as Step)
-                        ? "Complete a etapa anterior para desbloquear"
-                        : ""
-                    }
-                  >
-                    <span className="text-xs font-medium">{step.number}</span>
-                  </div>
-                  <p
-                    className={`text-[10px] font-medium text-center leading-tight ${
-                      state.currentStep === step.number
-                        ? "text-primary"
-                        : canNavigateToStep(step.number as Step)
-                        ? "text-primary/70"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    {step.name}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <Stepper
+          steps={steps}
+          currentStep={currentStep}
+          onStepClick={handleStepClick}
+          canNavigateTo={(step) => canNavigateToStep(step as Step)}
+        />
 
-        <div className="hidden md:flex items-center justify-between">
-          {[
-            { number: 1, name: t("workflow.step1Title").replace("1. ", "") },
-            { number: 2, name: t("workflow.step2Title").replace("2. ", "") },
-            { number: 3, name: t("workflow.step3Title").replace("3. ", "") },
-            { number: 4, name: t("workflow.step4Title").replace("4. ", "") },
-            { number: 5, name: t("workflow.step5Title").replace("5. ", "") },
-            { number: 6, name: t("workflow.step6Title").replace("6. ", "") },
-          ].map((step, index) => (
-            <div
-              key={step.number}
-              className="flex flex-col items-center flex-1"
-            >
-              <div className="flex items-center w-full">
-                <div
-                  onClick={() => handleStepClick(step.number as Step)}
-                  className={`flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all ${
-                    state.currentStep >= step.number
-                      ? "bg-primary border-primary text-white"
-                      : canNavigateToStep(step.number as Step)
-                      ? "border-primary/50 text-primary/70 bg-primary/10"
-                      : "border-gray-300 text-gray-400 bg-gray-100"
-                  } ${
-                    state.currentStep === step.number
-                      ? "ring-4 ring-primary/20"
-                      : ""
-                  } ${
-                    canNavigateToStep(step.number as Step)
-                      ? "cursor-pointer hover:scale-110 hover:shadow-md"
-                      : "cursor-not-allowed opacity-60"
-                  }`}
-                  title={
-                    !canNavigateToStep(step.number as Step)
-                      ? "Complete a etapa anterior para desbloquear"
-                      : ""
-                  }
-                >
-                  {step.number}
-                </div>
-                {index < 5 && (
-                  <div
-                    className={`flex-1 h-0.5 mx-2 ${
-                      state.currentStep > step.number
-                        ? "bg-primary"
-                        : "bg-border"
-                    }`}
-                  />
-                )}
-              </div>
-              <div className="mt-2 text-center">
-                <p
-                  className={`text-xs font-medium ${
-                    state.currentStep === step.number
-                      ? "text-primary"
-                      : canNavigateToStep(step.number as Step)
-                      ? "text-primary/70"
-                      : "text-gray-400"
-                  }`}
-                >
-                  {step.name}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {state.currentStep === 1 && (
+        {currentStep === 1 && (
           <div className="bg-background rounded-lg border border-border p-6">
             <h2 className="text-xl font-semibold mb-4 text-default">
               {t("workflow.step1Title")}
@@ -373,7 +389,7 @@ export const FPAWorkflow = () => {
                       {t("workflow.selectExistingProject")}
                     </label>
                     <select
-                      value={state.selectedProjectId || ""}
+                      value={selectedProjectId || ""}
                       onChange={(e) =>
                         setSelectedProjectId(e.target.value || null)
                       }
@@ -386,7 +402,7 @@ export const FPAWorkflow = () => {
                         </option>
                       ))}
                     </select>
-                    {state.selectedProjectId && (
+                    {selectedProjectId && (
                       <Button
                         onClick={handleProjectSelected}
                         variant="primary"
@@ -399,12 +415,23 @@ export const FPAWorkflow = () => {
                   </div>
                 )}
 
-                {!state.selectedProjectId && (
+                {!selectedProjectId && projects && projects.length > 0 && (
                   <div className="border-t border-border pt-6">
-                    <h3 className="text-lg font-medium mb-4 text-default">
-                      {t("workflow.createNewProject")}
-                    </h3>
-                    <CreateProjectForm onSuccess={handleProjectCreated} />
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                      <h3 className="text-lg font-medium mb-2 text-default">
+                        {t("workflow.needNewProject")}
+                      </h3>
+                      <p className="text-sm text-secondary mb-4">
+                        {t("workflow.needNewProjectDescription")}
+                      </p>
+                      <Button
+                        onClick={() => router.push("/projects")}
+                        variant="primary"
+                        size="md"
+                      >
+                        {t("workflow.goToProjects")}
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -412,7 +439,7 @@ export const FPAWorkflow = () => {
           </div>
         )}
 
-        {state.currentStep === 2 && state.selectedProjectId && (
+        {currentStep === 2 && selectedProjectId && (
           <div className="bg-background rounded-lg border border-border p-6">
             <h2 className="text-xl font-semibold mb-4 text-default">
               {t("workflow.step2Title")}
@@ -421,199 +448,24 @@ export const FPAWorkflow = () => {
               {t("workflow.step2Description")}
             </p>
             <CreateEstimateForm
-              projectId={state.selectedProjectId}
-              onSuccess={handleEstimateCreated}
+              ref={estimateFormRef}
+              projectId={selectedProjectId}
+              initialData={estimateFormData || undefined}
+              onSuccess={handleEstimateFormSubmit}
+              onBack={() => setCurrentStep(1)}
             />
           </div>
         )}
 
-        {state.currentStep === 3 && state.createdEstimate && (
-          <div className="bg-background rounded-lg border border-border p-6">
-            <h2 className="text-xl font-semibold mb-4 text-default">
-              {t("workflow.step3Title")}
-            </h2>
-            <p className="text-secondary mb-6">
-              {t("workflow.step3Description")}
-            </p>
-                {currentEstimateData && (
-              <div className="mb-6 p-4 bg-background-secondary rounded-lg">
-                <h3 className="text-lg font-medium mb-3 text-default">
-                  {t("workflow.addedComponents")}
-                </h3>
-                <div className="grid grid-cols-5 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold text-primary">
-                      {(currentEstimateData as EstimateWithArrays)
-                        .internalLogicalFiles?.length || 0}
-                    </div>
-                    <div className="text-sm text-secondary">
-                      {t("workflow.components.aliLabel")}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-primary">
-                      {(currentEstimateData as EstimateWithArrays)
-                        .externalInterfaceFiles?.length || 0}
-                    </div>
-                    <div className="text-sm text-secondary">
-                      {t("workflow.components.aieLabel")}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-primary">
-                      {(currentEstimateData as EstimateWithArrays)
-                        .externalInputs?.length || 0}
-                    </div>
-                    <div className="text-sm text-secondary">
-                      {t("workflow.components.eiLabel")}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-primary">
-                      {(currentEstimateData as EstimateWithArrays)
-                        .externalOutputs?.length || 0}
-                    </div>
-                    <div className="text-sm text-secondary">
-                      {t("workflow.components.eoLabel")}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-primary">
-                      {(currentEstimateData as EstimateWithArrays)
-                        .externalQueries?.length || 0}
-                    </div>
-                    <div className="text-sm text-secondary">
-                      {t("workflow.components.eqLabel")}
-                    </div>
-                  </div>
-                </div>
-                {currentEstimateData && (
-                  <div className="mt-3 text-center text-sm text-secondary">
-                    {t("workflow.totalComponents", {
-                      count:
-                        ((currentEstimateData as EstimateWithArrays)
-                          .internalLogicalFiles?.length || 0) +
-                        ((currentEstimateData as EstimateWithArrays)
-                          .externalInterfaceFiles?.length || 0) +
-                        ((currentEstimateData as EstimateWithArrays)
-                          .externalInputs?.length || 0) +
-                        ((currentEstimateData as EstimateWithArrays)
-                          .externalOutputs?.length || 0) +
-                        ((currentEstimateData as EstimateWithArrays)
-                          .externalQueries?.length || 0),
-                    })}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {!state.selectedComponentType ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  {
-                    type: "ALI" as ComponentType,
-                    label: t("workflow.components.aliLabel"),
-                    desc: t("workflow.components.aliDescription"),
-                  },
-                  {
-                    type: "EI" as ComponentType,
-                    label: t("workflow.components.eiLabel"),
-                    desc: t("workflow.components.eiDescription"),
-                  },
-                  {
-                    type: "EO" as ComponentType,
-                    label: t("workflow.components.eoLabel"),
-                    desc: t("workflow.components.eoDescription"),
-                  },
-                  {
-                    type: "EQ" as ComponentType,
-                    label: t("workflow.components.eqLabel"),
-                    desc: t("workflow.components.eqDescription"),
-                  },
-                  {
-                    type: "AIE" as ComponentType,
-                    label: t("workflow.components.aieLabel"),
-                    desc: t("workflow.components.aieDescription"),
-                  },
-                ].map(({ type, label, desc }) => (
-                  <Button
-                    key={type}
-                    onClick={() => setSelectedComponentType(type)}
-                    variant="ghost"
-                    size="md"
-                    className="p-4 border border-border rounded-lg hover:border-primary/30 hover:shadow-sm transition-all text-center"
-                  >
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-medium text-default">{label}</h3>
-                        <PlusIcon className="w-4 h-4" />
-                      </div>
-                      <p className="text-sm text-secondary text-center">
-                        {desc}
-                      </p>
-                    </div>
-                  </Button>
-                ))}
-              </div>
-            ) : (
-              <div>
-                <div className="mb-4">
-                  <Button
-                    onClick={() => setSelectedComponentType(null)}
-                    variant="secondary"
-                    size="md"
-                    className="px-4 py-2 text-primary border border-primary rounded-md hover:bg-primary/5 transition-colors"
-                  >
-                    {t("workflow.backToComponentTypes")}
-                  </Button>
-                </div>
-                {state.selectedComponentType === "ALI" && (
-                  <CreateALIForm
-                    estimateId={state.createdEstimate._id}
-                    onSuccess={handleComponentAdded}
-                  />
-                )}
-                {state.selectedComponentType === "EI" && (
-                  <CreateEIForm
-                    estimateId={state.createdEstimate._id}
-                    onSuccess={handleComponentAdded}
-                  />
-                )}
-                {state.selectedComponentType === "EO" && (
-                  <CreateEOForm
-                    estimateId={state.createdEstimate._id}
-                    onSuccess={handleComponentAdded}
-                  />
-                )}
-                {state.selectedComponentType === "EQ" && (
-                  <CreateEQForm
-                    estimateId={state.createdEstimate._id}
-                    onSuccess={handleComponentAdded}
-                  />
-                )}
-                {state.selectedComponentType === "AIE" && (
-                  <CreateAIEForm
-                    estimateId={state.createdEstimate._id}
-                    onSuccess={handleComponentAdded}
-                  />
-                )}
-              </div>
-            )}
-
-            <div className="mt-6 pt-6 border-t border-border">
-              <Button
-                onClick={() => setCurrentStep(4)}
-                variant="primary"
-                size="md"
-                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
-              >
-                {t("workflow.nextGSC")}
-              </Button>
-            </div>
-          </div>
+        {currentStep === 3 && estimateFormData && (
+          <RequirementImportView
+            onProceed={() => setCurrentStep(4)}
+            organizationId={userOrganization?._id}
+            projectId={selectedProjectId || undefined}
+          />
         )}
 
-        {state.currentStep === 4 && state.createdEstimate && (
+        {currentStep === 4 && estimateFormData && (
           <div className="bg-background rounded-lg border border-border p-6">
             <h2 className="text-xl font-semibold mb-4 text-default">
               {t("workflow.step4Title")}
@@ -621,11 +473,36 @@ export const FPAWorkflow = () => {
             <p className="text-secondary mb-6">
               {t("workflow.step4Description")}
             </p>
-            <CreateGSCForm onSuccess={handleGSCCompleted} />
+            <CreateGSCForm
+              ref={gscFormRef}
+              onSuccess={handleGSCCompleted}
+              onAutoSave={handleGSCAutoSave}
+              onBack={() => setCurrentStep(3)}
+              initialValues={
+                generalSystemCharacteristics
+                  ? {
+                      dataProcessing: generalSystemCharacteristics[0],
+                      performanceRequirements: generalSystemCharacteristics[1],
+                      heavilyUsedConfiguration: generalSystemCharacteristics[2],
+                      transactionRate: generalSystemCharacteristics[3],
+                      onlineDataEntry: generalSystemCharacteristics[4],
+                      endUserEfficiency: generalSystemCharacteristics[5],
+                      onlineUpdate: generalSystemCharacteristics[6],
+                      complexProcessing: generalSystemCharacteristics[7],
+                      reusability: generalSystemCharacteristics[8],
+                      installationEase: generalSystemCharacteristics[9],
+                      operationalEase: generalSystemCharacteristics[10],
+                      multipleSites: generalSystemCharacteristics[11],
+                      facilitateChange: generalSystemCharacteristics[12],
+                      distributedFunctions: generalSystemCharacteristics[13],
+                    }
+                  : undefined
+              }
+            />
           </div>
         )}
 
-        {state.currentStep === 5 && state.createdEstimate && (
+        {currentStep === 5 && estimateFormData && (
           <div className="bg-background rounded-lg border border-border p-6">
             <h2 className="text-xl font-semibold mb-4 text-default">
               {t("workflow.step5Title")}
@@ -633,14 +510,23 @@ export const FPAWorkflow = () => {
             <p className="text-secondary mb-6">
               {t("workflow.step5Description")}
             </p>
-            <CreateProjectConfigurationForm
-              estimateId={state.createdEstimate._id}
-              onSuccess={handleProjectConfigCompleted}
+
+            <ProjectConfigurationForm
+              ref={configFormRef}
+              initialData={{
+                teamSize: estimateFormData.teamSize,
+                hourlyRateBRL: estimateFormData.hourlyRateBRL,
+                productivityFactor: estimateFormData.productivityFactor,
+                averageDailyWorkingHours:
+                  estimateFormData.averageDailyWorkingHours,
+              }}
+              onSuccess={handleProjectConfigSubmit}
+              onBack={() => setCurrentStep(4)}
             />
           </div>
         )}
 
-        {state.currentStep === 6 && state.createdEstimate && (
+        {currentStep === 6 && estimateFormData && (
           <div className="bg-background rounded-lg border border-border p-6">
             <h2 className="text-xl font-semibold mb-4 text-default">
               {t("workflow.step6Title")}
@@ -649,16 +535,449 @@ export const FPAWorkflow = () => {
               {t("workflow.step6Description")}
             </p>
 
-            {!state.isCalculationComplete ? (
+            {!createdEstimate ? (
+              <>
+                {/* Item 1: Estimate Information */}
+                {summaryPage === 1 && (
+                  <>
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 min-h-[200px]">
+                      <h3 className="text-lg font-semibold text-default mb-4">
+                        {t("workflow.estimateInformation")}
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="font-medium text-secondary">
+                            {t("workflow.estimateName")}:
+                          </span>
+                          <p className="text-default mt-1">
+                            {estimateFormData.name}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="font-medium text-secondary">
+                            {t("workflow.estimateCountType")}:
+                          </span>
+                          <p className="text-default mt-1">
+                            {t(`countTypes.${estimateFormData.countType}`)}
+                          </p>
+                        </div>
+                        <div className="md:col-span-2">
+                          <span className="font-medium text-secondary">
+                            {t("workflow.estimateDescription")}:
+                          </span>
+                          <p className="text-default mt-1">
+                            {estimateFormData.description}
+                          </p>
+                        </div>
+                        <div className="md:col-span-2">
+                          <span className="font-medium text-secondary">
+                            {t("workflow.estimateBoundary")}:
+                          </span>
+                          <p className="text-default mt-1">
+                            {estimateFormData.applicationBoundary}
+                          </p>
+                        </div>
+                        <div className="md:col-span-2">
+                          <span className="font-medium text-secondary">
+                            {t("workflow.estimateScope")}:
+                          </span>
+                          <p className="text-default mt-1">
+                            {estimateFormData.countingScope}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Arrow Navigation */}
+                    <div className="flex items-center justify-center gap-3 mt-4">
+                      <button
+                        disabled={true}
+                        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        aria-label={t("workflow.previous")}
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
+                        </svg>
+                      </button>
+                      <div className="text-sm text-secondary">
+                        {t("workflow.item")} 1 {t("workflow.of")} 4
+                      </div>
+                      <button
+                        onClick={() => setSummaryPage(2)}
+                        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        aria-label={t("workflow.next")}
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                {/* Item 2: Requirements Summary */}
+                {summaryPage === 2 && (
+                  <>
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 min-h-[200px]">
+                      <h3 className="text-lg font-semibold text-default mb-4">
+                        {t("workflow.requirementsSummary")}
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="font-medium text-secondary">
+                            {t("workflow.totalRequirements")}:
+                          </span>
+                          <p className="text-default mt-1">
+                            {requirements.length}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="font-medium text-secondary">
+                            {t("workflow.classifiedRequirements")}:
+                          </span>
+                          <p className="text-default mt-1">
+                            {requirements.filter((r) => r.componentType).length}
+                          </p>
+                        </div>
+                        <div className="md:col-span-2">
+                          <span className="font-medium text-secondary">
+                            {t("workflow.requirementsByType")}:
+                          </span>
+                          <div className="mt-2 grid grid-cols-2 md:grid-cols-5 gap-2">
+                            <div className="flex flex-col">
+                              <span className="text-xs text-secondary">
+                                {t("componentTypes.ALI_short")}
+                              </span>
+                              <span className="text-lg font-semibold text-default">
+                                {
+                                  requirements.filter(
+                                    (r) => r.componentType === "ALI"
+                                  ).length
+                                }
+                              </span>
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-xs text-secondary">
+                                {t("componentTypes.AIE_short")}
+                              </span>
+                              <span className="text-lg font-semibold text-default">
+                                {
+                                  requirements.filter(
+                                    (r) => r.componentType === "AIE"
+                                  ).length
+                                }
+                              </span>
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-xs text-secondary">
+                                {t("componentTypes.EI_short")}
+                              </span>
+                              <span className="text-lg font-semibold text-default">
+                                {
+                                  requirements.filter(
+                                    (r) => r.componentType === "EI"
+                                  ).length
+                                }
+                              </span>
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-xs text-secondary">
+                                {t("componentTypes.EO_short")}
+                              </span>
+                              <span className="text-lg font-semibold text-default">
+                                {
+                                  requirements.filter(
+                                    (r) => r.componentType === "EO"
+                                  ).length
+                                }
+                              </span>
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-xs text-secondary">
+                                {t("componentTypes.EQ_short")}
+                              </span>
+                              <span className="text-lg font-semibold text-default">
+                                {
+                                  requirements.filter(
+                                    (r) => r.componentType === "EQ"
+                                  ).length
+                                }
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Arrow Navigation */}
+                    <div className="flex items-center justify-center gap-3 mt-4">
+                      <button
+                        onClick={() => setSummaryPage(1)}
+                        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        aria-label={t("workflow.previous")}
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
+                        </svg>
+                      </button>
+                      <div className="text-sm text-secondary">
+                        {t("workflow.item")} 2 {t("workflow.of")} 4
+                      </div>
+                      <button
+                        onClick={() => setSummaryPage(3)}
+                        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        aria-label={t("workflow.next")}
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                {/* Item 3: GSC Summary */}
+                {summaryPage === 3 && (
+                  <>
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 min-h-[200px]">
+                      <h3 className="text-lg font-semibold text-default mb-4">
+                        {t("workflow.gscSummary")}
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="font-medium text-secondary">
+                            {t("workflow.gscDefined")}:
+                          </span>
+                          <p className="text-default mt-1">
+                            {generalSystemCharacteristics
+                              ? t("workflow.yes")
+                              : t("workflow.no")}
+                          </p>
+                        </div>
+                        {generalSystemCharacteristics && (
+                          <div>
+                            <span className="font-medium text-secondary">
+                              {t("workflow.gscInfluence")}:
+                            </span>
+                            <p className="text-default mt-1">
+                              {generalSystemCharacteristics.reduce(
+                                (a, b) => a + b,
+                                0
+                              )}{" "}
+                              / 70
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Arrow Navigation */}
+                    <div className="flex items-center justify-center gap-3 mt-4">
+                      <button
+                        onClick={() => setSummaryPage(2)}
+                        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        aria-label={t("workflow.previous")}
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
+                        </svg>
+                      </button>
+                      <div className="text-sm text-secondary">
+                        {t("workflow.item")} 3 {t("workflow.of")} 4
+                      </div>
+                      <button
+                        onClick={() => setSummaryPage(4)}
+                        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        aria-label={t("workflow.next")}
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                {/* Item 4: Project Configuration */}
+                {summaryPage === 4 && (
+                  <>
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 min-h-[200px]">
+                      <h3 className="text-lg font-semibold text-default mb-4">
+                        {t("workflow.configurationSummary")}
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="font-medium text-secondary">
+                            {t("estimateForm.teamSize")}:
+                          </span>
+                          <p className="text-default mt-1">
+                            {estimateFormData.teamSize || 1}{" "}
+                            {t("estimateForm.people")}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="font-medium text-secondary">
+                            {t("estimateForm.hourlyRate")}:
+                          </span>
+                          <p className="text-default mt-1">
+                            R$ {estimateFormData.hourlyRateBRL || 150}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="font-medium text-secondary">
+                            {t("estimateForm.productivityFactor")}:
+                          </span>
+                          <p className="text-default mt-1">
+                            {estimateFormData.productivityFactor || 10} h/PF
+                          </p>
+                        </div>
+                        <div>
+                          <span className="font-medium text-secondary">
+                            {t("estimateForm.dailyWorkingHours")}:
+                          </span>
+                          <p className="text-default mt-1">
+                            {estimateFormData.averageDailyWorkingHours || 8}h
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Arrow Navigation */}
+                    <div className="flex items-center justify-center gap-3 mt-4">
+                      <button
+                        onClick={() => setSummaryPage(3)}
+                        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        aria-label={t("workflow.previous")}
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 19l-7-7 7-7"
+                          />
+                        </svg>
+                      </button>
+                      <div className="text-sm text-secondary">
+                        {t("workflow.item")} 4 {t("workflow.of")} 4
+                      </div>
+                      <button
+                        disabled={true}
+                        className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                        aria-label={t("workflow.next")}
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                {/* Bottom Action Buttons */}
+                <div className="flex justify-end items-center gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                  <Button
+                    onClick={() => setCurrentStep(5)}
+                    variant="secondary"
+                    size="md"
+                  >
+                    Voltar
+                  </Button>
+
+                  <Button
+                    onClick={handleCreateAndCalculate}
+                    variant="primary"
+                    size="md"
+                    disabled={
+                      isSubmitting ||
+                      requirements.filter(
+                        (r) => r.componentType && r.componentId
+                      ).length === 0
+                    }
+                  >
+                    {isSubmitting ? "Calculando..." : "Calcular PF"}
+                  </Button>
+                </div>
+              </>
+            ) : !isCalculationComplete ? (
               <div className="text-center py-8">
-                <Button
-                  onClick={handleCalculateFP}
-                  variant="primary"
-                  size="lg"
-                  className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors text-lg font-medium"
-                >
-                  {t("workflow.calculateFP")}
-                </Button>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-secondary">Calculando pontos de função...</p>
               </div>
             ) : (
               <div className="text-center py-8">
@@ -684,19 +1003,13 @@ export const FPAWorkflow = () => {
                   {t("workflow.completionDescription")}
                 </p>
                 <div className="space-x-4">
-                  <Button
-                    onClick={handleCancel}
-                    variant="primary"
-                    size="md"
-                    className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
-                  >
+                  <Button onClick={handleCancel} variant="primary" size="md">
                     {t("workflow.createNewEstimate")}
                   </Button>
                   <Button
                     onClick={() => setActiveTab("created")}
                     variant="secondary"
                     size="md"
-                    className="px-4 py-2 bg-secondary text-white rounded-md hover:bg-secondary-dark transition-colors"
                   >
                     {t("workflow.viewAllEstimates")}
                   </Button>
@@ -710,40 +1023,22 @@ export const FPAWorkflow = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="mx-auto pb-[20px]">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-default">{t("title")}</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-default">
+          {t("title")}
+        </h1>
         <p className="text-secondary mt-1">{t("subtitle")}</p>
       </div>
 
-      <div className="border-b border-border mb-6">
-        <nav className="-mb-px flex space-x-8">
-          <Button
-            onClick={() => setActiveTab("new")}
-            variant="ghost"
-            size="sm"
-            className={`py-2 px-1 border-b-2 font-medium text-sm  rounded-none${
-              activeTab === "new"
-                ? "border-primary text-primary rounded-none"
-                : "border-transparent text-muted hover:text-secondary hover:border-border rounded-none"
-            }`}
-          >
-            {t("tabs.newEstimate")}
-          </Button>
-          <Button
-            onClick={() => setActiveTab("created")}
-            variant="ghost"
-            size="sm"
-            className={`py-2 px-1 border-b-2 font-medium text-sm rounded-none ${
-              activeTab === "created"
-                ? "border-primary text-primary rounded-none"
-                : "border-transparent text-muted hover:text-secondary hover:border-border rounded-none"
-            }`}
-          >
-            {t("tabs.createdEstimates")}
-          </Button>
-        </nav>
-      </div>
+      <Tabs
+        tabs={[
+          { id: "new" as Tab, label: t("tabs.newEstimate") },
+          { id: "created" as Tab, label: t("tabs.createdEstimates") },
+        ]}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
 
       {renderTabContent()}
     </div>

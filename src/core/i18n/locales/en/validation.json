@@ -1,0 +1,146 @@
+{
+  "common": {
+    "required": "This field is required",
+    "invalidFormat": "Invalid format"
+  },
+  "username": {
+    "minLength": "Username must be at least 3 characters",
+    "maxLength": "Username must not exceed 100 characters",
+    "pattern": "Username can only contain letters, numbers, underscores, and hyphens",
+    "helperText": "3-100 characters. Letters, numbers, _ and - only"
+  },
+  "email": {
+    "required": "Email is required",
+    "invalid": "Invalid email address",
+    "helperText": "Enter a valid email address"
+  },
+  "password": {
+    "minLength": "Password must be at least 8 characters",
+    "maxLength": "Password must not exceed 128 characters",
+    "uppercase": "Password must contain at least one uppercase letter",
+    "lowercase": "Password must contain at least one lowercase letter",
+    "number": "Password must contain at least one number",
+    "special": "Password must contain at least one special character (@$!%*?&)",
+    "helperText": "8-128 characters with uppercase, lowercase, number, and special character"
+  },
+  "confirmPassword": {
+    "required": "Please confirm your password",
+    "mismatch": "Passwords do not match"
+  },
+  "organization": {
+    "name": {
+      "minLength": "Organization name must be at least 3 characters",
+      "maxLength": "Organization name must not exceed 100 characters",
+      "helperText": "3-100 characters"
+    },
+    "description": {
+      "minLength": "Description must be at least 10 characters",
+      "maxLength": "Description must not exceed 500 characters",
+      "helperText": "10-500 characters"
+    },
+    "website": {
+      "invalid": "Invalid website URL",
+      "helperText": "Enter a valid URL (e.g., https://example.com)"
+    },
+    "industry": {
+      "maxLength": "Industry must not exceed 100 characters"
+    }
+  },
+  "project": {
+    "name": {
+      "minLength": "Project name must be at least 3 characters",
+      "maxLength": "Project name must not exceed 200 characters",
+      "helperText": "3-200 characters"
+    },
+    "description": {
+      "minLength": "Description must be at least 10 characters",
+      "maxLength": "Description must not exceed 1000 characters",
+      "helperText": "10-1000 characters"
+    },
+    "teamMembers": {
+      "maxLength": "Maximum 50 team members allowed"
+    },
+    "objective": {
+      "title": {
+        "minLength": "Objective title must be at least 3 characters",
+        "maxLength": "Objective title must not exceed 200 characters"
+      },
+      "description": {
+        "minLength": "Objective description must be at least 10 characters",
+        "maxLength": "Objective description must not exceed 1000 characters"
+      }
+    }
+  },
+  "fpa": {
+    "name": {
+      "required": "Name is required",
+      "maxLength": "Name must not exceed 100 characters"
+    },
+    "description": {
+      "required": "Description is required",
+      "maxLength": "Description must not exceed 500 characters"
+    },
+    "applicationBoundary": {
+      "required": "Application boundary is required",
+      "minLength": "Application boundary must be at least 10 characters",
+      "maxLength": "Application boundary must not exceed 500 characters"
+    },
+    "countingScope": {
+      "required": "Counting scope is required",
+      "minLength": "Counting scope must be at least 10 characters",
+      "maxLength": "Counting scope must not exceed 500 characters"
+    },
+    "primaryIntent": {
+      "minLength": "Primary intent must be at least 10 characters",
+      "maxLength": "Primary intent must not exceed 500 characters"
+    },
+    "processingLogic": {
+      "minLength": "Processing logic must be at least 10 characters",
+      "maxLength": "Processing logic must not exceed 1000 characters"
+    },
+    "externalSystem": {
+      "required": "External system is required"
+    },
+    "outputFormat": {
+      "required": "Output format is required"
+    },
+    "recordElementTypes": {
+      "min": "Must have at least 1 record element type"
+    },
+    "dataElementTypes": {
+      "min": "Must have at least 1 data element type"
+    },
+    "teamSize": {
+      "min": "Team size must be at least 1",
+      "max": "Team size must not exceed 100"
+    },
+    "hourlyRate": {
+      "min": "Hourly rate must be at least 0.01"
+    },
+    "gsc": {
+      "length": "GSC must have exactly 14 items"
+    },
+    "arrays": {
+      "maxLength": "Maximum 100 items allowed"
+    },
+    "eqValidation": "For EQ, provide either standard FTR/DET or input/output separately"
+  },
+  "fields": {
+    "name": "Name",
+    "description": "Description",
+    "email": "Email",
+    "username": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "website": "Website",
+    "industry": "Industry",
+    "mission": "Mission",
+    "vision": "Vision",
+    "values": "Values",
+    "title": "Title",
+    "teamSize": "Team Size",
+    "hourlyRate": "Hourly Rate",
+    "objectives": "Objectives",
+    "teamMembers": "Team Members"
+  }
+}

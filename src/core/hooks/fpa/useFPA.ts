@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import useSWR, { mutate } from "swr";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
+import { useOrganizations } from "@/core/hooks/organizations";
 import {
   Estimate,
   EstimateFormData,
@@ -55,7 +55,7 @@ export type UseFPAReturn = {
 export const useFPA = (): UseFPAReturn => {
   const { t } = useTranslation("fpa");
   const router = useRouter();
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { userOrganization, isLoadingUserOrganization } = useOrganizations({ fetchUserOrganization: true });
 
   const [isCreatingEstimate, setIsCreatingEstimate] = useState(false);
   const [isUpdatingEstimate, setIsUpdatingEstimate] = useState(false);
@@ -84,7 +84,7 @@ export const useFPA = (): UseFPAReturn => {
         description: "Online retail platform with payment integration",
         totalPoints: 245,
         createdAt: new Date("2024-01-15"),
-        status: "completed",
+        status: "finalized",
       },
       {
         id: "2",
@@ -92,7 +92,7 @@ export const useFPA = (): UseFPAReturn => {
         description: "Customer relationship management system",
         totalPoints: 189,
         createdAt: new Date("2024-01-10"),
-        status: "in_progress",
+        status: "draft",
       },
       {
         id: "3",
@@ -100,7 +100,7 @@ export const useFPA = (): UseFPAReturn => {
         description: "Real-time inventory tracking system",
         totalPoints: 156,
         createdAt: new Date("2024-01-08"),
-        status: "completed",
+        status: "finalized",
       },
     ];
 
@@ -110,10 +110,10 @@ export const useFPA = (): UseFPAReturn => {
 
   const statistics: FPAStatistics = {
     totalEstimates: estimates?.length || 0,
-    completedEstimates:
-      estimates?.filter((e) => e.status === "completed").length || 0,
-    inProgressEstimates:
-      estimates?.filter((e) => e.status === "in_progress").length || 0,
+    finalizedEstimates:
+      estimates?.filter((e) => e.status === "finalized").length || 0,
+    archivedEstimates:
+      estimates?.filter((e) => e.status === "archived").length || 0,
     draftEstimates: estimates?.filter((e) => e.status === "draft").length || 0,
     totalFunctionPoints:
       estimates?.reduce((sum, e) => sum + e.totalPoints, 0) || 0,
@@ -144,10 +144,10 @@ export const useFPA = (): UseFPAReturn => {
 
   const getStatusColor = (status: EstimateStatus): string => {
     switch (status) {
-      case "completed":
+      case "finalized":
         return "bg-green-100 text-green-800";
-      case "in_progress":
-        return "bg-blue-100 text-blue-800";
+      case "archived":
+        return "bg-red-100 text-red-800";
       case "draft":
         return "bg-gray-100 text-gray-800";
       default:

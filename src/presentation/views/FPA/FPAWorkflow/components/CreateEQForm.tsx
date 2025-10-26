@@ -11,12 +11,28 @@ import { Button } from "@/presentation/components/primitives";
 interface CreateEQFormProps {
   estimateId: string;
   onSuccess: () => void;
+  componentToEdit?: {
+    _id: string;
+    name: string;
+    description?: string;
+    primaryIntent?: string;
+    retrievalLogic?: string;
+    useSpecialCalculation?: boolean;
+    fileTypesReferenced?: number;
+    dataElementTypes?: number;
+    inputFtr?: number;
+    inputDet?: number;
+    outputFtr?: number;
+    outputDet?: number;
+    notes?: string;
+  };
 }
 
-export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
+export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateEQFormProps) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isEditing = !!componentToEdit;
 
   const {
     register,
@@ -27,22 +43,37 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
     reset,
   } = useForm<CreateEQData>({
     resolver: zodResolver(createEQSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      primaryIntent: "",
-      retrievalLogic: "",
-      useSpecialCalculation: false,
-      fileTypesReferenced: 0,
-      dataElementTypes: 1,
-      inputFtr: 0,
-      inputDet: 1,
-      outputFtr: 0,
-      outputDet: 1,
-    },
+    defaultValues: componentToEdit
+      ? {
+          name: componentToEdit.name,
+          description: componentToEdit.description || "",
+          primaryIntent: componentToEdit.primaryIntent || "",
+          retrievalLogic: componentToEdit.retrievalLogic || "",
+          useSpecialCalculation: componentToEdit.useSpecialCalculation || false,
+          fileTypesReferenced: componentToEdit.fileTypesReferenced || 0,
+          dataElementTypes: componentToEdit.dataElementTypes || 1,
+          inputFtr: componentToEdit.inputFtr || 0,
+          inputDet: componentToEdit.inputDet || 1,
+          outputFtr: componentToEdit.outputFtr || 0,
+          outputDet: componentToEdit.outputDet || 1,
+          notes: componentToEdit.notes || "",
+        }
+      : {
+          name: "",
+          description: "",
+          primaryIntent: "",
+          retrievalLogic: "",
+          useSpecialCalculation: false,
+          fileTypesReferenced: 0,
+          dataElementTypes: 1,
+          inputFtr: 0,
+          inputDet: 1,
+          outputFtr: 0,
+          outputDet: 1,
+        },
   });
 
-  const { createEQComponent } = useFpaComponents();
+  const { createEQComponent, updateEQComponent } = useFpaComponents();
 
   const useSpecialCalculation = watch("useSpecialCalculation");
   const inputFtr = watch("inputFtr");
@@ -103,13 +134,25 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
     setError(null);
 
     try {
-      await createEQComponent({ estimateId, data });
-      reset();
-      onSuccess?.();
+      if (isEditing) {
+        await updateEQComponent({
+          estimateId,
+          id: componentToEdit._id,
+          data,
+        });
+        onSuccess?.();
+      } else {
+        await createEQComponent({ estimateId, data });
+        reset();
+        onSuccess?.();
+      }
     } catch (err) {
+      console.error(`Error ${isEditing ? 'updating' : 'creating'} EQ component:`, err);
       setError(
         err instanceof Error
           ? err.message
+          : isEditing
+          ? t("componentForms.eq.failedToUpdate")
           : t("componentForms.eq.failedToCreate")
       );
     } finally {
@@ -118,19 +161,24 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form
+      onSubmit={(e) => {
+        handleSubmit(onSubmit)(e);
+      }}
+      className="space-y-6"
+    >
       <div className="grid grid-cols-1 gap-4">
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             {t("componentForms.eq.componentNameLabel")}
           </label>
           <input
             {...register("name")}
             type="text"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             placeholder={t("componentForms.eq.componentNamePlaceholder")}
           />
           {errors.name && (
@@ -141,14 +189,14 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
         <div>
           <label
             htmlFor="description"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             {t("componentForms.eq.descriptionLabel")}
           </label>
           <textarea
             {...register("description")}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             placeholder={t("componentForms.eq.descriptionPlaceholder")}
           />
         </div>
@@ -156,14 +204,14 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
         <div>
           <label
             htmlFor="primaryIntent"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             {t("componentForms.eq.primaryIntentLabel")}
           </label>
           <input
             {...register("primaryIntent")}
             type="text"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
             placeholder={t("componentForms.eq.primaryIntentPlaceholder")}
           />
         </div>
@@ -179,7 +227,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
             <input
               {...register("useSpecialCalculation")}
               type="checkbox"
-              className="mr-2 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              className="mr-2 h-4 w-4 text-primary focus:ring-primary border-border rounded"
               onChange={(e) => {
                 setValue("useSpecialCalculation", e.target.checked);
                 if (e.target.checked) {
@@ -193,7 +241,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
                 }
               }}
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-secondary">
               {t("componentForms.eq.useSpecialCalculation")}
             </span>
           </label>
@@ -207,7 +255,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
             <div>
               <label
                 htmlFor="fileTypesReferenced"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-secondary mb-1"
               >
                 {t("componentForms.eq.ftrReferencedFiles")}
               </label>
@@ -215,7 +263,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
                 {...register("fileTypesReferenced", { valueAsNumber: true })}
                 type="number"
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 placeholder="2"
               />
               <p className="mt-1 text-xs text-gray-500">
@@ -231,7 +279,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
             <div>
               <label
                 htmlFor="dataElementTypes"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-secondary mb-1"
               >
                 {t("componentForms.eq.detDataElements")}
               </label>
@@ -239,7 +287,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
                 {...register("dataElementTypes", { valueAsNumber: true })}
                 type="number"
                 min="1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 placeholder="10"
               />
               <p className="mt-1 text-xs text-gray-500">
@@ -262,7 +310,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
                 <div>
                   <label
                     htmlFor="inputFtr"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-secondary mb-1"
                   >
                     {t("componentForms.eq.inputFtr")}
                   </label>
@@ -270,7 +318,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
                     {...register("inputFtr", { valueAsNumber: true })}
                     type="number"
                     min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                     placeholder="1"
                   />
                   <p className="mt-1 text-xs text-gray-500">
@@ -281,7 +329,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
                 <div>
                   <label
                     htmlFor="inputDet"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-secondary mb-1"
                   >
                     {t("componentForms.eq.inputDet")}
                   </label>
@@ -289,7 +337,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
                     {...register("inputDet", { valueAsNumber: true })}
                     type="number"
                     min="1"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                     placeholder="5"
                   />
                   <p className="mt-1 text-xs text-gray-500">
@@ -321,7 +369,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
                 <div>
                   <label
                     htmlFor="outputFtr"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-secondary mb-1"
                   >
                     {t("componentForms.eq.outputFtr")}
                   </label>
@@ -329,7 +377,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
                     {...register("outputFtr", { valueAsNumber: true })}
                     type="number"
                     min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                     placeholder="3"
                   />
                   <p className="mt-1 text-xs text-gray-500">
@@ -340,7 +388,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
                 <div>
                   <label
                     htmlFor="outputDet"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-secondary mb-1"
                   >
                     {t("componentForms.eq.outputDet")}
                   </label>
@@ -348,7 +396,7 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
                     {...register("outputDet", { valueAsNumber: true })}
                     type="number"
                     min="1"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full px-3 py-2 border border-border bg-background text-default rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                     placeholder="12"
                   />
                   <p className="mt-1 text-xs text-gray-500">
@@ -404,6 +452,12 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
         </div>
       )}
 
+      {errors.root && (
+        <div className="rounded-md bg-red-50 p-4">
+          <p className="text-sm text-red-700">{errors.root.message}</p>
+        </div>
+      )}
+
       <div className="flex justify-end space-x-3">
         <Button
           type="submit"
@@ -412,7 +466,11 @@ export const CreateEQForm = ({ estimateId, onSuccess }: CreateEQFormProps) => {
           size="md"
         >
           {isSubmitting
-            ? t("componentForms.eq.creating")
+            ? isEditing
+              ? t("componentForms.eq.updating")
+              : t("componentForms.eq.creating")
+            : isEditing
+            ? t("componentForms.eq.updateComponent")
             : t("componentForms.eq.createComponent")}
         </Button>
       </div>

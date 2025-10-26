@@ -19,6 +19,7 @@ export interface AuthResponse {
     role: string;
     organizationId?: string | null;
     isEmailVerified: boolean;
+    hasCompletedOnboarding?: boolean;
     createdAt: string;
     updatedAt: string;
   };

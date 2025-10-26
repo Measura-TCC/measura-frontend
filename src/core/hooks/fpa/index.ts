@@ -14,3 +14,9 @@ export {
   useAIEComponents,
   useAllComponents,
 } from "./components/useFpaComponents";
+
+export {
+  useRequirements,
+  useRequirement,
+  useRequirementActions,
+} from "./requirements/useRequirements";

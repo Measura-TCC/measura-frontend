@@ -57,7 +57,7 @@ export const Step3: React.FC<Step3Props> = ({
                 </label>
                 <div className="relative">
                   <select
-                    className="w-full p-2 border border-border rounded-md appearance-none bg-white"
+                    className="w-full p-2 border border-border rounded-md appearance-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                     value=""
                     onChange={(e) => {
                       if (e.target.value) {

@@ -60,7 +60,7 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl">
       <Card className={!canChangePassword ? "opacity-50" : ""}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

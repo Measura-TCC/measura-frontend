@@ -2,8 +2,10 @@
   "title": "Login",
   "subtitle": "Sign in to your account",
   "email": "Email",
+  "emailOrUsername": "Email or Username",
   "password": "Password",
   "enterYourEmail": "Enter your email",
+  "enterEmailOrUsername": "Enter your email or username",
   "enterYourPassword": "Enter your password",
   "signingIn": "Signing in...",
   "signInButton": "Sign In",
@@ -11,5 +13,17 @@
   "signUp": "Sign up",
   "fillAllFields": "Please fill in all fields",
   "invalidCredentials": "Invalid email or password",
-  "demoCredentials": "Demo credentials: admin@measura.com / password"
+  "demoCredentials": "Demo credentials: admin@measura.com / password",
+  "errors": {
+    "invalidCredentials": "Invalid username/email or password",
+    "userNotFound": "User not found. Please check your credentials or sign up.",
+    "accountLocked": "Your account has been locked. Please contact support.",
+    "sessionExpired": "Your session has expired. Please sign in again.",
+    "tooManyAttempts": "Too many login attempts. Please try again later.",
+    "networkError": "Unable to connect to the server. Please check your internet connection.",
+    "serverError": "An error occurred on the server. Please try again later.",
+    "unauthorized": "Unauthorized access. Please sign in.",
+    "emailRequired": "Email or username is required",
+    "passwordRequired": "Password is required"
+  }
 } 

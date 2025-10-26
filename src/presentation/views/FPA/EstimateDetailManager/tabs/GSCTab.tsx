@@ -2,7 +2,7 @@
 
 import { GSCDisplay } from "@/presentation/views/FPA/common/GSCDisplay";
 import { estimateService } from "@/core/services/estimateService";
-import { useOrganization } from "@/core/hooks/organizations/useOrganization";
+import { useOrganizations } from "@/core/hooks/organizations";
 import type { EstimateOverviewResponse, EstimateResponse } from "@/core/services/estimateService";
 
 interface GSCTabProps {
@@ -12,7 +12,7 @@ interface GSCTabProps {
 }
 
 export const GSCTab = ({ estimateOverview, estimate, onUpdate }: GSCTabProps) => {
-  const { requireOrganization } = useOrganization();
+  const { requireOrganization } = useOrganizations();
 
   const getGSCValues = () => {
     // Try to get GSC values from estimate first, then estimateOverview
@@ -52,7 +52,7 @@ export const GSCTab = ({ estimateOverview, estimate, onUpdate }: GSCTabProps) =>
     <div className="space-y-6">
       <GSCDisplay
         estimate={{
-          _id: estimateOverview._id,
+          _id: estimateOverview.id || estimateOverview._id || '',
           totalDegreeOfInfluence: totalInfluence,
           valueAdjustmentFactor: valueAdjustmentFactor,
           generalSystemCharacteristics: gscValues,
@@ -61,7 +61,7 @@ export const GSCTab = ({ estimateOverview, estimate, onUpdate }: GSCTabProps) =>
           try {
             requireOrganization();
             await estimateService.updateEstimate({
-              id: estimateOverview._id,
+              id: estimateOverview.id || estimateOverview._id || '',
               data: { generalSystemCharacteristics },
             });
             onUpdate();

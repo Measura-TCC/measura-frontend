@@ -1,33 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { useProjectActions } from "@/core/hooks/projects/useProjects";
-import { useUserOrganization } from "@/core/hooks/organizations/useOrganizations";
-import { useOrganization } from "@/core/hooks/organizations/useOrganization";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { useOrganizationalObjectives } from "@/core/hooks/organizations";
 import {
   CreateProjectRequest,
-  createProjectSchema,
+  createProjectSchemaFactory,
 } from "@/core/schemas/projects";
 import { InfoIcon } from "@/presentation/assets/icons";
 import { Button } from "@/presentation/components/primitives/Button/Button";
+import { DateInput } from "@/presentation/components/primitives";
 
 interface CreateProjectFormProps {
   onSuccess?: (project: unknown) => void;
+  onCancel?: () => void;
 }
 
-export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
+export const CreateProjectForm = ({ onSuccess, onCancel }: CreateProjectFormProps) => {
   const { t } = useTranslation(["projects", "common"]);
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { userOrganization, isLoadingUserOrganization } = useUserOrganization();
+  const { userOrganization, isLoadingUserOrganization, activeOrganizationId, loadUserOrganizations, forceClearCache } = useOrganizations({ fetchUserOrganization: true });
   const { createProject } = useProjectActions();
-  const { activeOrganizationId, loadUserOrganizations, forceClearCache } =
-    useOrganization();
   const {
     objectives: organizationalObjectives,
     isLoadingObjectives,
@@ -50,14 +49,21 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
     userOrganization,
   ]);
 
+  const projectSchema = useMemo(
+    () => createProjectSchemaFactory(t),
+    [t]
+  );
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
     control,
+    setValue,
+    watch,
   } = useForm<CreateProjectRequest>({
-    resolver: zodResolver(createProjectSchema),
+    resolver: zodResolver(projectSchema),
     defaultValues: {
       objectives: [
         { title: "", description: "", organizationalObjectiveIds: [] },
@@ -80,20 +86,12 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
     setError("");
 
     try {
-      const teamMembersArray = data.teamMembers
-        ? data.teamMembers
-            .split(",")
-            .map((id) => id.trim())
-            .filter((id) => id.length > 0)
-        : [];
-
       const projectData = {
         name: data.name,
         description: data.description,
         organizationId: userOrganization._id,
         startDate: data.startDate,
         endDate: data.endDate,
-        teamMembers: teamMembersArray,
         objectives: data.objectives?.filter(
           (obj) => obj.title.trim() && obj.description.trim()
         ),
@@ -208,11 +206,11 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
             >
               {t("startDate")}
             </label>
-            <input
-              {...register("startDate")}
+            <DateInput
               id="startDate"
-              type="date"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              value={watch("startDate")}
+              onChange={(value) => setValue("startDate", value)}
+              error={!!errors.startDate}
             />
             {errors.startDate && (
               <p className="mt-1 text-sm text-red-600">
@@ -228,11 +226,11 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
             >
               {t("endDate")}
             </label>
-            <input
-              {...register("endDate")}
+            <DateInput
               id="endDate"
-              type="date"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              value={watch("endDate")}
+              onChange={(value) => setValue("endDate", value)}
+              error={!!errors.endDate}
             />
             {errors.endDate && (
               <p className="mt-1 text-sm text-red-600">
@@ -240,30 +238,6 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
               </p>
             )}
           </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="teamMembers"
-            className="block text-sm font-medium text-gray-700"
-          >
-            {t("createProjectForm.teamMembersOptional")}
-          </label>
-          <textarea
-            {...register("teamMembers")}
-            id="teamMembers"
-            rows={2}
-            placeholder={t("createProjectForm.teamMembersPlaceholder")}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          />
-          <p className="mt-1 text-xs text-gray-500">
-            {t("createProjectForm.teamMembersHelp")}
-          </p>
-          {errors.teamMembers && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.teamMembers.message}
-            </p>
-          )}
         </div>
 
         <div>
@@ -279,8 +253,9 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
                 <div>
                   <input
                     {...register(`objectives.${index}.title`)}
+                    type="text"
                     placeholder={t("createProjectForm.objectiveTitle")}
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                   {errors.objectives?.[index]?.title && (
                     <p className="mt-1 text-sm text-red-600">
@@ -372,7 +347,17 @@ export const CreateProjectForm = ({ onSuccess }: CreateProjectFormProps) => {
           </div>
         )}
 
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-3">
+          {onCancel && (
+            <Button
+              type="button"
+              onClick={onCancel}
+              variant="secondary"
+              size="md"
+            >
+              {t("cancel", { ns: "projects" })}
+            </Button>
+          )}
           <Button
             type="submit"
             disabled={isSubmitting}

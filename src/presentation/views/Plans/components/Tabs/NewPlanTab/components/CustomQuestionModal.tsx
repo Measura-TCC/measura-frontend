@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Button,
   Input,
+  Tabs,
 } from "@/presentation/components/primitives";
 import type { Question } from "../utils/types";
 import { availableQuestions } from "../utils/stepData";
@@ -11,18 +12,40 @@ interface CustomQuestionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddQuestion: (question: Question) => void;
+  editingData?: Question;
 }
 
 export const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
   isOpen,
   onClose,
   onAddQuestion,
+  editingData,
 }) => {
   const { t } = useTranslation("plans");
-  const [selectedTab, setSelectedTab] = useState("predefined");
+  const [selectedTab, setSelectedTab] = useState(editingData ? "custom" : "predefined");
+
+  // If editing data contains a translation key, translate it for display
+  const getInitialQuestionText = () => {
+    if (!editingData?.questionText) return "";
+    // Check if it's a translation key (starts with "questions.")
+    if (editingData.questionText.startsWith("questions.")) {
+      return t(editingData.questionText);
+    }
+    return editingData.questionText;
+  };
+
   const [customQuestion, setCustomQuestion] = useState<Omit<Question, "metrics">>({
-    questionText: "",
+    questionText: getInitialQuestionText(),
   });
+
+  // Update state when editingData changes
+  useEffect(() => {
+    if (editingData) {
+      setCustomQuestion({
+        questionText: getInitialQuestionText(),
+      });
+    }
+  }, [editingData]);
 
   const handleAddPredefinedQuestion = (question: Question) => {
     onAddQuestion(question);
@@ -30,10 +53,11 @@ export const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
   };
 
   const handleCreateCustomQuestion = () => {
-    if (!customQuestion.questionText.trim()) return;
+    const trimmedText = customQuestion.questionText.trim();
+    if (!trimmedText) return;
 
     const newQuestion: Question = {
-      ...customQuestion,
+      questionText: trimmedText,
       metrics: [], // Start with empty metrics array
     };
 
@@ -61,30 +85,28 @@ export const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
       <div className="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border" onClick={(e) => e.stopPropagation()}>
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">{t("modals.customQuestion.title")}</h2>
-            <button onClick={handleClose} className="text-gray-500 hover:text-gray-700">
+            <h2 className="text-lg font-semibold">
+              {editingData ? t("editQuestion") : t("modals.customQuestion.title")}
+            </h2>
+            <button onClick={handleClose} className="text-gray-500 hover:text-gray-700 cursor-pointer">
               ×
             </button>
           </div>
 
-          <div className="mb-4">
-            <div className="flex border-b">
-              <button
-                className={`px-4 py-2 ${selectedTab === 'predefined' ? 'border-b-2 border-primary text-primary' : 'text-gray-600'}`}
-                onClick={() => setSelectedTab('predefined')}
-              >
-                {t("modals.customQuestion.predefinedTab")}
-              </button>
-              <button
-                className={`px-4 py-2 ${selectedTab === 'custom' ? 'border-b-2 border-primary text-primary' : 'text-gray-600'}`}
-                onClick={() => setSelectedTab('custom')}
-              >
-                {t("modals.customQuestion.customTab")}
-              </button>
+          {!editingData && (
+            <div className="mb-4">
+              <Tabs
+                tabs={[
+                  { id: "predefined", label: t("modals.customQuestion.predefinedTab") },
+                  { id: "custom", label: t("modals.customQuestion.customTab") },
+                ]}
+                activeTab={selectedTab}
+                onTabChange={setSelectedTab}
+              />
             </div>
-          </div>
+          )}
 
-          {selectedTab === 'predefined' && (
+          {!editingData && selectedTab === 'predefined' && (
             <div className="space-y-4">
               <p className="text-secondary text-sm mb-4">
                 {t("modals.customQuestion.predefinedDescription")}
@@ -119,7 +141,7 @@ export const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
             </div>
           )}
 
-          {selectedTab === 'custom' && (
+          {(editingData || selectedTab === 'custom') && (
             <div className="space-y-4">
               <p className="text-secondary text-sm mb-4">
                 {t("modals.customQuestion.customDescription")}
@@ -147,7 +169,7 @@ export const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
                   onClick={handleCreateCustomQuestion}
                   disabled={!customQuestion.questionText.trim()}
                 >
-                  {t("modals.customQuestion.createButton")}
+                  {editingData ? t("updateQuestion") : t("modals.customQuestion.createButton")}
                 </Button>
               </div>
             </div>

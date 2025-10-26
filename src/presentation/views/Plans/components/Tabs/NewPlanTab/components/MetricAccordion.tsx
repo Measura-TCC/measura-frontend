@@ -144,7 +144,9 @@ export const MetricAccordion: React.FC<MetricAccordionProps> = ({
                                 {measurement.measurementAcronym}
                               </span>
                               <h6 className="font-medium text-sm">
-                                {t(measurement.measurementEntity)}
+                                {t(measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
+                                  ? measurement.measurementEntity.replace("metrics.measurementEntities.", "entities.")
+                                  : measurement.measurementEntity)}
                               </h6>
                             </div>
                             <div

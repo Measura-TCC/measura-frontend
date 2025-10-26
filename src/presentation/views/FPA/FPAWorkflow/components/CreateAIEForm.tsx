@@ -11,15 +11,27 @@ import { Button } from "@/presentation/components/primitives";
 interface CreateAIEFormProps {
   estimateId: string;
   onSuccess?: (aie: unknown) => void;
+  componentToEdit?: {
+    _id: string;
+    name: string;
+    description?: string;
+    primaryIntent?: string;
+    recordElementTypes?: number;
+    dataElementTypes?: number;
+    externalSystem?: string;
+    notes?: string;
+  };
 }
 
 export const CreateAIEForm = ({
   estimateId,
   onSuccess,
+  componentToEdit,
 }: CreateAIEFormProps) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isEditing = !!componentToEdit;
 
   const {
     register,
@@ -28,22 +40,44 @@ export const CreateAIEForm = ({
     reset,
   } = useForm<CreateAIEData>({
     resolver: zodResolver(createAIESchema),
+    defaultValues: componentToEdit
+      ? {
+          name: componentToEdit.name,
+          description: componentToEdit.description || "",
+          primaryIntent: componentToEdit.primaryIntent || "",
+          recordElementTypes: componentToEdit.recordElementTypes || 1,
+          dataElementTypes: componentToEdit.dataElementTypes || 1,
+          externalSystem: componentToEdit.externalSystem || "",
+          notes: componentToEdit.notes || "",
+        }
+      : undefined,
   });
 
-  const { createAIEComponent } = useFpaComponents();
+  const { createAIEComponent, updateAIEComponent } = useFpaComponents();
 
   const onSubmit = async (data: CreateAIEData) => {
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const result = await createAIEComponent({ estimateId, data });
-      reset();
-      onSuccess?.(result);
+      if (isEditing) {
+        const result = await updateAIEComponent({
+          estimateId,
+          id: componentToEdit._id,
+          data,
+        });
+        onSuccess?.(result);
+      } else {
+        const result = await createAIEComponent({ estimateId, data });
+        reset();
+        onSuccess?.(result);
+      }
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
+          : isEditing
+          ? t("componentForms.aie.failedToUpdate")
           : t("componentForms.aie.failedToCreate")
       );
     } finally {
@@ -56,7 +90,7 @@ export const CreateAIEForm = ({
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.aie.name")}
         </label>
@@ -64,7 +98,7 @@ export const CreateAIEForm = ({
           {...register("name")}
           id="name"
           type="text"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.name && (
           <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
@@ -74,7 +108,7 @@ export const CreateAIEForm = ({
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.descriptionOptional")}
         </label>
@@ -82,7 +116,7 @@ export const CreateAIEForm = ({
           {...register("description")}
           id="description"
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.description && (
           <p className="mt-1 text-sm text-red-600">
@@ -94,7 +128,7 @@ export const CreateAIEForm = ({
       <div>
         <label
           htmlFor="primaryIntent"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.primaryIntent")}
         </label>
@@ -103,7 +137,7 @@ export const CreateAIEForm = ({
           id="primaryIntent"
           rows={3}
           placeholder={t("componentForms.aie.primaryIntentPlaceholder")}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.primaryIntent && (
           <p className="mt-1 text-sm text-red-600">
@@ -115,7 +149,7 @@ export const CreateAIEForm = ({
       <div>
         <label
           htmlFor="recordElementTypes"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.aie.recordElementTypes")}
         </label>
@@ -124,7 +158,7 @@ export const CreateAIEForm = ({
           id="recordElementTypes"
           type="number"
           min="1"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.recordElementTypes && (
           <p className="mt-1 text-sm text-red-600">
@@ -136,7 +170,7 @@ export const CreateAIEForm = ({
       <div>
         <label
           htmlFor="dataElementTypes"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.aie.dataElementTypes")}
         </label>
@@ -145,7 +179,7 @@ export const CreateAIEForm = ({
           id="dataElementTypes"
           type="number"
           min="1"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.dataElementTypes && (
           <p className="mt-1 text-sm text-red-600">
@@ -157,7 +191,7 @@ export const CreateAIEForm = ({
       <div>
         <label
           htmlFor="externalSystem"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.aie.externalSystem")}
         </label>
@@ -165,7 +199,7 @@ export const CreateAIEForm = ({
           {...register("externalSystem")}
           id="externalSystem"
           type="text"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.externalSystem && (
           <p className="mt-1 text-sm text-red-600">
@@ -177,7 +211,7 @@ export const CreateAIEForm = ({
       <div>
         <label
           htmlFor="notes"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-secondary"
         >
           {t("componentForms.notesOptional")}
         </label>
@@ -185,7 +219,7 @@ export const CreateAIEForm = ({
           {...register("notes")}
           id="notes"
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          className="mt-1 block w-full rounded-md border-border bg-background text-default shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
         {errors.notes && (
           <p className="mt-1 text-sm text-red-600">{errors.notes.message}</p>
@@ -206,7 +240,11 @@ export const CreateAIEForm = ({
           size="md"
         >
           {isSubmitting
-            ? t("componentForms.aie.submitting")
+            ? isEditing
+              ? t("componentForms.aie.updating")
+              : t("componentForms.aie.submitting")
+            : isEditing
+            ? t("componentForms.aie.update")
             : t("componentForms.aie.submit")}
         </Button>
       </div>

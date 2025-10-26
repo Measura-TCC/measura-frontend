@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { estimateService } from "@/core/services/estimateService";
-import { useOrganization } from "@/core/hooks/organizations/useOrganization";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { Button } from "@/presentation/components/primitives/Button/Button";
 
 const projectConfigSchema = z.object({
@@ -45,7 +45,7 @@ export const CreateProjectConfigurationForm = ({
   onSuccess,
 }: CreateProjectConfigurationFormProps) => {
   const { t } = useTranslation("fpa");
-  const { requireOrganization } = useOrganization();
+  const { requireOrganization } = useOrganizations();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

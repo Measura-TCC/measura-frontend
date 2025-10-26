@@ -2,6 +2,7 @@
 export type PlanStep = 1 | 2 | 3 | 4 | 5;
 
 export interface Measurement {
+  _id?: string;
   measurementEntity: string;
   measurementAcronym: string;
   measurementProperties: string;
@@ -9,7 +10,7 @@ export interface Measurement {
   measurementScale: string;
   measurementProcedure: string;
   measurementFrequency: string;
-  measurementResponsible: string;
+  measurementResponsible?: string;
 }
 
 export interface Metric {

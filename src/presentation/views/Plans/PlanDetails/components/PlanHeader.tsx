@@ -22,6 +22,7 @@ interface PlanHeaderProps {
   onCancelEdit: () => void;
   onExport: (format: ExportFormat) => void;
   onDelete: () => void;
+  onDeleteClick?: () => void;
 }
 
 export const PlanHeader: React.FC<PlanHeaderProps> = ({
@@ -35,6 +36,7 @@ export const PlanHeader: React.FC<PlanHeaderProps> = ({
   onCancelEdit,
   onExport,
   onDelete,
+  onDeleteClick,
 }) => {
   const { t } = useTranslation("plans");
   const router = useRouter();
@@ -50,14 +52,14 @@ export const PlanHeader: React.FC<PlanHeaderProps> = ({
           {t("planDetails.back")}
         </Button>
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
             {planName}
           </h1>
-          <p className="text-gray-600 text-sm md:text-base">
+          <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base">
             {t("responsible")}: {planResponsible}
           </p>
           {isEditing && (
-            <p className="text-sm text-blue-600 mt-1">
+            <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">
               {t("planDetails.editingMode")}
             </p>
           )}
@@ -97,7 +99,7 @@ export const PlanHeader: React.FC<PlanHeaderProps> = ({
             </Button>
             <Button
               variant="danger"
-              onClick={onDelete}
+              onClick={onDeleteClick || onDelete}
               size="sm"
             >
               <TrashIcon className="h-4 w-4 mr-2" />

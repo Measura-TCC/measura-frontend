@@ -17,17 +17,16 @@ export const EstimateOverviewCard = ({
   const router = useRouter();
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case "FINALIZED":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "IN_PROGRESS":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      case "DRAFT":
-        return "bg-gray-100 text-gray-800 border-gray-200";
-      case "ARCHIVED":
-        return "bg-red-100 text-red-800 border-red-200";
+    const normalizedStatus = status.toLowerCase();
+    switch (normalizedStatus) {
+      case "finalized":
+        return "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-200 dark:border-green-800";
+      case "archived":
+        return "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800";
+      case "draft":
+        return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 border-gray-200 dark:border-gray-700";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 border-gray-200 dark:border-gray-700";
     }
   };
 
@@ -44,9 +43,12 @@ export const EstimateOverviewCard = ({
     }
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return '-';
+    const dateObj = new Date(dateString);
+    if (isNaN(dateObj.getTime())) return '-';
     const locale = i18n.language === "pt" ? "pt-BR" : "en-US";
-    return new Date(dateString).toLocaleDateString(locale, {
+    return dateObj.toLocaleDateString(locale, {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -71,19 +73,19 @@ export const EstimateOverviewCard = ({
   return (
     <div
       onClick={handleCardClick}
-      className="group cursor-pointer bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg hover:border-indigo-300 transition-all duration-200"
+      className="group cursor-pointer bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-200"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-gray-900 truncate group-hover:text-indigo-600 transition-colors">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
             {estimate.name}
           </h3>
           {estimate.project && (
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               {estimate.project.name}
             </p>
           )}
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
             {getCountTypeLabel(estimate.countType)}
           </p>
         </div>
@@ -93,9 +95,9 @@ export const EstimateOverviewCard = ({
               estimate.status
             )}`}
           >
-            {t(`status.${estimate.status.toLowerCase()}`)}
+            {t(`status.${estimate.status?.toLowerCase() || 'draft'}`)}
           </span>
-          <span className="text-xs text-gray-500">v{estimate.version}</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">v{estimate.version}</span>
         </div>
       </div>
 
@@ -103,40 +105,40 @@ export const EstimateOverviewCard = ({
         <div className="flex items-center space-x-2">
           <div
             className={`w-3 h-3 rounded-full ${
-              estimate.hasComponents ? "bg-green-500" : "bg-gray-300"
+              estimate.hasComponents ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"
             }`}
           />
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-gray-600 dark:text-gray-400">
             {t("workflow.components.title", "Components")}
           </span>
         </div>
         <div className="flex items-center space-x-2">
           <div
             className={`w-3 h-3 rounded-full ${
-              estimate.hasGSC || estimate.valueAdjustmentFactor ? "bg-green-500" : "bg-gray-300"
+              estimate.hasGSC || estimate.valueAdjustmentFactor ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"
             }`}
           />
-          <span className="text-sm text-gray-600">GSC</span>
+          <span className="text-sm text-gray-600 dark:text-gray-400">GSC</span>
         </div>
         <div className="flex items-center space-x-2">
           <div
             className={`w-3 h-3 rounded-full ${
-              estimate.isCalculated ? "bg-green-500" : "bg-gray-300"
+              estimate.isCalculated ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"
             }`}
           />
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-gray-600 dark:text-gray-400">
             {t("workflow.calculated", "Calculated")}
           </span>
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-4 mb-4">
+      <div className="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950/50 dark:to-blue-950/50 rounded-lg p-4 mb-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               {t("workflow.adjustedFunctionPoints", "Adjusted Function Points")}
             </p>
-            <p className="text-2xl font-bold text-indigo-600">
+            <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
               {formatNumber(
                 estimate.adjustedFunctionPoints ||
                   estimate.unadjustedFunctionPoints ||
@@ -147,19 +149,19 @@ export const EstimateOverviewCard = ({
           {estimate.valueAdjustmentFactor &&
             estimate.valueAdjustmentFactor !== 1 && (
               <div className="text-right">
-                <p className="text-sm text-gray-600">{t("calculations.vaf")}</p>
-                <p className="text-lg font-semibold text-blue-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t("calculations.vaf")}</p>
+                <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">
                   {formatNumber(estimate.valueAdjustmentFactor)}
                 </p>
               </div>
             )}
         </div>
         {estimate.estimatedEffortHours && estimate.estimatedEffortHours > 0 && (
-          <div className="mt-2 pt-2 border-t border-indigo-100">
-            <p className="text-sm text-gray-600">
+          <div className="mt-2 pt-2 border-t border-indigo-100 dark:border-indigo-900">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               {t("workflow.estimatedEffort", "Estimated Effort")}
             </p>
-            <p className="text-sm font-medium text-indigo-700">
+            <p className="text-sm font-medium text-indigo-700 dark:text-indigo-300">
               {formatNumber(estimate.estimatedEffortHours)} {t("costs.hours")}
             </p>
           </div>
@@ -168,48 +170,48 @@ export const EstimateOverviewCard = ({
 
       <div className="grid grid-cols-5 gap-2 mb-4">
         <div className="text-center">
-          <p className="text-lg font-bold text-gray-900">
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {estimate.componentCounts?.ilf || 0}
           </p>
-          <p className="text-xs text-gray-600">
+          <p className="text-xs text-gray-600 dark:text-gray-400">
             {t("workflow.components.aliLabel")}
           </p>
         </div>
         <div className="text-center">
-          <p className="text-lg font-bold text-gray-900">
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {estimate.componentCounts?.eif || 0}
           </p>
-          <p className="text-xs text-gray-600">
+          <p className="text-xs text-gray-600 dark:text-gray-400">
             {t("workflow.components.aieLabel")}
           </p>
         </div>
         <div className="text-center">
-          <p className="text-lg font-bold text-gray-900">
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {estimate.componentCounts?.ei || 0}
           </p>
-          <p className="text-xs text-gray-600">
+          <p className="text-xs text-gray-600 dark:text-gray-400">
             {t("workflow.components.eiLabel")}
           </p>
         </div>
         <div className="text-center">
-          <p className="text-lg font-bold text-gray-900">
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {estimate.componentCounts?.eo || 0}
           </p>
-          <p className="text-xs text-gray-600">
+          <p className="text-xs text-gray-600 dark:text-gray-400">
             {t("workflow.components.eoLabel")}
           </p>
         </div>
         <div className="text-center">
-          <p className="text-lg font-bold text-gray-900">
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {estimate.componentCounts?.eq || 0}
           </p>
-          <p className="text-xs text-gray-600">
+          <p className="text-xs text-gray-400">
             {t("workflow.components.eqLabel")}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100">
+      <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-100 dark:border-gray-800">
         <span>
           {t("overview.createdAt", "Created")}: {formatDate(estimate.createdAt)}
         </span>
