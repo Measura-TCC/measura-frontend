@@ -42,8 +42,9 @@ export const PlansFilters: React.FC<PlansFiltersProps> = ({
   const statusOptions: DropdownItem[] = [
     { id: "all", label: t("allStatuses") },
     { id: MeasurementPlanStatus.DRAFT, label: t(`status.${MeasurementPlanStatus.DRAFT}`) },
-    { id: MeasurementPlanStatus.ACTIVE, label: t(`status.${MeasurementPlanStatus.ACTIVE}`) },
-    { id: MeasurementPlanStatus.COMPLETED, label: t(`status.${MeasurementPlanStatus.COMPLETED}`) },
+    { id: MeasurementPlanStatus.APPROVED, label: t(`status.${MeasurementPlanStatus.APPROVED}`) },
+    { id: MeasurementPlanStatus.REJECTED, label: t(`status.${MeasurementPlanStatus.REJECTED}`) },
+    { id: MeasurementPlanStatus.FINISHED, label: t(`status.${MeasurementPlanStatus.FINISHED}`) },
   ];
 
   const projectOptions: DropdownItem[] = [

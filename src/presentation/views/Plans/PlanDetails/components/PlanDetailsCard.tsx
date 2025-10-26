@@ -37,16 +37,53 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "completed":
-        return "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300";
-      case "active":
+      case "finished":
         return "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300";
+      case "approved":
+        return "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300";
+      case "rejected":
+        return "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300";
       case "draft":
         return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300";
       default:
         return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300";
     }
   };
+
+  const getValidStatusTransitions = () => {
+    const current = plan.status;
+
+    // Finished plans cannot change status
+    if (current === MeasurementPlanStatus.FINISHED) {
+      return [MeasurementPlanStatus.FINISHED];
+    }
+
+    // Approved plans can go to finished or back to draft
+    if (current === MeasurementPlanStatus.APPROVED) {
+      return [
+        MeasurementPlanStatus.DRAFT,
+        MeasurementPlanStatus.APPROVED,
+        MeasurementPlanStatus.FINISHED,
+      ];
+    }
+
+    // Rejected plans can only go back to draft
+    if (current === MeasurementPlanStatus.REJECTED) {
+      return [
+        MeasurementPlanStatus.DRAFT,
+        MeasurementPlanStatus.REJECTED,
+      ];
+    }
+
+    // Draft plans can be approved or rejected
+    return [
+      MeasurementPlanStatus.DRAFT,
+      MeasurementPlanStatus.APPROVED,
+      MeasurementPlanStatus.REJECTED,
+    ];
+  };
+
+  const validStatuses = getValidStatusTransitions();
 
   return (
     <Card>
@@ -139,19 +176,20 @@ export const PlanDetailsCard: React.FC<PlanDetailsCardProps> = ({
               <select
                 value={editForm.status}
                 onChange={(e) => onEditFormChange("status", e.target.value as MeasurementPlanStatus)}
-                disabled={!canChangeStatus}
+                disabled={plan.status === MeasurementPlanStatus.FINISHED || !canChangeStatus}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <option value={MeasurementPlanStatus.DRAFT}>
-                  {t(`status.${MeasurementPlanStatus.DRAFT}`)}
-                </option>
-                <option value={MeasurementPlanStatus.ACTIVE}>
-                  {t(`status.${MeasurementPlanStatus.ACTIVE}`)}
-                </option>
-                <option value={MeasurementPlanStatus.COMPLETED}>
-                  {t(`status.${MeasurementPlanStatus.COMPLETED}`)}
-                </option>
+                {validStatuses.map((status) => (
+                  <option key={status} value={status}>
+                    {t(`status.${status}`)}
+                  </option>
+                ))}
               </select>
+              {plan.status === MeasurementPlanStatus.FINISHED && (
+                <p className="text-xs text-gray-500 mt-1">
+                  {t("finishedStatusFinal")}
+                </p>
+              )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <div>

@@ -50,21 +50,33 @@ export const EditPlanModal: React.FC<EditPlanModalProps> = ({
   const getValidStatusTransitions = () => {
     const current = plan.status;
 
-    if (current === MeasurementPlanStatus.COMPLETED) {
-      return [MeasurementPlanStatus.COMPLETED];
+    // Finished plans cannot change status
+    if (current === MeasurementPlanStatus.FINISHED) {
+      return [MeasurementPlanStatus.FINISHED];
     }
 
-    if (current === MeasurementPlanStatus.ACTIVE) {
+    // Approved plans can go to finished or back to draft
+    if (current === MeasurementPlanStatus.APPROVED) {
       return [
         MeasurementPlanStatus.DRAFT,
-        MeasurementPlanStatus.ACTIVE,
-        MeasurementPlanStatus.COMPLETED,
+        MeasurementPlanStatus.APPROVED,
+        MeasurementPlanStatus.FINISHED,
       ];
     }
 
+    // Rejected plans can only go back to draft
+    if (current === MeasurementPlanStatus.REJECTED) {
+      return [
+        MeasurementPlanStatus.DRAFT,
+        MeasurementPlanStatus.REJECTED,
+      ];
+    }
+
+    // Draft plans can be approved or rejected
     return [
       MeasurementPlanStatus.DRAFT,
-      MeasurementPlanStatus.ACTIVE,
+      MeasurementPlanStatus.APPROVED,
+      MeasurementPlanStatus.REJECTED,
     ];
   };
 
@@ -194,7 +206,7 @@ export const EditPlanModal: React.FC<EditPlanModalProps> = ({
 
             <div>
               <label className="block text-sm font-medium text-default mb-1">
-                {t("status.title")}
+                Status
               </label>
               <select
                 value={formData.status}
@@ -202,7 +214,7 @@ export const EditPlanModal: React.FC<EditPlanModalProps> = ({
                   setFormData({ ...formData, status: e.target.value as MeasurementPlanStatus })
                 }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={plan.status === MeasurementPlanStatus.COMPLETED || !canChangeStatus}
+                disabled={plan.status === MeasurementPlanStatus.FINISHED || !canChangeStatus}
               >
                 {validStatuses.map((status) => (
                   <option key={status} value={status}>
@@ -210,9 +222,9 @@ export const EditPlanModal: React.FC<EditPlanModalProps> = ({
                   </option>
                 ))}
               </select>
-              {plan.status === MeasurementPlanStatus.COMPLETED && (
+              {plan.status === MeasurementPlanStatus.FINISHED && (
                 <p className="text-xs text-gray-500 mt-1">
-                  {t("completedStatusFinal")}
+                  {t("finishedStatusFinal")}
                 </p>
               )}
             </div>

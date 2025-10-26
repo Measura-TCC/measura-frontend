@@ -34,8 +34,10 @@
   "useTemplate": "Use Template",
   "statistics": "Statistics",
   "totalPlans": "Total Plans",
-  "activePlans": "Active Plans",
-  "completedPlans": "Completed Plans",
+  "approvedPlans": "Approved Plans",
+  "finishedPlans": "Finished Plans",
+  "rejectedPlans": "Rejected Plans",
+  "draftPlans": "Draft Plans",
   "averageProgress": "Average Progress",
   "totalGoals": "Total Goals",
   "totalMetrics": "Total Metrics",
@@ -67,10 +69,10 @@
     "estimation": "Estimation"
   },
   "status": {
-    "active": "active",
-    "completed": "completed",
-    "draft": "draft",
-    "scheduled": "scheduled"
+    "draft": "Draft",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "finished": "Finished"
   },
   "gqm": {
     "notStarted": "Not Started",
@@ -607,7 +609,7 @@
   "deletePlanSuccess": "Plan \"{{planName}}\" deleted successfully!",
   "deletePlanError": "Error deleting plan",
   "cannotDeleteActive": "Cannot delete active or completed plans. Change status to draft first.",
-  "completedStatusFinal": "Completed status is final and cannot be changed",
+  "finishedStatusFinal": "Completed status is final and cannot be changed",
   "selectProject": "Select a project",
   "required": "is required",
   "objectiveAddedSuccess": "Objective added successfully",

@@ -516,11 +516,9 @@
     }
   },
   "status": {
-    "completed": "completed",
-    "in_progress": "in progress",
-    "draft": "draft",
-    "finalized": "finalized",
-    "archived": "archived"
+    "draft": "Draft",
+    "finalized": "Finalized",
+    "archived": "Archived"
   },
   "estimateStatus": "Estimate Status",
   "countTypes": {

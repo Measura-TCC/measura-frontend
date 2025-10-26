@@ -1,7 +1,8 @@
 export enum MeasurementPlanStatus {
   DRAFT = "draft",
-  ACTIVE = "active",
-  COMPLETED = "completed",
+  APPROVED = "approved",
+  REJECTED = "rejected",
+  FINISHED = "finished",
 }
 
 export enum ExportFormat {
@@ -141,8 +142,9 @@ export interface ExportResponseDto {
 
 export interface PlansStatistics {
   totalPlans: number;
-  activePlans: number;
-  completedPlans: number;
+  approvedPlans: number;
+  finishedPlans: number;
+  rejectedPlans: number;
   draftPlans: number;
   averageProgress: number;
   totalObjectives: number;

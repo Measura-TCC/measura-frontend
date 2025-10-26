@@ -170,14 +170,16 @@ export const useMeasurementPlans = (params: UseMeasurementPlanParams = {}) => {
 
   const getStatusColor = (status: MeasurementPlanStatus): string => {
     switch (status) {
-      case MeasurementPlanStatus.COMPLETED:
-        return "bg-green-100 text-green-800";
-      case MeasurementPlanStatus.ACTIVE:
-        return "bg-blue-100 text-blue-800";
+      case MeasurementPlanStatus.FINISHED:
+        return "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300";
+      case MeasurementPlanStatus.APPROVED:
+        return "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300";
+      case MeasurementPlanStatus.REJECTED:
+        return "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300";
       case MeasurementPlanStatus.DRAFT:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300";
     }
   };
 

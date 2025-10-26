@@ -522,11 +522,9 @@
     }
   },
   "status": {
-    "completed": "concluída",
-    "in_progress": "em progresso",
-    "draft": "rascunho",
-    "finalized": "finalizada",
-    "archived": "arquivada"
+    "draft": "Rascunho",
+    "finalized": "Finalizada",
+    "archived": "Arquivada"
   },
   "estimateStatus": "Status da Estimativa",
   "countTypes": {

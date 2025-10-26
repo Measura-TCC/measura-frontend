@@ -34,8 +34,10 @@
   "useTemplate": "Usar Modelo",
   "statistics": "Estatísticas",
   "totalPlans": "Total de Planos",
-  "activePlans": "Planos Ativos",
-  "completedPlans": "Planos Concluídos",
+  "approvedPlans": "Planos Aprovados",
+  "finishedPlans": "Planos Finalizados",
+  "rejectedPlans": "Planos Rejeitados",
+  "draftPlans": "Planos em Rascunho",
   "averageProgress": "Progresso Médio",
   "totalGoals": "Total de Objetivos",
   "totalMetrics": "Total de Métricas",
@@ -67,10 +69,10 @@
     "estimation": "Estimativa"
   },
   "status": {
-    "active": "ativo",
-    "completed": "concluído",
-    "draft": "rascunho",
-    "scheduled": "agendado"
+    "draft": "Rascunho",
+    "approved": "Aprovado",
+    "rejected": "Rejeitado",
+    "finished": "Finalizado"
   },
   "gqm": {
     "notStarted": "Não Iniciado",
@@ -533,7 +535,7 @@
   "measurements": {
     "properties": {
       "worklog": "Total de horas registradas no período do projeto. Excluir férias/treinamentos. Consolidar por iteração/release.",
-      "deliveredFunctionPoints": "Pontos de Função entregues e aceitos na iteração/release (conforme planilha IFPUG/COSMIC). Apenas escopo concluído (feito/aceito).",
+      "deliveredFunctionPoints": "Pontos de Função entregues e aceitos na iteração/release (conforme planilha IFPUG/COSMIC). Apenas escopo finalizado (feito/aceito).",
       "deploymentToProduction": "Timestamp UTC da promoção para produção. Único por deploy, inclui deployment_id e SHAs.",
       "commit": "Timestamp UTC do commit. Único por commit (SHA).",
       "incidentStart": "Timestamp UTC quando incidente foi aberto. Um por incident_id. Manter severidade e serviço impactado.",
@@ -703,8 +705,8 @@
   "deletePlanConfirmation": "Tem certeza que deseja excluir o plano \"{{planName}}\"?",
   "deletePlanSuccess": "Plano \"{{planName}}\" excluído com sucesso!",
   "deletePlanError": "Erro ao excluir plano",
-  "cannotDeleteActive": "Não é possível excluir planos ativos ou concluídos. Altere o status para rascunho primeiro.",
-  "completedStatusFinal": "O status 'concluído' é final e não pode ser alterado",
+  "cannotDeleteActive": "Não é possível excluir planos ativos ou finalizados. Altere o status para rascunho primeiro.",
+  "finishedStatusFinal": "O status 'finalizado' é final e não pode ser alterado",
   "selectProject": "Selecione um projeto",
   "required": "é obrigatório",
   "objectiveAddedSuccess": "Objetivo adicionado com sucesso",
