@@ -1,5 +1,5 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
-import { API_BASE_URL, STORAGE_KEYS } from '@/core/utils/constants';
+import axios, { AxiosResponse, AxiosError } from "axios";
+import { API_BASE_URL, STORAGE_KEYS } from "@/core/utils/constants";
 
 type AuthResponse = { accessToken: string; refreshToken: string };
 
@@ -11,7 +11,7 @@ const authAxios = axios.create({
 });
 
 const getStoredToken = (): string | null => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     try {
       return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
     } catch {
@@ -22,19 +22,19 @@ const getStoredToken = (): string | null => {
 };
 
 const clearTokensAndRedirect = (navigate?: (path: string) => void): void => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     try {
       localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
     } catch (error) {
-      console.error('Failed to clear tokens:', error);
+      console.error("Failed to clear tokens:", error);
     }
 
-    const currentPath = window.location.pathname.replace(/\/$/, '');
-    if (currentPath !== '/login' && currentPath !== '/register') {
+    const currentPath = window.location.pathname.replace(/\/$/, "");
+    if (currentPath !== "/login" && currentPath !== "/register") {
       if (navigate) {
-        navigate('/login');
+        navigate("/login");
       } else {
-        window.location.href = '/login';
+        window.location.href = "/login";
       }
     }
   }
@@ -42,23 +42,27 @@ const clearTokensAndRedirect = (navigate?: (path: string) => void): void => {
 
 const refreshAccessToken = async (): Promise<AuthResponse> => {
   try {
-    const response: AxiosResponse<AuthResponse> = await authAxios.post('/auth/refresh', {}, {
-      withCredentials: true,
-    });
+    const response: AxiosResponse<AuthResponse> = await authAxios.post(
+      "/auth/refresh",
+      {},
+      {
+        withCredentials: true,
+      }
+    );
 
     const { accessToken, refreshToken } = response.data;
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       try {
         localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
       } catch (error) {
-        console.error('Failed to store new access token:', error);
+        console.error("Failed to store new access token:", error);
       }
     }
 
     return { accessToken, refreshToken };
   } catch (error) {
-    console.debug('Token refresh failed:', error);
+    console.debug("Token refresh failed:", error);
     throw error;
   }
 };
@@ -75,21 +79,29 @@ measuraApi.interceptors.request.use(
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => Promise.reject(error)
 );
 
 measuraApi.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as AxiosError['config'] & { _retry?: boolean };
+    const originalRequest = error.config as AxiosError["config"] & {
+      _retry?: boolean;
+    };
 
-    const isAuthEndpoint = originalRequest?.url?.includes('/auth/login') ||
-                           originalRequest?.url?.includes('/auth/register') ||
-                           originalRequest?.url?.includes('/auth/refresh');
+    const isAuthEndpoint =
+      originalRequest?.url?.includes("/auth/login") ||
+      originalRequest?.url?.includes("/auth/register") ||
+      originalRequest?.url?.includes("/auth/refresh");
 
-    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isAuthEndpoint
+    ) {
       originalRequest._retry = true;
 
       if (isRefreshing) {
@@ -131,7 +143,7 @@ measuraApi.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  },
+  }
 );
 
-export { measuraApi }; 
+export { measuraApi };

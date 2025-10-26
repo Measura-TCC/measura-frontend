@@ -10,12 +10,18 @@ import type { Metric, Measurement } from "../utils/types";
 import { availableMetrics } from "../utils/stepData";
 import { CustomMeasurementModal } from "./CustomMeasurementModal";
 import { PlusIcon, TrashIcon } from "@/presentation/assets/icons";
+import { useToast } from "@/core/hooks/common/useToast";
 
 interface CustomMetricModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddMetric: (metric: Metric) => void;
   editingData?: Metric;
+  objectiveId?: string;
+  questionId?: string;
+  metricId?: string;
+  onAddMeasurement?: (objectiveId: string, questionId: string, metricId: string, data: any) => Promise<any>;
+  onDeleteMeasurement?: (objectiveId: string, questionId: string, metricId: string, measurementId: string) => Promise<void>;
 }
 
 export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
@@ -23,8 +29,14 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
   onClose,
   onAddMetric,
   editingData,
+  objectiveId,
+  questionId,
+  metricId,
+  onAddMeasurement,
+  onDeleteMeasurement,
 }) => {
   const { t } = useTranslation("plans");
+  const toast = useToast();
   const [selectedTab, setSelectedTab] = useState(editingData ? "custom" : "predefined");
   const [currentStep, setCurrentStep] = useState(1); // Step 1: Metric details, Step 2: Measurements
 
@@ -78,12 +90,48 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
     onClose();
   };
 
-  const handleAddMeasurement = (measurement: Measurement) => {
-    setMeasurements((prev) => [...prev, measurement]);
+  const handleAddMeasurement = async (measurement: Measurement) => {
+    // If editing an existing metric with API operations available, make real API call
+    if (editingData && objectiveId && questionId && metricId && onAddMeasurement) {
+      try {
+        await onAddMeasurement(objectiveId, questionId, metricId, measurement);
+        toast.success({ message: t("measurementAddedSuccess") || "Measurement added successfully" });
+        // Measurement will be reflected after refresh, no need to update local state
+      } catch (error: any) {
+        const backendMessage = error?.response?.data?.message;
+        const errorMessage = Array.isArray(backendMessage)
+          ? backendMessage.join(", ")
+          : backendMessage || error?.message || "An error occurred";
+        toast.error({ message: `${t("measurementAddError") || "Failed to add measurement"}: ${errorMessage}` });
+        throw error;
+      }
+    } else {
+      // For new metrics, just update local state
+      setMeasurements((prev) => [...prev, measurement]);
+    }
   };
 
-  const handleRemoveMeasurement = (index: number) => {
-    setMeasurements((prev) => prev.filter((_, i) => i !== index));
+  const handleRemoveMeasurement = async (index: number) => {
+    const measurement = measurements[index];
+
+    // If editing an existing metric with API operations available, make real API call
+    if (editingData && objectiveId && questionId && metricId && onDeleteMeasurement && measurement._id) {
+      try {
+        await onDeleteMeasurement(objectiveId, questionId, metricId, measurement._id);
+        toast.success({ message: t("measurementDeletedSuccess") || "Measurement deleted successfully" });
+        // Measurement will be removed after refresh, no need to update local state
+      } catch (error: any) {
+        const backendMessage = error?.response?.data?.message;
+        const errorMessage = Array.isArray(backendMessage)
+          ? backendMessage.join(", ")
+          : backendMessage || error?.message || "An error occurred";
+        toast.error({ message: `${t("measurementDeleteError") || "Failed to delete measurement"}: ${errorMessage}` });
+        throw error;
+      }
+    } else {
+      // For new metrics, just update local state
+      setMeasurements((prev) => prev.filter((_, i) => i !== index));
+    }
   };
 
   const handleCreateCustomMetric = () => {
@@ -476,7 +524,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                       </div>
                       <button
                         onClick={() => handleRemoveMeasurement(index)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded transition-colors"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 rounded transition-colors cursor-pointer"
                         title="Remover medida"
                       >
                         <TrashIcon className="w-5 h-5" />

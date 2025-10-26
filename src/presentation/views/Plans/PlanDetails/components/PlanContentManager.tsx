@@ -117,6 +117,13 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     return text;
   };
 
+  // Get current metric data from plan (refreshes when plan updates)
+  const getCurrentMetric = (objectiveId: string, questionId: string, metricId: string): Metric | undefined => {
+    const objective = plan.objectives?.find(o => o._id === objectiveId);
+    const question = objective?.questions?.find(q => q._id === questionId);
+    return question?.metrics?.find(m => m._id === metricId);
+  };
+
   const handleDeleteObjective = async (objective: Objective) => {
     setDeleteConfirm({
       type: "objective",
@@ -222,19 +229,23 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     if (!editingItem?.parentIds) return;
 
     const [objectiveId, questionId] = editingItem.parentIds;
+
+    // Clean measurements by removing MongoDB fields (_id, __v)
+    const cleanMeasurements = metric.measurements?.map(({ _id, __v, ...measurement }: any) => measurement) || [];
+
     try {
       if (editingItem.id) {
         // Edit mode
         await updateMetric(objectiveId, questionId, editingItem.id, {
           ...metric,
-          measurements: metric.measurements || []
+          measurements: cleanMeasurements
         });
         toast.success({ message: t("metricUpdatedSuccess") || "Metric updated successfully" });
       } else {
         // Add mode
         await addMetric(objectiveId, questionId, {
           ...metric,
-          measurements: metric.measurements || []
+          measurements: cleanMeasurements
         });
         toast.success({ message: t("metricAddedSuccess") || "Metric added successfully" });
       }
@@ -336,7 +347,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
         <div className="flex items-center justify-between p-4 bg-blue-50">
           <div className="flex items-center space-x-2 flex-1 cursor-pointer" onClick={() => toggleExpanded(objId)}>
             <button
-              className="p-1 hover:bg-blue-100 rounded"
+              className="p-1 hover:bg-blue-100 rounded cursor-pointer"
             >
               {isExpanded ? (
                 <ChevronDownIcon className="w-4 h-4" />
@@ -436,7 +447,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
           <div className="flex items-center space-x-2">
             <button
               onClick={() => toggleExpanded(qId)}
-              className="p-1 hover:bg-green-100 rounded"
+              className="p-1 hover:bg-green-100 rounded cursor-pointer"
             >
               {isExpanded ? (
                 <ChevronDownIcon className="w-4 h-4" />
@@ -527,7 +538,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
           <div className="flex items-center space-x-2">
             <button
               onClick={() => toggleExpanded(mId)}
-              className="p-1 hover:bg-orange-100 rounded"
+              className="p-1 hover:bg-orange-100 rounded cursor-pointer"
             >
               {isExpanded ? (
                 <ChevronDownIcon className="w-4 h-4" />
@@ -775,12 +786,17 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
         />
       )}
 
-      {editingItem?.type === "metric" && (
+      {editingItem?.type === "metric" && editingItem.parentIds && (
         <CustomMetricModal
           isOpen={true}
           onClose={() => setEditingItem(null)}
           onAddMetric={handleSaveMetric}
-          editingData={editingItem.data as any}
+          editingData={editingItem.id ? getCurrentMetric(editingItem.parentIds[0], editingItem.parentIds[1], editingItem.id) as any : undefined}
+          objectiveId={editingItem.parentIds[0]}
+          questionId={editingItem.parentIds[1]}
+          metricId={editingItem.id}
+          onAddMeasurement={addMeasurement}
+          onDeleteMeasurement={deleteMeasurement}
         />
       )}
 
