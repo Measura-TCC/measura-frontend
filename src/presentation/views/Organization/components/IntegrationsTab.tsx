@@ -7,6 +7,7 @@ import { ConfigureJiraModal } from "./ConfigureJiraModal";
 import { ConfigureGitHubModal } from "./ConfigureGitHubModal";
 import { ConfigureClickUpModal } from "./ConfigureClickUpModal";
 import { ConfigureAzureDevOpsModal } from "./ConfigureAzureDevOpsModal";
+import { AzureDevOpsIcon, ClickUpIcon } from "@/presentation/assets/icons";
 import type { Organization } from "@/core/services/organization/organizationService";
 
 interface IntegrationsTabProps {
@@ -54,22 +55,14 @@ export const IntegrationsTab = ({
       id: "clickup" as IntegrationType,
       name: "ClickUp",
       description: t("integrations.clickup.description"),
-      icon: (
-        <svg className="w-10 h-10" viewBox="0 0 24 24" fill="#7B68EE">
-          <path d="M2 18.439l3.636-2.07 6.364 5.656 6.364-5.656L22 18.439l-10 7.076-10-7.076zM.364 12.439L4 10.369l8 7.11 8-7.11 3.636 2.07L12 21.484.364 12.439zm11.68-10.09l7.337-1.71.595 2.508L12.045 4.8l-8.013-1.7.594-2.509 7.419 1.758z" />
-        </svg>
-      ),
+      icon: <ClickUpIcon className="w-10 h-10" />,
       config: organization?.integrations?.clickup,
     },
     {
       id: "azureDevops" as IntegrationType,
       name: "Azure DevOps",
       description: t("integrations.azureDevops.description"),
-      icon: (
-        <svg className="w-10 h-10" viewBox="0 0 24 24" fill="#0078D7">
-          <path d="M0 8.181l8.156 1.633v11.452L0 12.726V8.181zm8.156-6.448v4.818L19.2 8.9 16.68 0 8.156 1.733zM20.4 6.818L10.992 4.364v14.908l9.408-2.727V6.818zM24 8.181v9.09L19.2 18.9l-9.408 3.636v-1.636L16.68 24 24 13.636V8.181z" />
-        </svg>
-      ),
+      icon: <AzureDevOpsIcon className="w-10 h-10" />,
       config: organization?.integrations?.azureDevops,
     },
   ];

@@ -260,11 +260,13 @@
     "organizationRequiredTitle": "Organization Required",
     "organizationRequiredText": "You need to belong to an organization to create projects and estimates.",
     "cancel": "Cancel",
-    "step1Title": "1. Select or Create Project",
-    "step1Description": "Choose an existing project or create a new one for your FPA estimate",
+    "step1Title": "1. Select Project",
+    "step1Description": "Choose an existing project for your FPA estimate",
     "selectExistingProject": "Select Existing Project:",
     "chooseProject": "Choose a project...",
-    "createNewProject": "Create New Project",
+    "needNewProject": "Need to create a new project?",
+    "needNewProjectDescription": "Go to the Projects page to create a new project, then return here to create your estimate.",
+    "goToProjects": "Go to Projects",
     "nextCreateEstimate": "Next: Create Estimate",
     "step2Title": "2. Create FPA Estimate",
     "step2Description": "Create your estimate with project details, count type, scope, and application boundary",
@@ -514,8 +516,11 @@
   "status": {
     "completed": "completed",
     "in_progress": "in progress",
-    "draft": "draft"
+    "draft": "draft",
+    "finalized": "finalized",
+    "archived": "archived"
   },
+  "estimateStatus": "Estimate Status",
   "countTypes": {
     "DEVELOPMENT_PROJECT": "Development Project",
     "ENHANCEMENT_PROJECT": "Enhancement Project",

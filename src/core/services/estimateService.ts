@@ -348,6 +348,16 @@ export const estimateService = {
     return response.data;
   },
 
+  updateEstimateStatus: async (
+    estimateId: string,
+    status: string
+  ): Promise<EstimateResponse> => {
+    const { activeOrganizationId } = getOrganizationState();
+    if (!activeOrganizationId) throw new Error('Organization access required');
+    const response = await measuraApi.patch(`/estimates/${activeOrganizationId}/${estimateId}/status`, { status });
+    return response.data;
+  },
+
   updateEstimate: async (params: {
     id: string;
     data: UpdateEstimateData;

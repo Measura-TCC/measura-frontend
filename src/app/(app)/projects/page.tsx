@@ -31,9 +31,12 @@ import { PlansModal } from "@/presentation/views/Projects/components/PlansModal"
 import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
 import { NoProjectsAlert } from "@/presentation/components/shared/NoProjectsAlert";
 import type { Project } from "@/core/schemas/projects";
+import { useAuth } from "@/core/hooks/auth/useAuth";
+import { canManageProjects } from "@/core/utils/permissions";
 
 export default function ProjectsPage() {
   const { t, i18n } = useTranslation("projects");
+  const { user } = useAuth();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showEstimatesModal, setShowEstimatesModal] = useState(false);
@@ -52,6 +55,7 @@ export default function ProjectsPage() {
   const { deleteProject } = useProjectActions();
   const { objectives: organizationalObjectives } =
     useOrganizationalObjectives();
+  const canManage = canManageProjects(user?.role);
 
   // Debug organization state
   useEffect(() => {
@@ -186,10 +190,12 @@ export default function ProjectsPage() {
             {userOrganization.name}
           </p>
         </div>
-        <Button onClick={() => setShowCreateForm(true)}>
-          <PlusIcon className="w-4 h-4 mr-2" />
-          {t("newProject")}
-        </Button>
+        {canManage && (
+          <Button onClick={() => setShowCreateForm(true)}>
+            <PlusIcon className="w-4 h-4 mr-2" />
+            {t("newProject")}
+          </Button>
+        )}
       </div>
 
       {showCreateForm && (
@@ -260,29 +266,31 @@ export default function ProjectsPage() {
                       {getStatusLabel(project.status)}
                     </span>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedProject(project);
-                        setShowEditForm(true);
-                      }}
-                    >
-                      <PencilIcon className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setProjectToDelete(project);
-                      }}
-                    >
-                      <TrashIcon className="w-4 h-4 text-red-600" />
-                    </Button>
-                  </div>
+                  {canManage && (
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedProject(project);
+                          setShowEditForm(true);
+                        }}
+                      >
+                        <PencilIcon className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setProjectToDelete(project);
+                        }}
+                      >
+                        <TrashIcon className="w-4 h-4 text-red-600" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -290,7 +298,7 @@ export default function ProjectsPage() {
                   {project.description}
                 </p>
                 <div className="border-t border-border pt-3">
-                  <ProjectStatusSelector project={project} />
+                  <ProjectStatusSelector project={project} disabled={!canManage} />
                 </div>
                 <div className="flex gap-2 mt-3">
                   <Button

@@ -43,3 +43,11 @@ export const createEstimate = async (
   const response = await measuraApi.post("/estimates", data);
   return response.data;
 };
+
+export const updateEstimateStatus = async (
+  estimateId: string,
+  status: string
+): Promise<EstimateResponse> => {
+  const response = await measuraApi.patch(`/estimates/${estimateId}/status`, { status });
+  return response.data;
+};

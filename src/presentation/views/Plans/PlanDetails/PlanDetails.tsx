@@ -9,6 +9,8 @@ import {
 } from "@/core/hooks/measurementPlans";
 import { useMeasurementPlanExport } from "@/core/hooks/measurementPlans";
 import { useProjects } from "@/core/hooks/projects/useProjects";
+import { useAuth } from "@/core/hooks/auth/useAuth";
+import { canChangePlanStatus } from "@/core/utils/permissions";
 import { ExportFormat, MeasurementPlanStatus, type MeasurementPlanSummaryDto } from "@/core/types/plans";
 import { PlanVisualization } from "../components/PlanVisualization";
 import { PlanGQMStructure } from "../components/PlanGQMStructure";
@@ -32,6 +34,7 @@ type ActiveTab = 'details' | 'monitoring';
 export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
   const { t } = useTranslation("plans");
   const router = useRouter();
+  const { user } = useAuth();
   const [isExporting, setIsExporting] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>('details');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -48,6 +51,7 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
     useMeasurementPlans();
   const { projects } = useProjects();
   const exportHook = useMeasurementPlanExport({ planId });
+  const canChangeStatus = canChangePlanStatus(user?.role);
 
   const getProjectName = (projectId: string): string => {
     const project = projects?.find((p) => p._id === projectId);
@@ -270,6 +274,7 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
               onEditFormChange={handleEditFormChange}
               getProjectName={getProjectName}
               projects={projects || []}
+              canChangeStatus={canChangeStatus}
             />
 
             {/* Dual Mode Content: Visualization vs Edit */}

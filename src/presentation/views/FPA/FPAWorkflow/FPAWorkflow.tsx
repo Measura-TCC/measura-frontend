@@ -7,7 +7,6 @@ import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useOrganizations } from "@/core/hooks/organizations";
 import { useOrganizationStore } from "@/core/hooks/organizations/useOrganizationStore";
 import { EstimatesDashboard } from "./EstimatesDashboard";
-import { CreateProjectForm } from "../../Projects/components/CreateProjectForm";
 import { OrganizationAlert } from "@/presentation/components/shared/OrganizationAlert";
 import { NoProjectsAlert } from "@/presentation/components/shared/NoProjectsAlert";
 import { CreateEstimateForm, type CreateEstimateFormRef } from "./components/CreateEstimateForm";
@@ -248,12 +247,6 @@ export const FPAWorkflow = () => {
     } catch {}
   };
 
-  const handleProjectCreated = (project: unknown) => {
-    const p = project as { _id: string };
-    setSelectedProjectId(p._id);
-    setCurrentStep(2);
-  };
-
   const handleProjectSelected = () => {
     setCurrentStep(2);
   };
@@ -420,12 +413,23 @@ export const FPAWorkflow = () => {
                   </div>
                 )}
 
-                {!selectedProjectId && (
+                {!selectedProjectId && projects && projects.length > 0 && (
                   <div className="border-t border-border pt-6">
-                    <h3 className="text-lg font-medium mb-4 text-default">
-                      {t("workflow.createNewProject")}
-                    </h3>
-                    <CreateProjectForm onSuccess={handleProjectCreated} />
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                      <h3 className="text-lg font-medium mb-2 text-default">
+                        {t("workflow.needNewProject")}
+                      </h3>
+                      <p className="text-sm text-secondary mb-4">
+                        {t("workflow.needNewProjectDescription")}
+                      </p>
+                      <Button
+                        onClick={() => router.push("/projects")}
+                        variant="primary"
+                        size="md"
+                      >
+                        {t("workflow.goToProjects")}
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>

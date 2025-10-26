@@ -3,7 +3,9 @@ import { useTranslation } from "react-i18next";
 import { Button, Input } from "@/presentation/components/primitives";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useToast } from "@/core/hooks/common/useToast";
+import { useAuth } from "@/core/hooks/auth/useAuth";
 import { MeasurementPlanStatus, type MeasurementPlanSummaryDto, type UpdateMeasurementPlanDto } from "@/core/types/plans";
+import { canChangePlanStatus } from "@/core/utils/permissions";
 
 interface EditPlanModalProps {
   isOpen: boolean;
@@ -20,6 +22,8 @@ export const EditPlanModal: React.FC<EditPlanModalProps> = ({
   onUpdate,
   isUpdating,
 }) => {
+  const { user } = useAuth();
+  const canChangeStatus = canChangePlanStatus(user?.role);
   const { t } = useTranslation("plans");
   const toast = useToast();
   const { projects, isLoadingProjects } = useProjects();
@@ -197,8 +201,8 @@ export const EditPlanModal: React.FC<EditPlanModalProps> = ({
                 onChange={(e) =>
                   setFormData({ ...formData, status: e.target.value as MeasurementPlanStatus })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                disabled={plan.status === MeasurementPlanStatus.COMPLETED}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={plan.status === MeasurementPlanStatus.COMPLETED || !canChangeStatus}
               >
                 {validStatuses.map((status) => (
                   <option key={status} value={status}>

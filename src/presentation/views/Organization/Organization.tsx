@@ -22,6 +22,7 @@ import { SettingsTab } from "@/presentation/views/Organization/components/Settin
 import { IntegrationsTab } from "@/presentation/views/Organization/components/IntegrationsTab";
 import { useAuthStore } from "@/core/hooks/auth/useAuth";
 import type { OrganizationTab } from "@/core/types/organization";
+import { canInviteMembers } from "@/core/utils/permissions";
 
 export const OrganizationView: React.FC = () => {
   const { t } = useTranslation("organization");
@@ -69,11 +70,13 @@ export const OrganizationView: React.FC = () => {
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex-1">
-              <OrganizationTabs activeTab={activeTab} onTabChange={setActiveTab} />
+              <OrganizationTabs activeTab={activeTab} onTabChange={setActiveTab} userRole={user?.role} />
             </div>
-            <Button variant="primary" onClick={() => setShowInviteModal(true)} size="sm">
-              {t("invitations.inviteMember")}
-            </Button>
+            {canInviteMembers(user?.role) && (
+              <Button variant="primary" onClick={() => setShowInviteModal(true)} size="sm">
+                {t("invitations.inviteMember")}
+              </Button>
+            )}
           </div>
 
           {activeTab === "overview" && (

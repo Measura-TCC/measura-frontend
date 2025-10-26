@@ -265,11 +265,13 @@
     "organizationRequiredTitle": "Organização Necessária",
     "organizationRequiredText": "Você precisa pertencer a uma organização para criar projetos e estimativas.",
     "cancel": "Cancelar",
-    "step1Title": "1. Selecionar ou Criar Projeto",
-    "step1Description": "Escolha um projeto existente ou crie um novo para sua estimativa APF",
+    "step1Title": "1. Selecionar Projeto",
+    "step1Description": "Escolha um projeto existente para sua estimativa APF",
     "selectExistingProject": "Selecionar Projeto Existente:",
     "chooseProject": "Escolha um projeto...",
-    "createNewProject": "Criar Novo Projeto",
+    "needNewProject": "Precisa criar um novo projeto?",
+    "needNewProjectDescription": "Vá para a página de Projetos para criar um novo projeto e depois retorne aqui para criar sua estimativa.",
+    "goToProjects": "Ir para Projetos",
     "nextCreateEstimate": "Próximo: Criar Estimativa",
     "step2Title": "2. Criar Estimativa APF",
     "step2Description": "Crie sua estimativa com detalhes do projeto, tipo de contagem, escopo e fronteira da aplicação",
@@ -520,8 +522,11 @@
   "status": {
     "completed": "concluída",
     "in_progress": "em progresso",
-    "draft": "rascunho"
+    "draft": "rascunho",
+    "finalized": "finalizada",
+    "archived": "arquivada"
   },
+  "estimateStatus": "Status da Estimativa",
   "countTypes": {
     "DEVELOPMENT_PROJECT": "Projeto de Desenvolvimento",
     "ENHANCEMENT_PROJECT": "Projeto de Melhoria",
