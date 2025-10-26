@@ -348,7 +348,9 @@
     "addMeasurement": "Add Measurement",
     "customMeasurement": "Custom Measurement",
     "selectMeasurement": "Select Measurement",
-    "measurementsCount": "measurements"
+    "measurementsCount": "measurements",
+    "acronymDuplicateError": "This acronym already exists in this metric",
+    "optionalField": "(Optional)"
   },
   "units": {
     "hoursDecimals": "hours (2 decimals)",
@@ -372,7 +374,10 @@
     "analysisResponsible": "Analysis Responsible",
     "customMetric": "Custom Metric",
     "addCustomMetric": "Add Custom Metric",
-    "measurements": "Measurements"
+    "measurements": "Measurements",
+    "mnemonicDuplicateError": "This mnemonic already exists in this plan",
+    "atLeastOneMeasurementRequired": "At least one measurement is required",
+    "optionalField": "(Optional)"
   },
   "objective": {
     "objectiveTitle": "Objective Title",

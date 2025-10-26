@@ -53,10 +53,11 @@ export const CustomQuestionModal: React.FC<CustomQuestionModalProps> = ({
   };
 
   const handleCreateCustomQuestion = () => {
-    if (!customQuestion.questionText.trim()) return;
+    const trimmedText = customQuestion.questionText.trim();
+    if (!trimmedText) return;
 
     const newQuestion: Question = {
-      ...customQuestion,
+      questionText: trimmedText,
       metrics: [], // Start with empty metrics array
     };
 

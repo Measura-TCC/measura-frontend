@@ -22,6 +22,7 @@ interface CustomMetricModalProps {
   metricId?: string;
   onAddMeasurement?: (objectiveId: string, questionId: string, metricId: string, data: any) => Promise<any>;
   onDeleteMeasurement?: (objectiveId: string, questionId: string, metricId: string, measurementId: string) => Promise<void>;
+  existingMetrics?: Metric[];
 }
 
 export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
@@ -34,11 +35,13 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
   metricId,
   onAddMeasurement,
   onDeleteMeasurement,
+  existingMetrics = [],
 }) => {
   const { t } = useTranslation("plans");
   const toast = useToast();
   const [selectedTab, setSelectedTab] = useState(editingData ? "custom" : "predefined");
   const [currentStep, setCurrentStep] = useState(1); // Step 1: Metric details, Step 2: Measurements
+  const [mnemonicError, setMnemonicError] = useState<string | null>(null);
 
   // If editing data contains translation keys, translate them for display
   const getTranslatedValue = (value: string | undefined, prefix: string) => {
@@ -79,11 +82,28 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
     }
   }, [editingData]);
 
+  // Check for duplicate mnemonic
+  useEffect(() => {
+    if (!customMetric.metricMnemonic) {
+      setMnemonicError(null);
+      return;
+    }
+
+    const isDuplicate = existingMetrics.some(
+      (m) =>
+        m.metricMnemonic === customMetric.metricMnemonic &&
+        (!editingData || editingData.metricMnemonic !== customMetric.metricMnemonic)
+    );
+
+    setMnemonicError(isDuplicate ? t("metric.mnemonicDuplicateError") : null);
+  }, [customMetric.metricMnemonic, existingMetrics, editingData, t]);
+
   const isStep1Valid =
     customMetric.metricName.trim() &&
     customMetric.metricDescription?.trim() &&
     customMetric.metricMnemonic?.trim() &&
-    customMetric.metricFormula?.trim();
+    customMetric.metricFormula?.trim() &&
+    !mnemonicError;
 
   const handleAddPredefinedMetric = (metric: Metric) => {
     onAddMetric(metric);
@@ -239,7 +259,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
               }}
               canNavigateTo={(step) => {
                 if (step === 1) return true; // Can always go back to step 1
-                if (step === 2) return isStep1Valid; // Can only go to step 2 if step 1 is valid
+                if (step === 2) return Boolean(isStep1Valid); // Can only go to step 2 if step 1 is valid
                 return false;
               }}
               className="mb-6"
@@ -300,6 +320,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                     }))
                   }
                   placeholder={t("modals.customMetric.namePlaceholder")}
+                  maxLength={50}
                 />
               </div>
 
@@ -312,12 +333,15 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                   onChange={(e) =>
                     setCustomMetric((prev) => ({
                       ...prev,
-                      metricMnemonic: e.target.value.slice(0, 3),
+                      metricMnemonic: e.target.value.slice(0, 10),
                     }))
                   }
                   placeholder={t("modals.customMetric.mnemonicPlaceholder")}
-                  maxLength={3}
+                  maxLength={10}
                 />
+                {mnemonicError && (
+                  <p className="text-xs text-red-600">{mnemonicError}</p>
+                )}
               </div>
             </div>
 
@@ -325,18 +349,24 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
               <label className="text-sm font-medium text-default">
                 {t("metric.metricDescription")} *
               </label>
-              <textarea
-                value={customMetric.metricDescription}
-                onChange={(e) =>
-                  setCustomMetric((prev) => ({
-                    ...prev,
-                    metricDescription: e.target.value,
-                  }))
-                }
-                placeholder={t("modals.customMetric.descriptionPlaceholder")}
-                rows={3}
-                className="w-full px-3 py-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background dark:bg-gray-800 text-default"
-              />
+              <div className="relative">
+                <textarea
+                  value={customMetric.metricDescription}
+                  onChange={(e) =>
+                    setCustomMetric((prev) => ({
+                      ...prev,
+                      metricDescription: e.target.value.slice(0, 400),
+                    }))
+                  }
+                  placeholder={t("modals.customMetric.descriptionPlaceholder")}
+                  rows={3}
+                  maxLength={400}
+                  className="w-full px-3 py-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background dark:bg-gray-800 text-default"
+                />
+                <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-white dark:bg-gray-800 px-1">
+                  {(customMetric.metricDescription || "").length}/400
+                </div>
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -399,18 +429,24 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
               <label className="text-sm font-medium text-default">
                 {t("metric.analysisProcedure")}
               </label>
-              <textarea
-                value={customMetric.analysisProcedure}
-                onChange={(e) =>
-                  setCustomMetric((prev) => ({
-                    ...prev,
-                    analysisProcedure: e.target.value,
-                  }))
-                }
-                placeholder={t("modals.customMetric.analysisProcedurePlaceholder")}
-                rows={3}
-                className="w-full px-3 py-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background dark:bg-gray-800 text-default"
-              />
+              <div className="relative">
+                <textarea
+                  value={customMetric.analysisProcedure}
+                  onChange={(e) =>
+                    setCustomMetric((prev) => ({
+                      ...prev,
+                      analysisProcedure: e.target.value.slice(0, 1000),
+                    }))
+                  }
+                  placeholder={t("modals.customMetric.analysisProcedurePlaceholder")}
+                  rows={3}
+                  maxLength={1000}
+                  className="w-full px-3 py-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background dark:bg-gray-800 text-default"
+                />
+                <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-white dark:bg-gray-800 px-1">
+                  {(customMetric.analysisProcedure || "").length}/1000
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -427,12 +463,13 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                     }))
                   }
                   placeholder={t("modals.customMetric.analysisFrequencyPlaceholder")}
+                  maxLength={50}
                 />
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-default">
-                  {t("metric.analysisResponsible")}
+                  {t("metric.analysisResponsible")} {t("metric.optionalField")}
                 </label>
                 <Input
                   value={customMetric.analysisResponsible}
@@ -443,6 +480,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                     }))
                   }
                   placeholder={t("modals.customMetric.analysisResponsiblePlaceholder")}
+                  maxLength={255}
                 />
               </div>
             </div>
@@ -457,6 +495,14 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                   {t("metric.measurements")} são necessárias para definir como a métrica será medida. Adicione pelo menos uma medida.
                 </p>
               </div>
+
+              {measurements.length === 0 && (
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-4">
+                  <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                    {t("metric.atLeastOneMeasurementRequired")}
+                  </p>
+                </div>
+              )}
 
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-md font-semibold text-default">
@@ -483,7 +529,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                     {t("noMeasurementsYet")}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-500">
-                    Clique em "Adicionar Medida" para começar
+                    Clique em &quot;Adicionar Medida&quot; para começar
                   </p>
                 </div>
               ) : (

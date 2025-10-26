@@ -391,7 +391,9 @@
     "addMeasurement": "Adicionar  Medida",
     "customMeasurement": " Medida Personalizada",
     "selectMeasurement": "Selecionar  Medida",
-    "measurementsCount": "medidas"
+    "measurementsCount": "medidas",
+    "acronymDuplicateError": "Este acrônimo já existe nesta métrica",
+    "optionalField": "(Opcional)"
   },
   "units": {
     "hoursDecimals": "horas (2 decimais)",
@@ -415,7 +417,10 @@
     "analysisResponsible": "Responsável pela Análise",
     "customMetric": "Métrica Personalizada",
     "addCustomMetric": "Adicionar Métrica Personalizada",
-    "measurements": " Medidas"
+    "measurements": " Medidas",
+    "mnemonicDuplicateError": "Este mnemônico já existe neste plano",
+    "atLeastOneMeasurementRequired": "Pelo menos uma medida é necessária",
+    "optionalField": "(Opcional)"
   },
   "objective": {
     "objectiveTitle": "Título do Objetivo",

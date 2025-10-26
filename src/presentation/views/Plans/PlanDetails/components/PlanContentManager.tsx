@@ -124,6 +124,17 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
     return question?.metrics?.find(m => m._id === metricId);
   };
 
+  // Get all metrics in plan for mnemonic uniqueness validation
+  const getAllMetricsInPlan = (): Metric[] => {
+    const allMetrics: Metric[] = [];
+    plan.objectives?.forEach(obj => {
+      obj.questions?.forEach(q => {
+        if (q.metrics) allMetrics.push(...q.metrics);
+      });
+    });
+    return allMetrics;
+  };
+
   const handleDeleteObjective = async (objective: Objective) => {
     setDeleteConfirm({
       type: "objective",
@@ -797,6 +808,7 @@ export const PlanContentManager: React.FC<PlanContentManagerProps> = ({
           metricId={editingItem.id}
           onAddMeasurement={addMeasurement}
           onDeleteMeasurement={deleteMeasurement}
+          existingMetrics={getAllMetricsInPlan()}
         />
       )}
 

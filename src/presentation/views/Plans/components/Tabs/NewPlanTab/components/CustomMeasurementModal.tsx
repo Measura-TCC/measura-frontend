@@ -25,6 +25,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
 }) => {
   const { t } = useTranslation("plans");
   const [selectedTab, setSelectedTab] = useState(editingData ? "custom" : "predefined");
+  const [acronymError, setAcronymError] = useState<string | null>(null);
 
   // If editing data contains translation keys, translate them for display
   const getTranslatedValue = (value: string | undefined, prefix: string) => {
@@ -61,6 +62,22 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
       });
     }
   }, [editingData]);
+
+  // Check for duplicate acronym
+  useEffect(() => {
+    if (!customMeasurement.measurementAcronym) {
+      setAcronymError(null);
+      return;
+    }
+
+    const isDuplicate = existingMeasurements.some(
+      (m) =>
+        m.measurementAcronym === customMeasurement.measurementAcronym &&
+        (!editingData || editingData.measurementAcronym !== customMeasurement.measurementAcronym)
+    );
+
+    setAcronymError(isDuplicate ? t("measurement.acronymDuplicateError") : null);
+  }, [customMeasurement.measurementAcronym, existingMeasurements, editingData, t]);
 
   const availablePredefined = availableMeasurements.filter(
     (measurement) =>
@@ -204,6 +221,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                     }))
                   }
                   placeholder={t("modals.customMeasurement.entityPlaceholder")}
+                  maxLength={50}
                 />
               </div>
 
@@ -222,6 +240,9 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                   placeholder={t("modals.customMeasurement.acronymPlaceholder")}
                   maxLength={3}
                 />
+                {acronymError && (
+                  <p className="text-xs text-red-600">{acronymError}</p>
+                )}
               </div>
             </div>
 
@@ -229,18 +250,24 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
               <label className="text-sm font-medium text-default">
                 {t("measurement.measurementProperties")} *
               </label>
-              <textarea
-                value={customMeasurement.measurementProperties}
-                onChange={(e) =>
-                  setCustomMeasurement((prev) => ({
-                    ...prev,
-                    measurementProperties: e.target.value,
-                  }))
-                }
-                placeholder={t("modals.customMeasurement.propertiesPlaceholder")}
-                rows={3}
-                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
-              />
+              <div className="relative">
+                <textarea
+                  value={customMeasurement.measurementProperties}
+                  onChange={(e) =>
+                    setCustomMeasurement((prev) => ({
+                      ...prev,
+                      measurementProperties: e.target.value.slice(0, 200),
+                    }))
+                  }
+                  placeholder={t("modals.customMeasurement.propertiesPlaceholder")}
+                  rows={3}
+                  maxLength={200}
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
+                />
+                <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-white px-1">
+                  {customMeasurement.measurementProperties.length}/200
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -257,6 +284,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                     }))
                   }
                   placeholder={t("modals.customMeasurement.unitPlaceholder")}
+                  maxLength={50}
                 />
               </div>
 
@@ -285,18 +313,24 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
               <label className="text-sm font-medium text-default">
                 {t("measurement.measurementProcedure")} *
               </label>
-              <textarea
-                value={customMeasurement.measurementProcedure}
-                onChange={(e) =>
-                  setCustomMeasurement((prev) => ({
-                    ...prev,
-                    measurementProcedure: e.target.value,
-                  }))
-                }
-                placeholder={t("modals.customMeasurement.procedurePlaceholder")}
-                rows={3}
-                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
-              />
+              <div className="relative">
+                <textarea
+                  value={customMeasurement.measurementProcedure}
+                  onChange={(e) =>
+                    setCustomMeasurement((prev) => ({
+                      ...prev,
+                      measurementProcedure: e.target.value.slice(0, 1000),
+                    }))
+                  }
+                  placeholder={t("modals.customMeasurement.procedurePlaceholder")}
+                  rows={3}
+                  maxLength={1000}
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-default"
+                />
+                <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-white px-1">
+                  {customMeasurement.measurementProcedure.length}/1000
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -313,12 +347,13 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                     }))
                   }
                   placeholder={t("modals.customMeasurement.frequencyPlaceholder")}
+                  maxLength={50}
                 />
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-default">
-                  {t("measurement.measurementResponsible")}
+                  {t("measurement.measurementResponsible")} {t("measurement.optionalField")}
                 </label>
                 <Input
                   value={customMeasurement.measurementResponsible}
@@ -329,6 +364,7 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                     }))
                   }
                   placeholder={t("modals.customMeasurement.responsiblePlaceholder")}
+                  maxLength={255}
                 />
               </div>
             </div>
@@ -349,7 +385,8 @@ export const CustomMeasurementModal: React.FC<CustomMeasurementModalProps> = ({
                   !customMeasurement.measurementUnit.trim() ||
                   !customMeasurement.measurementScale.trim() ||
                   !customMeasurement.measurementProcedure.trim() ||
-                  !customMeasurement.measurementFrequency.trim()
+                  !customMeasurement.measurementFrequency.trim() ||
+                  !!acronymError
                 }
               >
                 {editingData ? t("updateMeasurement") : t("modals.customMeasurement.create")}

@@ -55,10 +55,11 @@ export const CustomObjectiveModal: React.FC<CustomObjectiveModalProps> = ({
   };
 
   const handleCreateCustomObjective = () => {
-    if (!customObjective.objectiveTitle.trim()) return;
+    const trimmedTitle = customObjective.objectiveTitle.trim();
+    if (!trimmedTitle) return;
 
     const newObjective: Objective = {
-      ...customObjective,
+      objectiveTitle: trimmedTitle,
       questions: [], // Start with empty questions array
     };
 
