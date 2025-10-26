@@ -313,6 +313,11 @@
     "createNewEstimate": "Create New Estimate",
     "viewAllEstimates": "View All Estimates",
     "failedToCalculate": "Failed to calculate function points",
+    "estimateCreatedSuccess": "Estimate created successfully!",
+    "calculatingFunctionPoints": "Calculating function points...",
+    "calculationSuccess": "Function points calculated successfully!",
+    "calculationError": "Failed to calculate function points. Please try again.",
+    "estimateCreationError": "Failed to create estimate. Please try again.",
     "components": {
       "title": "Components",
       "addALI": "ALI",

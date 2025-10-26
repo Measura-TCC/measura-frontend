@@ -81,10 +81,14 @@
       "maxLength": "Descrição não pode exceder 500 caracteres"
     },
     "applicationBoundary": {
-      "required": "Fronteira da aplicação é obrigatória"
+      "required": "Fronteira da aplicação é obrigatória",
+      "minLength": "Fronteira da aplicação deve ter pelo menos 10 caracteres",
+      "maxLength": "Fronteira da aplicação não pode exceder 500 caracteres"
     },
     "countingScope": {
-      "required": "Escopo da contagem é obrigatório"
+      "required": "Escopo da contagem é obrigatório",
+      "minLength": "Escopo da contagem deve ter pelo menos 10 caracteres",
+      "maxLength": "Escopo da contagem não pode exceder 500 caracteres"
     },
     "primaryIntent": {
       "minLength": "Intenção primária deve ter pelo menos 10 caracteres",

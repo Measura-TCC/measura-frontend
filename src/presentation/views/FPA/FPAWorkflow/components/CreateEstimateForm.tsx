@@ -18,8 +18,14 @@ const createEstimateFormSchemaFactory = (t: (key: string) => string) =>
       .string()
       .min(10, t("project.description.minLength"))
       .max(500, t("fpa.description.maxLength")),
-    applicationBoundary: z.string().min(1, t("fpa.applicationBoundary.required")),
-    countingScope: z.string().min(1, t("fpa.countingScope.required")),
+    applicationBoundary: z
+      .string()
+      .min(10, t("fpa.applicationBoundary.minLength"))
+      .max(500, t("fpa.applicationBoundary.maxLength")),
+    countingScope: z
+      .string()
+      .min(10, t("fpa.countingScope.minLength"))
+      .max(500, t("fpa.countingScope.maxLength")),
     countType: z.enum([
       "DEVELOPMENT_PROJECT",
       "ENHANCEMENT_PROJECT",

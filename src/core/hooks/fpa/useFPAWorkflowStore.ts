@@ -53,15 +53,9 @@ export const useFPAWorkflowStore = create<FPAWorkflowStore>()(
       ...initialState,
 
       setCurrentStep: (step) => {
-        console.log("🔍 [STORE] setCurrentStep called with step:", step);
-        console.log("🔍 [STORE] Current step before:", get().currentStep);
         const canNavigate = get().canNavigateToStep(step);
-        console.log("🔍 [STORE] canNavigateToStep result:", canNavigate);
         if (canNavigate) {
           set({ currentStep: step });
-          console.log("🔍 [STORE] Current step after set:", step);
-        } else {
-          console.log("🔍 [STORE] Navigation blocked to step:", step);
         }
       },
 
@@ -74,10 +68,7 @@ export const useFPAWorkflowStore = create<FPAWorkflowStore>()(
       },
 
       setGeneralSystemCharacteristics: (gsc) => {
-        console.log("🔍 [STORE] setGeneralSystemCharacteristics called with:", gsc);
-        console.log("🔍 [STORE] Previous GSC:", get().generalSystemCharacteristics);
         set({ generalSystemCharacteristics: gsc });
-        console.log("🔍 [STORE] GSC updated to:", gsc);
       },
 
       setCreatedEstimate: (estimate) => {

@@ -24,11 +24,13 @@ import {
 } from "@/core/hooks/fpa/useFPAWorkflowStore";
 import { useRequirementsStore } from "@/core/hooks/fpa/useRequirementsStore";
 import { estimateService } from "@/core/services/estimateService";
+import { useToast } from "@/core/hooks/common/useToast";
 
 type Tab = "new" | "created";
 
 export const FPAWorkflow = () => {
   const { t } = useTranslation("fpa");
+  const toast = useToast();
   const {
     requireOrganization,
     userOrganization,
@@ -223,8 +225,10 @@ export const FPAWorkflow = () => {
       // Now calculate function points
       await calculateFunctionPoints({ estimateId: estimate._id });
       setCalculationComplete(true);
+      toast.success({ message: t("workflow.estimateCreatedSuccess") });
     } catch (error) {
       console.error("Failed to create and calculate estimate:", error);
+      toast.error({ message: t("workflow.estimateCreationError") });
     } finally {
       setIsSubmitting(false);
     }

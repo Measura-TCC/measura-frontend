@@ -81,10 +81,14 @@
       "maxLength": "Description must not exceed 500 characters"
     },
     "applicationBoundary": {
-      "required": "Application boundary is required"
+      "required": "Application boundary is required",
+      "minLength": "Application boundary must be at least 10 characters",
+      "maxLength": "Application boundary must not exceed 500 characters"
     },
     "countingScope": {
-      "required": "Counting scope is required"
+      "required": "Counting scope is required",
+      "minLength": "Counting scope must be at least 10 characters",
+      "maxLength": "Counting scope must not exceed 500 characters"
     },
     "primaryIntent": {
       "minLength": "Primary intent must be at least 10 characters",
