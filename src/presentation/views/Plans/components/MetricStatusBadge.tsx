@@ -1,13 +1,12 @@
 import { useTranslation } from "react-i18next";
 
 interface MetricStatusBadgeProps {
-  status: 'OK' | 'NEEDS_ATTENTION';
+  status: 'OK' | 'NEEDS_ATTENTION' | 'NO_DATA';
   size?: 'sm' | 'md' | 'lg';
 }
 
 export const MetricStatusBadge: React.FC<MetricStatusBadgeProps> = ({ status, size = 'md' }) => {
   const { t } = useTranslation("plans");
-  const isOk = status === 'OK';
 
   const sizeClasses = {
     sm: "text-xs px-2 py-0.5",
@@ -15,15 +14,39 @@ export const MetricStatusBadge: React.FC<MetricStatusBadgeProps> = ({ status, si
     lg: "text-base px-4 py-2",
   };
 
+  const getStatusConfig = () => {
+    switch (status) {
+      case 'OK':
+        return {
+          icon: '✓',
+          bgColor: 'bg-green-100 dark:bg-green-900/20',
+          textColor: 'text-green-800 dark:text-green-300',
+          label: t('indicatorStatus.ok'),
+        };
+      case 'NEEDS_ATTENTION':
+        return {
+          icon: '⚠',
+          bgColor: 'bg-yellow-100 dark:bg-yellow-900/20',
+          textColor: 'text-yellow-800 dark:text-yellow-300',
+          label: t('indicatorStatus.needsAttention'),
+        };
+      case 'NO_DATA':
+        return {
+          icon: '○',
+          bgColor: 'bg-gray-100 dark:bg-gray-800',
+          textColor: 'text-gray-600 dark:text-gray-400',
+          label: t('indicatorStatus.noData'),
+        };
+    }
+  };
+
+  const config = getStatusConfig();
+
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full font-medium ${
-        isOk
-          ? "bg-green-100 text-green-800"
-          : "bg-yellow-100 text-yellow-800"
-      } ${sizeClasses[size]}`}
+      className={`inline-flex items-center gap-1 rounded-full font-medium ${config.bgColor} ${config.textColor} ${sizeClasses[size]}`}
     >
-      {isOk ? '✓' : '⚠'} {t(isOk ? 'indicatorStatus.ok' : 'indicatorStatus.needsAttention')}
+      {config.icon} {config.label}
     </span>
   );
 };

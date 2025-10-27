@@ -288,7 +288,7 @@ export interface UpdateMeasurementDataDto {
 }
 
 export interface MetricStatus {
-  status: 'OK' | 'NEEDS_ATTENTION';
+  status: 'OK' | 'NEEDS_ATTENTION' | 'NO_DATA';
   withinRange: number;
   outOfRange: number;
   totalMeasurements: number;
@@ -297,8 +297,54 @@ export interface MetricStatus {
 }
 
 export interface PlanStatus {
-  overallStatus: 'OK' | 'NEEDS_ATTENTION';
+  overallStatus: 'OK' | 'NEEDS_ATTENTION' | 'NO_DATA';
   metricsOk: number;
   metricsNeedAttention: number;
   totalMetrics: number;
+}
+
+export interface MeasurementWithAcronym {
+  measurementDefinitionId: string;
+  measurementAcronym: string;
+  measurementEntity: string;
+  collectedValues: {
+    _id: string;
+    value: number;
+    date: Date;
+    notes?: string;
+  }[];
+}
+
+export interface CycleMeasurementsResponse {
+  metricId: string;
+  metricName: string;
+  metricFormula: string;
+  cycle: {
+    _id: string;
+    cycleName: string;
+    startDate: Date;
+    endDate: Date;
+  };
+  measurements: MeasurementWithAcronym[];
+}
+
+export interface MetricCalculationResult {
+  metricName: string;
+  metricFormula: string;
+  calculatedValue: number | null;
+  variables: Record<string, number>;
+  cycle: {
+    _id: string;
+    cycleName: string;
+  };
+}
+
+export interface FormulaValidation {
+  valid: boolean;
+  errors?: string[];
+  suggestions?: string[];
+}
+
+export interface ValidateFormulaDto {
+  formula: string;
 }

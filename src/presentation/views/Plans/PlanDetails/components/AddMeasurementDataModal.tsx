@@ -86,28 +86,38 @@ export const AddMeasurementDataModal: React.FC<AddMeasurementDataModalProps> = (
 
   const allMeasurements = useMemo(() => {
     const measurements: MeasurementOption[] = [];
+    const addedMeasurements = new Set<string>();
 
     plan.objectives?.forEach((obj: any) => {
       obj.questions?.forEach((q: any) => {
         q.metrics?.forEach((m: any) => {
           m.measurements?.forEach((meas: any, idx: number) => {
-            measurements.push({
-              id: `${obj._id || obj.objectiveTitle}-${q._id || q.questionText}-${m._id || m.metricName}-${idx}`,
-              objectiveId: obj._id || "",
-              questionId: q._id || "",
-              metricId: m._id || "",
-              measurementDefinitionId: meas._id || `${m.metricMnemonic}-${idx}`,
-              label: `${meas.measurementEntity?.startsWith("metrics.measurementEntities.") || meas.measurementEntity?.startsWith("entities.") ? t(meas.measurementEntity.startsWith("metrics.measurementEntities.") ? meas.measurementEntity.replace("metrics.measurementEntities.", "entities.") : meas.measurementEntity) : meas.measurementEntity} (${m.metricName} - ${obj.objectiveTitle})`,
-              metricName: m.metricName,
-              objectiveTitle: obj.objectiveTitle,
-            });
+            const measurementKey = `${meas._id || meas.measurementAcronym}-${m._id}`;
+            if (!addedMeasurements.has(measurementKey)) {
+              addedMeasurements.add(measurementKey);
+              const entityLabel = meas.measurementEntity?.startsWith("metrics.measurementEntities.") || meas.measurementEntity?.startsWith("entities.")
+                ? t(meas.measurementEntity.startsWith("metrics.measurementEntities.") ? meas.measurementEntity.replace("metrics.measurementEntities.", "entities.") : meas.measurementEntity)
+                : meas.measurementEntity;
+
+              measurements.push({
+                id: `${obj._id || obj.objectiveTitle}-${q._id || q.questionText}-${m._id || m.metricName}-${idx}`,
+                objectiveId: obj._id || "",
+                questionId: q._id || "",
+                metricId: m._id || "",
+                measurementDefinitionId: meas._id || `${m.metricMnemonic}-${idx}`,
+                label: `${m.metricMnemonic || m.metricName} → ${entityLabel} [${meas.measurementAcronym}]`,
+                metricName: m.metricName,
+                objectiveTitle: obj.objectiveTitle,
+              });
+            }
           });
         });
       });
     });
 
-    return measurements;
-  }, [plan]);
+    // Sort by metric name for better organization
+    return measurements.sort((a, b) => a.metricName.localeCompare(b.metricName));
+  }, [plan, t]);
 
   const selectedCycle = cycles.find((c) => c._id === formData.cycleId);
 

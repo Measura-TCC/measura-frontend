@@ -43,9 +43,19 @@ export const useMeasurementData = () => {
       try {
         const newMeasurement = await measurementPlanService.addMeasurementData(params);
 
+        // Revalidate cycles and measurements
         await mutate(`/measurement-plans/${params.organizationId}/${params.planId}/cycles-with-measurements`);
         await mutate(`/measurement-plans/${params.organizationId}/${params.planId}/cycles`);
         await mutate(`/measurement-plans/${params.organizationId}/${params.planId}/status`);
+
+        // Revalidate metric calculations for this cycle
+        // This triggers immediate recalculation when user adds measurement
+        await mutate(
+          (key) =>
+            typeof key === 'string' &&
+            key.includes(`/organizations/${params.organizationId}/measurement-plans/${params.planId}/cycles/${params.data.cycleId}/metrics/`) &&
+            key.includes('/calculate')
+        );
 
         return newMeasurement;
       } catch (error) {
@@ -70,6 +80,14 @@ export const useMeasurementData = () => {
         await mutate(`/measurement-plans/${params.organizationId}/${params.planId}/cycles-with-measurements`);
         await mutate(`/measurement-plans/${params.organizationId}/${params.planId}/status`);
 
+        // Revalidate all metric calculations for this plan
+        await mutate(
+          (key) =>
+            typeof key === 'string' &&
+            key.includes(`/organizations/${params.organizationId}/measurement-plans/${params.planId}/cycles/`) &&
+            key.includes('/calculate')
+        );
+
         return updatedMeasurement;
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Failed to update measurement data";
@@ -92,6 +110,14 @@ export const useMeasurementData = () => {
 
         await mutate(`/measurement-plans/${params.organizationId}/${params.planId}/cycles-with-measurements`);
         await mutate(`/measurement-plans/${params.organizationId}/${params.planId}/status`);
+
+        // Revalidate all metric calculations for this plan
+        await mutate(
+          (key) =>
+            typeof key === 'string' &&
+            key.includes(`/organizations/${params.organizationId}/measurement-plans/${params.planId}/cycles/`) &&
+            key.includes('/calculate')
+        );
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Failed to delete measurement data";
         setOperationError(errorMessage);
