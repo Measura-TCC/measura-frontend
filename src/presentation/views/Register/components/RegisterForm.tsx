@@ -32,6 +32,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showEmailValidation, setShowEmailValidation] = useState(false);
   const [showPasswordMatch, setShowPasswordMatch] = useState(false);
+  const [isUsernameFocused, setIsUsernameFocused] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
 
   const password = watch("password") || "";
   const username = watch("username") || "";
@@ -58,8 +61,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           type="text"
           placeholder={t("enterFullName")}
           disabled={isRegistering}
+          onFocus={() => setIsUsernameFocused(true)}
+          onBlur={() => setIsUsernameFocused(false)}
         />
-        <UsernameValidation username={username} className="mt-2" />
+        <div className="overflow-hidden transition-all duration-300 ease-in-out" style={{ maxHeight: isUsernameFocused ? '200px' : '0' }}>
+          <UsernameValidation username={username} className="mt-2" />
+        </div>
         {formErrors.username && username.length > 0 && (
           <span className="text-sm text-red-600">
             {formErrors.username.message}
@@ -105,6 +112,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             placeholder={t("createPassword")}
             disabled={isRegistering}
             className="pr-10"
+            onFocus={() => setIsPasswordFocused(true)}
+            onBlur={() => setIsPasswordFocused(false)}
           />
           <Button
             type="button"
@@ -121,7 +130,9 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             )}
           </Button>
         </div>
-        <PasswordRequirements password={password} className="mt-2" />
+        <div className="overflow-hidden transition-all duration-300 ease-in-out" style={{ maxHeight: (isPasswordFocused || isConfirmPasswordFocused) ? '200px' : '0' }}>
+          <PasswordRequirements password={password} className="mt-2" />
+        </div>
 
         {formErrors.password && password.length > 0 && (
           <span className="text-sm text-red-600">
@@ -145,7 +156,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             placeholder={t("confirmPassword")}
             disabled={isRegistering}
             className="pr-10"
-            onBlur={() => setShowPasswordMatch(true)}
+            onFocus={() => setIsConfirmPasswordFocused(true)}
+            onBlur={() => {
+              setIsConfirmPasswordFocused(false);
+              setShowPasswordMatch(true);
+            }}
           />
           <Button
             type="button"
