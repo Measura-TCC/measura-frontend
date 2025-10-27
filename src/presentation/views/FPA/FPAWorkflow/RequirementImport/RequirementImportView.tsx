@@ -19,6 +19,7 @@ interface RequirementImportViewProps {
   organizationId?: string;
   projectId?: string;
   estimateId?: string;
+  mode?: 'create' | 'add';
 }
 
 export const RequirementImportView = ({
@@ -26,6 +27,7 @@ export const RequirementImportView = ({
   organizationId,
   projectId,
   estimateId,
+  mode = 'create',
 }: RequirementImportViewProps) => {
   const { t } = useTranslation("fpa");
   const requirements = useRequirementsStore((state) => state.requirements);
@@ -198,6 +200,8 @@ export const RequirementImportView = ({
         <RequirementClassificationTable
           onProceed={onProceed}
           onBack={handleBackToImport}
+          mode={mode}
+          estimateId={estimateId}
         />
       </div>
     );

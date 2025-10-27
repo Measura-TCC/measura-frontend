@@ -51,3 +51,30 @@ export const updateEstimateStatus = async (
   const response = await measuraApi.patch(`/estimates/${estimateId}/status`, { status });
   return response.data;
 };
+
+export interface AddComponentData {
+  componentType: string;
+  fpaData: Record<string, unknown>;
+}
+
+const getComponentEndpoint = (componentType: string): string => {
+  const endpointMap: Record<string, string> = {
+    'ALI': 'components/ilf',
+    'AIE': 'components/eif',
+    'EI': 'components/ei',
+    'EO': 'components/eo',
+    'EQ': 'components/eq',
+  };
+  return endpointMap[componentType] || 'components/ilf';
+};
+
+export const addComponentsToEstimate = async (
+  estimateId: string,
+  components: AddComponentData[]
+): Promise<void> => {
+  const promises = components.map(component => {
+    const endpoint = getComponentEndpoint(component.componentType);
+    return measuraApi.post(`/estimates/${estimateId}/${endpoint}`, component.fpaData);
+  });
+  await Promise.all(promises);
+};

@@ -703,7 +703,11 @@
     "allClassified": "Todos os requisitos classificados!",
     "allComplete": "Todos os requisitos classificados e preenchidos!",
     "nextToSpecification": "Próximo: Especificação de Componentes",
-    "mustClassifyFirst": "Você deve classificar o requisito antes de preencher os campos"
+    "mustClassifyFirst": "Você deve classificar o requisito antes de preencher os campos",
+    "saveComponents": "Salvar Componentes",
+    "savingComponents": "Salvando componentes...",
+    "componentsAddedSuccess": "Componentes adicionados à estimativa com sucesso",
+    "componentsAddedError": "Falha ao adicionar componentes. Tente novamente."
   },
   "componentTypes": {
     "ALI": "ALI - Arquivo Lógico Interno",
