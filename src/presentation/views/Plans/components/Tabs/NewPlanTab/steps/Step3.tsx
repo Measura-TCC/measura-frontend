@@ -92,7 +92,7 @@ export const Step3: React.FC<Step3Props> = ({
                   </div>
                 </div>
                 <button
-                  className="mt-2 text-primary text-sm hover:underline"
+                  className="mt-2 text-primary text-sm hover:underline cursor-pointer"
                   onClick={() => {
                     setCurrentObjectiveForQuestion(index);
                     setIsCustomQuestionModalOpen(true);

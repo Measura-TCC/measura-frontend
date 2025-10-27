@@ -12,6 +12,7 @@ import type { Objective } from "../utils/types";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useProjectObjectives } from "@/core/hooks/projects/useProjectObjectives";
 import { useOrganizationalObjectives } from "@/core/hooks/organizations";
+import { CustomObjectiveModal } from "../components/CustomObjectiveModal";
 
 interface Step2Props {
   selectedObjectives: Objective[];
@@ -28,6 +29,7 @@ export const Step2: React.FC<Step2Props> = ({
 }) => {
   const { t } = useTranslation("plans");
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
+  const [isCustomObjectiveModalOpen, setIsCustomObjectiveModalOpen] = useState(false);
   const { projects } = useProjects();
   const { projectObjectives } = useProjectObjectives(selectedProjectId || null);
   const { objectives: organizationalObjectives } = useOrganizationalObjectives();
@@ -88,6 +90,12 @@ export const Step2: React.FC<Step2Props> = ({
                   </svg>
                 </div>
               </div>
+              <button
+                className="mt-2 text-primary text-sm hover:underline cursor-pointer"
+                onClick={() => setIsCustomObjectiveModalOpen(true)}
+              >
+                {t("workflow.createNewObjective")}
+              </button>
 
               {selectedObjectives.length > 0 && (
                 <div className="mt-3">
@@ -177,6 +185,13 @@ export const Step2: React.FC<Step2Props> = ({
             </Button>
           )}
         </div>
+
+        <CustomObjectiveModal
+          isOpen={isCustomObjectiveModalOpen}
+          onClose={() => setIsCustomObjectiveModalOpen(false)}
+          onAddObjective={onAddObjective}
+          existingObjectives={selectedObjectives}
+        />
       </CardContent>
     </Card>
   );

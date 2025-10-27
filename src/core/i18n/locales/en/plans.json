@@ -460,6 +460,7 @@
       "customDescription": "Create a custom objective for your measurement plan:",
       "addButton": "Add",
       "createButton": "Create Objective",
+      "addCustomButton": "Add Custom Objective",
       "noAvailableObjectives": "All predefined objectives have already been added"
     }
   },

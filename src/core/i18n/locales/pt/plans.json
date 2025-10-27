@@ -503,6 +503,7 @@
       "customDescription": "Crie um objetivo personalizado para seu plano de medição:",
       "addButton": "Adicionar",
       "createButton": "Criar Objetivo",
+      "addCustomButton": "Adicionar Objetivo Personalizado",
       "noAvailableObjectives": "Todos os objetivos predefinidos já foram adicionados"
     }
   },
