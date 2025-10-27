@@ -2,6 +2,8 @@ import { useCallback } from "react";
 import useSWR, { mutate } from "swr";
 import { useOrganizationStore } from "./useOrganizationStore";
 import { organizationService } from "@/core/services/organization";
+import { authService } from "@/core/services/authService";
+import { STORAGE_KEYS } from "@/core/utils/constants";
 import type {
   CreateOrganizationData,
   UpdateOrganizationData,
@@ -129,6 +131,16 @@ export const useOrganizations = (config?: UseOrganizationsConfig) => {
   const createOrganization = async (data: CreateOrganizationData) => {
     try {
       const result = await organizationService.create(data);
+
+      try {
+        const authResponse = await authService.refreshSession();
+        if (typeof window !== "undefined") {
+          localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, authResponse.accessToken);
+        }
+      } catch (refreshError) {
+        console.error("Failed to refresh session after creating organization:", refreshError);
+      }
+
       await mutate("/organizations");
       await mutate("/organizations/my-organization");
       return result;
