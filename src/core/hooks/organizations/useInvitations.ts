@@ -1,5 +1,7 @@
 import useSWR, { mutate } from "swr";
 import { organizationInvitationService } from "@/core/services/organization";
+import { authService } from "@/core/services/authService";
+import { STORAGE_KEYS } from "@/core/utils/constants";
 
 interface UseInvitationsConfig {
   fetchMy?: boolean;
@@ -37,6 +39,16 @@ export const useInvitations = (config?: UseInvitationsConfig) => {
 
   const acceptInvitation = async (id: string) => {
     const result = await organizationInvitationService.acceptInvitation(id);
+
+    try {
+      const authResponse = await authService.refreshSession();
+      if (typeof window !== "undefined") {
+        localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, authResponse.accessToken);
+      }
+    } catch (refreshError) {
+      console.error("Failed to refresh session after accepting invitation:", refreshError);
+    }
+
     await mutate("/organization-invitations/my-invitations");
     await mutate("/organizations/my-organization");
     return result;

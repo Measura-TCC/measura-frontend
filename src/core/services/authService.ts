@@ -120,4 +120,10 @@ export const authService = {
       measuraApi.post("/auth/resend-verification", { email })
     );
   },
+
+  refreshSession: async (): Promise<AuthResponse> => {
+    return handleApiCall<AuthResponse>(
+      measuraApi.post("/auth/refresh-session", {})
+    );
+  },
 };

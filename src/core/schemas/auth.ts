@@ -24,7 +24,7 @@ export const createRegisterSchema = (t: (key: string) => string) =>
         .string()
         .min(3, t("validation.username.minLength"))
         .max(100, t("validation.username.maxLength"))
-        .regex(/^[a-zA-Z0-9_-]+$/, t("validation.username.pattern")),
+        .regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/, t("validation.username.pattern")),
       email: z.string().email(t("validation.email.invalid")),
       password: createPasswordSchema(t),
       role: z.enum([UserRole.PROJECT_MANAGER, UserRole.MEASUREMENT_ANALYST]),

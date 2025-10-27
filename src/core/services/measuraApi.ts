@@ -95,7 +95,8 @@ measuraApi.interceptors.response.use(
     const isAuthEndpoint =
       originalRequest?.url?.includes("/auth/login") ||
       originalRequest?.url?.includes("/auth/register") ||
-      originalRequest?.url?.includes("/auth/refresh");
+      originalRequest?.url?.includes("/auth/refresh") ||
+      originalRequest?.url?.includes("/auth/refresh-session");
 
     if (
       error.response?.status === 401 &&

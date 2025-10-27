@@ -4,19 +4,27 @@ import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useRequirementsStore } from "@/core/hooks/fpa/useRequirementsStore";
 import { usePagination } from "@/core/hooks";
+import { useToast } from "@/core/hooks/common/useToast";
 import type { ComponentType, Requirement } from "@/core/types/fpa";
 import { Button, Table, Pagination, type Column } from "@/presentation/components/primitives";
 import { RequirementFPAModal } from "./RequirementFPAModal";
+import { addComponentsToEstimate, type AddComponentData } from "@/core/services/fpa/estimates";
 
 interface RequirementClassificationTableProps {
   onProceed?: () => void;
   onBack?: () => void;
+  mode?: 'create' | 'add';
+  estimateId?: string;
 }
 
 export const RequirementClassificationTable = ({
   onProceed,
   onBack,
+  mode = 'create',
+  estimateId,
 }: RequirementClassificationTableProps = {}) => {
+  const toast = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useTranslation("fpa");
   const requirements = useRequirementsStore((state) => state.requirements);
   const classifyRequirement = useRequirementsStore((state) => state.classifyRequirement);
@@ -55,6 +63,68 @@ export const RequirementClassificationTable = ({
   const componentTypes: ComponentType[] = ["ALI", "AIE", "EI", "EO", "EQ"];
 
   const classified = requirements.filter((r) => r.componentType).length;
+
+  const handleSaveComponents = async () => {
+    if (!estimateId || mode !== 'add') return;
+
+    setIsSubmitting(true);
+    try {
+      const classifiedRequirements = requirements.filter(r => r.componentType && r.componentId);
+
+      const components: AddComponentData[] = classifiedRequirements.map(req => ({
+        componentType: req.componentType!,
+        fpaData: {
+          name: (req as any).name || req.title,
+          description: (req as any).description || req.description || "",
+          primaryIntent: (req as any).primaryIntent || "",
+          ...(req.componentType === "ALI" || req.componentType === "AIE"
+            ? {
+                recordElementTypes: (req as any).recordElementTypes || 1,
+                dataElementTypes: (req as any).dataElementTypes || 1,
+                ...(req.componentType === "AIE" && {
+                  externalSystem: (req as any).externalSystem || "",
+                }),
+              }
+            : {}),
+          ...(req.componentType === "EI"
+            ? {
+                processingLogic: (req as any).processingLogic || "",
+                fileTypesReferenced: (req as any).fileTypesReferenced || 0,
+                dataElementTypes: (req as any).dataElementTypes || 1,
+              }
+            : {}),
+          ...(req.componentType === "EO"
+            ? {
+                derivedData: (req as any).derivedData || "",
+                outputFormat: (req as any).outputFormat || "",
+                fileTypesReferenced: (req as any).fileTypesReferenced || 0,
+                dataElementTypes: (req as any).dataElementTypes || 1,
+              }
+            : {}),
+          ...(req.componentType === "EQ"
+            ? {
+                retrievalLogic: (req as any).retrievalLogic || "",
+                fileTypesReferenced: (req as any).fileTypesReferenced || 0,
+                dataElementTypes: (req as any).dataElementTypes || 1,
+              }
+            : {}),
+          notes: (req as any).notes || "",
+        },
+      }));
+
+      await addComponentsToEstimate(estimateId, components);
+      toast.success({ message: t("requirementClassification.componentsAddedSuccess") });
+
+      if (onProceed) {
+        onProceed();
+      }
+    } catch (error) {
+      console.error("Failed to add components:", error);
+      toast.error({ message: t("requirementClassification.componentsAddedError") });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const columns: Column<Requirement>[] = [
     {
@@ -221,12 +291,16 @@ export const RequirementClassificationTable = ({
             : t("requirementClassification.allComplete")}
         </p>
         <Button
-          onClick={onProceed}
-          disabled={unclassified.length > 0 || requirements.some(r => !r.componentId)}
+          onClick={mode === 'add' ? handleSaveComponents : onProceed}
+          disabled={unclassified.length > 0 || requirements.some(r => !r.componentId) || isSubmitting}
           variant="primary"
           className="w-full sm:w-auto whitespace-normal text-center"
         >
-          {t("requirementImport.nextToGSC")}
+          {isSubmitting
+            ? t("requirementClassification.savingComponents")
+            : mode === 'add'
+            ? t("requirementClassification.saveComponents")
+            : t("requirementImport.nextToGSC")}
         </Button>
       </div>
 
