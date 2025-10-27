@@ -52,9 +52,9 @@ export function Tabs<T extends string = string>({
 
   const containerClassName = isModal
     ? `flex border-b ${className}`
-    : `border-b border-gray-200 dark:border-dark-border mb-6 ${className}`;
+    : `border-b border-gray-200 dark:border-dark-border mb-6 overflow-hidden ${className}`;
 
-  const navClassName = isModal ? "" : "-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto";
+  const navClassName = isModal ? "" : "-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto scrollbar-hide max-w-full";
 
   return (
     <div className={containerClassName}>

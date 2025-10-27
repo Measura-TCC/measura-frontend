@@ -39,6 +39,13 @@
     "match": "Senhas coincidem",
     "noMatch": "Senhas não coincidem"
   },
+  "usernameRequirements": {
+    "title": "Requisitos do nome de usuário:",
+    "minLength": "Pelo menos 3 caracteres",
+    "maxLength": "Máximo de 100 caracteres",
+    "onlyLetters": "Apenas letras permitidas (sem números ou caracteres especiais)",
+    "noMultipleSpaces": "Sem espaços múltiplos ou espaços no início/fim"
+  },
   "validation": {
     "usernameMinLength": "Nome de usuário deve ter pelo menos 3 caracteres",
     "emailInvalid": "Endereço de email inválido",
