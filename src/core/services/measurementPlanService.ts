@@ -331,7 +331,7 @@ export const measurementPlanService = {
 
   addMeasurement: async (params: AddMeasurementParams): Promise<MeasurementPlanResponseDto> => {
     const response = await measuraApi.post(
-      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurements`,
+      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurement-definitions`,
       params.data
     );
     return response.data;
@@ -339,7 +339,7 @@ export const measurementPlanService = {
 
   updateMeasurement: async (params: UpdateMeasurementParams): Promise<MeasurementPlanResponseDto> => {
     const response = await measuraApi.put(
-      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurements/${params.measurementId}`,
+      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurement-definitions/${params.measurementId}`,
       params.data
     );
     return response.data;
@@ -347,7 +347,7 @@ export const measurementPlanService = {
 
   deleteMeasurement: async (params: DeleteMeasurementParams): Promise<void> => {
     await measuraApi.delete(
-      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurements/${params.measurementId}`
+      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurement-definitions/${params.measurementId}`
     );
   },
 
@@ -396,7 +396,7 @@ export const measurementPlanService = {
 
   addMeasurementData: async (params: AddMeasurementDataParams): Promise<import("@/core/types/plans").MeasurementData> => {
     const response = await measuraApi.post(
-      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurements`,
+      `/measurement-plans/${params.organizationId}/${params.planId}/objectives/${params.objectiveId}/questions/${params.questionId}/metrics/${params.metricId}/measurement-data`,
       params.data
     );
     return response.data;

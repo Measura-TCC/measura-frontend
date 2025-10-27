@@ -7,6 +7,7 @@ import { RegisterFormData, RoleOption } from "@/core/types/register";
 import { PasswordRequirements } from "./PasswordRequirements";
 import { EmailValidation } from "./EmailValidation";
 import { PasswordMatch } from "./PasswordMatch";
+import { UsernameValidation } from "./UsernameValidation";
 
 interface RegisterFormProps {
   registerForm: UseFormReturn<RegisterFormData>;
@@ -58,6 +59,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           placeholder={t("enterFullName")}
           disabled={isRegistering}
         />
+        <UsernameValidation username={username} className="mt-2" />
         {formErrors.username && username.length > 0 && (
           <span className="text-sm text-red-600">
             {formErrors.username.message}

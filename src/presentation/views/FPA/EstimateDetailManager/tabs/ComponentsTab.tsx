@@ -129,7 +129,11 @@ export const ComponentsTab = ({
             ← {t("actions.back")}
           </Button>
         </div>
-        <RequirementImportView onProceed={handleImportComplete} />
+        <RequirementImportView
+          onProceed={handleImportComplete}
+          mode="add"
+          estimateId={estimateId}
+        />
       </div>
     );
   }

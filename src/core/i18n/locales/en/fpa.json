@@ -699,7 +699,11 @@
     "allClassified": "All requirements classified!",
     "allComplete": "All requirements classified and completed!",
     "nextToSpecification": "Next: Component Specification",
-    "mustClassifyFirst": "You must classify the requirement before filling the fields"
+    "mustClassifyFirst": "You must classify the requirement before filling the fields",
+    "saveComponents": "Save Components",
+    "savingComponents": "Saving components...",
+    "componentsAddedSuccess": "Components successfully added to estimate",
+    "componentsAddedError": "Failed to add components. Please try again."
   },
   "componentTypes": {
     "ALI": "ILF - Internal Logical File",

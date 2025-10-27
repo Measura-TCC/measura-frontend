@@ -39,6 +39,13 @@
     "match": "Passwords match",
     "noMatch": "Passwords do not match"
   },
+  "usernameRequirements": {
+    "title": "Username requirements:",
+    "minLength": "At least 3 characters",
+    "maxLength": "Maximum 100 characters",
+    "onlyLetters": "Only letters allowed (no numbers or special characters)",
+    "noMultipleSpaces": "No multiple spaces or leading/trailing spaces"
+  },
   "validation": {
     "usernameMinLength": "Username must be at least 3 characters",
     "emailInvalid": "Invalid email address",
