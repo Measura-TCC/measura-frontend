@@ -80,9 +80,9 @@ export const functionTypes = [
 ];
 
 export const complexityLevels = [
-  { value: "simple" as ComplexityLevel, label: "Baixa", multiplier: 1 },
-  { value: "average" as ComplexityLevel, label: "Média", multiplier: 2 },
-  { value: "complex" as ComplexityLevel, label: "Alta", multiplier: 3 },
+  { value: "simple" as ComplexityLevel, label: "Simples", multiplier: 1 },
+  { value: "average" as ComplexityLevel, label: "Moderado", multiplier: 2 },
+  { value: "complex" as ComplexityLevel, label: "Complexo", multiplier: 3 },
 ] as const;
 
 export const fpaPointsMatrix: Record<

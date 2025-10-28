@@ -429,4 +429,41 @@ export const measurementPlanService = {
     );
     return response.data;
   },
+
+  getMeasurementsWithAcronyms: async (params: {
+    organizationId: string;
+    planId: string;
+    cycleId: string;
+    metricId: string;
+  }): Promise<import("@/core/types/plans").CycleMeasurementsResponse> => {
+    const response = await measuraApi.get(
+      `/measurement-plans/${params.organizationId}/${params.planId}/cycles/${params.cycleId}/metrics/${params.metricId}/measurements-with-acronyms`
+    );
+    return response.data;
+  },
+
+  calculateMetric: async (params: {
+    organizationId: string;
+    planId: string;
+    cycleId: string;
+    metricId: string;
+  }): Promise<import("@/core/types/plans").MetricCalculationResult> => {
+    const response = await measuraApi.post(
+      `/measurement-plans/${params.organizationId}/${params.planId}/cycles/${params.cycleId}/metrics/${params.metricId}/calculate`,
+      {}
+    );
+    return response.data;
+  },
+
+  validateFormula: async (params: {
+    organizationId: string;
+    planId: string;
+    formula: string;
+  }): Promise<import("@/core/types/plans").FormulaValidation> => {
+    const response = await measuraApi.post(
+      `/measurement-plans/${params.organizationId}/${params.planId}/metrics/validate-formula`,
+      { formula: params.formula }
+    );
+    return response.data;
+  },
 };

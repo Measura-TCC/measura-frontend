@@ -77,12 +77,12 @@ export const MeasurementChart: React.FC<MeasurementChartProps> = ({
 
   // Set initial selected metric
   if (selectedMetric === null && uniqueMetrics.length > 0) {
-    setSelectedMetric(uniqueMetrics[0]);
+    setSelectedMetric("all");
   }
 
   // Filter data by selected metric and cycle
   const filteredChartData = chartData.filter((d) => {
-    const matchesMetric = selectedMetric
+    const matchesMetric = selectedMetric && selectedMetric !== "all"
       ? d.metricName === selectedMetric
       : true;
     const matchesCycle =
@@ -113,7 +113,7 @@ export const MeasurementChart: React.FC<MeasurementChartProps> = ({
             id="cycle-filter"
             value={selectedCycle}
             onChange={(e) => setSelectedCycle(e.target.value)}
-            className="px-3 py-1.5 text-sm border border-border rounded-md bg-background text-default focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="px-3 py-1.5 text-sm border border-border rounded-md bg-background text-default focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent cursor-pointer"
           >
             <option value="all">{t("monitoring.allCycles")}</option>
             {uniqueCycles.map((cycle) => (
@@ -127,17 +127,20 @@ export const MeasurementChart: React.FC<MeasurementChartProps> = ({
 
       {/* Metric Tabs */}
       <Tabs
-        tabs={uniqueMetrics.map((metricName) => ({
-          id: metricName,
-          label: `${metricName} (${metricCounts[metricName]})`,
-        }))}
-        activeTab={selectedMetric || uniqueMetrics[0]}
+        tabs={[
+          { id: "all", label: `${t("monitoring.allMetrics")} (${chartData.length})` },
+          ...uniqueMetrics.map((metricName) => ({
+            id: metricName,
+            label: `${metricName} (${metricCounts[metricName]})`,
+          })),
+        ]}
+        activeTab={selectedMetric || "all"}
         onTabChange={(tab) => setSelectedMetric(tab)}
         className="mb-6"
       />
 
       {/* Chart for selected metric */}
-      {selectedMetric && (
+      {selectedMetric && selectedMetric !== "all" && (
         <>
           {filteredChartData.length === 0 ? (
             /* Empty State */
@@ -166,7 +169,7 @@ export const MeasurementChart: React.FC<MeasurementChartProps> = ({
             </div>
           ) : (
             <>
-              <div className="h-96">
+              <div className="h-[500px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={filteredChartData}
@@ -240,6 +243,116 @@ export const MeasurementChart: React.FC<MeasurementChartProps> = ({
                         0}
                     </p>
                   </div>
+                </div>
+              </div>
+            </>
+          )}
+        </>
+      )}
+
+      {/* Chart for all metrics */}
+      {selectedMetric === "all" && (
+        <>
+          {filteredChartData.length === 0 ? (
+            /* Empty State */
+            <div className="flex flex-col items-center justify-center h-96 text-center">
+              <svg
+                className="w-16 h-16 text-gray-300 mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+              <h4 className="text-lg font-medium text-default mb-2">
+                {t("monitoring.noData")}
+              </h4>
+              <p className="text-sm text-secondary max-w-md">
+                {t("monitoring.noDataDescription")}
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="h-[500px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={filteredChartData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 12, fill: "#6b7280" }}
+                      angle={-45}
+                      textAnchor="end"
+                      height={80}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 12, fill: "#6b7280" }}
+                      label={{
+                        value: t("monitoring.value"),
+                        angle: -90,
+                        position: "insideLeft",
+                        style: { fill: "#6b7280" },
+                      }}
+                      allowDecimals={false}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#ffffff",
+                        border: "1px solid #e5e7eb",
+                        borderRadius: "0.5rem",
+                        color: "#1f2937",
+                        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                      }}
+                      labelStyle={{
+                        color: "#1f2937",
+                        fontWeight: "500",
+                      }}
+                    />
+                    {uniqueMetrics.map((metric) => (
+                      <Bar
+                        key={metric}
+                        dataKey={(data) => data.metricName === metric ? data.value : null}
+                        fill={colors[metric]}
+                        name={metric}
+                      />
+                    ))}
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* All metrics details */}
+              <div className="mt-6 pt-4 border-t border-border">
+                <h4 className="text-sm font-semibold text-default mb-3">
+                  {t("monitoring.metricsOverview")}
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {uniqueMetrics.map((metric) => {
+                    const metricData = filteredChartData.filter((d) => d.metricName === metric);
+                    return (
+                      <div key={metric} className="flex items-start gap-3">
+                        <div
+                          className="w-4 h-4 rounded mt-0.5 flex-shrink-0"
+                          style={{ backgroundColor: colors[metric] }}
+                        />
+                        <div>
+                          <h5 className="text-sm font-semibold text-default">
+                            {metric}
+                          </h5>
+                          <p className="text-xs text-secondary">
+                            {metricData.length} {t("monitoring.measurements")}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </>

@@ -35,8 +35,8 @@ export const handleApiError = (
     try {
       localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-    } catch (storageError) {
-      console.warn('Failed to clear tokens:', storageError);
+    } catch {
+      // Silent failure - storage access denied
     }
 
     if (navigate) {

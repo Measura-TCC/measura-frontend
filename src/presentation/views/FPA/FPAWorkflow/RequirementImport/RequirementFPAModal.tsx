@@ -181,8 +181,8 @@ export const RequirementFPAModal = ({
               (data) => {
                 onSubmit(data);
               },
-              (errors) => {
-                console.log("Validation failed with errors:", errors);
+              () => {
+                // Validation failed - form will show errors
               }
             )(e);
           }}
