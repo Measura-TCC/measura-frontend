@@ -7,6 +7,7 @@ import { CycleAccordion } from "./CycleAccordion";
 import { CreateCycleModal } from "./CreateCycleModal";
 import { AddMeasurementDataModal } from "./AddMeasurementDataModal";
 import { MeasurementChart } from "./MeasurementChart";
+import { MetricCalculationsChart } from "./MetricCalculationsChart";
 
 interface MeasurementMonitoringTabProps {
   planId: string;
@@ -97,7 +98,10 @@ export const MeasurementMonitoringTab: React.FC<MeasurementMonitoringTabProps> =
       </Card>
 
       {!isLoading && cyclesData.length > 0 && (
-        <MeasurementChart cyclesData={cyclesData} />
+        <div className="space-y-6">
+          <MeasurementChart cyclesData={cyclesData} />
+          <MetricCalculationsChart planId={planId} plan={plan} cyclesData={cyclesData} />
+        </div>
       )}
 
       <CreateCycleModal

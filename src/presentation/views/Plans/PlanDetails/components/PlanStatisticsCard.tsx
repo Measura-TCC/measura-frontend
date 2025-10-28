@@ -50,23 +50,23 @@ export const PlanStatisticsCard: React.FC<PlanStatisticsCardProps> = ({
         </div>
 
         {/* Indicator Status */}
-        <div className="pt-4 border-t border-gray-200">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-600">{t("indicatorStatus.title")}</span>
-            {isLoading ? (
-              <span className="text-xs text-gray-400 dark:text-gray-500">{t("loading")}</span>
-            ) : status ? (
-              <MetricStatusBadge status={status.overallStatus} size="sm" />
-            ) : (
-              <span className="text-xs text-gray-400 dark:text-gray-500">-</span>
+        {status && (
+          <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600 dark:text-gray-400">{t("indicatorStatus.title")}</span>
+              {isLoading ? (
+                <span className="text-xs text-gray-400 dark:text-gray-500">{t("loading")}</span>
+              ) : (
+                <MetricStatusBadge status={status.overallStatus} size="sm" />
+              )}
+            </div>
+            {status.overallStatus === 'NEEDS_ATTENTION' && (
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                {status.metricsNeedAttention} de {status.totalMetrics} {t("workflow.metrics").toLowerCase()} {t("indicatorStatus.someNeedAttention").toLowerCase()}
+              </p>
             )}
           </div>
-          {status && status.overallStatus === 'NEEDS_ATTENTION' && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-              {status.metricsNeedAttention} de {status.totalMetrics} {t("workflow.metrics").toLowerCase()} {t("indicatorStatus.someNeedAttention").toLowerCase()}
-            </p>
-          )}
-        </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -244,9 +244,9 @@
     },
     "labels": {
       "complexity": {
-        "Low": "Baixa",
-        "Average": "Média",
-        "High": "Alta"
+        "Low": "Simples",
+        "Average": "Moderado",
+        "High": "Complexo"
       },
       "productivityMetrics": {
         "Hours per Function Point": "Horas por Ponto de Função",
@@ -543,9 +543,9 @@
     "EIF": "Arquivo de Interface Externa (EIF)"
   },
   "complexityLabels": {
-    "LOW": "Baixa",
-    "AVERAGE": "Média",
-    "HIGH": "Alta"
+    "LOW": "Simples",
+    "AVERAGE": "Moderado",
+    "HIGH": "Complexo"
   },
   "adjustmentFactors": {
     "data_communications": "Comunicação de Dados",

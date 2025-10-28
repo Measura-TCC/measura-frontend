@@ -1,16 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Button,
-  Input,
-  Tabs,
-} from "@/presentation/components/primitives";
+import { Button, Input, Tabs } from "@/presentation/components/primitives";
 import { Stepper } from "@/presentation/components/primitives/Stepper/Stepper";
 import type { Metric, Measurement } from "../utils/types";
 import { availableMetrics } from "../utils/stepData";
 import { CustomMeasurementModal } from "./CustomMeasurementModal";
 import { PlusIcon, TrashIcon } from "@/presentation/assets/icons";
 import { useToast } from "@/core/hooks/common/useToast";
+import { validateFormulaAgainstMeasurements } from "../utils/formulaValidation";
 
 interface CustomMetricModalProps {
   isOpen: boolean;
@@ -20,8 +17,18 @@ interface CustomMetricModalProps {
   objectiveId?: string;
   questionId?: string;
   metricId?: string;
-  onAddMeasurement?: (objectiveId: string, questionId: string, metricId: string, data: any) => Promise<any>;
-  onDeleteMeasurement?: (objectiveId: string, questionId: string, metricId: string, measurementId: string) => Promise<void>;
+  onAddMeasurement?: (
+    objectiveId: string,
+    questionId: string,
+    metricId: string,
+    data: any
+  ) => Promise<any>;
+  onDeleteMeasurement?: (
+    objectiveId: string,
+    questionId: string,
+    metricId: string,
+    measurementId: string
+  ) => Promise<void>;
   existingMetrics?: Metric[];
 }
 
@@ -39,7 +46,9 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
 }) => {
   const { t } = useTranslation("plans");
   const toast = useToast();
-  const [selectedTab, setSelectedTab] = useState(editingData ? "custom" : "predefined");
+  const [selectedTab, setSelectedTab] = useState(
+    editingData ? "custom" : "predefined"
+  );
   const [currentStep, setCurrentStep] = useState(1); // Step 1: Metric details, Step 2: Measurements
   const [mnemonicError, setMnemonicError] = useState<string | null>(null);
 
@@ -52,17 +61,33 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
     return value;
   };
 
-  const [customMetric, setCustomMetric] = useState<Omit<Metric, "measurements">>({
+  const [customMetric, setCustomMetric] = useState<
+    Omit<Metric, "measurements">
+  >({
     metricName: getTranslatedValue(editingData?.metricName, "metrics."),
-    metricDescription: getTranslatedValue(editingData?.metricDescription, "metrics.descriptions."),
+    metricDescription: getTranslatedValue(
+      editingData?.metricDescription,
+      "metrics.descriptions."
+    ),
     metricMnemonic: editingData?.metricMnemonic || "",
     metricFormula: editingData?.metricFormula || "",
     metricControlRange: editingData?.metricControlRange || [0, 100],
-    analysisProcedure: getTranslatedValue(editingData?.analysisProcedure, "analysis.procedures."),
-    analysisFrequency: getTranslatedValue(editingData?.analysisFrequency, "analysis.frequency."),
-    analysisResponsible: getTranslatedValue(editingData?.analysisResponsible, "analysis.responsible."),
+    analysisProcedure: getTranslatedValue(
+      editingData?.analysisProcedure,
+      "analysis.procedures."
+    ),
+    analysisFrequency: getTranslatedValue(
+      editingData?.analysisFrequency,
+      "analysis.frequency."
+    ),
+    analysisResponsible: getTranslatedValue(
+      editingData?.analysisResponsible,
+      "analysis.responsible."
+    ),
   });
-  const [measurements, setMeasurements] = useState<Measurement[]>(editingData?.measurements || []);
+  const [measurements, setMeasurements] = useState<Measurement[]>(
+    editingData?.measurements || []
+  );
   const [showMeasurementModal, setShowMeasurementModal] = useState(false);
 
   // Update state when editingData changes
@@ -70,13 +95,25 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
     if (editingData) {
       setCustomMetric({
         metricName: getTranslatedValue(editingData.metricName, "metrics."),
-        metricDescription: getTranslatedValue(editingData.metricDescription, "metrics.descriptions."),
+        metricDescription: getTranslatedValue(
+          editingData.metricDescription,
+          "metrics.descriptions."
+        ),
         metricMnemonic: editingData.metricMnemonic || "",
         metricFormula: editingData.metricFormula || "",
         metricControlRange: editingData.metricControlRange || [0, 100],
-        analysisProcedure: getTranslatedValue(editingData.analysisProcedure, "analysis.procedures."),
-        analysisFrequency: getTranslatedValue(editingData.analysisFrequency, "analysis.frequency."),
-        analysisResponsible: getTranslatedValue(editingData.analysisResponsible, "analysis.responsible."),
+        analysisProcedure: getTranslatedValue(
+          editingData.analysisProcedure,
+          "analysis.procedures."
+        ),
+        analysisFrequency: getTranslatedValue(
+          editingData.analysisFrequency,
+          "analysis.frequency."
+        ),
+        analysisResponsible: getTranslatedValue(
+          editingData.analysisResponsible,
+          "analysis.responsible."
+        ),
       });
       setMeasurements(editingData.measurements || []);
     }
@@ -92,11 +129,24 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
     const isDuplicate = existingMetrics.some(
       (m) =>
         m.metricMnemonic === customMetric.metricMnemonic &&
-        (!editingData || editingData.metricMnemonic !== customMetric.metricMnemonic)
+        (!editingData ||
+          editingData.metricMnemonic !== customMetric.metricMnemonic)
     );
 
     setMnemonicError(isDuplicate ? t("metric.mnemonicDuplicateError") : null);
   }, [customMetric.metricMnemonic, existingMetrics, editingData, t]);
+
+  // Validate formula against measurements
+  const formulaValidation = useMemo(() => {
+    if (!customMetric.metricFormula || !customMetric.metricFormula.trim()) {
+      return null;
+    }
+
+    return validateFormulaAgainstMeasurements(
+      customMetric.metricFormula,
+      measurements
+    );
+  }, [customMetric.metricFormula, measurements]);
 
   const isStep1Valid =
     customMetric.metricName.trim() &&
@@ -112,17 +162,30 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
 
   const handleAddMeasurement = async (measurement: Measurement) => {
     // If editing an existing metric with API operations available, make real API call
-    if (editingData && objectiveId && questionId && metricId && onAddMeasurement) {
+    if (
+      editingData &&
+      objectiveId &&
+      questionId &&
+      metricId &&
+      onAddMeasurement
+    ) {
       try {
         await onAddMeasurement(objectiveId, questionId, metricId, measurement);
-        toast.success({ message: t("measurementAddedSuccess") || "Measurement added successfully" });
+        toast.success({
+          message:
+            t("measurementAddedSuccess") || "Measurement added successfully",
+        });
         // Measurement will be reflected after refresh, no need to update local state
       } catch (error: any) {
         const backendMessage = error?.response?.data?.message;
         const errorMessage = Array.isArray(backendMessage)
           ? backendMessage.join(", ")
           : backendMessage || error?.message || "An error occurred";
-        toast.error({ message: `${t("measurementAddError") || "Failed to add measurement"}: ${errorMessage}` });
+        toast.error({
+          message: `${
+            t("measurementAddError") || "Failed to add measurement"
+          }: ${errorMessage}`,
+        });
         throw error;
       }
     } else {
@@ -135,17 +198,37 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
     const measurement = measurements[index];
 
     // If editing an existing metric with API operations available, make real API call
-    if (editingData && objectiveId && questionId && metricId && onDeleteMeasurement && measurement._id) {
+    if (
+      editingData &&
+      objectiveId &&
+      questionId &&
+      metricId &&
+      onDeleteMeasurement &&
+      measurement._id
+    ) {
       try {
-        await onDeleteMeasurement(objectiveId, questionId, metricId, measurement._id);
-        toast.success({ message: t("measurementDeletedSuccess") || "Measurement deleted successfully" });
+        await onDeleteMeasurement(
+          objectiveId,
+          questionId,
+          metricId,
+          measurement._id
+        );
+        toast.success({
+          message:
+            t("measurementDeletedSuccess") ||
+            "Measurement deleted successfully",
+        });
         // Measurement will be removed after refresh, no need to update local state
       } catch (error: any) {
         const backendMessage = error?.response?.data?.message;
         const errorMessage = Array.isArray(backendMessage)
           ? backendMessage.join(", ")
           : backendMessage || error?.message || "An error occurred";
-        toast.error({ message: `${t("measurementDeleteError") || "Failed to delete measurement"}: ${errorMessage}` });
+        toast.error({
+          message: `${
+            t("measurementDeleteError") || "Failed to delete measurement"
+          }: ${errorMessage}`,
+        });
         throw error;
       }
     } else {
@@ -211,14 +294,23 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 backdrop-blur-sm bg-white/20 dark:bg-black/40 flex items-center justify-center z-50" onClick={handleClose}>
-      <div className="bg-white dark:bg-gray-900 rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border border-gray-200 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 backdrop-blur-sm bg-white/20 dark:bg-black/40 flex items-center justify-center z-50"
+      onClick={handleClose}
+    >
+      <div
+        className="bg-white dark:bg-gray-900 rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-xl border border-gray-200 dark:border-gray-700"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">
               {editingData ? t("editMetric") : t("modals.customMetric.title")}
             </h2>
-            <button onClick={handleClose} className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer text-2xl leading-none">
+            <button
+              onClick={handleClose}
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 cursor-pointer text-2xl leading-none"
+            >
               ×
             </button>
           </div>
@@ -227,7 +319,10 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
             <div className="mb-4">
               <Tabs
                 tabs={[
-                  { id: "predefined", label: t("modals.customMetric.predefinedTab") },
+                  {
+                    id: "predefined",
+                    label: t("modals.customMetric.predefinedTab"),
+                  },
                   { id: "custom", label: t("modals.customMetric.customTab") },
                 ]}
                 activeTab={selectedTab}
@@ -240,7 +335,7 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
           )}
 
           {/* Step Indicator for Custom Tab */}
-          {(editingData || selectedTab === 'custom') && (
+          {(editingData || selectedTab === "custom") && (
             <Stepper
               steps={[
                 { number: 1, label: t("metric.metricName") },
@@ -266,233 +361,339 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
             />
           )}
 
-          {!editingData && selectedTab === 'predefined' && (
+          {!editingData && selectedTab === "predefined" && (
             <div className="space-y-4">
-            <p className="text-sm text-secondary">
-              {t("modals.customMetric.predefinedDescription")}
-            </p>
+              <p className="text-sm text-secondary">
+                {t("modals.customMetric.predefinedDescription")}
+              </p>
 
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {availableMetrics.map((metric) => (
-                <div
-                  key={metric.metricName}
-                  className="border border-border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
-                  onClick={() => handleAddPredefinedMetric(metric)}
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-medium text-default">
-                      {t(metric.metricName)}
-                    </h4>
-                    <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                      {metric.metricMnemonic}
-                    </span>
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {availableMetrics.map((metric) => (
+                  <div
+                    key={metric.metricName}
+                    className="border border-border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                    onClick={() => handleAddPredefinedMetric(metric)}
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <h4 className="font-medium text-default">
+                        {t(metric.metricName)}
+                      </h4>
+                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                        {metric.metricMnemonic}
+                      </span>
+                    </div>
+                    <p className="text-sm text-secondary mb-2">
+                      {metric.metricDescription
+                        ? t(metric.metricDescription)
+                        : "No description available"}
+                    </p>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      <span className="font-medium">
+                        {t("metric.metricFormula")}:
+                      </span>{" "}
+                      {metric.metricFormula}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <span className="font-medium">
+                        {t("measurement.measurementsCount")}:
+                      </span>{" "}
+                      {metric.measurements.length}
+                    </div>
                   </div>
-                  <p className="text-sm text-secondary mb-2">
-                    {metric.metricDescription ? t(metric.metricDescription) : "No description available"}
-                  </p>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    <span className="font-medium">{t("metric.metricFormula")}:</span>{" "}
-                    {metric.metricFormula}
-                  </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    <span className="font-medium">{t("measurement.measurementsCount")}:</span>{" "}
-                    {metric.measurements.length}
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
             </div>
           )}
 
-          {(editingData || selectedTab === 'custom') && currentStep === 1 && (
+          {(editingData || selectedTab === "custom") && currentStep === 1 && (
             <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-default">
-                  {t("metric.metricName")} *
-                </label>
-                <Input
-                  value={customMetric.metricName}
-                  onChange={(e) =>
-                    setCustomMetric((prev) => ({
-                      ...prev,
-                      metricName: e.target.value,
-                    }))
-                  }
-                  placeholder={t("modals.customMetric.namePlaceholder")}
-                  maxLength={50}
-                />
-              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-default">
+                    {t("metric.metricName")} *
+                  </label>
+                  <Input
+                    value={customMetric.metricName}
+                    onChange={(e) =>
+                      setCustomMetric((prev) => ({
+                        ...prev,
+                        metricName: e.target.value,
+                      }))
+                    }
+                    placeholder={t("modals.customMetric.namePlaceholder")}
+                    maxLength={50}
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-default">
-                  {t("metric.metricMnemonic")} *
-                </label>
-                <Input
-                  value={customMetric.metricMnemonic}
-                  onChange={(e) =>
-                    setCustomMetric((prev) => ({
-                      ...prev,
-                      metricMnemonic: e.target.value.slice(0, 10),
-                    }))
-                  }
-                  placeholder={t("modals.customMetric.mnemonicPlaceholder")}
-                  maxLength={10}
-                />
-                {mnemonicError && (
-                  <p className="text-xs text-red-600">{mnemonicError}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-default">
-                {t("metric.metricDescription")} *
-              </label>
-              <div className="relative">
-                <textarea
-                  value={customMetric.metricDescription}
-                  onChange={(e) =>
-                    setCustomMetric((prev) => ({
-                      ...prev,
-                      metricDescription: e.target.value.slice(0, 400),
-                    }))
-                  }
-                  placeholder={t("modals.customMetric.descriptionPlaceholder")}
-                  rows={3}
-                  maxLength={400}
-                  className="w-full px-3 py-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background dark:bg-gray-800 text-default"
-                />
-                <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-white dark:bg-gray-800 px-1">
-                  {(customMetric.metricDescription || "").length}/400
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-default">
+                    {t("metric.metricMnemonic")} *
+                  </label>
+                  <Input
+                    value={customMetric.metricMnemonic}
+                    onChange={(e) =>
+                      setCustomMetric((prev) => ({
+                        ...prev,
+                        metricMnemonic: e.target.value.slice(0, 10),
+                      }))
+                    }
+                    placeholder={t("modals.customMetric.mnemonicPlaceholder")}
+                    maxLength={10}
+                  />
+                  {mnemonicError && (
+                    <p className="text-xs text-red-600">{mnemonicError}</p>
+                  )}
                 </div>
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-default">
-                {t("metric.metricFormula")} *
-              </label>
-              <Input
-                value={customMetric.metricFormula}
-                onChange={(e) =>
-                  setCustomMetric((prev) => ({
-                    ...prev,
-                    metricFormula: e.target.value,
-                  }))
-                }
-                placeholder={t("modals.customMetric.formulaPlaceholder")}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-default">
-                  {t("modals.customMetric.minRange")}
-                </label>
-                <Input
-                  type="number"
-                  value={customMetric.metricControlRange?.[0] ?? 0}
-                  onChange={(e) =>
-                    setCustomMetric((prev) => ({
-                      ...prev,
-                      metricControlRange: [
-                        Number(e.target.value),
-                        prev.metricControlRange?.[1] ?? 100,
-                      ],
-                    }))
-                  }
-                />
-              </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-default">
-                  {t("modals.customMetric.maxRange")}
+                  {t("metric.metricDescription")} *
                 </label>
-                <Input
-                  type="number"
-                  value={customMetric.metricControlRange?.[1] ?? 100}
-                  onChange={(e) =>
-                    setCustomMetric((prev) => ({
-                      ...prev,
-                      metricControlRange: [
-                        prev.metricControlRange?.[0] ?? 0,
-                        Number(e.target.value),
-                      ],
-                    }))
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-default">
-                {t("metric.analysisProcedure")}
-              </label>
-              <div className="relative">
-                <textarea
-                  value={customMetric.analysisProcedure}
-                  onChange={(e) =>
-                    setCustomMetric((prev) => ({
-                      ...prev,
-                      analysisProcedure: e.target.value.slice(0, 1000),
-                    }))
-                  }
-                  placeholder={t("modals.customMetric.analysisProcedurePlaceholder")}
-                  rows={3}
-                  maxLength={1000}
-                  className="w-full px-3 py-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background dark:bg-gray-800 text-default"
-                />
-                <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-white dark:bg-gray-800 px-1">
-                  {(customMetric.analysisProcedure || "").length}/1000
+                <div className="relative">
+                  <textarea
+                    value={customMetric.metricDescription}
+                    onChange={(e) =>
+                      setCustomMetric((prev) => ({
+                        ...prev,
+                        metricDescription: e.target.value.slice(0, 400),
+                      }))
+                    }
+                    placeholder={t(
+                      "modals.customMetric.descriptionPlaceholder"
+                    )}
+                    rows={3}
+                    maxLength={400}
+                    className="w-full px-3 py-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background dark:bg-gray-800 text-default"
+                  />
+                  <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-white dark:bg-gray-800 px-1">
+                    {(customMetric.metricDescription || "").length}/400
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-default">
-                  {t("metric.analysisFrequency")}
+                  {t("metric.metricFormula")} *
                 </label>
                 <Input
-                  value={customMetric.analysisFrequency}
+                  value={customMetric.metricFormula}
                   onChange={(e) =>
                     setCustomMetric((prev) => ({
                       ...prev,
-                      analysisFrequency: e.target.value,
+                      metricFormula: e.target.value,
                     }))
                   }
-                  placeholder={t("modals.customMetric.analysisFrequencyPlaceholder")}
-                  maxLength={50}
+                  placeholder={t("modals.customMetric.formulaPlaceholder")}
                 />
+
+                {/* Formula Validation Feedback */}
+                {formulaValidation &&
+                  formulaValidation.requiredAcronyms.length > 0 && (
+                    <div className="mt-3 p-3 border rounded-md bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg
+                          className="w-4 h-4 text-purple-600 dark:text-purple-400"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          {t("formulas.requiredMeasurements")}:
+                        </span>
+                      </div>
+
+                      <div className="space-y-1.5 ml-6">
+                        {formulaValidation.foundAcronyms.map(
+                          ({ formulaAcronym, measurement }) => (
+                            <div
+                              key={formulaAcronym}
+                              className="flex items-center gap-2 text-sm"
+                            >
+                              <svg
+                                className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                              <span className="font-mono text-xs font-medium text-green-700 dark:text-green-300">
+                                {formulaAcronym}
+                              </span>
+                              <span className="text-gray-600 dark:text-gray-400">
+                                → {measurement.measurementEntity}
+                              </span>
+                            </div>
+                          )
+                        )}
+
+                        {formulaValidation.missingAcronyms.map((acronym) => (
+                          <div
+                            key={acronym}
+                            className="flex items-center gap-2 text-sm"
+                          >
+                            <svg
+                              className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span className="font-mono text-xs font-medium text-red-700 dark:text-red-300">
+                              {acronym}
+                            </span>
+                            <span className="text-red-600 dark:text-red-400">
+                              {t("formulas.missingMeasurement")}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {formulaValidation.missingAcronyms.length > 0 && (
+                        <div className="mt-2 ml-6 text-xs text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20 px-2 py-1.5 rounded border border-amber-200 dark:border-amber-800">
+                          ⚠️ {t("formulas.addMissingMeasurementsWarning")}
+                        </div>
+                      )}
+
+                      {formulaValidation.missingAcronyms.length === 0 &&
+                        formulaValidation.foundAcronyms.length > 0 && (
+                          <div className="mt-2 ml-6 text-xs text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-2 py-1.5 rounded border border-green-200 dark:border-green-800">
+                            ✅ {t("formulas.allMeasurementsFound")}
+                          </div>
+                        )}
+                    </div>
+                  )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-default">
+                    {t("modals.customMetric.minRange")}
+                  </label>
+                  <Input
+                    type="number"
+                    value={customMetric.metricControlRange?.[0] ?? 0}
+                    onChange={(e) =>
+                      setCustomMetric((prev) => ({
+                        ...prev,
+                        metricControlRange: [
+                          Number(e.target.value),
+                          prev.metricControlRange?.[1] ?? 100,
+                        ],
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-default">
+                    {t("modals.customMetric.maxRange")}
+                  </label>
+                  <Input
+                    type="number"
+                    value={customMetric.metricControlRange?.[1] ?? 100}
+                    onChange={(e) =>
+                      setCustomMetric((prev) => ({
+                        ...prev,
+                        metricControlRange: [
+                          prev.metricControlRange?.[0] ?? 0,
+                          Number(e.target.value),
+                        ],
+                      }))
+                    }
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-default">
-                  {t("metric.analysisResponsible")} {t("metric.optionalField")}
+                  {t("metric.analysisProcedure")}
                 </label>
-                <Input
-                  value={customMetric.analysisResponsible}
-                  onChange={(e) =>
-                    setCustomMetric((prev) => ({
-                      ...prev,
-                      analysisResponsible: e.target.value,
-                    }))
-                  }
-                  placeholder={t("modals.customMetric.analysisResponsiblePlaceholder")}
-                  maxLength={255}
-                />
+                <div className="relative">
+                  <textarea
+                    value={customMetric.analysisProcedure}
+                    onChange={(e) =>
+                      setCustomMetric((prev) => ({
+                        ...prev,
+                        analysisProcedure: e.target.value.slice(0, 1000),
+                      }))
+                    }
+                    placeholder={t(
+                      "modals.customMetric.analysisProcedurePlaceholder"
+                    )}
+                    rows={3}
+                    maxLength={1000}
+                    className="w-full px-3 py-2 border border-border dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background dark:bg-gray-800 text-default"
+                  />
+                  <div className="absolute bottom-2 right-2 text-xs text-gray-400 bg-white dark:bg-gray-800 px-1">
+                    {(customMetric.analysisProcedure || "").length}/1000
+                  </div>
+                </div>
               </div>
-            </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-default">
+                    {t("metric.analysisFrequency")}
+                  </label>
+                  <Input
+                    value={customMetric.analysisFrequency}
+                    onChange={(e) =>
+                      setCustomMetric((prev) => ({
+                        ...prev,
+                        analysisFrequency: e.target.value,
+                      }))
+                    }
+                    placeholder={t(
+                      "modals.customMetric.analysisFrequencyPlaceholder"
+                    )}
+                    maxLength={50}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-default">
+                    {t("metric.analysisResponsible")}{" "}
+                    {t("metric.optionalField")}
+                  </label>
+                  <Input
+                    value={customMetric.analysisResponsible}
+                    onChange={(e) =>
+                      setCustomMetric((prev) => ({
+                        ...prev,
+                        analysisResponsible: e.target.value,
+                      }))
+                    }
+                    placeholder={t(
+                      "modals.customMetric.analysisResponsiblePlaceholder"
+                    )}
+                    maxLength={255}
+                  />
+                </div>
+              </div>
             </div>
           )}
 
           {/* Step 2: Measurements */}
-          {(editingData || selectedTab === 'custom') && currentStep === 2 && (
+          {(editingData || selectedTab === "custom") && currentStep === 2 && (
             <div className="space-y-4">
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
                 <p className="text-sm text-blue-800 dark:text-blue-200">
-                  {t("metric.measurements")} são necessárias para definir como a métrica será medida. Adicione pelo menos uma medida.
+                  {t("metric.measurements")} são necessárias para definir como a
+                  métrica será medida.
                 </p>
               </div>
 
@@ -521,8 +722,18 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
               {measurements.length === 0 ? (
                 <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center">
                   <div className="text-gray-400 dark:text-gray-500 mb-3">
-                    <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    <svg
+                      className="w-16 h-16 mx-auto"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                      />
                     </svg>
                   </div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
@@ -545,10 +756,22 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                             {index + 1}
                           </div>
                           <h5 className="font-medium text-sm text-default">
-                            {measurement.measurementEntity?.startsWith("entities.") || measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
-                              ? t(measurement.measurementEntity?.startsWith("metrics.measurementEntities.")
-                                  ? measurement.measurementEntity.replace("metrics.measurementEntities.", "entities.")
-                                  : measurement.measurementEntity)
+                            {measurement.measurementEntity?.startsWith(
+                              "entities."
+                            ) ||
+                            measurement.measurementEntity?.startsWith(
+                              "metrics.measurementEntities."
+                            )
+                              ? t(
+                                  measurement.measurementEntity?.startsWith(
+                                    "metrics.measurementEntities."
+                                  )
+                                    ? measurement.measurementEntity.replace(
+                                        "metrics.measurementEntities.",
+                                        "entities."
+                                      )
+                                    : measurement.measurementEntity
+                                )
                               : measurement.measurementEntity}
                           </h5>
                           <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
@@ -557,14 +780,20 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-xs text-secondary ml-8">
                           <div>
-                            <span className="font-medium">{t("measurement.measurementUnit")}:</span>{" "}
+                            <span className="font-medium">
+                              {t("measurement.measurementUnit")}:
+                            </span>{" "}
                             {measurement.measurementUnit?.startsWith("units.")
                               ? t(measurement.measurementUnit)
                               : measurement.measurementUnit}
                           </div>
                           <div>
-                            <span className="font-medium">{t("measurement.measurementFrequency")}:</span>{" "}
-                            {measurement.measurementFrequency?.startsWith("measurements.frequency.")
+                            <span className="font-medium">
+                              {t("measurement.measurementFrequency")}:
+                            </span>{" "}
+                            {measurement.measurementFrequency?.startsWith(
+                              "measurements.frequency."
+                            )
                               ? t(measurement.measurementFrequency)
                               : measurement.measurementFrequency}
                           </div>
@@ -586,32 +815,34 @@ export const CustomMetricModal: React.FC<CustomMetricModalProps> = ({
 
           <div className="flex justify-between gap-2 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
             <div>
-              {(editingData || selectedTab === "custom") && currentStep === 2 && (
-                <Button variant="secondary" onClick={handlePreviousStep}>
-                  ← {t("back")}
-                </Button>
-              )}
+              {(editingData || selectedTab === "custom") &&
+                currentStep === 2 && (
+                  <Button variant="secondary" onClick={handlePreviousStep}>
+                    ← {t("back")}
+                  </Button>
+                )}
             </div>
             <div className="flex gap-2">
               <Button variant="secondary" onClick={handleClose}>
                 {t("modals.customMetric.cancel")}
               </Button>
-              {(editingData || selectedTab === "custom") && currentStep === 1 && (
-                <Button
-                  onClick={handleNextStep}
-                  disabled={!isStep1Valid}
-                >
-                  {t("next")} →
-                </Button>
-              )}
-              {(editingData || selectedTab === "custom") && currentStep === 2 && (
-                <Button
-                  onClick={handleCreateCustomMetric}
-                  disabled={measurements.length === 0}
-                >
-                  {editingData ? t("updateMetric") : t("modals.customMetric.create")}
-                </Button>
-              )}
+              {(editingData || selectedTab === "custom") &&
+                currentStep === 1 && (
+                  <Button onClick={handleNextStep} disabled={!isStep1Valid}>
+                    {t("next")} →
+                  </Button>
+                )}
+              {(editingData || selectedTab === "custom") &&
+                currentStep === 2 && (
+                  <Button
+                    onClick={handleCreateCustomMetric}
+                    disabled={measurements.length === 0}
+                  >
+                    {editingData
+                      ? t("updateMetric")
+                      : t("modals.customMetric.create")}
+                  </Button>
+                )}
             </div>
           </div>
         </div>

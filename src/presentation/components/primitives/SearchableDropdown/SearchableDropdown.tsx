@@ -2,7 +2,11 @@
 
 import { useState, useRef, useEffect, ReactNode } from "react";
 import { cn } from "@/core/utils";
-import { SearchIcon, ChevronDownIcon, XIcon } from "@/presentation/assets/icons";
+import {
+  SearchIcon,
+  ChevronDownIcon,
+  XIcon,
+} from "@/presentation/assets/icons";
 
 export interface SearchableDropdownItem {
   id: string;
@@ -44,10 +48,7 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
   const selectedItem = items.find((item) => item.value === value);
 
   const filteredItems = items.filter((item) =>
-    item.label
-      ?.toString()
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
+    item.label?.toString().toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const toggleDropdown = () => {
@@ -99,10 +100,7 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
   }, [isOpen]);
 
   return (
-    <div
-      className={cn("relative w-full", className)}
-      ref={dropdownRef}
-    >
+    <div className={cn("relative w-full", className)} ref={dropdownRef}>
       <div
         onClick={toggleDropdown}
         className={cn(
@@ -114,10 +112,7 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
           isOpen && "border-primary ring-2 ring-primary/20"
         )}
       >
-        <span className={cn(
-          "text-sm",
-          !selectedItem && "text-muted"
-        )}>
+        <span className={cn("text-sm", !selectedItem && "text-muted")}>
           {loading ? "Loading..." : selectedItem?.label || placeholder}
         </span>
         <div className="flex items-center gap-1">
@@ -129,10 +124,12 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
               <XIcon className="w-3 h-3 text-muted" />
             </button>
           )}
-          <ChevronDownIcon className={cn(
-            "w-4 h-4 text-muted transition-transform",
-            isOpen && "transform rotate-180"
-          )} />
+          <ChevronDownIcon
+            className={cn(
+              "w-4 h-4 text-muted transition-transform",
+              isOpen && "transform rotate-180"
+            )}
+          />
         </div>
       </div>
 
@@ -153,11 +150,11 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={searchPlaceholder}
-                className="w-full pl-10 pr-3 py-1.5 text-sm border border-border rounded bg-background text-default placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full !pl-8 pr-3 py-1.5 text-sm border border-border rounded bg-background text-default placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
           </div>
-          
+
           <div className="max-h-48 overflow-y-auto">
             {filteredItems.length === 0 ? (
               <div className="px-3 py-2 text-sm text-muted text-center">
@@ -172,7 +169,8 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
                     "px-3 py-2 text-sm cursor-pointer transition-colors",
                     "hover:bg-background-secondary",
                     item.disabled && "opacity-50 cursor-not-allowed",
-                    item.value === value && "bg-primary/10 text-primary font-medium"
+                    item.value === value &&
+                      "bg-primary/10 text-primary font-medium"
                   )}
                 >
                   {item.label}

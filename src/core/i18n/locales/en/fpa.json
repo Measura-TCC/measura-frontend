@@ -537,9 +537,9 @@
     "EIF": "External Interface File (EIF)"
   },
   "complexityLabels": {
-    "LOW": "Low",
-    "AVERAGE": "Average",
-    "HIGH": "High"
+    "LOW": "Simple",
+    "AVERAGE": "Moderate",
+    "HIGH": "Complex"
   },
   "adjustmentFactors": {
     "data_communications": "Data Communications",

@@ -5,3 +5,4 @@ export { useMeasurementCycles } from "./useMeasurementCycles";
 export { useMeasurementData } from "./useMeasurementData";
 export { useCycleWithMeasurements } from "./useCycleWithMeasurements";
 export { usePlanStatus } from "./usePlanStatus";
+export { useMetricCalculation } from "./useMetricCalculation";
