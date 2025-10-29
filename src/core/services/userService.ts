@@ -27,6 +27,17 @@ export interface UpdateUserData {
   hasCompletedOnboarding?: boolean;
 }
 
+export interface UpdateMyProfileData {
+  username?: string;
+  email?: string;
+  hasCompletedOnboarding?: boolean;
+}
+
+export interface ChangePasswordData {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export const userService = {
   getProfile: async (): Promise<UserProfile> => {
     const response = await measuraApi.get('/users/profile');
@@ -65,8 +76,13 @@ export const userService = {
     await measuraApi.delete(`/users/${params.id}`);
   },
 
-  updateMyProfile: async (data: UpdateUserData): Promise<UserProfile> => {
+  updateMyProfile: async (data: UpdateMyProfileData): Promise<UserProfile> => {
     const response = await measuraApi.patch('/users/me', data);
+    return response.data;
+  },
+
+  changePassword: async (data: ChangePasswordData): Promise<UserProfile> => {
+    const response = await measuraApi.patch('/users/me/change-password', data);
     return response.data;
   },
 }; 

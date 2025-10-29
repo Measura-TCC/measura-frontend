@@ -39,16 +39,26 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 }) => {
   const { t } = useTranslation("account");
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [updateError, setUpdateError] = useState<string | null>(null);
 
   const { register, handleSubmit } = profileForm;
 
   const handleUpdateSubmit = async (data: ProfileFormData) => {
+    setUpdateError(null);
+    setUpdateSuccess(false);
     try {
       await onUpdateProfile(data);
       setUpdateSuccess(true);
       setTimeout(() => setUpdateSuccess(false), 3000);
-    } catch (error) {
+    } catch (err) {
+      const error = err as { response?: { status: number; data?: { message?: string } } };
       console.error("Error updating profile:", error);
+
+      if (error.response?.status === 409) {
+        setUpdateError(t("profile.usernameAlreadyExists"));
+      } else {
+        setUpdateError(t("profile.updateError"));
+      }
     }
   };
 
@@ -131,7 +141,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                   disabled
                   className="bg-background-secondary text-muted cursor-not-allowed"
                 />
-                <p className="text-xs text-muted">{t("form.roleHelp")}</p>
               </div>
 
               {updateSuccess && (
@@ -142,6 +151,12 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                       {t("form.updateSuccess")}
                     </p>
                   </div>
+                </div>
+              )}
+
+              {updateError && (
+                <div className="rounded-md bg-red-50 p-4">
+                  <p className="text-sm text-red-700">{updateError}</p>
                 </div>
               )}
 
