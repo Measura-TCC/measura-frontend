@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/core/hooks/auth";
 import { useOrganizations } from "@/core/hooks/organizations";
 import { userService } from "@/core/services";
+import { createPasswordSchema } from "@/core/schemas/auth";
 import type { User } from "@/core/types";
 import type {
   ProfileFormData,
@@ -20,19 +21,22 @@ const createUpdateProfileSchema = (t: (key: string) => string) =>
     email: z.string().email(t("validation.emailInvalid")),
   });
 
-const createUpdatePasswordSchema = (t: (key: string) => string) =>
+const createUpdatePasswordSchema = (
+  tAccount: (key: string) => string,
+  tValidation: (key: string) => string
+) =>
   z
     .object({
       currentPassword: z
         .string()
-        .min(1, t("validation.currentPasswordRequired")),
-      newPassword: z.string().min(6, t("validation.newPasswordMinLength")),
+        .min(1, tAccount("validation.currentPasswordRequired")),
+      newPassword: createPasswordSchema(tValidation),
       confirmPassword: z
         .string()
-        .min(1, t("validation.confirmPasswordRequired")),
+        .min(1, tAccount("validation.confirmPasswordRequired")),
     })
     .refine((data) => data.newPassword === data.confirmPassword, {
-      message: t("validation.passwordsDontMatch"),
+      message: tAccount("validation.passwordsDontMatch"),
       path: ["confirmPassword"],
     });
 
@@ -59,8 +63,11 @@ export type UseAccountReturn = {
 
 export const useAccount = (): UseAccountReturn => {
   const { t, i18n } = useTranslation("account");
-  const { user: authUser, updateUser } = useAuth(); // eslint-disable-line @typescript-eslint/no-unused-vars
-  const { userOrganization } = useOrganizations({ fetchUserOrganization: true });
+  const { t: tValidation } = useTranslation("validation");
+  const { user: authUser, updateUser, logout } = useAuth();
+  const { userOrganization } = useOrganizations({
+    fetchUserOrganization: true,
+  });
 
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
@@ -74,7 +81,7 @@ export const useAccount = (): UseAccountReturn => {
   });
 
   const passwordForm = useForm<PasswordFormData>({
-    resolver: zodResolver(createUpdatePasswordSchema(t)),
+    resolver: zodResolver(createUpdatePasswordSchema(t, tValidation)),
     defaultValues: {
       currentPassword: "",
       newPassword: "",
@@ -133,10 +140,8 @@ export const useAccount = (): UseAccountReturn => {
         return;
       }
 
-      await userService.updateUser({
-        id: authUser.id,
-        data: cleanUpdateData,
-      });
+      const updatedUser = await userService.updateMyProfile(cleanUpdateData);
+      updateUser(updatedUser);
     } catch (error) {
       console.error("Error updating profile:", error);
       throw error;
@@ -150,9 +155,18 @@ export const useAccount = (): UseAccountReturn => {
 
     setIsUpdatingPassword(true);
     try {
+      await userService.changePassword({
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      });
+
       resetPasswordForm();
+
+      setTimeout(() => {
+        logout();
+      }, 1500);
     } catch (error) {
-      console.error("Error updating password:", error);
+      console.error("[useAccount] Error updating password:", error);
       throw error;
     } finally {
       setIsUpdatingPassword(false);

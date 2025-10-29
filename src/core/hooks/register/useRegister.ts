@@ -33,6 +33,7 @@ export type UseRegisterReturn = {
 
 export const useRegister = (): UseRegisterReturn => {
   const { t } = useTranslation("register");
+  const { t: tValidation } = useTranslation("validation");
   const router = useRouter();
   const { register: registerUser } = useAuth();
   const { getFormattedError } = useErrorHandler();
@@ -46,7 +47,7 @@ export const useRegister = (): UseRegisterReturn => {
   );
 
   const registerForm = useForm<RegisterFormData>({
-    resolver: zodResolver(createRegisterSchema(t)),
+    resolver: zodResolver(createRegisterSchema(t, tValidation)),
     defaultValues: {
       username: "",
       email: "",
