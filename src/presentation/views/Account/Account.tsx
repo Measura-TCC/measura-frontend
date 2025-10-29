@@ -58,6 +58,7 @@ export const AccountView: React.FC = () => {
       await updateProfile(data);
     } catch (error) {
       console.error("Profile update error:", error);
+      throw error;
     }
   };
 
@@ -66,6 +67,7 @@ export const AccountView: React.FC = () => {
       await updatePassword(data);
     } catch (error) {
       console.error("Password update error:", error);
+      throw error;
     }
   };
 

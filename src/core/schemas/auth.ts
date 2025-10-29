@@ -10,30 +10,33 @@ export enum UserRole {
 export const createPasswordSchema = (t: (key: string) => string) =>
   z
     .string()
-    .min(8, t("validation.password.minLength"))
-    .max(128, t("validation.password.maxLength"))
-    .regex(/[A-Z]/, t("validation.password.uppercase"))
-    .regex(/[a-z]/, t("validation.password.lowercase"))
-    .regex(/\d/, t("validation.password.number"))
-    .regex(/[@$!%*?&]/, t("validation.password.special"));
+    .min(8, t("password.minLength"))
+    .max(128, t("password.maxLength"))
+    .regex(/[A-Z]/, t("password.uppercase"))
+    .regex(/[a-z]/, t("password.lowercase"))
+    .regex(/\d/, t("password.number"))
+    .regex(/[@$!%*?&]/, t("password.special"));
 
-export const createRegisterSchema = (t: (key: string) => string) =>
+export const createRegisterSchema = (
+  tRegister: (key: string) => string,
+  tValidation: (key: string) => string
+) =>
   z
     .object({
       username: z
         .string()
-        .min(3, t("validation.username.minLength"))
-        .max(100, t("validation.username.maxLength"))
-        .regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/, t("validation.username.pattern")),
-      email: z.string().email(t("validation.email.invalid")),
-      password: createPasswordSchema(t),
+        .min(3, tValidation("username.minLength"))
+        .max(100, tValidation("username.maxLength"))
+        .regex(/^[a-zA-Z]+(\s[a-zA-Z]+)*$/, tValidation("username.pattern")),
+      email: z.string().email(tValidation("email.invalid")),
+      password: createPasswordSchema(tValidation),
       role: z.enum([UserRole.PROJECT_MANAGER, UserRole.MEASUREMENT_ANALYST]),
       confirmPassword: z
         .string()
-        .min(1, t("validation.confirmPassword.required")),
+        .min(1, tValidation("confirmPassword.required")),
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: t("validation.confirmPassword.mismatch"),
+      message: tValidation("confirmPassword.mismatch"),
       path: ["confirmPassword"],
     });
 
@@ -72,7 +75,7 @@ export const createForgotPasswordSchema = (t: (key: string) => string) =>
 
 // Create default schemas with dummy translation function for types
 const dummyT = (key: string) => key;
-export const registerSchema = createRegisterSchema(dummyT);
+export const registerSchema = createRegisterSchema(dummyT, dummyT);
 export const loginSchema = createLoginSchema(dummyT);
 export const passwordResetRequestSchema = createPasswordResetRequestSchema(dummyT);
 export const passwordResetSchema = createPasswordResetSchema(dummyT);

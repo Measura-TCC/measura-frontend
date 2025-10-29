@@ -14,6 +14,7 @@ import {
   CheckIcon,
   EyeIcon,
   EyeOffIcon,
+  ExclamationIcon,
 } from "@/presentation/assets/icons";
 import type { PasswordFormData } from "@/core/types";
 
@@ -34,6 +35,7 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({
 }) => {
   const { t } = useTranslation("account");
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [updateError, setUpdateError] = useState<string | null>(null);
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
@@ -43,12 +45,43 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({
   const { register, handleSubmit } = passwordForm;
 
   const handlePasswordSubmit = async (data: PasswordFormData) => {
+    setUpdateError(null);
+    setUpdateSuccess(false);
     try {
       await onUpdatePassword(data);
       setUpdateSuccess(true);
       setTimeout(() => setUpdateSuccess(false), 3000);
-    } catch (error) {
+    } catch (err) {
+      const error = err as { response?: { status: number; data?: { message?: string | string[] } } };
       console.error("Error updating password:", error);
+
+      const errorMessage = error.response?.data?.message;
+
+      if (error.response?.status === 401) {
+        setUpdateError(t("security.currentPasswordIncorrect"));
+      } else if (error.response?.status === 400) {
+        if (errorMessage?.includes("OAuth")) {
+          setUpdateError(t("security.oauthAccountError"));
+        } else if (errorMessage?.includes("different")) {
+          setUpdateError(t("security.samePasswordError"));
+        } else {
+          setUpdateError(
+            Array.isArray(errorMessage)
+              ? errorMessage.join(", ")
+              : errorMessage || t("security.updateError")
+          );
+        }
+      } else if (error.response?.status === 404) {
+        setUpdateError("Password change is not available. Please contact support.");
+      } else if (errorMessage) {
+        setUpdateError(
+          Array.isArray(errorMessage)
+            ? errorMessage.join(", ")
+            : errorMessage
+        );
+      } else {
+        setUpdateError(t("security.updateError"));
+      }
     }
   };
 
@@ -70,6 +103,16 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({
           <p className="text-sm text-muted">{t("security.description")}</p>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="rounded-md bg-yellow-50 border border-yellow-200 p-4 mb-4">
+            <div className="flex">
+              <ExclamationIcon className="w-5 h-5 text-yellow-600 mt-0.5 mr-3 flex-shrink-0" />
+              <div className="text-sm text-yellow-800">
+                <p className="font-medium mb-1">{t("security.warningTitle")}</p>
+                <p>{t("security.warningMessage")}</p>
+              </div>
+            </div>
+          </div>
+
           <form
             onSubmit={handleSubmit(handlePasswordSubmit)}
             className="space-y-4"
@@ -108,6 +151,8 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({
                 </p>
               )}
             </div>
+
+            <div className="border-t border-border my-6"></div>
 
             <div className="space-y-2">
               <label
@@ -190,6 +235,12 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({
                     {t("security.updateSuccess")}
                   </p>
                 </div>
+              </div>
+            )}
+
+            {updateError && (
+              <div className="rounded-md bg-red-50 border border-red-200 p-4">
+                <p className="text-sm text-red-700">{updateError}</p>
               </div>
             )}
 

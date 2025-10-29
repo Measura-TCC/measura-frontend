@@ -98,10 +98,20 @@ measuraApi.interceptors.response.use(
       originalRequest?.url?.includes("/auth/refresh") ||
       originalRequest?.url?.includes("/auth/refresh-session");
 
+    // Password change endpoint returns 401 for wrong current password
+    // Check the error message to distinguish from expired token
+    const isPasswordChangeEndpoint =
+      originalRequest?.url?.includes("/users/me/change-password");
+    const errorMessage = (error.response?.data as { message?: string })?.message;
+    const isWrongPasswordError =
+      isPasswordChangeEndpoint &&
+      errorMessage?.includes("Current password is incorrect");
+
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !isAuthEndpoint
+      !isAuthEndpoint &&
+      !isWrongPasswordError
     ) {
       originalRequest._retry = true;
 

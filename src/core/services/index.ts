@@ -10,6 +10,8 @@ export type {
   UserProfile,
   CreateUserData,
   UpdateUserData,
+  UpdateMyProfileData,
+  ChangePasswordData,
 } from "./userService";
 
 export {

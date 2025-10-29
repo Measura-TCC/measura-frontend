@@ -15,6 +15,10 @@ export interface UpdateProfileRequest {
   email?: string;
 }
 
+export interface UpdatePasswordPayload {
+  password: string;
+}
+
 export interface UpdatePasswordRequest {
   currentPassword: string;
   newPassword: string;

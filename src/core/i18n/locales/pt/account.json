@@ -12,7 +12,9 @@
     "preferences": "Preferências"
   },
   "profile": {
-    "title": "Informações do Perfil"
+    "title": "Informações do Perfil",
+    "usernameAlreadyExists": "Este nome de usuário já está em uso. Por favor, escolha outro.",
+    "updateError": "Erro ao atualizar perfil. Tente novamente."
   },
   "form": {
     "usernameLabel": "Nome de Usuário",
@@ -31,7 +33,7 @@
     "newPasswordPlaceholder": "Digite sua nova senha",
     "confirmPasswordLabel": "Confirmar Nova Senha",
     "confirmPasswordPlaceholder": "Confirme sua nova senha",
-    "passwordRequirements": "A senha deve ter pelo menos 6 caracteres"
+    "passwordRequirements": "8-128 caracteres com maiúscula, minúscula, número e caractere especial (@$!%*?&)"
   },
   "statistics": {
     "title": "Status da Conta",
@@ -44,9 +46,15 @@
   "security": {
     "title": "Alterar Senha",
     "description": "Atualize sua senha para manter sua conta segura",
+    "warningTitle": "Importante",
+    "warningMessage": "Após alterar sua senha, você será desconectado e precisará fazer login novamente com sua nova senha.",
     "updateButton": "Atualizar Senha",
     "updating": "Atualizando...",
-    "updateSuccess": "Senha atualizada com sucesso"
+    "updateSuccess": "Senha atualizada com sucesso. Desconectando...",
+    "currentPasswordIncorrect": "Senha atual está incorreta. Tente novamente.",
+    "samePasswordError": "A nova senha deve ser diferente da senha atual.",
+    "oauthAccountError": "Alteração de senha não está disponível para contas OAuth.",
+    "updateError": "Falha ao atualizar senha. Tente novamente."
   },
   "preferences": {
     "title": "Idioma e Região",
@@ -64,7 +72,6 @@
     "usernameMinLength": "Nome de usuário deve ter pelo menos 3 caracteres",
     "emailInvalid": "Endereço de email inválido",
     "currentPasswordRequired": "Senha atual é obrigatória",
-    "newPasswordMinLength": "Senha deve ter pelo menos 6 caracteres",
     "confirmPasswordRequired": "Por favor, confirme sua senha",
     "passwordsDontMatch": "As senhas não coincidem"
   }
