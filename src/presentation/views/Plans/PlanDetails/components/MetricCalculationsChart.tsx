@@ -123,12 +123,16 @@ export const MetricCalculationsChart: React.FC<
     if (cycleId === "all") {
       setSelectedCycleIds(["all"]);
     } else {
-      const newIds = selectedCycleIds.filter((id) => id !== "all");
-      if (newIds.includes(cycleId)) {
-        const filtered = newIds.filter((id) => id !== cycleId);
+      // If "all" is selected, unselect "all" and select only this cycle
+      if (selectedCycleIds.includes("all")) {
+        setSelectedCycleIds([cycleId]);
+      } else if (selectedCycleIds.includes(cycleId)) {
+        // If this cycle is already selected, unselect it
+        const filtered = selectedCycleIds.filter((id) => id !== cycleId);
         setSelectedCycleIds(filtered.length === 0 ? ["all"] : filtered);
       } else {
-        setSelectedCycleIds([...newIds, cycleId]);
+        // Add this cycle to selection
+        setSelectedCycleIds([...selectedCycleIds, cycleId]);
       }
     }
   };
