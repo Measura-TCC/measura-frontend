@@ -112,7 +112,7 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
           isOpen && "border-primary ring-2 ring-primary/20"
         )}
       >
-        <span className={cn("text-sm", !selectedItem && "text-muted")}>
+        <span className={cn("text-xs sm:text-sm break-words", !selectedItem && "text-muted")}>
           {loading ? "Loading..." : selectedItem?.label || placeholder}
         </span>
         <div className="flex items-center gap-1">
@@ -166,7 +166,7 @@ export const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
                   key={item.id}
                   onClick={() => handleSelect(item)}
                   className={cn(
-                    "px-3 py-2 text-sm cursor-pointer transition-colors",
+                    "px-3 py-2 text-xs sm:text-sm cursor-pointer transition-colors break-words",
                     "hover:bg-background-secondary",
                     item.disabled && "opacity-50 cursor-not-allowed",
                     item.value === value &&
