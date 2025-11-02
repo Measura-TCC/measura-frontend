@@ -17,6 +17,7 @@ interface PlanHeaderProps {
   isEditing: boolean;
   isUpdatingPlan: boolean;
   isExporting: boolean;
+  activeTab?: 'details' | 'monitoring';
   onEditToggle: () => void;
   onSaveEdit: () => void;
   onCancelEdit: () => void;
@@ -31,6 +32,7 @@ export const PlanHeader: React.FC<PlanHeaderProps> = ({
   isEditing,
   isUpdatingPlan,
   isExporting,
+  activeTab = 'details',
   onEditToggle,
   onSaveEdit,
   onCancelEdit,
@@ -89,14 +91,16 @@ export const PlanHeader: React.FC<PlanHeaderProps> = ({
               <span className="hidden sm:inline">{t("export.exportDocx")}</span>
               <span className="sm:hidden">DOCX</span>
             </Button>
-            <Button
-              variant="primary"
-              onClick={onEditToggle}
-              size="sm"
-            >
-              <GearIcon className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">{t("edit")}</span>
-            </Button>
+            {activeTab === 'details' && (
+              <Button
+                variant="primary"
+                onClick={onEditToggle}
+                size="sm"
+              >
+                <GearIcon className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">{t("edit")}</span>
+              </Button>
+            )}
             <Button
               variant="danger"
               onClick={onDeleteClick || onDelete}

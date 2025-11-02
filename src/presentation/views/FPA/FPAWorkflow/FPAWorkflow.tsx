@@ -360,12 +360,14 @@ export const FPAWorkflow = () => {
 
     return (
       <div className="space-y-8">
-        <Stepper
-          steps={steps}
-          currentStep={currentStep}
-          onStepClick={handleStepClick}
-          canNavigateTo={(step) => canNavigateToStep(step as Step)}
-        />
+        {!isCalculationComplete && (
+          <Stepper
+            steps={steps}
+            currentStep={currentStep}
+            onStepClick={handleStepClick}
+            canNavigateTo={(step) => canNavigateToStep(step as Step)}
+          />
+        )}
 
         {currentStep === 1 && (
           <div className="bg-background rounded-lg border border-border p-6">

@@ -167,6 +167,7 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
           isEditing={false}
           isUpdatingPlan={false}
           isExporting={false}
+          activeTab={activeTab}
           onEditToggle={() => {}}
           onSaveEdit={() => Promise.resolve()}
           onCancelEdit={() => {}}
@@ -197,6 +198,7 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
         isEditing={isEditing}
         isUpdatingPlan={isUpdatingPlan}
         isExporting={isExporting}
+        activeTab={activeTab}
         onEditToggle={handleEditToggle}
         onSaveEdit={handleSaveEdit}
         onCancelEdit={handleCancelEdit}
@@ -259,7 +261,13 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
           { id: 'monitoring', label: t("monitoring.title") }
         ]}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => {
+          // Exit edit mode when switching away from details tab
+          if (isEditing && tab !== 'details') {
+            handleCancelEdit();
+          }
+          setActiveTab(tab);
+        }}
       />
 
       {/* Main Content with responsive grid */}

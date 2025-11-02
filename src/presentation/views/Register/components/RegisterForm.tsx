@@ -203,9 +203,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 type="radio"
                 value={option.value}
                 disabled={isRegistering}
-                className="h-4 w-4 text-primary focus:ring-primary border-gray-300"
+                className="h-4 w-4 border-gray-300 cursor-pointer"
+                style={{ accentColor: 'var(--primary)' }}
               />
-              <label htmlFor={option.value} className="text-sm text-default">
+              <label htmlFor={option.value} className="text-sm text-default cursor-pointer">
                 {option.label}
               </label>
             </div>

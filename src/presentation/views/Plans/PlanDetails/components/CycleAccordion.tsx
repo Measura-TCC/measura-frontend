@@ -59,7 +59,12 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
   }, [cycleData.measurements]);
 
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('pt-BR');
+    // Extract the date portion from ISO string to avoid timezone conversion issues
+    const d = new Date(date);
+    const year = d.getUTCFullYear();
+    const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    return `${day}/${month}/${year}`;
   };
 
   const formatDateTime = (date: string) => {
@@ -276,7 +281,6 @@ export const CycleAccordion: React.FC<CycleAccordionProps> = ({
         cycle={cycleData.cycle}
         planId={planId}
         hasMeasurements={cycleData.measurements.length > 0}
-        measurementCount={cycleData.measurementCount}
       />
 
       {editingMeasurement && (
