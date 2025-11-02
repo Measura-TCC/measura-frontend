@@ -120,25 +120,57 @@ export const MetricCalculationsChart: React.FC<
   }, [userOrganization?._id, planId, metricsWithFormulas, nonEmptyCyclesData]);
 
   const handleCycleToggle = (cycleId: string) => {
+    console.log("handleCycleToggle called", {
+      cycleId,
+      currentSelection: selectedCycleIds,
+    });
+
     if (cycleId === "all") {
       setSelectedCycleIds(["all"]);
     } else {
-      // If "all" is selected, unselect "all" and select only this cycle
+      // If "all" is selected, unselect "all" and select all cycles except this one
       if (selectedCycleIds.includes("all")) {
-        setSelectedCycleIds([cycleId]);
+        console.log(
+          "All is selected, unselecting this cycle from all:",
+          cycleId
+        );
+        const allCycleIds = nonEmptyCyclesData
+          .map((cd) => cd.cycle._id)
+          .filter((id) => id !== cycleId);
+        if (allCycleIds.length > 0) {
+          setSelectedCycleIds(allCycleIds);
+        }
+        // If it would be empty, do nothing
       } else if (selectedCycleIds.includes(cycleId)) {
-        // If this cycle is already selected, unselect it
+        // If this cycle is already selected, unselect it (only if not the last one)
+        console.log("Cycle is already selected, attempting to unselect");
         const filtered = selectedCycleIds.filter((id) => id !== cycleId);
-        setSelectedCycleIds(filtered.length === 0 ? ["all"] : filtered);
+        if (filtered.length > 0) {
+          console.log("Unselecting, new selection:", filtered);
+          setSelectedCycleIds(filtered);
+        } else {
+          console.log("Cannot unselect - last one remaining");
+        }
+        // If it would be empty, do nothing (keep at least one selected)
       } else {
         // Add this cycle to selection
-        setSelectedCycleIds([...selectedCycleIds, cycleId]);
+        console.log("Adding cycle to selection:", cycleId);
+        const newSelection = [...selectedCycleIds, cycleId];
+        // Check if all cycles are now selected
+        const allCycleIds = nonEmptyCyclesData.map((cd) => cd.cycle._id);
+        if (newSelection.length === allCycleIds.length) {
+          setSelectedCycleIds(["all"]);
+        } else {
+          setSelectedCycleIds(newSelection);
+        }
       }
     }
   };
 
   const isAllSelected = selectedCycleIds.includes("all");
   const isValidSelection = isAllSelected || selectedCycleIds.length >= 2;
+  const isOnlyOneCycleSelected =
+    !isAllSelected && selectedCycleIds.length === 1;
 
   const filteredCyclesData = useMemo(() => {
     if (isAllSelected) {
@@ -271,20 +303,30 @@ export const MetricCalculationsChart: React.FC<
                   <div className="border-t border-gray-200 dark:border-gray-700"></div>
                   {cyclesData.map((cd) => {
                     const isEmpty = cd.measurements.length === 0;
+                    const isCycleSelected = selectedCycleIds.includes(
+                      cd.cycle._id
+                    );
+                    const isLastSelected =
+                      isOnlyOneCycleSelected && isCycleSelected;
+                    const isChecked = isAllSelected || isCycleSelected;
                     return (
                       <div key={cd.cycle._id} className="relative group">
                         <label
                           className={`flex items-center px-3 py-2 ${
-                            !isEmpty ? "hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer" : "cursor-not-allowed opacity-50"
+                            !isEmpty && !isLastSelected
+                              ? "hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                              : "cursor-not-allowed opacity-50"
                           }`}
                         >
                           <input
                             type="checkbox"
-                            checked={
-                              isAllSelected || selectedCycleIds.includes(cd.cycle._id)
+                            checked={isChecked}
+                            onChange={() =>
+                              !isEmpty &&
+                              !isLastSelected &&
+                              handleCycleToggle(cd.cycle._id)
                             }
-                            onChange={() => !isEmpty && handleCycleToggle(cd.cycle._id)}
-                            disabled={isEmpty}
+                            disabled={isEmpty || isLastSelected}
                             className="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             style={{ accentColor: "var(--primary)" }}
                           />
@@ -293,8 +335,14 @@ export const MetricCalculationsChart: React.FC<
                           </span>
                         </label>
                         {isEmpty && (
-                          <div className="absolute left-0 top-full mt-1 hidden group-hover:block w-64 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded py-2 px-3 z-10 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200">
+                          <div className="absolute left-0 top-full mt-1 w-48 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded py-2 px-3 z-10 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 ease-in-out">
                             {t("monitoring.cycleHasNoMeasurements")}
+                            <div className="absolute bottom-full left-4 -mb-1 border-4 border-transparent border-b-gray-900 dark:border-b-gray-700"></div>
+                          </div>
+                        )}
+                        {isLastSelected && (
+                          <div className="absolute left-0 top-full mt-1 w-48 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded py-2 px-3 z-10 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 ease-in-out">
+                            {t("monitoring.cannotUnselectLastCycle")}
                             <div className="absolute bottom-full left-4 -mb-1 border-4 border-transparent border-b-gray-900 dark:border-b-gray-700"></div>
                           </div>
                         )}

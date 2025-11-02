@@ -609,6 +609,7 @@
     "cyclesSelected": "{{count}} cycles selected",
     "selectAtLeastTwoCycles": "Select at least 2 cycles to compare",
     "cycleHasNoMeasurements": "This cycle has no measurements",
+    "cannotUnselectLastCycle": "At least one cycle must remain selected",
     "allMetrics": "All Metrics",
     "metricsOverview": "Metrics Overview",
     "measurements": "measurements",

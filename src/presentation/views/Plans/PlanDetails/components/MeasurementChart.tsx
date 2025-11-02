@@ -82,24 +82,47 @@ export const MeasurementChart: React.FC<MeasurementChartProps> = ({
   }
 
   const handleCycleToggle = (cycleId: string) => {
+    console.log('[MeasurementChart] handleCycleToggle called', { cycleId, currentSelection: selectedCycleIds });
+
     if (cycleId === "all") {
       setSelectedCycleIds(["all"]);
     } else {
-      // If "all" is selected, unselect "all" and select only this cycle
+      // If "all" is selected, unselect "all" and select all cycles except this one
       if (selectedCycleIds.includes("all")) {
-        setSelectedCycleIds([cycleId]);
+        console.log('[MeasurementChart] All is selected, unselecting this cycle from all:', cycleId);
+        const allCycleIds = uniqueCycles.map(c => c.id).filter(id => id !== cycleId);
+        if (allCycleIds.length > 0) {
+          setSelectedCycleIds(allCycleIds);
+        }
+        // If it would be empty, do nothing
       } else if (selectedCycleIds.includes(cycleId)) {
-        // If this cycle is already selected, unselect it
+        // If this cycle is already selected, unselect it (only if not the last one)
+        console.log('[MeasurementChart] Cycle is already selected, attempting to unselect');
         const filtered = selectedCycleIds.filter((id) => id !== cycleId);
-        setSelectedCycleIds(filtered.length === 0 ? ["all"] : filtered);
+        if (filtered.length > 0) {
+          console.log('[MeasurementChart] Unselecting, new selection:', filtered);
+          setSelectedCycleIds(filtered);
+        } else {
+          console.log('[MeasurementChart] Cannot unselect - last one remaining');
+        }
+        // If it would be empty, do nothing (keep at least one selected)
       } else {
         // Add this cycle to selection
-        setSelectedCycleIds([...selectedCycleIds, cycleId]);
+        console.log('[MeasurementChart] Adding cycle to selection:', cycleId);
+        const newSelection = [...selectedCycleIds, cycleId];
+        // Check if all cycles are now selected
+        const allCycleIds = uniqueCycles.map(c => c.id);
+        if (newSelection.length === allCycleIds.length) {
+          setSelectedCycleIds(["all"]);
+        } else {
+          setSelectedCycleIds(newSelection);
+        }
       }
     }
   };
 
   const isAllSelected = selectedCycleIds.includes("all");
+  const isOnlyOneCycleSelected = !isAllSelected && selectedCycleIds.length === 1;
 
   // Filter data by selected metric and cycle
   const filteredChartData = chartData.filter((d) => {
@@ -186,23 +209,38 @@ export const MeasurementChart: React.FC<MeasurementChartProps> = ({
                   </span>
                 </label>
                 <div className="border-t border-gray-200 dark:border-gray-700"></div>
-                {uniqueCycles.map((cycle) => (
-                  <label
-                    key={cycle.id}
-                    className="flex items-center px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isAllSelected || selectedCycleIds.includes(cycle.id)}
-                      onChange={() => handleCycleToggle(cycle.id)}
-                      className="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer"
-                      style={{ accentColor: "var(--primary)" }}
-                    />
-                    <span className="ml-2 text-sm text-gray-900 dark:text-gray-100">
-                      {cycle.name}
-                    </span>
-                  </label>
-                ))}
+                {uniqueCycles.map((cycle) => {
+                  const isCycleSelected = selectedCycleIds.includes(cycle.id);
+                  const isLastSelected = isOnlyOneCycleSelected && isCycleSelected;
+                  const isChecked = isAllSelected || isCycleSelected;
+                  return (
+                    <div key={cycle.id} className="relative group">
+                      <label
+                        className={`flex items-center px-3 py-2 ${
+                          !isLastSelected ? "hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer" : "cursor-not-allowed opacity-50"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => !isLastSelected && handleCycleToggle(cycle.id)}
+                          disabled={isLastSelected}
+                          className="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                          style={{ accentColor: "var(--primary)" }}
+                        />
+                        <span className="ml-2 text-sm text-gray-900 dark:text-gray-100">
+                          {cycle.name}
+                        </span>
+                      </label>
+                      {isLastSelected && (
+                        <div className="absolute left-0 top-full mt-1 w-48 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded py-2 px-3 z-10 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200 ease-in-out">
+                          {t("monitoring.cannotUnselectLastCycle")}
+                          <div className="absolute bottom-full left-4 -mb-1 border-4 border-transparent border-b-gray-900 dark:border-b-gray-700"></div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
