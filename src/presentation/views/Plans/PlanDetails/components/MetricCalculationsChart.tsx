@@ -120,20 +120,11 @@ export const MetricCalculationsChart: React.FC<
   }, [userOrganization?._id, planId, metricsWithFormulas, nonEmptyCyclesData]);
 
   const handleCycleToggle = (cycleId: string) => {
-    console.log("handleCycleToggle called", {
-      cycleId,
-      currentSelection: selectedCycleIds,
-    });
-
     if (cycleId === "all") {
       setSelectedCycleIds(["all"]);
     } else {
       // If "all" is selected, unselect "all" and select all cycles except this one
       if (selectedCycleIds.includes("all")) {
-        console.log(
-          "All is selected, unselecting this cycle from all:",
-          cycleId
-        );
         const allCycleIds = nonEmptyCyclesData
           .map((cd) => cd.cycle._id)
           .filter((id) => id !== cycleId);
@@ -143,18 +134,13 @@ export const MetricCalculationsChart: React.FC<
         // If it would be empty, do nothing
       } else if (selectedCycleIds.includes(cycleId)) {
         // If this cycle is already selected, unselect it (only if not the last one)
-        console.log("Cycle is already selected, attempting to unselect");
         const filtered = selectedCycleIds.filter((id) => id !== cycleId);
         if (filtered.length > 0) {
-          console.log("Unselecting, new selection:", filtered);
           setSelectedCycleIds(filtered);
-        } else {
-          console.log("Cannot unselect - last one remaining");
         }
         // If it would be empty, do nothing (keep at least one selected)
       } else {
         // Add this cycle to selection
-        console.log("Adding cycle to selection:", cycleId);
         const newSelection = [...selectedCycleIds, cycleId];
         // Check if all cycles are now selected
         const allCycleIds = nonEmptyCyclesData.map((cd) => cd.cycle._id);

@@ -15,7 +15,7 @@ export const ExportDropdown = ({
   estimateId,
   estimateName,
 }: ExportDropdownProps) => {
-  const { t } = useTranslation("fpa");
+  const { t, i18n } = useTranslation("fpa");
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { generateDetailedReport, generateSummaryReport, exportEstimate } =
@@ -31,6 +31,7 @@ export const ExportDropdown = ({
     try {
       const options: ReportOptions = {
         format,
+        locale: i18n.language,
         includeComponents: true,
         includeGSC: true,
         includeCalculations: true,
@@ -44,7 +45,7 @@ export const ExportDropdown = ({
           await generateSummaryReport(estimateId, estimateName, options);
           break;
         case "export":
-          await exportEstimate(estimateId, estimateName, format);
+          await exportEstimate(estimateId, estimateName, format, i18n.language);
           break;
       }
     } catch (error) {

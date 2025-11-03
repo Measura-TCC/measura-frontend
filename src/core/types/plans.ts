@@ -127,6 +127,7 @@ export interface UpdateMeasurementPlanDto {
 
 export interface ExportMeasurementPlanDto {
   format: ExportFormat;
+  locale?: string;
   options?: {
     includeDetails?: boolean;
     includeMeasurements?: boolean;

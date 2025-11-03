@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useOrganizations } from "@/core/hooks/organizations";
 import { measurementPlanService } from "@/core/services/measurementPlanService";
 import { ExportFormat } from "@/core/types/plans";
@@ -13,6 +14,7 @@ interface UseMeasurementPlanExportParams {
 }
 
 export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams) => {
+  const { i18n } = useTranslation();
   const { userOrganization } = useOrganizations({ fetchUserOrganization: true });
   const { planId } = params;
   const [isExporting, setIsExporting] = useState(false);
@@ -30,6 +32,7 @@ export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams)
       try {
         const exportData: ExportMeasurementPlanDto = {
           format,
+          locale: i18n.language,
           options: {
             includeDetails: true,
             includeMeasurements: true,
@@ -53,7 +56,7 @@ export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams)
         setIsExporting(false);
       }
     },
-    [userOrganization, planId]
+    [userOrganization, planId, i18n.language]
   );
 
   const exportToPdf = useCallback(

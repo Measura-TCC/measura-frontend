@@ -82,14 +82,11 @@ export const MeasurementChart: React.FC<MeasurementChartProps> = ({
   }
 
   const handleCycleToggle = (cycleId: string) => {
-    console.log('[MeasurementChart] handleCycleToggle called', { cycleId, currentSelection: selectedCycleIds });
-
     if (cycleId === "all") {
       setSelectedCycleIds(["all"]);
     } else {
       // If "all" is selected, unselect "all" and select all cycles except this one
       if (selectedCycleIds.includes("all")) {
-        console.log('[MeasurementChart] All is selected, unselecting this cycle from all:', cycleId);
         const allCycleIds = uniqueCycles.map(c => c.id).filter(id => id !== cycleId);
         if (allCycleIds.length > 0) {
           setSelectedCycleIds(allCycleIds);
@@ -97,18 +94,13 @@ export const MeasurementChart: React.FC<MeasurementChartProps> = ({
         // If it would be empty, do nothing
       } else if (selectedCycleIds.includes(cycleId)) {
         // If this cycle is already selected, unselect it (only if not the last one)
-        console.log('[MeasurementChart] Cycle is already selected, attempting to unselect');
         const filtered = selectedCycleIds.filter((id) => id !== cycleId);
         if (filtered.length > 0) {
-          console.log('[MeasurementChart] Unselecting, new selection:', filtered);
           setSelectedCycleIds(filtered);
-        } else {
-          console.log('[MeasurementChart] Cannot unselect - last one remaining');
         }
         // If it would be empty, do nothing (keep at least one selected)
       } else {
         // Add this cycle to selection
-        console.log('[MeasurementChart] Adding cycle to selection:', cycleId);
         const newSelection = [...selectedCycleIds, cycleId];
         // Check if all cycles are now selected
         const allCycleIds = uniqueCycles.map(c => c.id);
