@@ -4,6 +4,9 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Header, Sidebar } from "@/presentation/components/layout";
 import { useAuth } from "@/core/hooks/auth/useAuth";
+import { SpinnerIcon } from "@/presentation/assets/icons";
+import measuraLogo from "@/presentation/assets/images/measura-logo.png";
+import Image from "next/image";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -26,9 +29,17 @@ const AppLayout = ({ children }: AppLayoutProps) => {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Loading Measura</h2>
-          <p className="text-gray-600">Redirecting You...</p>
+        <div className="text-center space-y-6">
+          <div className="flex justify-center mb-4">
+            <Image
+              src={measuraLogo}
+              alt="Measura Logo"
+              width={200}
+              height={50}
+              priority
+            />
+          </div>
+          <SpinnerIcon className="w-12 h-12 mx-auto animate-spin text-primary" />
         </div>
       </div>
     );

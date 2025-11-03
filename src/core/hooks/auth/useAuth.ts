@@ -3,6 +3,8 @@ import { persist } from "zustand/middleware";
 import { STORAGE_KEYS } from "@/core/utils/constants";
 import { authService } from "@/core/services/authService";
 import { useOrganizationStore } from "../organizations/useOrganizationStore";
+import { useFPAWorkflowStore } from "../fpa/useFPAWorkflowStore";
+import { useRequirementsStore } from "../fpa/useRequirementsStore";
 import type { AuthResponse } from "@/core/services/authService";
 import type {
   LoginFormData,
@@ -138,6 +140,13 @@ export const useAuth = () => {
     // Clear organization data on logout
     const orgStore = useOrganizationStore.getState();
     orgStore.clearOrganization();
+
+    // Clear FPA workflow and requirements data on logout
+    const fpaWorkflowStore = useFPAWorkflowStore.getState();
+    fpaWorkflowStore.resetWorkflow();
+
+    const requirementsStore = useRequirementsStore.getState();
+    requirementsStore.resetRequirements();
 
     authService.logout().catch((error) => {
       console.debug("Logout service call failed:", error);
