@@ -482,7 +482,19 @@
     "selectFormat": "Export Plan",
     "exporting": "Exporting...",
     "success": "{{format}} exported successfully!",
-    "error": "Failed to export. Please try again."
+    "error": "Failed to export. Please try again.",
+    "exportOptions": "Export Options",
+    "includeInExport": "Include in Export",
+    "includeDetails": "Include Details",
+    "includeMeasurements": "Include Measurements",
+    "includeAnalysis": "Include Analysis",
+    "includeCycles": "Include Cycles",
+    "includeMonitoring": "Include Monitoring",
+    "includeCalculations": "Include Calculations",
+    "includeCharts": "Include Charts",
+    "chartsRequireCalculations": "Charts require calculations",
+    "export": "Export",
+    "title": "Export"
   },
   "planDetails": {
     "back": "Back to Plans",

@@ -21,7 +21,7 @@ interface PlanHeaderProps {
   onEditToggle: () => void;
   onSaveEdit: () => void;
   onCancelEdit: () => void;
-  onExport: (format: ExportFormat) => void;
+  onExport: () => void;
   onDelete: () => void;
   onDeleteClick?: () => void;
 }
@@ -73,23 +73,13 @@ export const PlanHeader: React.FC<PlanHeaderProps> = ({
           <>
             <Button
               variant="ghost"
-              onClick={() => onExport(ExportFormat.PDF)}
+              onClick={onExport}
               disabled={isExporting}
               size="sm"
             >
               <DownloadIcon className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">{t("export.exportPdf")}</span>
-              <span className="sm:hidden">PDF</span>
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => onExport(ExportFormat.DOCX)}
-              disabled={isExporting}
-              size="sm"
-            >
-              <DownloadIcon className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">{t("export.exportDocx")}</span>
-              <span className="sm:hidden">DOCX</span>
+              <span className="hidden sm:inline">{t("export.title")}</span>
+              <span className="sm:hidden">{t("export.export")}</span>
             </Button>
             {activeTab === 'details' && (
               <Button

@@ -7,16 +7,18 @@ import { API_BASE_URL } from "@/core/utils/constants";
 import type {
   ExportMeasurementPlanDto,
   ExportResponseDto,
+  ChartImageDto,
 } from "@/core/types/plans";
 
 interface UseMeasurementPlanExportParams {
   planId: string;
+  captureCharts?: () => Promise<ChartImageDto[]>;
 }
 
 export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams) => {
   const { i18n } = useTranslation();
   const { userOrganization } = useOrganizations({ fetchUserOrganization: true });
-  const { planId } = params;
+  const { planId, captureCharts } = params;
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<Error | null>(null);
 
@@ -30,6 +32,18 @@ export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams)
       setExportError(null);
 
       try {
+        // Capture charts if the function is provided and includeCharts is enabled
+        let chartImages: ChartImageDto[] | undefined;
+        if (captureCharts && options?.includeCharts) {
+          try {
+            chartImages = await captureCharts();
+            console.log(`Captured ${chartImages.length} chart images for export`);
+          } catch (error) {
+            console.error("Error capturing charts:", error);
+            // Continue with export even if chart capture fails
+          }
+        }
+
         const exportData: ExportMeasurementPlanDto = {
           format,
           locale: i18n.language,
@@ -39,6 +53,7 @@ export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams)
             includeAnalysis: true,
             ...options,
           },
+          chartImages,
         };
 
         const result = await measurementPlanService.export({
@@ -56,7 +71,7 @@ export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams)
         setIsExporting(false);
       }
     },
-    [userOrganization, planId, i18n.language]
+    [userOrganization, planId, i18n.language, captureCharts]
   );
 
   const exportToPdf = useCallback(
