@@ -84,7 +84,7 @@ export const ExportDropdown = ({
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+          <div className="absolute left-0 sm:right-0 sm:left-auto mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-20">
             <div className="p-2">
               <div className="text-xs font-medium text-gray-500 uppercase tracking-wide px-3 py-2">
                 {t("exportDropdown.reports")}
