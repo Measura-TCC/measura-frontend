@@ -76,7 +76,7 @@ export const CreateOrganizationForm = ({
       const transformedData = {
         ...data,
         objectives: data.objectives
-          ?.filter((obj) => obj.title?.trim())
+          ?.filter((obj) => obj.title?.trim() && obj.title.trim().length >= 10)
           .map((obj) => ({
             title: obj.title.trim(),
             description: obj.title.trim(),
