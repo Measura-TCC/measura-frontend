@@ -65,7 +65,9 @@ export const useAccount = (): UseAccountReturn => {
   const { t, i18n } = useTranslation("account");
   const { t: tValidation } = useTranslation("validation");
   const { user: authUser, updateUser, logout } = useAuth();
-  const { userOrganization } = useOrganizations({ fetchUserOrganization: true });
+  const { userOrganization } = useOrganizations({
+    fetchUserOrganization: true,
+  });
 
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
@@ -157,11 +159,14 @@ export const useAccount = (): UseAccountReturn => {
         currentPassword: data.currentPassword,
         newPassword: data.newPassword,
       });
+
       resetPasswordForm();
+
       setTimeout(() => {
         logout();
       }, 1500);
     } catch (error) {
+      console.error("[useAccount] Error updating password:", error);
       throw error;
     } finally {
       setIsUpdatingPassword(false);
