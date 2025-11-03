@@ -15,6 +15,7 @@ import { ProjectConfigurationForm, type ProjectConfigurationFormRef } from "./co
 import { RequirementImportView } from "./RequirementImport/RequirementImportView";
 import type { EstimateResponse } from "@/core/services/fpa/estimates";
 import { Button, Tabs, Stepper } from "@/presentation/components/primitives";
+import { PlusIcon } from "@/presentation/assets/icons";
 import { useEstimateActions } from "@/core/hooks/fpa/estimates/useEstimate";
 import {
   useFPAWorkflowStore,
@@ -360,12 +361,14 @@ export const FPAWorkflow = () => {
 
     return (
       <div className="space-y-8">
-        <Stepper
-          steps={steps}
-          currentStep={currentStep}
-          onStepClick={handleStepClick}
-          canNavigateTo={(step) => canNavigateToStep(step as Step)}
-        />
+        {!isCalculationComplete && (
+          <Stepper
+            steps={steps}
+            currentStep={currentStep}
+            onStepClick={handleStepClick}
+            canNavigateTo={(step) => canNavigateToStep(step as Step)}
+          />
+        )}
 
         {currentStep === 1 && (
           <div className="bg-background rounded-lg border border-border p-6">
@@ -1002,14 +1005,15 @@ export const FPAWorkflow = () => {
                 <p className="text-secondary mb-6">
                   {t("workflow.completionDescription")}
                 </p>
-                <div className="space-x-4">
-                  <Button onClick={handleCancel} variant="primary" size="md">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button onClick={handleCancel} variant="primary" size="md" className="w-full sm:w-auto">
                     {t("workflow.createNewEstimate")}
                   </Button>
                   <Button
                     onClick={() => setActiveTab("created")}
                     variant="secondary"
                     size="md"
+                    className="w-full sm:w-auto"
                   >
                     {t("workflow.viewAllEstimates")}
                   </Button>
@@ -1024,11 +1028,24 @@ export const FPAWorkflow = () => {
 
   return (
     <div className="mx-auto pb-[20px]">
-      <div className="mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-default">
-          {t("title")}
-        </h1>
-        <p className="text-secondary mt-1">{t("subtitle")}</p>
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-default">
+            {t("title")}
+          </h1>
+          <p className="text-secondary mt-1">{t("subtitle")}</p>
+        </div>
+        {activeTab === "created" && (
+          <Button
+            onClick={() => setActiveTab("new")}
+            variant="primary"
+            size="md"
+            className="w-full sm:w-auto whitespace-nowrap"
+          >
+            <PlusIcon className="h-5 w-5 mr-2" />
+            {t("tabs.newEstimate")}
+          </Button>
+        )}
       </div>
 
       <Tabs

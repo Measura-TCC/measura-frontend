@@ -18,6 +18,7 @@ import {
   Input,
   Stepper,
 } from "@/presentation/components/primitives";
+import { useToast } from "@/core/hooks/common/useToast";
 
 export interface OrganizationWizardProps {
   mode: "create" | "edit";
@@ -48,6 +49,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
   onControls,
 }) => {
   const { t } = useTranslation("organization");
+  const toast = useToast();
   const { createOrganization, updateOrganization, deleteOrganization } =
     useOrganizations();
 
@@ -68,7 +70,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
       () => ({
         name: initialData?.name || "",
         description: initialData?.description || "",
-        website: initialData?.website || "",
+        website: initialData?.website ? initialData.website.replace(/^https?:\/\//, "") : "",
         industry: initialData?.industry || "",
         mission: initialData?.mission || "",
         vision: initialData?.vision || "",
@@ -137,12 +139,50 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
   const onSubmit = async (data: CreateOrganizationData) => {
     setIsSubmitting(true);
     try {
+      // Transform strategicObjectives string to objectives array
+      const objectives = data.strategicObjectives
+        ? data.strategicObjectives
+            .split("\n")
+            .map((s) => s.trim())
+            .filter((title) => title.length >= 10)
+            .map((title) => ({
+              title: title,
+              description: title,
+              priority: "MEDIUM" as const,
+              status: "PLANNING" as const,
+              progress: 0,
+              targetDate: new Date(
+                Date.now() + 365 * 24 * 60 * 60 * 1000
+              ).toISOString(),
+            }))
+        : [];
+
+      // Add https:// prefix to website if not empty
+      const { strategicObjectives, ...restData } = data;
+      const submitData = {
+        ...restData,
+        website: data.website && !data.website.startsWith("http")
+          ? `https://${data.website}`
+          : data.website,
+        objectives
+      };
+
       if (mode === "create") {
-        await createOrganization(data);
+        await createOrganization(submitData);
+        toast.success({ message: t("form.createSuccess") || "Organization created successfully!" });
       } else if (mode === "edit" && initialData?.id) {
-        await updateOrganization({ id: initialData.id, data });
+        await updateOrganization({ id: initialData.id, data: submitData });
+        toast.success({ message: t("form.updateSuccess") || "Organization updated successfully!" });
       }
       onSuccess?.();
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const baseMessage = mode === "create"
+        ? t("form.createError") || "Failed to create organization"
+        : t("form.updateError") || "Failed to update organization";
+      toast.error({
+        message: `${baseMessage}: ${errorMessage}`
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -568,7 +608,7 @@ export const OrganizationWizard: React.FC<OrganizationWizardProps> = ({
               {form.getValues("strategicObjectives") && (
                 <div>
                   <strong>{t("strategicObjectives")}:</strong>{" "}
-                  {form.getValues("strategicObjectives")}
+                  {form.getValues("strategicObjectives")?.split("\n").filter(Boolean).join(", ")}
                 </div>
               )}
             </div>

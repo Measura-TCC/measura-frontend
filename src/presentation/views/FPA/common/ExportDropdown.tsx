@@ -15,7 +15,7 @@ export const ExportDropdown = ({
   estimateId,
   estimateName,
 }: ExportDropdownProps) => {
-  const { t } = useTranslation("fpa");
+  const { t, i18n } = useTranslation("fpa");
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { generateDetailedReport, generateSummaryReport, exportEstimate } =
@@ -31,6 +31,7 @@ export const ExportDropdown = ({
     try {
       const options: ReportOptions = {
         format,
+        locale: i18n.language,
         includeComponents: true,
         includeGSC: true,
         includeCalculations: true,
@@ -44,7 +45,7 @@ export const ExportDropdown = ({
           await generateSummaryReport(estimateId, estimateName, options);
           break;
         case "export":
-          await exportEstimate(estimateId, estimateName, format);
+          await exportEstimate(estimateId, estimateName, format, i18n.language);
           break;
       }
     } catch (error) {
@@ -83,7 +84,7 @@ export const ExportDropdown = ({
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+          <div className="absolute left-0 sm:right-0 sm:left-auto mt-2 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-20">
             <div className="p-2">
               <div className="text-xs font-medium text-gray-500 uppercase tracking-wide px-3 py-2">
                 {t("exportDropdown.reports")}

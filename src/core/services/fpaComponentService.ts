@@ -17,6 +17,12 @@ export interface ComponentResponse {
   recordElementTypes?: number;
   dataElementTypes?: number;
   fileTypesReferenced?: number;
+  // EQ special calculation fields
+  inputFtr?: number;
+  inputDet?: number;
+  outputFtr?: number;
+  outputDet?: number;
+  // Other fields
   derivedData?: boolean;
   outputFormat?: string;
   retrievalLogic?: string;
@@ -161,6 +167,7 @@ export const fpaComponentService = {
     estimateId: string;
     data: CreateEQData;
   }): Promise<ComponentResponse> => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { useSpecialCalculation, ...backendData } = params.data;
     const response = await measuraApi.post(
       `/estimates/${params.estimateId}/components/eq`,
@@ -174,6 +181,7 @@ export const fpaComponentService = {
     id: string;
     data: Partial<CreateEQData>;
   }): Promise<ComponentResponse> => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { useSpecialCalculation, ...backendData } = params.data;
     const response = await measuraApi.put(
       `/estimates/${params.estimateId}/components/eq/${params.id}`,

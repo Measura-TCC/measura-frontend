@@ -85,7 +85,11 @@
     "removeButton": "Remover",
     "createButton": "Criar Organização",
     "creating": "Criando...",
-    "failedToCreate": "Falha ao criar organização"
+    "failedToCreate": "Falha ao criar organização",
+    "createSuccess": "Organização criada com sucesso!",
+    "updateSuccess": "Organização atualizada com sucesso!",
+    "createError": "Falha ao criar organização",
+    "updateError": "Falha ao atualizar organização"
   },
   "invitations": {
     "title": "Convites",

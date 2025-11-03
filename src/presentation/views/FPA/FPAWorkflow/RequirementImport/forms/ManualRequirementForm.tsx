@@ -184,7 +184,7 @@ export const ManualRequirementForm = ({ requirements, addRequirement, addRequire
                             className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium cursor-pointer"
                             title={t("actions.delete", "Delete")}
                           >
-                            {t("actions.remove", { defaultValue: "Remove" })}
+                            {t("importForms.preview.remove")}
                           </button>
                         )
                       ),

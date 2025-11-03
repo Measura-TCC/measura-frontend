@@ -125,13 +125,41 @@ export interface UpdateMeasurementPlanDto {
   objectives?: CreateObjectiveDto[];
 }
 
+export interface ChartImageDto {
+  /**
+   * Unique identifier for the chart
+   */
+  id: string;
+
+  /**
+   * Base64 encoded image data (data:image/png;base64,...)
+   */
+  data: string;
+
+  /**
+   * Original width of the chart in pixels
+   */
+  width: number;
+
+  /**
+   * Original height of the chart in pixels
+   */
+  height: number;
+}
+
 export interface ExportMeasurementPlanDto {
   format: ExportFormat;
+  locale?: string;
   options?: {
     includeDetails?: boolean;
     includeMeasurements?: boolean;
     includeAnalysis?: boolean;
+    includeCycles?: boolean;
+    includeMonitoring?: boolean;
+    includeCharts?: boolean;
+    includeCalculations?: boolean;
   };
+  chartImages?: ChartImageDto[];
 }
 
 export interface ExportResponseDto {

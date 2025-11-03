@@ -16,22 +16,9 @@ export const OrganizationInvitationsSection = ({ organizationId }: Props) => {
   const {
     orgInvitations: invitations,
     isLoadingOrgInvitations: isLoading,
-    cancelInvitation
   } = useInvitations({ fetchOrganization: organizationId });
-  const [processing, setProcessing] = useState<string | null>(null);
 
   const filtered = filter === "ALL" ? invitations : invitations.filter(inv => inv.status === filter);
-
-  const handleCancel = async (id: string) => {
-    setProcessing(id);
-    try {
-      await cancelInvitation(id, organizationId);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setProcessing(null);
-    }
-  };
 
   const columns: Column[] = [
     {
@@ -67,21 +54,6 @@ export const OrganizationInvitationsSection = ({ organizationId }: Props) => {
       label: t("invitations.date"),
       render: (invitation) => new Date(invitation.createdAt).toLocaleDateString(),
       hideOnMobile: true,
-    },
-    {
-      key: "actions",
-      label: t("invitations.actions"),
-      render: (invitation) =>
-        invitation.status === "PENDING" ? (
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => handleCancel(invitation._id)}
-            disabled={processing === invitation._id}
-          >
-            {t("invitations.cancel")}
-          </Button>
-        ) : null,
     },
   ];
 

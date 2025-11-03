@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useOrganizations } from "@/core/hooks/organizations";
 import { measurementPlanService } from "@/core/services/measurementPlanService";
 import { ExportFormat } from "@/core/types/plans";
@@ -6,15 +7,18 @@ import { API_BASE_URL } from "@/core/utils/constants";
 import type {
   ExportMeasurementPlanDto,
   ExportResponseDto,
+  ChartImageDto,
 } from "@/core/types/plans";
 
 interface UseMeasurementPlanExportParams {
   planId: string;
+  captureCharts?: () => Promise<ChartImageDto[]>;
 }
 
 export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams) => {
+  const { i18n } = useTranslation();
   const { userOrganization } = useOrganizations({ fetchUserOrganization: true });
-  const { planId } = params;
+  const { planId, captureCharts } = params;
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<Error | null>(null);
 
@@ -28,14 +32,26 @@ export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams)
       setExportError(null);
 
       try {
+        // Capture charts if the function is provided and includeCharts is enabled
+        let chartImages: ChartImageDto[] | undefined;
+        if (captureCharts && options?.includeCharts) {
+          try {
+            chartImages = await captureCharts();
+          } catch (error) {
+            // Continue with export even if chart capture fails
+          }
+        }
+
         const exportData: ExportMeasurementPlanDto = {
           format,
+          locale: i18n.language,
           options: {
             includeDetails: true,
             includeMeasurements: true,
             includeAnalysis: true,
             ...options,
           },
+          chartImages,
         };
 
         const result = await measurementPlanService.export({
@@ -53,7 +69,7 @@ export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams)
         setIsExporting(false);
       }
     },
-    [userOrganization, planId]
+    [userOrganization, planId, i18n.language, captureCharts]
   );
 
   const exportToPdf = useCallback(
