@@ -2,6 +2,7 @@ import { measuraApi } from "@/core/services/measuraApi";
 
 export interface ReportOptions {
   format?: "pdf" | "excel" | "word";
+  locale?: string;
   includeComponents?: boolean;
   includeGSC?: boolean;
   includeCalculations?: boolean;
@@ -14,6 +15,7 @@ const reportService = {
   ): Promise<Blob> => {
     const params = new URLSearchParams();
     if (options?.format) params.append("format", options.format);
+    if (options?.locale) params.append("locale", options.locale);
     if (options?.includeComponents !== undefined)
       params.append("includeComponents", String(options.includeComponents));
     if (options?.includeGSC !== undefined)
@@ -36,6 +38,7 @@ const reportService = {
   ): Promise<Blob> => {
     const params = new URLSearchParams();
     if (options?.format) params.append("format", options.format);
+    if (options?.locale) params.append("locale", options.locale);
 
     const response = await measuraApi.get(
       `/estimates/reports/${estimateId}/summary?${params.toString()}`,
@@ -48,10 +51,15 @@ const reportService = {
 
   exportEstimate: async (
     estimateId: string,
-    format: "pdf" | "excel" | "word" = "pdf"
+    format: "pdf" | "excel" | "word" = "pdf",
+    locale?: string
   ): Promise<Blob> => {
+    const params = new URLSearchParams();
+    params.append("format", format);
+    if (locale) params.append("locale", locale);
+
     const response = await measuraApi.get(
-      `/estimates/reports/${estimateId}/export?format=${format}`,
+      `/estimates/reports/${estimateId}/export?${params.toString()}`,
       {
         responseType: "blob",
       }
@@ -66,6 +74,7 @@ const reportService = {
     const params = new URLSearchParams();
     estimateIds.forEach((id) => params.append("estimateIds", id));
     if (options?.format) params.append("format", options.format);
+    if (options?.locale) params.append("locale", options.locale);
 
     const response = await measuraApi.post(
       `/estimates/reports/comparison?${params.toString()}`,
@@ -131,10 +140,11 @@ export const useReports = () => {
   const exportEstimate = async (
     estimateId: string,
     estimateName: string,
-    format: "pdf" | "excel" | "word" = "pdf"
+    format: "pdf" | "excel" | "word" = "pdf",
+    locale?: string
   ) => {
     try {
-      const blob = await reportService.exportEstimate(estimateId, format);
+      const blob = await reportService.exportEstimate(estimateId, format, locale);
       const filename = `${estimateName}_export.${format}`;
       downloadFile(blob, filename);
     } catch (error) {

@@ -50,10 +50,15 @@ export const CreateCycleModal: React.FC<CreateCycleModalProps> = ({
     }
 
     try {
+      // Convert date-only string to ISO with time offset to preserve the date
+      // formData.startDate is "YYYY-MM-DD", we append time to ensure correct date in UTC
+      const adjustedStartDate = new Date(formData.startDate + 'T12:00:00');
+      const adjustedEndDate = new Date(formData.endDate + 'T12:00:00');
+
       await createCycle({
         cycleName: formData.cycleName.trim(),
-        startDate: formData.startDate,
-        endDate: formData.endDate,
+        startDate: adjustedStartDate.toISOString(),
+        endDate: adjustedEndDate.toISOString(),
       });
 
       setFormData({ cycleName: "", startDate: "", endDate: "" });

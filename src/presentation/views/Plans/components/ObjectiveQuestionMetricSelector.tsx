@@ -432,7 +432,7 @@ export const ObjectiveQuestionMetricSelector: React.FC<ObjectiveQuestionMetricSe
                   <p className="text-sm text-secondary">{selection.objective?.description}</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium mt-0.5">
                   2
@@ -441,7 +441,7 @@ export const ObjectiveQuestionMetricSelector: React.FC<ObjectiveQuestionMetricSe
                   <p className="text-sm text-secondary">{selection.question?.question}</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium mt-0.5">
                   3

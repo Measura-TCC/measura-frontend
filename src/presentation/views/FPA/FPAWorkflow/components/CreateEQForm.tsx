@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { createEQSchema, type CreateEQData } from "@/core/schemas/fpa";
 import { useFpaComponents } from "@/core/hooks/fpa/components/useFpaComponents";
 import { Button } from "@/presentation/components/primitives";
@@ -28,7 +28,11 @@ interface CreateEQFormProps {
   };
 }
 
-export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateEQFormProps) => {
+export const CreateEQForm = ({
+  estimateId,
+  onSuccess,
+  componentToEdit,
+}: CreateEQFormProps) => {
   const { t } = useTranslation("fpa");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +53,8 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
           description: componentToEdit.description || "",
           primaryIntent: componentToEdit.primaryIntent || "",
           retrievalLogic: componentToEdit.retrievalLogic || "",
-          useSpecialCalculation: componentToEdit.useSpecialCalculation || false,
+          // Auto-detect special calculation if inputFtr/outputFtr exist
+          useSpecialCalculation: componentToEdit.inputFtr !== undefined || componentToEdit.outputFtr !== undefined || componentToEdit.useSpecialCalculation || false,
           fileTypesReferenced: componentToEdit.fileTypesReferenced || 0,
           dataElementTypes: componentToEdit.dataElementTypes || 1,
           inputFtr: componentToEdit.inputFtr || 0,
@@ -86,15 +91,18 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
     det: number = 0
   ): "LOW" | "MEDIUM" | "HIGH" => {
     if (ftr <= 1) {
-      if (det <= 15) return "LOW";
+      if (det <= 5) return "LOW";
+      if (det <= 19) return "LOW";
       return "MEDIUM";
     }
     if (ftr <= 3) {
-      if (det <= 4) return "LOW";
-      if (det <= 15) return "MEDIUM";
+      if (det <= 5) return "LOW";
+      if (det <= 19) return "MEDIUM";
       return "HIGH";
     }
-    if (det <= 4) return "MEDIUM";
+    // ftr >= 4
+    if (det <= 5) return "MEDIUM";
+    if (det <= 19) return "HIGH";
     return "HIGH";
   };
 
@@ -134,6 +142,28 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
     setError(null);
 
     try {
+      // Prepare data based on calculation method
+      if (data.useSpecialCalculation) {
+        // Special calculation: send all 6 fields (totals + breakdown)
+        const inputFtrVal = Number(data.inputFtr) || 0;
+        const inputDetVal = Number(data.inputDet) || 0;
+        const outputFtrVal = Number(data.outputFtr) || 0;
+        const outputDetVal = Number(data.outputDet) || 0;
+
+        data.fileTypesReferenced = inputFtrVal + outputFtrVal;
+        data.dataElementTypes = inputDetVal + outputDetVal;
+        data.inputFtr = inputFtrVal;
+        data.inputDet = inputDetVal;
+        data.outputFtr = outputFtrVal;
+        data.outputDet = outputDetVal;
+      } else {
+        // Standard calculation: remove special fields
+        delete data.inputFtr;
+        delete data.inputDet;
+        delete data.outputFtr;
+        delete data.outputDet;
+      }
+
       if (isEditing) {
         await updateEQComponent({
           estimateId,
@@ -147,7 +177,10 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
         onSuccess?.();
       }
     } catch (err) {
-      console.error(`Error ${isEditing ? 'updating' : 'creating'} EQ component:`, err);
+      console.error(
+        `Error ${isEditing ? "updating" : "creating"} EQ component:`,
+        err
+      );
       setError(
         err instanceof Error
           ? err.message
@@ -424,21 +457,26 @@ export const CreateEQForm = ({ estimateId, onSuccess, componentToEdit }: CreateE
               <div className="p-3 bg-blue-50 rounded-md">
                 <p className="text-sm text-blue-800">
                   <strong>{t("componentForms.eq.finalComplexity")}:</strong>{" "}
-                  {t("componentForms.eq.finalComplexityExplanation", {
-                    complexity: t(
-                      `complexityLabels.${
-                        inputComplexity === outputComplexity
-                          ? inputComplexity
-                          : inputComplexity === "HIGH" ||
-                            outputComplexity === "HIGH"
-                          ? "HIGH"
-                          : inputComplexity === "MEDIUM" ||
-                            outputComplexity === "MEDIUM"
-                          ? "MEDIUM"
-                          : "LOW"
-                      }`
-                    ).toLowerCase(),
-                  })}
+                  <Trans
+                    i18nKey="componentForms.eq.finalComplexityExplanation"
+                    ns="fpa"
+                    values={{
+                      complexity: t(
+                        `complexityLabels.${
+                          inputComplexity === outputComplexity
+                            ? inputComplexity
+                            : inputComplexity === "HIGH" ||
+                              outputComplexity === "HIGH"
+                            ? "HIGH"
+                            : inputComplexity === "MEDIUM" ||
+                              outputComplexity === "MEDIUM"
+                            ? "MEDIUM"
+                            : "LOW"
+                        }`
+                      ).toLowerCase(),
+                    }}
+                    components={{ strong: <strong /> }}
+                  />
                 </p>
               </div>
             )}

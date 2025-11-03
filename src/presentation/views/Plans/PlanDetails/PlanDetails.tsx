@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/presentation/components/primitives";
@@ -6,16 +6,20 @@ import { Tabs } from "@/presentation/components/primitives/Tabs";
 import {
   useMeasurementPlan,
   useMeasurementPlans,
+  useMeasurementCycles,
 } from "@/core/hooks/measurementPlans";
 import { useMeasurementPlanExport } from "@/core/hooks/measurementPlans";
 import { useProjects } from "@/core/hooks/projects/useProjects";
 import { useAuth } from "@/core/hooks/auth/useAuth";
+import { useOrganizations } from "@/core/hooks/organizations";
 import { canChangePlanStatus } from "@/core/utils/permissions";
-import { ExportFormat, MeasurementPlanStatus, type MeasurementPlanSummaryDto } from "@/core/types/plans";
+import { ExportFormat, MeasurementPlanStatus, type MeasurementPlanSummaryDto, type CycleWithData } from "@/core/types/plans";
+import { measurementPlanService } from "@/core/services/measurementPlanService";
 import { PlanVisualization } from "../components/PlanVisualization";
 import { PlanGQMStructure } from "../components/PlanGQMStructure";
 import { EditPlanModal } from "../components/EditPlanModal";
 import { DeletePlanModal } from "../components/DeletePlanModal";
+import { ExportOptionsModal } from "../components/ExportOptionsModal";
 import {
   PlanContentManager,
   PlanHeader,
@@ -24,6 +28,7 @@ import {
   PlanStatisticsCard,
   MeasurementMonitoringTab,
 } from "./components";
+import { ExportChartsContainer, type ExportChartsContainerRef } from "./components/ExportChartsContainer";
 
 interface PlanDetailsProps {
   planId: string;
@@ -36,6 +41,7 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
   const router = useRouter();
   const { user } = useAuth();
   const [isExporting, setIsExporting] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>('details');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -45,31 +51,125 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
     planResponsible: "",
     status: MeasurementPlanStatus.DRAFT,
   });
+  const exportChartsRef = useRef<ExportChartsContainerRef>(null);
 
   const { plan, planError, isLoadingPlan, mutatePlan } = useMeasurementPlan({ planId });
   const { deletePlan, updatePlan, isUpdatingPlan, isDeletingPlan, operationError, clearError } =
     useMeasurementPlans();
   const { projects } = useProjects();
-  const exportHook = useMeasurementPlanExport({ planId });
+  const { userOrganization } = useOrganizations({ fetchUserOrganization: true });
+  const { cycles, isLoading: isLoadingCycles } = useMeasurementCycles({ planId, withMeasurements: true });
+  const exportHook = useMeasurementPlanExport({
+    planId,
+    captureCharts: async () => {
+      if (exportChartsRef.current) {
+        return await exportChartsRef.current.captureCharts();
+      }
+      return [];
+    },
+  });
   const canChangeStatus = canChangePlanStatus(user?.role);
+
+  const cyclesData = (cycles as CycleWithData[]) || [];
+
+  const nonEmptyCyclesData = useMemo(() => {
+    return cyclesData.filter((cd) => cd.measurements && cd.measurements.length > 0);
+  }, [cyclesData]);
+
+  const metricsWithFormulas = useMemo(() => {
+    if (!plan) return [];
+    const metrics: Array<{
+      metricId: string;
+      metricName: string;
+      metricFormula: string;
+    }> = [];
+    plan.objectives?.forEach((obj) => {
+      obj.questions?.forEach((q) => {
+        q.metrics?.forEach((m) => {
+          if (m.metricFormula && m.metricFormula.trim() !== "") {
+            metrics.push({
+              metricId: m._id || "",
+              metricName: m.metricName,
+              metricFormula: m.metricFormula,
+            });
+          }
+        });
+      });
+    });
+    return metrics;
+  }, [plan]);
+
+  const [calculations, setCalculations] = useState<Record<string, Record<string, number | null>>>({});
+
+  useEffect(() => {
+    const fetchCalculations = async () => {
+      if (
+        !userOrganization?._id ||
+        !plan ||
+        metricsWithFormulas.length === 0 ||
+        nonEmptyCyclesData.length === 0
+      ) {
+        return;
+      }
+
+      const results: Record<string, Record<string, number | null>> = {};
+
+      for (const cycle of nonEmptyCyclesData) {
+        results[cycle.cycle._id] = {};
+
+        for (const metric of metricsWithFormulas) {
+          try {
+            const result = await measurementPlanService.calculateMetric({
+              organizationId: userOrganization._id,
+              planId,
+              cycleId: cycle.cycle._id,
+              metricId: metric.metricId,
+            });
+            results[cycle.cycle._id][metric.metricName] = result.calculatedValue;
+          } catch (error) {
+            results[cycle.cycle._id][metric.metricName] = null;
+          }
+        }
+      }
+
+      setCalculations(results);
+    };
+
+    fetchCalculations();
+  }, [userOrganization?._id, plan, planId, metricsWithFormulas, nonEmptyCyclesData]);
 
   const getProjectName = (projectId: string): string => {
     const project = projects?.find((p) => p._id === projectId);
     return project?.name || projectId;
   };
 
-  const handleExport = async (format: ExportFormat) => {
+  const handleExport = async (
+    format: ExportFormat,
+    options?: {
+      includeDetails?: boolean;
+      includeMeasurements?: boolean;
+      includeAnalysis?: boolean;
+      includeCycles?: boolean;
+      includeMonitoring?: boolean;
+      includeCharts?: boolean;
+      includeCalculations?: boolean;
+    }
+  ) => {
     if (!plan) return;
 
     setIsExporting(true);
     try {
-      await exportHook.exportAndDownload(format);
+      await exportHook.exportAndDownload(format, options);
     } catch (error) {
       console.error(`Failed to export as ${format}:`, error);
       alert(`Failed to export plan as ${format}. Please try again.`);
     } finally {
       setIsExporting(false);
     }
+  };
+
+  const handleOpenExportModal = () => {
+    setShowExportModal(true);
   };
 
   const handleEditToggle = () => {
@@ -167,6 +267,7 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
           isEditing={false}
           isUpdatingPlan={false}
           isExporting={false}
+          activeTab={activeTab}
           onEditToggle={() => {}}
           onSaveEdit={() => Promise.resolve()}
           onCancelEdit={() => {}}
@@ -197,10 +298,11 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
         isEditing={isEditing}
         isUpdatingPlan={isUpdatingPlan}
         isExporting={isExporting}
+        activeTab={activeTab}
         onEditToggle={handleEditToggle}
         onSaveEdit={handleSaveEdit}
         onCancelEdit={handleCancelEdit}
-        onExport={handleExport}
+        onExport={handleOpenExportModal}
         onDelete={() => {}}
         onDeleteClick={() => setShowDeleteModal(true)}
       />
@@ -259,7 +361,13 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
           { id: 'monitoring', label: t("monitoring.title") }
         ]}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => {
+          // Exit edit mode when switching away from details tab
+          if (isEditing && tab !== 'details') {
+            handleCancelEdit();
+          }
+          setActiveTab(tab);
+        }}
       />
 
       {/* Main Content with responsive grid */}
@@ -316,6 +424,29 @@ export const PlanDetailsView: React.FC<PlanDetailsProps> = ({ planId }) => {
         </div>
       ) : (
         <MeasurementMonitoringTab planId={planId} plan={plan} />
+      )}
+
+      {/* Export Options Modal */}
+      {showExportModal && (
+        <ExportOptionsModal
+          isOpen={showExportModal}
+          onClose={() => setShowExportModal(false)}
+          onExport={handleExport}
+          hasMonitoringData={nonEmptyCyclesData.length > 0}
+          hasCalculations={metricsWithFormulas.length > 0}
+        />
+      )}
+
+      {/* Hidden Export Charts Container */}
+      {plan && nonEmptyCyclesData.length > 0 && metricsWithFormulas.length > 0 && (
+        <ExportChartsContainer
+          ref={exportChartsRef}
+          planId={planId}
+          plan={plan}
+          cyclesData={nonEmptyCyclesData}
+          calculations={calculations}
+          metricsWithFormulas={metricsWithFormulas}
+        />
       )}
 
       {/* Delete Modal */}

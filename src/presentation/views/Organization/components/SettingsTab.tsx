@@ -6,6 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle, Button } from "@/presentation
 import { OrganizationWizard } from "./OrganizationWizard";
 import { canManageOrganization } from "@/core/utils/permissions";
 
+interface OrganizationObjective {
+  _id?: string;
+  title: string;
+}
+
 interface Organization {
   _id: string;
   name: string;
@@ -15,6 +20,7 @@ interface Organization {
   mission?: string;
   vision?: string;
   values?: string;
+  objectives?: OrganizationObjective[];
   strategicObjectives?: string;
 }
 
@@ -74,7 +80,9 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({
                   mission: organization.mission,
                   vision: organization.vision,
                   values: organization.values,
-                  strategicObjectives: organization.strategicObjectives,
+                  strategicObjectives: organization.objectives
+                    ? organization.objectives.map(obj => obj.title).join("\n")
+                    : organization.strategicObjectives || "",
                 }}
                 onCancel={() => setShowWizard(false)}
                 onSuccess={handleWizardSuccess}

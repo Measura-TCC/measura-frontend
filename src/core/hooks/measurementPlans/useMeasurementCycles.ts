@@ -133,8 +133,16 @@ export const useMeasurementCycles = (params: UseMeasurementCyclesParams) => {
         // Invalidate both cycles and cycles-with-measurements
         await mutateCycles();
         await mutate(`/measurement-plans/${organizationId}/${planId}/cycles-with-measurements`);
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Failed to delete cycle";
+      } catch (error: any) {
+        // Check if it's a 409 conflict error (cycle has measurements)
+        let errorMessage = "Failed to delete cycle";
+
+        if (error?.response?.status === 409 || error?.message?.includes("Cannot delete cycle")) {
+          errorMessage = "monitoring.cannotDeleteCycleWithMeasurements";
+        } else if (error instanceof Error) {
+          errorMessage = error.message;
+        }
+
         setOperationError(errorMessage);
         throw new Error(errorMessage);
       } finally {

@@ -10,7 +10,6 @@ interface EditCycleModalProps {
   cycle: MeasurementCycle;
   planId: string;
   hasMeasurements?: boolean;
-  measurementCount?: number;
 }
 
 export const EditCycleModal: React.FC<EditCycleModalProps> = ({
@@ -19,7 +18,6 @@ export const EditCycleModal: React.FC<EditCycleModalProps> = ({
   cycle,
   planId,
   hasMeasurements = false,
-  measurementCount = 0,
 }) => {
   const { t } = useTranslation("plans");
   const { updateCycle, deleteCycle, isUpdating, isDeleting, operationError } =
@@ -30,7 +28,6 @@ export const EditCycleModal: React.FC<EditCycleModalProps> = ({
     endDate: "",
   });
   const [validationError, setValidationError] = useState<string | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (cycle) {
@@ -64,10 +61,15 @@ export const EditCycleModal: React.FC<EditCycleModalProps> = ({
     }
 
     try {
+      // Convert date-only string to ISO with time offset to preserve the date
+      // formData.startDate is "YYYY-MM-DD", we append time to ensure correct date in UTC
+      const adjustedStartDate = new Date(formData.startDate + 'T12:00:00');
+      const adjustedEndDate = new Date(formData.endDate + 'T12:00:00');
+
       await updateCycle(cycle._id, {
         cycleName: formData.cycleName.trim(),
-        startDate: formData.startDate,
-        endDate: formData.endDate,
+        startDate: adjustedStartDate.toISOString(),
+        endDate: adjustedEndDate.toISOString(),
       });
       onClose();
     } catch (error) {
@@ -76,8 +78,9 @@ export const EditCycleModal: React.FC<EditCycleModalProps> = ({
   };
 
   const handleDelete = async () => {
-    if (hasMeasurements && !showDeleteConfirm) {
-      setShowDeleteConfirm(true);
+    // hasMeasurements check is now done via disabled button
+    // but keep safety check here as well
+    if (hasMeasurements) {
       return;
     }
 
@@ -86,12 +89,12 @@ export const EditCycleModal: React.FC<EditCycleModalProps> = ({
       onClose();
     } catch (error) {
       console.error("Failed to delete cycle:", error);
+      // Error is handled by the hook and displayed via operationError
     }
   };
 
   const handleClose = () => {
     setValidationError(null);
-    setShowDeleteConfirm(false);
     onClose();
   };
 
@@ -119,33 +122,7 @@ export const EditCycleModal: React.FC<EditCycleModalProps> = ({
             </button>
           </div>
 
-          {showDeleteConfirm ? (
-            <div className="space-y-4">
-              <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-md p-4">
-                <p className="text-sm text-yellow-800 dark:text-yellow-300">
-                  {t("monitoring.cycleDeleteWarning", { count: measurementCount })}
-                </p>
-              </div>
-
-              <div className="flex justify-end gap-2">
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowDeleteConfirm(false)}
-                  disabled={isDeleting}
-                >
-                  {t("monitoring.cancel")}
-                </Button>
-                <Button
-                  onClick={handleDelete}
-                  disabled={isDeleting}
-                  className="bg-red-600 hover:bg-red-700"
-                >
-                  {isDeleting ? t("deleting") : t("monitoring.confirmDelete")}
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <>
+          <>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-default mb-1">
@@ -194,21 +171,30 @@ export const EditCycleModal: React.FC<EditCycleModalProps> = ({
                 {(validationError || operationError) && (
                   <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-md p-3">
                     <p className="text-sm text-red-600 dark:text-red-300">
-                      {validationError || operationError}
+                      {validationError || (operationError?.startsWith('monitoring.') ? t(operationError) : operationError)}
                     </p>
                   </div>
                 )}
               </div>
 
               <div className="flex justify-between mt-6">
-                <Button
-                  variant="secondary"
-                  onClick={handleDelete}
-                  disabled={isUpdating || isDeleting}
-                  className="bg-red-50 text-red-600 hover:bg-red-100 border-red-200"
-                >
-                  {t("monitoring.deleteCycle")}
-                </Button>
+                <div className="relative group">
+                  <Button
+                    variant="secondary"
+                    onClick={handleDelete}
+                    disabled={isUpdating || isDeleting || hasMeasurements}
+                    className="bg-red-50 text-red-600 hover:bg-red-100 border-red-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    title={hasMeasurements ? t("monitoring.cannotDeleteCycleWithMeasurements") : ""}
+                  >
+                    {t("monitoring.deleteCycle")}
+                  </Button>
+                  {hasMeasurements && (
+                    <div className="absolute bottom-full left-0 mb-2 w-64 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded py-2 px-3 z-10 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200 ease-in-out">
+                      {t("monitoring.cannotDeleteCycleWithMeasurements")}
+                      <div className="absolute top-full left-4 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                    </div>
+                  )}
+                </div>
 
                 <div className="flex gap-2">
                   <Button
@@ -224,7 +210,6 @@ export const EditCycleModal: React.FC<EditCycleModalProps> = ({
                 </div>
               </div>
             </>
-          )}
         </div>
       </div>
     </div>
