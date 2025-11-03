@@ -64,12 +64,6 @@ export const ImportedRequirementsPreview = ({
     }
   };
 
-  const removeRequirement = (id: string) => {
-    const newSelected = new Set(selectedIds);
-    newSelected.delete(id);
-    setSelectedIds(newSelected);
-  };
-
   const handleConfirm = () => {
     const selectedRequirements = requirements.filter((r) =>
       selectedIds.has(r._id)
@@ -206,19 +200,6 @@ export const ImportedRequirementsPreview = ({
                       )
                     )}
                   </div>
-                ),
-              },
-              {
-                key: "actions",
-                label: t("importForms.preview.edit"),
-                render: (req: ImportedRequirement) => (
-                  <button
-                    onClick={() => removeRequirement(req._id)}
-                    className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium"
-                    disabled={isAdding}
-                  >
-                    {t("importForms.preview.remove")}
-                  </button>
                 ),
               },
             ]}

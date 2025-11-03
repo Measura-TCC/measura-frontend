@@ -194,18 +194,18 @@ export const adjustmentFactors = [
   },
   {
     key: "performance",
-    label: "Performance",
-    description: "Objetivos de performance",
+    label: "Desempenho",
+    description: "Objetivos de desempenho",
   },
   {
     key: "heavilyUsedConfiguration",
-    label: "Configuração Utilizada",
+    label: "Utilização de Equipamentos",
     description: "Configuração de hardware altamente utilizada",
   },
   {
     key: "transactionRate",
-    label: "Taxa de Transações",
-    description: "Taxa de transações",
+    label: "Volume de Transação",
+    description: "Volume de transações",
   },
   {
     key: "onlineDataEntry",
