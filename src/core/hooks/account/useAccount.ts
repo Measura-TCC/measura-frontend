@@ -65,7 +65,9 @@ export const useAccount = (): UseAccountReturn => {
   const { t, i18n } = useTranslation("account");
   const { t: tValidation } = useTranslation("validation");
   const { user: authUser, updateUser, logout } = useAuth();
-  const { userOrganization } = useOrganizations({ fetchUserOrganization: true });
+  const { userOrganization } = useOrganizations({
+    fetchUserOrganization: true,
+  });
 
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
@@ -153,22 +155,18 @@ export const useAccount = (): UseAccountReturn => {
 
     setIsUpdatingPassword(true);
     try {
-      console.log("[useAccount] About to call changePassword API");
       await userService.changePassword({
         currentPassword: data.currentPassword,
         newPassword: data.newPassword,
       });
-      console.log("[useAccount] Password change API succeeded");
-      // Only reset form and logout if API call succeeds
+
       resetPasswordForm();
-      console.log("[useAccount] About to logout in 1500ms");
+
       setTimeout(() => {
-        console.log("[useAccount] Logging out now");
         logout();
       }, 1500);
     } catch (error) {
       console.error("[useAccount] Error updating password:", error);
-      console.log("[useAccount] NOT calling logout due to error");
       throw error;
     } finally {
       setIsUpdatingPassword(false);
