@@ -127,21 +127,8 @@ export const ExportChartsContainer = forwardRef<
           quality: 0.5,
         });
 
-        // Log image sizes for debugging
-        capturedImages.forEach((img) => {
-          const sizeInBytes = Math.round((img.data.length * 3) / 4);
-          const sizeInKB = (sizeInBytes / 1024).toFixed(2);
-          console.log(`Chart ${img.id}: ${sizeInKB} KB (${img.width}x${img.height})`);
-        });
-
-        const totalSize = capturedImages.reduce((sum, img) => {
-          return sum + Math.round((img.data.length * 3) / 4);
-        }, 0);
-        console.log(`Total chart images size: ${(totalSize / 1024).toFixed(2)} KB`);
-
         return capturedImages;
       } catch (error) {
-        console.error("Error capturing charts:", error);
         throw error;
       } finally {
         setIsCapturing(false);

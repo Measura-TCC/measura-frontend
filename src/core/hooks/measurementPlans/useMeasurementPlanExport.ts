@@ -37,9 +37,7 @@ export const useMeasurementPlanExport = (params: UseMeasurementPlanExportParams)
         if (captureCharts && options?.includeCharts) {
           try {
             chartImages = await captureCharts();
-            console.log(`Captured ${chartImages.length} chart images for export`);
           } catch (error) {
-            console.error("Error capturing charts:", error);
             // Continue with export even if chart capture fails
           }
         }
