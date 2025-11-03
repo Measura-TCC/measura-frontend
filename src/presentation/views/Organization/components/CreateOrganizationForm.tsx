@@ -10,6 +10,7 @@ import {
 } from "@/core/schemas/organizations";
 import { useOrganizations } from "@/core/hooks/organizations";
 import { Button } from "@/presentation/components/primitives/Button/Button";
+import { useToast } from "@/core/hooks/common/useToast";
 
 interface Organization {
   _id: string;
@@ -29,6 +30,7 @@ export const CreateOrganizationForm = ({
   onSuccess,
 }: CreateOrganizationFormProps) => {
   const { t } = useTranslation("organization");
+  const toast = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isMountedRef = useRef(true);
@@ -92,12 +94,14 @@ export const CreateOrganizationForm = ({
 
       const result = await createOrganization(transformedData);
 
+      toast.success({ message: t("form.createSuccess") || "Organization created successfully!" });
       reset();
       onSuccess?.(result as Organization);
     } catch (err) {
-      console.error("Organization creation failed:", err);
+      const errorMessage = err instanceof Error ? err.message : t("form.failedToCreate");
+      toast.error({ message: `${t("form.createError") || "Failed to create organization"}: ${errorMessage}` });
       if (isMountedRef.current) {
-        setError(err instanceof Error ? err.message : t("form.failedToCreate"));
+        setError(errorMessage);
       }
     } finally {
       if (isMountedRef.current) {
