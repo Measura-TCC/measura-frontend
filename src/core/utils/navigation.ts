@@ -5,6 +5,7 @@ import {
   DocumentIcon,
   BuildingIcon,
   UserIcon,
+  ClipboardIcon,
 } from "@/presentation/assets/icons";
 
 export interface NavigationItem {
@@ -53,9 +54,9 @@ export const getNavigationItems = (
     ],
   },
   {
-    name: t("nav.fpa"),
-    href: "/fpa",
-    icon: ChartIcon,
+    name: t("nav.plans"),
+    href: "/plans",
+    icon: ClipboardIcon,
     requiredRoles: [
       UserRole.USER,
       UserRole.ANALYST,
@@ -64,9 +65,9 @@ export const getNavigationItems = (
     ],
   },
   {
-    name: t("nav.plans"),
-    href: "/plans",
-    icon: DocumentIcon,
+    name: t("nav.fpa"),
+    href: "/fpa",
+    icon: ChartIcon,
     requiredRoles: [
       UserRole.USER,
       UserRole.ANALYST,
@@ -127,9 +128,9 @@ export const getFilteredNavigation = (
         ],
       },
       {
-        name: "FPA",
-        href: "/fpa",
-        icon: ChartIcon,
+        name: "Plans",
+        href: "/plans",
+        icon: ClipboardIcon,
         requiredRoles: [
           UserRole.USER,
           UserRole.ANALYST,
@@ -138,9 +139,9 @@ export const getFilteredNavigation = (
         ],
       },
       {
-        name: "Plans",
-        href: "/plans",
-        icon: DocumentIcon,
+        name: "FPA",
+        href: "/fpa",
+        icon: ChartIcon,
         requiredRoles: [
           UserRole.USER,
           UserRole.ANALYST,
